@@ -6,6 +6,12 @@
     "scripts": {
         "update-badges": "node tools/update-badges.js",
         "update-tower-folder": "node tools/update-tower-folder.js",
-        "format": "npx prettier ./ --write"
+        "format": "npx prettier ./ --write",
+        "start": "node src/index.js"
+    },
+    "dependencies": {
+        "express": "^4.19.1",
+        "flat-cache": "^4.0.1",
+        "helmet": "^7.1.0"
     }
 }

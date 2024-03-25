@@ -1,0 +1,7 @@
+{
+    "server": {
+        "mode": "production|development",
+        "keyPath": "/path/to/ssl/key",
+        "certPath": "/path/to/sll/cert"
+    }
+}
