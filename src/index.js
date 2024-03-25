@@ -3,6 +3,7 @@ import https from 'node:https';
 import express from 'express';
 import fs from 'node:fs';
 import helmet from 'helmet';
+import { checkOwnedBadgesLarge } from './modules/badgeOwnership.js';
 
 const config = JSON.parse(fs.readFileSync('config.json'));
 
@@ -23,7 +24,12 @@ server.use(
 );
 
 server.get('/', function (_, response) {
-    response.send('soon :) ~ LovelyJacob');
+    response.send('soon :) ~ LovelyJacob - To check your badges, open /api/badge-check/userId');
+});
+
+server.get('/api/badge-check/:id', async function (request, response) {
+    const badges = JSON.parse(fs.readFileSync('data/badges.json').toString('utf-8')).badges.map((badge) => badge.id);
+    response.send(await checkOwnedBadgesLarge(request.params.id, badges));
 });
 
 if (config.server.mode === 'development') {

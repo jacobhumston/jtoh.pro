@@ -38,12 +38,24 @@ export async function checkOwnedBadges(userId, badges) {
                 };
             }
         });
-        return ownedBadges
+        return ownedBadges;
     }
 }
 
-const badges = JSON.parse(fs.readFileSync('data/badges.json').toString('utf-8')).badges.map(((badge) => badge.id))
-
-console.log(
-    await checkOwnedBadges(2614622891, badges.splice(0, 100)),
-);
+/**
+ * Check for owned badges.
+ * @param {string|number} userId
+ * @param {Array<string|number>} badges
+ * @returns {Promise<Array<{ owned: boolean, id: number, awarded: string|null }>>}
+ */
+export async function checkOwnedBadgesLarge(userId, badges) {
+    let ownedBadges = [];
+    const badgesToCheck = [];
+    for (let i = 0; i < badges.length; i += 100) {
+        badgesToCheck.push(badges.slice(i, i + 100));
+    }
+    for (const badges of badgesToCheck) {
+        ownedBadges = ownedBadges.concat(await checkOwnedBadges(userId, badges));
+    }
+    return ownedBadges;
+}
