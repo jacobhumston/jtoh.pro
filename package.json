@@ -7,7 +7,10 @@
         "update-badges": "node tools/update-badges.js",
         "update-tower-folder": "node tools/update-tower-folder.js",
         "format": "npx prettier ./ --write",
-        "start": "node src/index.js"
+        "start": "node src/index.js",
+        "prod-start": "pm2 start src/index.js",
+        "prod-restart": "pm2 restart src/index.js",
+        "pro-stop": "pm2 stop src/index.js"
     },
     "dependencies": {
         "express": "^4.19.1",
