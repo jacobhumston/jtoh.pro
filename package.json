@@ -1,3 +1,11 @@
 {
-    "type": "module"
+    "type": "module",
+    "devDependencies": {
+        "prettier": "^3.2.5"
+    },
+    "scripts": {
+        "update-badges": "node tools/update-badges.js",
+        "update-tower-folder": "node tools/update-tower-folder.js",
+        "format": "npx prettier ./ --write"
+    }
 }

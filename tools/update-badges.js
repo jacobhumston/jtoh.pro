@@ -1,13 +1,50 @@
+// Important needed modules.
+import fs from 'node:fs';
+
 // JToH Universe ID
-const universeId = 3264581003
+const universeId = 3264581003;
+
+// JToh Badges
+let badges = [];
 
 /**
  * Function to get the badges of the game.
- * @param {string} cursor Page cursor. 
+ * @param {string} cursor Page cursor.
  */
 async function getBadges(cursor) {
     // API Endpoint URL
-    let url = `https://badges.roblox.com/v1/universes/${universeId}/badges?limit=100&sortOrder=Asc`
-    if (cursor) url = `${url}&cursor=${cursor}`
-    return await fetch()
+    let url = `https://badges.roblox.com/v1/universes/${universeId}/badges?limit=100&sortOrder=Asc`;
+    if (cursor) url = `${url}&cursor=${cursor}`;
+    console.log(`Fetching '${url}'...`);
+    const response = await fetch(url);
+    if (response.status !== 200) {
+        console.log(`Failed to load badges, trying again in 5 seconds...`);
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+        return await getBadges(cursor);
+    } else {
+        const json = await response.json();
+        const data = json.data;
+        badges = badges.concat(data);
+        console.log(`Successfully loaded ${data.length} badges.`);
+        if (json.nextPageCursor !== null) {
+            return await getBadges(json.nextPageCursor);
+        } else {
+            return;
+        }
+    }
 }
+
+// Get badges.
+await getBadges();
+
+// Log a success message.
+console.log(`All ${badges.length} have been loaded!`);
+
+// Write to data/badges.json
+fs.writeFileSync(
+    'data/badges.json',
+    JSON.stringify({ lastUpdated: new Date(), count: badges.length, badges: badges }, null, 4)
+);
+
+// Finish log.
+console.log('data/badges.json has been updated!');
