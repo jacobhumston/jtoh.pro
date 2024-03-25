@@ -34,8 +34,8 @@ if (config.server.mode === 'development') {
     https
         .createServer(
             {
-                key: fs.readFileSync(config.server.key),
-                cert: fs.readFileSync(config.server.cert)
+                key: fs.readFileSync(config.server.keyPath),
+                cert: fs.readFileSync(config.server.certPath)
             },
             server
         )
