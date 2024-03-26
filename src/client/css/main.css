@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css?family=Actor:700|Actor:400');
+
+:root[date-theme='light'] {
+    --text: #0e0c27;
+    --background: #ecebf9;
+    --primary: #2a226d;
+    --secondary: #d07ed7;
+    --accent: #a8348f;
+}
+
+:root[date-theme='dark'] {
+    --text: #dad8f3;
+    --background: #070614;
+    --primary: #9a92dd;
+    --secondary: #792881;
+    --accent: #cb57b2;
+}
+
+body,
+html {
+    box-sizing: border-box;
+    background-color: var(--background);
+    color: var(--text);
+    overflow: hidden;
+}
+
+body,
+input,
+button,
+textarea {
+    font-family: 'Actor';
+    font-weight: 400;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+    font-family: 'Actor';
+    font-weight: 700;
+}
+
+html {
+    font-size: 100%;
+} /* 16px */
+
+h1 {
+    font-size: 4.21rem; /* 67.36px */
+}
+
+h2 {
+    font-size: 3.158rem; /* 50.56px */
+}
+
+h3 {
+    font-size: 2.369rem; /* 37.92px */
+}
+
+h4 {
+    font-size: 1.777rem; /* 28.48px */
+}
+
+h5 {
+    font-size: 1.333rem; /* 21.28px */
+}
+
+small {
+    font-size: 0.75rem; /* 12px */
+}
