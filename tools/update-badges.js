@@ -25,6 +25,9 @@ async function getBadges(universeId, cursor) {
     } else {
         const json = await response.json();
         const data = json.data;
+        for (const badge of data) {
+            badge.old = universeId === oldUniverseId;
+        }
         badges = badges.concat(data);
         console.log(`Successfully loaded ${data.length} badges.`);
         if (json.nextPageCursor !== null) {
