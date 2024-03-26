@@ -91,4 +91,27 @@ ToSM - Tower of Strategic Mechanics https://jtoh.fandom.com/wiki/Tower_of_Strate
 ToIM - Tower of Impossible Movement https://jtoh.fandom.com/wiki/Tower_of_Impossible_Movement
 CoSR - Citadel of Scythe Recognition https://jtoh.fandom.com/wiki/Citadel_of_Scythe_Recognition
 
+R7
 
+ToRB - Tower of Rushed Building https://jtoh.fandom.com/wiki/Tower_of_Rushed_Building
+ToFL - Tower of Feeling Lazy https://jtoh.fandom.com/wiki/Tower_of_Feeling_Lazy
+ToCC - Tower of Collective Collaboration https://jtoh.fandom.com/wiki/Tower_of_Collective_Collaboration
+ToDA - Tower of Distorted Aerodynamics https://jtoh.fandom.com/wiki/Tower_of_Distorted_Aerodynamics
+ToOOO - Tower of Orientating Oscillating Opinions https://jtoh.fandom.com/wiki/Tower_of_Orientating_Oscillating_Opinions
+ToNGUE - Tower of Never Giving Up, Ever https://jtoh.fandom.com/wiki/Tower_of_Never_Giving_Up,_Ever
+ToNED - Tower of Never Ending Dizziness https://jtoh.fandom.com/wiki/Tower_of_Never_Ending_Dizziness
+ToU - Tower of Ultraviolet https://jtoh.fandom.com/wiki/Tower_of_Ultraviolet
+ToYV - Tower of Yearning Victory https://jtoh.fandom.com/wiki/Tower_of_Yearning_Victory
+ToEH - Tower of Extreme Hell https://jtoh.fandom.com/wiki/Tower_of_Extreme_Hell
+ToTB - Tower of Terrifying Beauty https://jtoh.fandom.com/wiki/Tower_of_Terrifying_Beauty
+ToER - Tower of Elongated Runs https://jtoh.fandom.com/wiki/Tower_of_Elongated_Runs
+CoTE - Citadel of True Exasperation https://jtoh.fandom.com/wiki/Citadel_of_True_Exasperation
+
+R8
+
+ToSSS - Tower of Somewhat Simple Scaling
+ToNBA - Tower of Needing Basic Aptitude
+ToVF - Tower of Voluminous Framework
+ToVA - Tower of Vibrant Adventures
+ToAA - Tower of Aamos' Anger
+ToUS - Tower of Uneasy Scaling
