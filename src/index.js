@@ -7,6 +7,7 @@ import { checkOwnedBadgesLarge } from './modules/badgeOwnership.js';
 import getPort from 'get-port';
 import open from 'open';
 import { rateLimit } from 'express-rate-limit';
+import { usernameToUserId } from './modules/usernameToUserId.js';
 
 const config = JSON.parse(fs.readFileSync('config.json'));
 
@@ -63,6 +64,15 @@ server.get('/api/badge-check/:id', async function (request, response) {
         };
     });
     response.send(result);
+});
+
+server.get('/api/badge-check/username/:username', async function (request, response) {
+    try {
+        const userId = await usernameToUserId(request.params.username);
+        response.redirect(`/api/badge-check/${userId}`);
+    } catch (e) {
+        response.status(400).send({ error: 'Invalid username.', raw: e });
+    }
 });
 
 server.use(function (_, response) {
