@@ -3,6 +3,7 @@ import fs from 'node:fs';
 
 // JToH Universe ID
 const universeId = 3264581003;
+const oldUniverseId = 1055653882;
 
 // JToh Badges
 let badges = [];
@@ -11,7 +12,7 @@ let badges = [];
  * Function to get the badges of the game.
  * @param {string} cursor Page cursor.
  */
-async function getBadges(cursor) {
+async function getBadges(universeId, cursor) {
     // API Endpoint URL
     let url = `https://badges.roblox.com/v1/universes/${universeId}/badges?limit=100&sortOrder=Asc`;
     if (cursor) url = `${url}&cursor=${cursor}`;
@@ -20,14 +21,14 @@ async function getBadges(cursor) {
     if (response.status !== 200) {
         console.log(`Failed to load badges, trying again in 5 seconds...`);
         await new Promise((resolve) => setTimeout(resolve, 5000));
-        return await getBadges(cursor);
+        return await getBadges(universeId, cursor);
     } else {
         const json = await response.json();
         const data = json.data;
         badges = badges.concat(data);
         console.log(`Successfully loaded ${data.length} badges.`);
         if (json.nextPageCursor !== null) {
-            return await getBadges(json.nextPageCursor);
+            return await getBadges(universeId, json.nextPageCursor);
         } else {
             return;
         }
@@ -35,7 +36,8 @@ async function getBadges(cursor) {
 }
 
 // Get badges.
-await getBadges();
+await getBadges(oldUniverseId);
+await getBadges(universeId);
 
 // Log a success message.
 console.log(`All ${badges.length} have been loaded!`);

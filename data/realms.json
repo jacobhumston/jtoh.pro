@@ -132,16 +132,6 @@
         "subrealms": null
     },
     {
-        "name": "Upper Palace Area",
-        "acronym": "UPA",
-        "fullName": "Upper Palace Area",
-        "world": "The Great Inferno",
-        "requirements": {
-            "realm": "Ring 9"
-        },
-        "subrealms": null
-    },
-    {
         "name": "Zone 1",
         "acronym": "Z1",
         "fullName": "Zone 1: Sea",
@@ -256,18 +246,6 @@
             "positiveEnergy": 75,
             "intense": 5,
             "remorseless": 1
-        },
-        "subrealms": null
-    },
-    {
-        "name": "Zone 10",
-        "acronym": "Z10",
-        "fullName": "Zone 10: Unknown",
-        "world": "Spatial System",
-        "requirements": {
-            "positiveEnergy": 100,
-            "intense": 7,
-            "remorseless": 3
         },
         "subrealms": null
     }
