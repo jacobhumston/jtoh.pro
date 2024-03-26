@@ -22,7 +22,7 @@ server.use(
         contentSecurityPolicy: {
             directives: {
                 ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-                'img-src': ["'self'"]
+                'img-src': ["'self'", 'api.biggamesapi.io']
             }
         }
     })
@@ -58,7 +58,8 @@ server.get('/api/badge-check/:id', async function (request, response) {
             enabled: badgeDetails.enabled,
             created: badgeDetails.created,
             awardedCount: badgeDetails.statistics.awardedCount,
-            winRatePercentage: badgeDetails.statistics.winRatePercentage
+            winRatePercentage: badgeDetails.statistics.winRatePercentage,
+            imageUrl: `https://api.biggamesapi.io/image/${badgeDetails.iconImageId}`
         };
     });
     response.send(result);
