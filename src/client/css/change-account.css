@@ -8,6 +8,7 @@
 }
 
 #usernameInput {
+    box-sizing: border-box;
     text-align: center;
     border: none;
     width: 100%;
@@ -23,6 +24,7 @@
 }
 
 #addAccountSubmitButton {
+    box-sizing: border-box;
     display: block;
     text-align: center;
     border: none;
