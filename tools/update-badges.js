@@ -4,6 +4,7 @@ import fs from 'node:fs';
 // JToH Universe ID
 const universeId = 3264581003;
 const oldUniverseId = 1055653882;
+const reallyOldUniverseId = 162391357;
 
 // JToh Badges
 let badges = [];
@@ -26,7 +27,7 @@ async function getBadges(universeId, cursor) {
         const json = await response.json();
         const data = json.data;
         for (const badge of data) {
-            badge.old = universeId === oldUniverseId;
+            badge.old = universeId === oldUniverseId || universeId === reallyOldUniverseId;
         }
         badges = badges.concat(data);
         console.log(`Successfully loaded ${data.length} badges.`);
@@ -39,6 +40,7 @@ async function getBadges(universeId, cursor) {
 }
 
 // Get badges.
+await getBadges(reallyOldUniverseId);
 await getBadges(oldUniverseId);
 await getBadges(universeId);
 
