@@ -33,9 +33,11 @@ server.use(
     rateLimit({
         windowMs: 2 * 60 * 1000,
         limit: 100,
-        standardHeaders: 'draft-7',
-        legacyHeaders: false,
-        validate: { xForwardedForHeader: false }
+        validate: { xForwardedForHeader: false },
+        message: {
+            error: 'Too many requests.',
+            note: "If you're receiving this often, please send an email to lovelyjacob@aol.com, thank you!"
+        }
     })
 );
 
