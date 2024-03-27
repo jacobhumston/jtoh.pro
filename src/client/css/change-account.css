@@ -1,0 +1,34 @@
+#contentDivider {
+    box-sizing: border-box;
+    width: 80%;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 80px;
+}
+
+#usernameInput {
+    text-align: center;
+    border: none;
+    width: 100%;
+    padding: 10px;
+    font-size: larger;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    display: block;
+}
+
+#usernameInput:focus {
+    outline: none;
+}
+
+#addAccountSubmitButton {
+    display: block;
+    text-align: center;
+    border: none;
+    width: 100%;
+    padding: 10px;
+    font-size: larger;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
