@@ -87,3 +87,24 @@ textarea {
     margin-right: 10px;
     vertical-align: middle;
 }
+
+#addAccountButton {
+    float: right;
+    margin-right: 10px;
+    border: none;
+    font-size: large;
+    padding: 15px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    border-radius: 12px;
+    background-color: var(--primary);
+    color: var(--background);
+    transition: all 0.5s ease-in-out;
+}
+
+#addAccountButton:hover {
+    cursor: pointer;
+    background-color: var(--secondary);
+    color: var(--text);
+    transition: all 0.5s ease-in-out;
+}

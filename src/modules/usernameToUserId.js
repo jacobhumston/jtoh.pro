@@ -23,7 +23,7 @@ export async function usernameToUserId(username) {
 
     if (data.data && data.data.length > 0) {
         cache.setKey(username.toLowerCase(), data.data[0].id);
-        cache.save();
+        cache.save(true);
         return data.data[0].id;
     } else {
         throw new Error('User not found');
