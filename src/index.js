@@ -41,7 +41,7 @@ server.use(
 
 server.use(express.static('src/client/', { extensions: 'html' }));
 
-server.get('/api/badge-check/:id', async function (request, response) {
+server.get('/api/badge-check/id/:id', async function (request, response) {
     if (isNaN(parseInt(request.params.id))) {
         return response.status(400).send({ error: 'Invalid user id.' });
     }
@@ -70,9 +70,18 @@ server.get('/api/badge-check/:id', async function (request, response) {
 server.get('/api/badge-check/username/:username', async function (request, response) {
     try {
         const userId = await usernameToUserId(request.params.username);
-        response.redirect(`/api/badge-check/${userId}`);
-    } catch (e) {
-        response.status(400).send({ error: 'Invalid username.', raw: e });
+        response.redirect(`/api/badge-check/id/${userId}`);
+    } catch {
+        response.status(400).send({ error: 'Invalid username.' });
+    }
+});
+
+server.get('/api/username-to-id/:username', async function (request, response) {
+    try {
+        const userId = await usernameToUserId(request.params.username);
+        response.send({ passed: true, id: userId });
+    } catch {
+        response.send({ passed: false, id: null });
     }
 });
 
