@@ -11,9 +11,6 @@ export async function checkOwnedBadges(userId, badges) {
     const ownedBadges = badges.map((id) => ({ owned: false, id: id }));
     const response = await fetch(url.replace('{userId}', `${userId}`).replace('{badgeIds}', badges.join(',')));
     if (response.status !== 200) {
-        if (response.status === 404) {
-            return ownedBadges;
-        }
         await new Promise((resolve) => setTimeout(resolve, 5000));
         return await checkOwnedBadges(userId, badges);
     } else {

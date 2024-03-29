@@ -13,7 +13,7 @@ window.addEventListener('load', async function () {
             statusText.innerText = 'No username was provided.';
             return;
         }
-        document.location.href = `/all-badges?user=${username}`;
+        document.location.href = `/badges?user=${username}`;
         debounce = false;
     });
 
@@ -29,21 +29,23 @@ window.addEventListener('load', async function () {
         statusText.innerText = 'Loading badges... This may take a moment.';
         let errored = false;
         const baseUrl = new URL(document.location.href).origin;
-        const response = await fetch(`${baseUrl}/api/badge-check/username/${foundUsername}`, { base: baseUrl }).catch(
-            function (error) {
-                console.log(error);
-                errored = true;
-                document.location.href = `/all-badges?error=Failed to make the request.`;
-            }
-        );
+        const response = await fetch(`${baseUrl}/api/username-redirect/badges/${foundUsername}`, {
+            base: baseUrl
+        }).catch(function (error) {
+            console.log(error);
+            errored = true;
+            document.location.href = `/badges?error=Failed to make the request.`;
+        });
         if (errored) return;
         if (response.status !== 200) {
             const error = (await response.json()).error;
-            document.location.href = `/all-badges?error=Something went wrong... ${error}`;
+            document.location.href = `/badges?error=Something went wrong... ${error}`;
         } else {
-            const data = (await response.json()).reverse();
+            const data = await response.json();
+            const badgeData = data.result.reverse();
+            const userData = data.user;
             const badges = {};
-            for (const badge of data) {
+            for (const badge of badgeData) {
                 badges[badge.details.source] = badges[badge.details.source] ?? [];
                 badges[badge.details.source].push(badge);
             }
@@ -53,13 +55,17 @@ window.addEventListener('load', async function () {
             }
 
             const header = document.createElement('h1');
-            header.innerText = `Viewing the badges of ${foundUsername}`;
+            const headerUser = document.createElement('span');
+            headerUser.innerText = `${userData.displayName} (@${userData.name})`;
+            header.innerText = `Viewing the badges of `;
+            headerUser.id = 'viewingHeaderUser';
+            header.insertAdjacentElement('beforeend', headerUser);
             header.id = 'viewingHeader';
             contentDivider.insertAdjacentElement('beforeend', header);
 
             const goBackLink = document.createElement('a');
             goBackLink.innerText = 'Go Back';
-            goBackLink.href = '/all-badges';
+            goBackLink.href = '/badges';
             goBackLink.id = 'goBackLink';
             contentDivider.insertAdjacentElement('beforeend', goBackLink);
 
@@ -77,33 +83,44 @@ window.addEventListener('load', async function () {
             badgeListDivider.id = 'badgeListDivider';
             contentDivider.insertAdjacentElement('beforeend', badgeListDivider);
 
+            let showDisabled = true;
+
             function displaySection(source) {
                 badgeListDivider.innerHTML = '';
-                const foundBadges = badges[source];
+                let foundBadges = badges[source];
+
+                if (showDisabled === false) foundBadges = foundBadges.filter((badge) => badge.details.enabled);
+
                 for (const badge of foundBadges) {
                     const div = document.createElement('div');
-                    div.classList.add("badgeDetails")
+                    div.classList.add('badgeDetails');
                     badgeListDivider.insertAdjacentElement('beforeend', div);
-                    
-                    const icon = document.createElement('img')
-                    icon.src = badge.details.imageUrl
-                    icon.alt = "Badge Icon"
-                    icon.classList.add("badgeDetailsIcon")
-                    div.insertAdjacentElement("beforeend", icon)
 
-                    const name = document.createElement('h2')
-                    name.innerText = badge.details.name
-                    name.classList.add("badgeDetailsName")
-                    div.insertAdjacentElement("beforeend", name)
+                    const icon = document.createElement('img');
+                    icon.src = badge.details.imageUrl;
+                    icon.alt = 'Badge Icon';
+                    icon.classList.add('badgeDetailsIcon');
+                    div.insertAdjacentElement('beforeend', icon);
 
-                    const description = document.createElement('p')
-                    description.innerText = badge.details.description
-                    description.classList.add("badgeDetailsDescription")
-                    div.insertAdjacentElement("beforeend", description)
+                    const name = document.createElement('h2');
+                    name.innerText = badge.details.name;
+                    name.classList.add('badgeDetailsName');
+                    div.insertAdjacentElement('beforeend', name);
 
-                    if (badge.owned) {
-                        
-                    } 
+                    const description = document.createElement('p');
+                    description.innerText = badge.details.description;
+                    description.classList.add('badgeDetailsDescription');
+                    div.insertAdjacentElement('beforeend', description);
+
+                    if (badge.owned === true) {
+                        div.classList.add('badgeDetailsOwned');
+                        const awarded = document.createElement('p');
+                        awarded.classList.add('badgeDetailsAwarded');
+                        awarded.innerText = `✅ Awarded on ${new Date(badge.awarded).toLocaleTimeString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}.`;
+                        div.insertAdjacentElement('beforeend', awarded);
+                    } else {
+                        div.classList.add('badgeDetailsNotOwned');
+                    }
                 }
             }
 
@@ -113,6 +130,7 @@ window.addEventListener('load', async function () {
                 sourceButton.classList.add('sourceButton');
                 sectionDivider.insertAdjacentElement('beforeend', sourceButton);
                 sourceButton.addEventListener('click', () => displaySection(source));
+                if (Object.keys(badges)[0] === source) sourceButton.click();
             }
 
             statusText.remove();
