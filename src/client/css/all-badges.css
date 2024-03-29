@@ -1,0 +1,57 @@
+#contentDivider {
+    box-sizing: border-box;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 80px;
+    text-align: center;
+}
+
+#usernameInput {
+    box-sizing: border-box;
+    text-align: center;
+    border: none;
+    width: 100%;
+    padding: 10px;
+    font-size: larger;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    display: block;
+    background-color: var(--secondary);
+    color: var(--text);
+}
+
+#usernameInput:focus {
+    outline: none;
+}
+
+#accountSubmitButton {
+    box-sizing: border-box;
+    display: block;
+    text-align: center;
+    border: none;
+    width: 100%;
+    padding: 10px;
+    font-size: larger;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    color: var(--background);
+    background-color: var(--primary);
+    transition: all 0.5s ease-in-out;
+}
+
+#usernameInput::placeholder {
+    color: var(--text);
+    font-style: italic;
+}
+
+#accountSubmitButton:hover {
+    cursor: pointer;
+    color: var(--text);
+    background-color: var(--secondary);
+    transition: all 0.5s ease-in-out;
+}
+
+#statusText {
+    font-style: italic;
+}
