@@ -12,7 +12,7 @@ window.addEventListener('load', function () {
             statusText.innerText = 'No username was provided.';
             return;
         }
-        
+
         debounce = false;
     });
 });

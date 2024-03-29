@@ -18,16 +18,20 @@ server.enable('case sensitive routing');
 server.disable('trust proxy');
 if (config.server.mode === 'production') server.set('env', 'production');
 
-server.use(
-    helmet({
-        contentSecurityPolicy: {
-            directives: {
-                ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-                'img-src': ["'self'", 'api.biggamesapi.io']
+let baseUrl = 'https://jtoh.pro';
+
+if (config.server.mode === 'production') {
+    server.use(
+        helmet({
+            contentSecurityPolicy: {
+                directives: {
+                    ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+                    'img-src': ["'self'", 'tr.rbxcdn.com']
+                }
             }
-        }
-    })
-);
+        })
+    );
+}
 
 server.use(
     rateLimit({
@@ -62,8 +66,9 @@ server.get('/api/badge-check/id/:id', async function (request, response) {
             created: badgeDetails.created,
             awardedCount: badgeDetails.statistics.awardedCount,
             winRatePercentage: badgeDetails.statistics.winRatePercentage,
-            imageUrl: `https://api.biggamesapi.io/image/${badgeDetails.iconImageId}`,
-            isOld: badgeDetails.old
+            imageUrl: badgeDetails.imageUrl,
+            isOld: badgeDetails.old,
+            source: badgeDetails.source
         };
     });
     response.send(result);
@@ -72,7 +77,7 @@ server.get('/api/badge-check/id/:id', async function (request, response) {
 server.get('/api/badge-check/username/:username', async function (request, response) {
     try {
         const userId = await usernameToUserId(request.params.username);
-        response.redirect(`/api/badge-check/id/${userId}`);
+        response.redirect(`${baseUrl}/api/badge-check/id/${userId}`);
     } catch {
         response.status(400).send({ error: 'Invalid username.' });
     }
@@ -94,6 +99,7 @@ server.use(function (_, response) {
 if (config.server.mode === 'development') {
     const port = await getPort({ port: 80 });
     http.createServer(server).listen(port, () => console.log(`Listening on port ${port}.`));
+    baseUrl = `http://localhost:${port}`;
     open(`http://localhost:${port}`);
 } else if (config.server.mode === 'production') {
     const port = 443;
