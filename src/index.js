@@ -7,7 +7,7 @@ import { checkOwnedBadgesLarge } from './modules/badgeOwnership.js';
 import getPort from 'get-port';
 import open from 'open';
 import { rateLimit } from 'express-rate-limit';
-import { usernameToUserId } from './modules/usernameToUserId.js';
+import { idToUser, usernameToUser } from './modules/user.js';
 
 const config = JSON.parse(fs.readFileSync('config.json'));
 
@@ -26,7 +26,7 @@ if (config.server.mode === 'production') {
             contentSecurityPolicy: {
                 directives: {
                     ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-                    'img-src': ["'self'", 'tr.rbxcdn.com']
+                    'img-src': ["'self'", 'tr.rbxcdn.com', 't7.rbxcdn.com']
                 }
             }
         })
@@ -47,48 +47,63 @@ server.use(
 
 server.use(express.static('src/client/', { extensions: 'html' }));
 
-server.get('/api/badge-check/id/:id', async function (request, response) {
-    if (isNaN(parseInt(request.params.id))) {
-        return response.status(400).send({ error: 'Invalid user id.' });
+server.get('/api/badges/:id', async function (request, response) {
+    try {
+        const user = await idToUser(request.params.id);
+        const badges = JSON.parse(fs.readFileSync('data/badges.json').toString('utf-8')).badges;
+        const badgeIds = badges.map((badge) => badge.id);
+        const result = await checkOwnedBadgesLarge(request.params.id, badgeIds);
+        result.forEach((badge) => {
+            const badgeDetails = badges.find((b) => b.id === badge.id);
+            badge.details = {
+                name: badgeDetails.name,
+                description: badgeDetails.description,
+                enabled: badgeDetails.enabled,
+                created: badgeDetails.created,
+                awardedCount: badgeDetails.statistics.awardedCount,
+                winRatePercentage: badgeDetails.statistics.winRatePercentage,
+                imageUrl: badgeDetails.imageUrl,
+                isOld: badgeDetails.old,
+                source: badgeDetails.source
+            };
+        });
+        response.send({
+            user: user,
+            result: result
+        });
+    } catch {
+        response.status(400).send({ error: e.toString() });
     }
-    if (parseInt(request.params.id) <= 0 || parseInt(request.params.id) > 999999999999999) {
-        return response.status(400).send({ error: 'User id out of range.' });
-    }
-    const badges = JSON.parse(fs.readFileSync('data/badges.json').toString('utf-8')).badges;
-    const badgeIds = badges.map((badge) => badge.id);
-    const result = await checkOwnedBadgesLarge(request.params.id, badgeIds);
-    result.forEach((badge) => {
-        const badgeDetails = badges.find((b) => b.id === badge.id);
-        badge.details = {
-            name: badgeDetails.name,
-            description: badgeDetails.description,
-            enabled: badgeDetails.enabled,
-            created: badgeDetails.created,
-            awardedCount: badgeDetails.statistics.awardedCount,
-            winRatePercentage: badgeDetails.statistics.winRatePercentage,
-            imageUrl: badgeDetails.imageUrl,
-            isOld: badgeDetails.old,
-            source: badgeDetails.source
-        };
-    });
-    response.send(result);
 });
 
-server.get('/api/badge-check/username/:username', async function (request, response) {
+server.get('/api/username-redirect/:type/:username', async function (request, response) {
     try {
-        const userId = await usernameToUserId(request.params.username);
-        response.redirect(`${baseUrl}/api/badge-check/id/${userId}`);
+        const user = await usernameToUser(request.params.username);
+        if (request.params.type === 'badges') {
+            response.redirect(`${baseUrl}/api/badges/${user.id}`);
+        } else {
+            response.status(400).send({ error: 'Invalid redirect type.' });
+        }
     } catch {
         response.status(400).send({ error: 'Invalid username.' });
     }
 });
 
-server.get('/api/username-to-id/:username', async function (request, response) {
+server.get('/api/username-to-user/:username', async function (request, response) {
     try {
-        const userId = await usernameToUserId(request.params.username);
-        response.send({ passed: true, id: userId });
+        const user = await usernameToUser(request.params.username);
+        response.send({ passed: true, user: user });
     } catch {
-        response.send({ passed: false, id: null });
+        response.send({ passed: false, user: null });
+    }
+});
+
+server.get('/api/id-to-user/:id', async function (request, response) {
+    try {
+        const user = await idToUser(request.params.id);
+        response.send({ passed: true, user: user });
+    } catch {
+        response.send({ passed: false, user: null });
     }
 });
 
