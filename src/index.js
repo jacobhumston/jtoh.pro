@@ -49,6 +49,7 @@ server.use(express.static('src/client/', { extensions: 'html' }));
 
 server.get('/api/badges/:id', async function (request, response) {
     try {
+        const time = new Date().getTime();
         const user = await idToUser(request.params.id);
         const badges = JSON.parse(fs.readFileSync('data/badges.json').toString('utf-8')).badges;
         const badgeIds = badges.map((badge) => badge.id);
@@ -68,6 +69,7 @@ server.get('/api/badges/:id', async function (request, response) {
             };
         });
         response.send({
+            time: new Date().getTime() - time,
             user: user,
             result: result
         });
