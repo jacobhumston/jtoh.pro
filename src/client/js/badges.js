@@ -83,17 +83,13 @@ window.addEventListener('load', async function () {
             badgeListDivider.id = 'badgeListDivider';
             contentDivider.insertAdjacentElement('beforeend', badgeListDivider);
 
-            let showDisabled = true;
-
             function displaySection(source) {
                 badgeListDivider.innerHTML = '';
                 let foundBadges = badges[source];
 
-                if (showDisabled === false) foundBadges = foundBadges.filter((badge) => badge.details.enabled);
-
                 for (const badge of foundBadges) {
                     const div = document.createElement('div');
-                    div.classList.add('badgeDetails');
+                    div.classList.add('badgeContainer');
                     badgeListDivider.insertAdjacentElement('beforeend', div);
 
                     const icon = document.createElement('img');
@@ -102,22 +98,26 @@ window.addEventListener('load', async function () {
                     icon.classList.add('badgeDetailsIcon');
                     div.insertAdjacentElement('beforeend', icon);
 
+                    const details = document.createElement('div');
+                    details.classList.add('badgeDetails');
+                    div.insertAdjacentElement('beforeend', details);
+
                     const name = document.createElement('h2');
                     name.innerText = badge.details.name;
                     name.classList.add('badgeDetailsName');
-                    div.insertAdjacentElement('beforeend', name);
+                    details.insertAdjacentElement('beforeend', name);
 
                     const description = document.createElement('p');
-                    description.innerText = badge.details.description;
+                    description.innerText = badge.details.description ?? 'This badge has no description.';
                     description.classList.add('badgeDetailsDescription');
-                    div.insertAdjacentElement('beforeend', description);
+                    details.insertAdjacentElement('beforeend', description);
 
                     if (badge.owned === true) {
                         div.classList.add('badgeDetailsOwned');
                         const awarded = document.createElement('p');
                         awarded.classList.add('badgeDetailsAwarded');
                         awarded.innerText = `✅ Awarded on ${new Date(badge.awarded).toLocaleTimeString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}.`;
-                        div.insertAdjacentElement('beforeend', awarded);
+                        details.insertAdjacentElement('beforeend', awarded);
                     } else {
                         div.classList.add('badgeDetailsNotOwned');
                     }

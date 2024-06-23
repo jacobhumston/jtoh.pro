@@ -3,9 +3,9 @@ import fs from 'node:fs';
 import { getBadgeIcons } from '../src/modules/getThumbnail.js';
 
 // JToH Universe ID
-const universeId = 3264581003;
-const oldUniverseId = 1055653882;
-const reallyOldUniverseId = 162391357;
+const universeId = 3264581003; // current
+const oldUniverseId = 1055653882; // pre-migration
+const reallyOldUniverseId = 162391357; // ktoh
 
 // JToh Badges
 let badges = [];
