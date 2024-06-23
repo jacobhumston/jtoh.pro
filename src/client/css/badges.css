@@ -62,29 +62,55 @@
     font-style: italic;
 }
 
-.badgeDetails {
-    max-width: 80%;
-    margin-left: auto;
-    margin-right: auto;
-    background-color: var(--secondary);
-    color: var(--background);
+.badgeContainer {
+    width: 100%;
+    background-color: var(--secondary-background);
+    color: var(--text);
     border-radius: 15px;
     padding: 5px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    display: inline-block;
+    text-align: left;
+}
+
+.badgeDetails {
+    display: inline-block;
+    vertical-align: middle;
+    max-width: calc(100% - 200px);
+    padding: 15px;
 }
 
 .badgeDetailsIcon {
-    float: left;
+    max-width: 150px;
+    vertical-align: middle;
+    display: inline-block;
 }
 
 .badgeDetailsName {
-    display: inline-block;
+    display: block;
 }
 
 .badgeDetailsDescription {
-    display: inline-block;
-    max-width: 50%;
+    display: block;
 }
 
 .badgeDetailsAwarded {
-    display: inline-block;
+    display: block;
+}
+
+@media screen and (max-width: 600px) {
+    .badgeDetailsIcon {
+        display: none;
+    }
+
+    .badgeDetails {
+        max-width: 100%;
+    }
+}
+
+.badgeDetailsNotOwned {
+    border-color: var(--red);
+    border-width: 3px;
+    border-style: dashed;
 }

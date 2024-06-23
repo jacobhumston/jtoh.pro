@@ -8,14 +8,17 @@
 :root {
     --text: #0e0c27;
     --background: #ecebf9;
+    --secondary-background: #bbbbbb;
     --primary: #2a226d;
     --secondary: #d07ed7;
     --accent: #a8348f;
+    --red: #ff7575;
 }
 
 :root[data-theme='light'] {
     --text: #0e0c27;
     --background: #ecebf9;
+    --secondary-background: #bbbbbb;
     --primary: #2a226d;
     --secondary: #d07ed7;
     --accent: #a8348f;
@@ -24,6 +27,7 @@
 :root[data-theme='dark'] {
     --text: #dad8f3;
     --background: #070614;
+    --secondary-background: #05040e;
     --primary: #9a92dd;
     --secondary: #792881;
     --accent: #cb57b2;
@@ -92,32 +96,4 @@ textarea {
     background-color: var(--primary);
     margin-right: 10px;
     vertical-align: middle;
-}
-
-#addAccountButton {
-    margin-right: 10px;
-    border: none;
-    font-size: large;
-    padding: 15px;
-    padding-top: 6px;
-    padding-bottom: 6px;
-    border-radius: 12px;
-    background-color: var(--primary);
-    color: var(--background);
-    transition: all 0.5s ease-in-out;
-}
-
-#addAccountButton:hover {
-    cursor: pointer;
-    background-color: var(--secondary);
-    color: var(--text);
-    transition: all 0.5s ease-in-out;
-}
-
-#addAccountButtonLink {
-    float: right;
-}
-
-#addAccountButtonLink:hover {
-    border-bottom: none !important;
 }

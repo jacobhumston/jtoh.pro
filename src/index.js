@@ -36,7 +36,7 @@ if (config.server.mode === 'production') {
 server.use(
     rateLimit({
         windowMs: 2 * 60 * 1000,
-        limit: 100,
+        limit: 250,
         validate: { xForwardedForHeader: false },
         message: {
             error: 'Too many requests.',
@@ -73,8 +73,8 @@ server.get('/api/badges/:id', async function (request, response) {
             user: user,
             result: result
         });
-    } catch {
-        response.status(400).send({ error: e.toString() });
+    } catch (error) {
+        response.status(400).send({ error: 'Failed to fetch badges.' });
     }
 });
 
