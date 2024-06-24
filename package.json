@@ -7,6 +7,7 @@
     "scripts": {
         "update-badges": "node tools/update-badges.js",
         "update-tower-folder": "node tools/update-tower-folder.js",
+        "update-group-members": "node tools/update-group-members.js",
         "format": "npx prettier ./ --write",
         "start": "node src/index.js",
         "prod-start": "pm2 start src/index.js",
@@ -19,6 +20,8 @@
         "flat-cache": "^4.0.1",
         "get-port": "^7.1.0",
         "helmet": "^7.1.0",
-        "open": "^10.1.0"
+        "node-json-db": "^2.3.0",
+        "open": "^10.1.0",
+        "terser": "^5.31.1"
     }
 }

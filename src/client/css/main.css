@@ -97,3 +97,15 @@ textarea {
     margin-right: 10px;
     vertical-align: middle;
 }
+
+body::-webkit-scrollbar {
+    width: 12px;
+}
+
+body::-webkit-scrollbar-track {
+    background: var(--accent);
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: var(--text);
+}

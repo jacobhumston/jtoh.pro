@@ -15,7 +15,6 @@ const server = express();
 server.disable('x-powered-by');
 server.enable('strict routing');
 server.enable('case sensitive routing');
-server.disable('trust proxy');
 if (config.server.mode === 'production') server.set('env', 'production');
 
 let baseUrl = 'https://jtoh.pro';
@@ -37,7 +36,6 @@ server.use(
     rateLimit({
         windowMs: 2 * 60 * 1000,
         limit: 250,
-        validate: { xForwardedForHeader: false },
         message: {
             error: 'Too many requests.',
             note: "If you're receiving this often, please send an email to lovelyjacob@aol.com, thank you!"
