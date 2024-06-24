@@ -77,7 +77,17 @@ window.addEventListener('load', async function () {
 
             const sectionDivider = document.createElement('div');
             sectionDivider.id = 'sectionDivider';
+            sectionDivider.innerHTML = 'Select Game: ';
             contentDivider.insertAdjacentElement('beforeend', sectionDivider);
+
+            const otherDetails = document.createElement('div');
+            otherDetails.id = 'otherDetails';
+            contentDivider.insertAdjacentElement('beforeend', otherDetails);
+
+            const search = this.document.createElement('input');
+            search.id = 'searchInput';
+            search.placeholder = 'Type here to search.';
+            contentDivider.insertAdjacentElement('beforeend', search);
 
             const badgeListDivider = document.createElement('div');
             badgeListDivider.id = 'badgeListDivider';
@@ -86,6 +96,20 @@ window.addEventListener('load', async function () {
             function displaySection(source) {
                 badgeListDivider.innerHTML = '';
                 let foundBadges = badges[source];
+
+                if (search.value !== '') {
+                    foundBadges = foundBadges.filter(function (badge) {
+                        const name = badge.details.name.toLowerCase();
+                        const description = (badge.details.description ?? '').toLowerCase();
+                        if (
+                            name.includes(search.value.toLowerCase()) ||
+                            description.includes(search.value.toLowerCase())
+                        ) {
+                            return true;
+                        }
+                        return false;
+                    });
+                }
 
                 for (const badge of foundBadges) {
                     const div = document.createElement('div');
@@ -108,7 +132,7 @@ window.addEventListener('load', async function () {
                     details.insertAdjacentElement('beforeend', name);
 
                     const description = document.createElement('p');
-                    description.innerText = badge.details.description ?? 'This badge has no description.';
+                    description.innerText = (badge.details.description ?? 'This badge has no description.') + ` (${Intl.NumberFormat().format(badge.details.awardedCount)} Owners)`;
                     description.classList.add('badgeDetailsDescription');
                     details.insertAdjacentElement('beforeend', description);
 
@@ -124,14 +148,39 @@ window.addEventListener('load', async function () {
                 }
             }
 
+            let sourceButtons = [];
+            let currentSource = '';
+
             for (const source of Object.keys(badges)) {
                 const sourceButton = document.createElement('button');
                 sourceButton.innerText = source;
                 sourceButton.classList.add('sourceButton');
                 sectionDivider.insertAdjacentElement('beforeend', sourceButton);
-                sourceButton.addEventListener('click', () => displaySection(source));
+                sourceButton.addEventListener('click', () => {
+                    for (const button of sourceButtons) {
+                        button.classList.remove('sourceButtonActive');
+                    }
+                    sourceButton.classList.add('sourceButtonActive');
+                    {
+                        const owned = badges[source].filter((badge) => badge.owned === true).length;
+                        const notOwned = badges[source].filter((badge) => badge.owned === false).length;
+                        otherDetails.innerHTML = `<b>Owned</b>: ${owned} | <b>Not Owned</b>: ${notOwned} (%${Math.round((owned / (owned + notOwned)) * 100)} Owned)`;
+                    }
+                    currentSource = source;
+                    displaySection(source);
+                });
+                sourceButtons.push(sourceButton);
                 if (Object.keys(badges)[0] === source) sourceButton.click();
             }
+
+            let lastValue = '';
+
+            setInterval(() => {
+                if (lastValue !== search.value) {
+                    displaySection(currentSource);
+                }
+                lastValue = search.value;
+            }, 500);
 
             statusText.remove();
         }

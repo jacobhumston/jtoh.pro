@@ -134,3 +134,6 @@ cache/
 
 # config
 config.json
+
+# database
+database
