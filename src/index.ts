@@ -130,11 +130,7 @@ app.get('/:user', async (context) => {
         ctx.textAlign = 'center';
         ctx.fillStyle = '#ffffff';
         ctx.font = 'italic 30px Poppins';
-        ctx.fillText(
-            `Work in progress! Soon™️`,
-            canvas.width / 2,
-            canvas.height / 2 + 15
-        );
+        ctx.fillText(`Work in progress! Soon™️`, canvas.width / 2, canvas.height / 2 + 15);
 
         const image = canvas.toBuffer('image/png');
         context.header('Content-Type', 'image/png');
@@ -177,7 +173,7 @@ app.notFound((context) => {
     return context.json({ error: 'Not found.' }, 404);
 });
 
-export default { 
-    port: 80, 
-    fetch: app.fetch, 
-} 
+export default {
+    port: 80,
+    fetch: app.fetch
+};
