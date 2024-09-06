@@ -1,0 +1,145 @@
+@font-face {
+    font-family: 'Poppins';
+    src: url('/Poppins-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'JetBrainsMono';
+    src: url('/JetBrainsMono-Regular.ttf') format('truetype');
+}
+
+:root {
+    --font: 'Poppins', Arial, sans-serif;
+    --color-text: #cececec4;
+    --color-background: #222222;
+    --color-background-lighter: rgba(75, 75, 75, 0.973);
+    --color-text-link: #70b5ffda;
+    --color-text-header: #9a71f8c9;
+    --color-text-bold: #b58dffde;
+}
+
+html,
+body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font);
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+button,
+textarea,
+input {
+    font-family: var(--font);
+}
+
+a {
+    text-decoration: none;
+    color: var(--color-text-link);
+}
+
+a:hover {
+    border-bottom-color: var(--color-text-link);
+    border-bottom-width: 2px;
+    border-bottom-style: solid;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--color-text-header);
+}
+
+b {
+    color: var(--color-text-bold);
+}
+
+#container {
+    margin-top: 30px;
+    max-width: 700px;
+    border-radius: 25px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px;
+    display: block;
+}
+
+.towerstatsUrl {
+    color: #ffd54cd3 !important;
+}
+
+.split {
+    height: 4px;
+
+    background-color: var(--color-background-lighter);
+}
+
+button {
+    background-color: var(--color-text-header);
+    color: var(--color-text);
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+input {
+    background-color: var(--color-background-lighter);
+    color: var(--color-text);
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+input:focus {
+    outline: none;
+}
+
+button:hover {
+    background-color: var(--color-text);
+    color: var(--color-background);
+}
+
+#exampleImageOutput {
+    max-width: 100%;
+}
+
+.extraPadding {
+    padding: 10px;
+}
+
+code {
+    font-family: JetBrainsMono, monospace;
+    background-color: var(--color-background-lighter);
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+.smallCopyButton {
+    background-color: var(--color-background-lighter);
+    color: var(--color-text);
+    border: none;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+}

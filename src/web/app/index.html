@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>jtoh.pro</title>
+        <link rel="stylesheet" href="./styles.css" />
+        <script src="./script.js" defer></script>
+        <meta property="og:title" content="jtoh.pro" />
+        <meta
+            property="og:description"
+            content="Easily share your JToH stats on Discord or other social medias with a single link."
+        />
+        <meta property="og:image" content="" />
+        <meta property="twitter:card" content="summary_large_image" />
+    </head>
+    <body>
+        <div id="container">
+            <h1>jtoh.pro</h1>
+            <p>
+                Easily share your Juke's Towers of Hell stats/progress on Discord or other social medias with a single
+                link. Statistics are provided by
+                <a href="https://towerstats.com" target="_blank">towerstats.com</a>.
+            </p>
+            <h2>Try it out!</h2>
+            <p>
+                Input a Roblox username bellow to try it out!
+                <i>You can also input a user ID by starting the input with an exclamation mark.</i>
+            </p>
+            <input type="text" id="exampleInputUsername" placeholder="Roblox User" />
+            <button type="button" onclick="updateExampleOutput()">Get Image</button>
+            <button type="button" onclick="copyExampleOutputURL()">Copy URL</button>
+            <div class="extraPadding"></div>
+            <img id="exampleImageOutput" src="/roblox" alt="Example Image Output" />
+            <div class="extraPadding"></div>
+            <div class="split"></div>
+            <h2>Available Links</h2>
+            Note that <code>{USER}</code> can either be a username or a Roblox user ID. The user ID must start with an
+            exclamation mark, such as <code>!12345</code>.
+            <div class="extraPadding"></div>
+
+            <button class="smallCopyButton" type="button" onclick="copyURL('https:\/\/jtoh.pro/roblox')">Copy</button>
+            <a href="/roblox" target="_blank">jtoh.pro/{USER}</a> - Get an image of a user's tower stats.
+            <div class="extraPadding"></div>
+
+            <button class="smallCopyButton" type="button" onclick="copyURL('https:\/\/jtoh.pro/embed/roblox')">
+                Copy
+            </button>
+            <a href="/embed/roblox" target="_blank">jtoh.pro/embed/{USER}</a> - Get an image of a user's tower stats as
+            a Discord embed. The link will open the user's <span class="towerstatsUrl">towerstats.com</span> profile.
+            <div class="extraPadding"></div>
+
+            <button
+                class="smallCopyButton"
+                type="button"
+                onclick="copyURL('https:\/\/jtoh.pro/screenshot/difficulty/roblox')"
+            >
+                Copy
+            </button>
+            <a href="/screenshot/difficulty/roblox" target="_blank">jtoh.pro/screenshot/{TYPE}/{USER}</a> - Get a
+            screenshot of a user's tower stats from <span class="towerstatsUrl">towerstats.com</span>. Supported types
+            include...
+            <ul>
+                <li><code>difficulty</code> - A screenshot of the user's difficulty completions.</li>
+            </ul>
+
+            <h3>Short Links</h3>
+            <button class="smallCopyButton" type="button" onclick="copyURL('https:\/\/jtoh.pro/e/roblox')">Copy</button>
+            <a href="/e/roblox" target="_blank">jtoh.pro/e/{USER}</a> - Short link for
+            <a href="/embed/roblox" target="_blank">jtoh.pro/embed/{USER}</a>.
+            <div class="extraPadding"></div>
+
+            <button class="smallCopyButton" type="button" onclick="copyURL('https:\/\/jtoh.pro/s/difficulty/roblox')">
+                Copy
+            </button>
+            <a href="/s/difficulty/roblox" target="_blank">jtoh.pro/s/{TYPE}/{USER}</a> - Short link for
+            <a href="/screenshot/difficulty/roblox" target="_blank">jtoh.pro/screenshot/{TYPE}/{USER}</a>.
+            <h3>Tips & Recommendations</h3>
+            <ul>
+                <li>
+                    If your image is out of date when sent on Discord; add <code>#random_letters</code> to the end of
+                    the URL. This will bypass Discord's image cache. Example:
+                    <code>jtoh.pro/roblox#abc123</code>
+                </li>
+                <li>
+                    Depending on how busy the backend server is, and if you've ever loaded your stats before, then the
+                    image may take longer to load. It's also important to keep in mind that banned or deactivated
+                    accounts are not supported.
+                </li>
+            </ul>
+            <div class="split"></div>
+            <h2>Support the project!</h2>
+            <p>
+                You can support <b>jtoh.pro</b> by buying me a coffee or by
+                <a href="https://www.roblox.com/games/13617492376/LovelyJacobs-Donations" target="_blank"
+                    >donating Robux</a
+                >. If you would like to support
+                <b><span class="towerstatsUrl">towerstats.com</span></b>
+                as well, then you can do so
+                <a href="https://www.roblox.com/games/106826240347281/JToH-Tracker-Hub" target="_blank">here</a>.
+                <br /><br />
+                <a href="https://www.buymeacoffee.com/lovelyjacob"
+                    ><img
+                        src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee!&emoji=☕&slug=lovelyjacob&button_colour=FFDD00&font_colour=000000&font_family=Poppins&outline_colour=000000&coffee_colour=ffffff"
+                /></a>
+            </p>
+        </div>
+    </body>
+</html>

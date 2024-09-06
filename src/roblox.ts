@@ -18,7 +18,7 @@ export async function usernameToUser(username: string): Promise<BasicRobloxUserR
         method: 'POST',
         body: JSON.stringify({
             usernames: [username],
-            excludeBannedUsers: false
+            excludeBannedUsers: true
         }),
         cache: 'force-cache',
         headers: {
@@ -33,7 +33,7 @@ export async function userIdToUser(userId: number): Promise<BasicRobloxUserResul
         method: 'POST',
         body: JSON.stringify({
             userIds: [userId],
-            excludeBannedUsers: false
+            excludeBannedUsers: true
         }),
         cache: 'force-cache',
         headers: {
