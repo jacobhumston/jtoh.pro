@@ -1,0 +1,21 @@
+{
+    "name": "jtoh.pro",
+    "module": "src/index.ts",
+    "type": "module",
+    "devDependencies": {
+        "@types/bun": "latest",
+        "prettier": "^3.3.3"
+    },
+    "peerDependencies": {
+        "typescript": "^5.0.0"
+    },
+    "scripts": {
+        "format": "npx prettier ./ --write",
+        "start": "bun src/index.ts"
+    },
+    "dependencies": {
+        "@napi-rs/canvas": "^0.1.55",
+        "hono": "^4.5.11",
+        "puppeteer": "^23.3.0"
+    }
+}
