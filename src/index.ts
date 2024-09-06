@@ -4,7 +4,10 @@ import { Hono } from 'hono';
 import { serveStatic } from 'hono/bun';
 import { createCanvas, loadImage, GlobalFonts } from '@napi-rs/canvas';
 import { centerText, colorText, drawRoundedRect } from './util';
+import puppeteer from 'puppeteer';
+import temporaryTestData from '../example-data.json';
 
+const browser = await puppeteer.launch({ headless: 'shell', userDataDir: './.cache/puppeteer-user-data' });
 const app = new Hono();
 const images = {
     questionMarkMan: await loadImage('src/web/question-mark-man.png'),
@@ -12,6 +15,7 @@ const images = {
     jtohLogo: await loadImage('src/web/jtoh-logo.png')
 };
 GlobalFonts.registerFromPath('src/web/Poppins-Regular.ttf', 'Poppins');
+GlobalFonts.registerFromPath('src/web/Twemoji-15.1.0.ttf', 'Twemoji');
 
 app.use('/*', serveStatic({ root: './src/web/' }));
 
@@ -105,12 +109,78 @@ app.get('/:user', async (context) => {
 
         ctx.textAlign = 'left';
         ctx.fillStyle = 'white';
-        ctx.font = 'bold 25px Poppins';
-        ctx.fillText(data.displayName, 120, 55);
+        ctx.font = 'bold 25px Poppins, Twemoji';
+        if (data.id === 2614622891) {
+            ctx.fillStyle = '#ff9f8e';
+            ctx.fillText(`💖 ${data.displayName}`, 120, 55);
+        } else if (data.id === 257770975) {
+            ctx.fillStyle = '#6eadff';
+            ctx.fillText(`🤓 ${data.displayName}`, 120, 55);
+        } else if (temporaryTestData.donated_amount > 0) {
+            ctx.fillStyle = '#fff88f';
+            ctx.fillText(`⭐ ${data.displayName}`, 120, 55);
+        } else {
+            ctx.fillText(`${data.displayName}`, 120, 55);
+        }
 
         ctx.fillStyle = '#bdbdbd';
         ctx.font = '20px Poppins';
         ctx.fillText(`@${user?.name}`, 120, 85);
+
+        ctx.font = '18px Poppins';
+        ctx.textAlign = 'left';
+        colorText(
+            ctx,
+            `Hardest tower is ${temporaryTestData.hardest_abbreviation} - ${temporaryTestData.hardest_raw_difficulty.toString()}`,
+            [
+                {
+                    string: temporaryTestData.hardest_abbreviation,
+                    // @ts-ignore-next-line
+                    color: temporaryTestData.difficulty_colors[
+                        // @ts-ignore-next-line
+                        temporaryTestData.difficulties[
+                            temporaryTestData.hardest_raw_difficulty.toString().split('.')[0]
+                        ]
+                    ]
+                },
+                {
+                    string: `${temporaryTestData.hardest_raw_difficulty.toString()}`,
+                    color: '#a3a3a3'
+                }
+            ],
+            120,
+            115,
+            '#bdbdbd'
+        );
+
+        {
+            const difficultyOrder = [
+                'Easy',
+                'Medium',
+                'Hard',
+                'Difficult',
+                'Challenging',
+                'Intense',
+                'Remorseless',
+                'Insane',
+                'Extreme',
+                'Terrifying',
+                'Impossible',
+                'Catastrophic'
+            ];
+            difficultyOrder.forEach((difficulty, index) => {
+                // @ts-ignore-next-line
+                const difficultyColor = temporaryTestData.difficulty_colors[difficulty];
+                // @ts-ignore-next-line
+                const difficultyAmount = temporaryTestData.difficulty_progress[difficulty];
+                const difficultyX = 120 + (index % 4) * 170;
+                const difficultyY = 150 + Math.floor(index / 4) * 30;
+
+                ctx.fillStyle = difficultyColor;
+                ctx.font = 'bold 20px Poppins';
+                ctx.fillText(`${difficulty} - ${difficultyAmount}`, difficultyX, difficultyY);
+            });
+        }
 
         ctx.fillStyle = '#a8a8a8';
         ctx.font = 'bold italic 15px Poppins';
@@ -126,11 +196,6 @@ app.get('/:user', async (context) => {
             canvas.height / 2 + 135,
             '#a8a8a8'
         );
-
-        ctx.textAlign = 'center';
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'italic 30px Poppins';
-        ctx.fillText(`Work in progress! Soon™️`, canvas.width / 2, canvas.height / 2 + 15);
 
         const image = canvas.toBuffer('image/png');
         context.header('Content-Type', 'image/png');
@@ -157,16 +222,68 @@ app.get('/embed/:user', async (context) => {
             : undefined;
 
     if (data === undefined) {
-        return context.json({ error: 'User not found.' }, 404);
+        return context.redirect(`/${providedUser}`);
     } else {
         return context.html(
-            `<html><head><meta property="og:title" content="Stats for ${data.displayName}"><meta property="og:description" content="Viewing the stats of @${data.name}. Click the link above to view more stats."><meta property="og:image" content="${new URL(context.req.url).origin}/${data.name}"><meta property="og:type" content="image"><meta property="og:url" content="https://towerstats.com/jtoh?username=${data.name}"><meta property="twitter:card" content="summary_large_image"><meta http-equiv="refresh" content="0; url=https://towerstats.com/jtoh?username=${data.name}" /><style>body,html{background-color:#000000;}</style></head></html>`
+            `<html><head><meta property="og:title" content="Stats for ${data.displayName}"><meta property="og:description" content="Viewing @${data.name}'s Juke's Towers of Hell stats. Click the link above to view more stats."><meta property="og:image" content="${new URL(context.req.url).origin}/${data.name}"><meta property="og:type" content="image"><meta property="og:url" content="https://towerstats.com/jtoh?username=${data.name}"><meta property="twitter:card" content="summary_large_image"><meta http-equiv="refresh" content="0; url=https://towerstats.com/jtoh?username=${data.name}" /><style>body,html{background-color:#000000;}</style></head></html>`
         );
     }
 });
 
 app.get('/e/:user', async (context) => {
     return context.redirect('/embed/' + context.req.param('user'));
+});
+
+app.get('/screenshot/:type/:user', async (context) => {
+    const providedUser: string = context.req.param('user').slice(0, 20);
+    const type: string = context.req.param('type').slice(0, 20);
+    let user: BasicRobloxUserResult | undefined = undefined;
+    if (providedUser.startsWith('!')) {
+        user = await roblox.userIdToUser(parseInt(providedUser.slice(1))).catch(() => undefined);
+    } else {
+        user = await roblox.usernameToUser(providedUser).catch(() => undefined);
+    }
+    const data =
+        user !== undefined
+            ? {
+                  id: user.id,
+                  name: user.name,
+                  displayName: user.displayName,
+                  thumbnail: await roblox.userIdToThumbnail(user.id).catch(() => undefined)
+              }
+            : undefined;
+    if (data === undefined) {
+        return context.redirect(`/${providedUser}`);
+    } else {
+        const page = await browser.newPage();
+        await page.setViewport({ width: 1920, height: 1080 });
+
+        await page.goto(`https://towerstats.com/jtoh?username=${data.name}`, { waitUntil: 'load' });
+        let screenshot = null;
+
+        if (type === 'difficulty') {
+            let element = await page.waitForSelector('#difficulty-stats', { visible: true }).catch(() => undefined);
+            if (element) element = await element.waitForSelector('.subarea', { visible: true }).catch(() => undefined);
+            if (!element) {
+                await page.close();
+                return context.json({ error: 'Failed to load the page.' }, 500);
+            }
+            screenshot = await element?.screenshot({ type: 'png' });
+        }
+
+        await page.close();
+        if (screenshot === null) return context.json({ error: 'Invalid type provided.' }, 404);
+        context.header('Content-Type', 'image/png');
+        return context.body(await new Blob([screenshot as any]).arrayBuffer());
+    }
+});
+
+app.get('/s/:type/:user', async (context) => {
+    return context.redirect(`/screenshot/${context.req.param('type')}/${context.req.param('user')}`);
+});
+
+app.get('/', async (context) => {
+    return context.redirect('/app/');
 });
 
 app.notFound((context) => {
