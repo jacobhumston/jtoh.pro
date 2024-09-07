@@ -9,7 +9,11 @@ import { statsDB } from './db';
 import { startOfMonth, startOfWeek, startOfYear, parse, isAfter } from 'date-fns';
 import type { TowerData } from './type';
 
-const browser = await puppeteer.launch({ headless: 'shell', userDataDir: './.cache/puppeteer-user-data' });
+const browser = await puppeteer.launch({
+    headless: 'shell',
+    userDataDir: './.cache/puppeteer-user-data',
+    args: ['--no-sandbox']
+});
 const app = new Hono();
 const images = {
     questionMarkMan: await loadImage('src/web/question-mark-man.png'),
