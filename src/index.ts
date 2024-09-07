@@ -3,17 +3,11 @@ import type { BasicRobloxUserResult } from './roblox';
 import { Hono } from 'hono';
 import { serveStatic } from 'hono/bun';
 import { createCanvas, loadImage, GlobalFonts } from '@napi-rs/canvas';
-import { centerText, colorText, drawRoundedRect } from './util';
-import puppeteer from 'puppeteer';
+import { centerText, colorText, drawRoundedRect, randomizeCase } from './util';
 import { statsDB } from './db';
 import { startOfMonth, startOfWeek, startOfYear, parse, isAfter } from 'date-fns';
 import type { TowerData } from './type';
 
-const browser = await puppeteer.launch({
-    headless: 'shell',
-    userDataDir: './.cache/puppeteer-user-data',
-    args: ['--no-sandbox']
-});
 const app = new Hono();
 const images = {
     questionMarkMan: await loadImage('src/web/question-mark-man.png'),
@@ -22,13 +16,6 @@ const images = {
 };
 GlobalFonts.registerFromPath('src/web/Poppins-Regular.ttf', 'Poppins');
 GlobalFonts.registerFromPath('src/web/Twemoji-15.1.0.ttf', 'Twemoji');
-
-{
-    const pages = await browser.pages();
-    for (const page of pages) {
-        await page.close();
-    }
-}
 
 app.use('*', async (_, next) => {
     const today = new Date()
@@ -306,6 +293,11 @@ app.get('/:user', async (context) => {
             '#a8a8a8'
         );
 
+        ctx.fillStyle = '#6d6d6d';
+        ctx.font = 'italic 12px Poppins';
+        ctx.textAlign = 'right';
+        ctx.fillText(context.req.url, 680, 15);
+
         const image = canvas.toBuffer('image/png');
         context.header('Content-Type', 'image/png');
         return context.body(await new Blob([image]).arrayBuffer());
@@ -334,61 +326,13 @@ app.get('/embed/:user', async (context) => {
         return context.redirect(`/${providedUser}`);
     } else {
         return context.html(
-            `<html><head><meta property="og:title" content="Stats for ${data.displayName}"><meta property="og:description" content="Viewing @${data.name}'s Juke's Towers of Hell stats. Click the link above to view more stats."><meta property="og:image" content="${new URL(context.req.url).origin}/${data.name}"><meta property="og:type" content="image"><meta property="og:url" content="https://towerstats.com/jtoh?username=${data.name}"><meta property="twitter:card" content="summary_large_image"><meta http-equiv="refresh" content="0; url=https://towerstats.com/jtoh?username=${data.name}" /><style>body,html{background-color:#000000;}</style></head></html>`
+            `<html><head> <!-- ${new Date().toISOString()} --!> <meta property="og:title" content="Stats for ${data.displayName}"><meta property="og:description" content="Viewing @${data.name}'s Juke's Towers of Hell stats. Click the link above to view more stats."><meta property="og:image" content="${new URL(context.req.url).origin}/${randomizeCase(data.name)}"><meta property="og:type" content="image"><meta property="og:url" content="https://towerstats.com/jtoh?username=${data.name}"><meta property="twitter:card" content="summary_large_image"><meta http-equiv="refresh" content="0; url=https://towerstats.com/jtoh?username=${data.name}" /><style>body,html{background-color:#000000;}</style></head></html>`
         );
     }
 });
 
 app.get('/e/:user', async (context) => {
     return context.redirect('/embed/' + context.req.param('user'));
-});
-
-app.get('/screenshot/:type/:user', async (context) => {
-    const providedUser: string = context.req.param('user').slice(0, 20);
-    const type: string = context.req.param('type').slice(0, 20);
-    let user: BasicRobloxUserResult | undefined = undefined;
-    if (providedUser.startsWith('!')) {
-        user = await roblox.userIdToUser(parseInt(providedUser.slice(1))).catch(() => undefined);
-    } else {
-        user = await roblox.usernameToUser(providedUser).catch(() => undefined);
-    }
-    const data =
-        user !== undefined
-            ? {
-                  id: user.id,
-                  name: user.name,
-                  displayName: user.displayName,
-                  thumbnail: await roblox.userIdToThumbnail(user.id).catch(() => undefined)
-              }
-            : undefined;
-    if (data === undefined) {
-        return context.redirect(`/${providedUser}`);
-    } else {
-        const page = await browser.newPage();
-        await page.setViewport({ width: 1920, height: 1080 });
-
-        await page.goto(`https://towerstats.com/jtoh?username=${data.name}`, { waitUntil: 'load' });
-        let screenshot = null;
-
-        if (type === 'difficulty') {
-            let element = await page.waitForSelector('#difficulty-stats', { visible: true }).catch(() => undefined);
-            if (element) element = await element.waitForSelector('.subarea', { visible: true }).catch(() => undefined);
-            if (!element) {
-                await page.close();
-                return context.json({ error: 'Failed to load the page.' }, 500);
-            }
-            screenshot = await element?.screenshot({ type: 'png' });
-        }
-
-        await page.close();
-        if (screenshot === null) return context.json({ error: 'Invalid type provided.' }, 404);
-        context.header('Content-Type', 'image/png');
-        return context.body(await new Blob([screenshot as any]).arrayBuffer());
-    }
-});
-
-app.get('/s/:type/:user', async (context) => {
-    return context.redirect(`/screenshot/${context.req.param('type')}/${context.req.param('user')}`);
 });
 
 app.get('/', async (context) => {

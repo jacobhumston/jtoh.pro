@@ -47,3 +47,21 @@ export function colorText(
 export function centerText(canvas: Canvas, ctx: SKRSContext2D, str: string): number {
     return (canvas.width - ctx.measureText(str).width) / 2;
 }
+
+/**
+ * Randomizes the upper and lowercase of each character in the input string.
+ * @param input - The string to be randomized.
+ * @returns A new string with randomized upper and lowercase characters.
+ */
+export function randomizeCase(input: string): string {
+    return input
+        .split('')
+        .map((char) => {
+            if (Math.random() > 0.5) {
+                return char.toUpperCase();
+            } else {
+                return char.toLowerCase();
+            }
+        })
+        .join('');
+}
