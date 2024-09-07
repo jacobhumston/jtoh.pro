@@ -143,3 +143,26 @@ code {
     cursor: pointer;
     border-radius: 5px;
 }
+
+#requestStats {
+    display: flexbox;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
+
+#requestStats p {
+    display: inline-block;
+    position: relative;
+    padding: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin: 0px;
+}
+
+.successButton {
+    background-color: #58a35a !important;
+    color: rgba(255, 255, 255, 0.822) !important;
+}

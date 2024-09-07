@@ -20,90 +20,167 @@
             <p>
                 Easily share your Juke's Towers of Hell stats/progress on Discord or other social medias with a single
                 link. Statistics are provided by
-                <a href="https://towerstats.com" target="_blank">towerstats.com</a>.
+                <a href="https://towerstats.com" target="_blank">towerstats.com</a>
+                .
             </p>
             <h2>Try it out!</h2>
             <p>
-                Input a Roblox username bellow to try it out!
+                Input a Roblox username below to try it out!
                 <i>You can also input a user ID by starting the input with an exclamation mark.</i>
             </p>
             <input type="text" id="exampleInputUsername" placeholder="Roblox User" />
             <button type="button" onclick="updateExampleOutput()">Get Image</button>
-            <button type="button" onclick="copyExampleOutputURL()">Copy URL</button>
+            <button type="button" onclick="copyExampleOutputURL(this)">Copy URL</button>
             <div class="extraPadding"></div>
-            <img id="exampleImageOutput" src="/roblox" alt="Example Image Output" />
+            <img id="exampleImageOutput" src="/helloimpolandplayer" alt="Example Image Output" />
             <div class="extraPadding"></div>
             <div class="split"></div>
             <h2>Available Links</h2>
-            Note that <code>{USER}</code> can either be a username or a Roblox user ID. The user ID must start with an
-            exclamation mark, such as <code>!12345</code>.
+            Note that
+            <code>{USER}</code>
+            can either be a username or a Roblox user ID. The user ID must start with an exclamation mark, such as
+            <code>!12345</code>
+            .
             <div class="extraPadding"></div>
 
-            <button class="smallCopyButton" type="button" onclick="copyURL('https:\/\/jtoh.pro/roblox')">Copy</button>
-            <a href="/roblox" target="_blank">jtoh.pro/{USER}</a> - Get an image of a user's tower stats.
-            <div class="extraPadding"></div>
-
-            <button class="smallCopyButton" type="button" onclick="copyURL('https:\/\/jtoh.pro/embed/roblox')">
+            <button class="smallCopyButton" type="button" onclick="copyURL('https:\/\/jtoh.pro/roblox', this)">
                 Copy
             </button>
-            <a href="/embed/roblox" target="_blank">jtoh.pro/embed/{USER}</a> - Get an image of a user's tower stats as
-            a Discord embed. The link will open the user's <span class="towerstatsUrl">towerstats.com</span> profile.
+            <a href="/roblox" target="_blank">/{USER}</a>
+            - Get an image of a user's tower stats.
+            <div class="extraPadding"></div>
+
+            <button class="smallCopyButton" type="button" onclick="copyURL('https:\/\/jtoh.pro/embed/roblox', this)">
+                Copy
+            </button>
+            <a href="/embed/roblox" target="_blank">/embed/{USER}</a>
+            - Get an image of a user's tower stats as a Discord embed. The link will open the user's
+            <span class="towerstatsUrl">towerstats.com</span>
+            profile.
             <div class="extraPadding"></div>
 
             <button
                 class="smallCopyButton"
                 type="button"
-                onclick="copyURL('https:\/\/jtoh.pro/screenshot/difficulty/roblox')"
+                onclick="copyURL('https:\/\/jtoh.pro/screenshot/difficulty/roblox', this)"
             >
                 Copy
             </button>
-            <a href="/screenshot/difficulty/roblox" target="_blank">jtoh.pro/screenshot/{TYPE}/{USER}</a> - Get a
-            screenshot of a user's tower stats from <span class="towerstatsUrl">towerstats.com</span>. Supported types
-            include...
+            <a href="/screenshot/difficulty/roblox" target="_blank">/screenshot/{TYPE}/{USER}</a>
+            - Get a screenshot of a user's tower stats from
+            <span class="towerstatsUrl">towerstats.com</span>
+            . Supported types include...
             <ul>
-                <li><code>difficulty</code> - A screenshot of the user's difficulty completions.</li>
+                <li>
+                    <code>difficulty</code>
+                    - A screenshot of the user's difficulty completions.
+                </li>
             </ul>
 
             <h3>Short Links</h3>
-            <button class="smallCopyButton" type="button" onclick="copyURL('https:\/\/jtoh.pro/e/roblox')">Copy</button>
-            <a href="/e/roblox" target="_blank">jtoh.pro/e/{USER}</a> - Short link for
-            <a href="/embed/roblox" target="_blank">jtoh.pro/embed/{USER}</a>.
-            <div class="extraPadding"></div>
-
-            <button class="smallCopyButton" type="button" onclick="copyURL('https:\/\/jtoh.pro/s/difficulty/roblox')">
+            <button class="smallCopyButton" type="button" onclick="copyURL('https:\/\/jtoh.pro/e/roblox', this)">
                 Copy
             </button>
-            <a href="/s/difficulty/roblox" target="_blank">jtoh.pro/s/{TYPE}/{USER}</a> - Short link for
-            <a href="/screenshot/difficulty/roblox" target="_blank">jtoh.pro/screenshot/{TYPE}/{USER}</a>.
+            <a href="/e/roblox" target="_blank">/e/{USER}</a>
+            - Short link an embed.
+            <div class="extraPadding"></div>
+
+            <button
+                class="smallCopyButton"
+                type="button"
+                onclick="copyURL('https:\/\/jtoh.pro/s/difficulty/roblox', this)"
+            >
+                Copy
+            </button>
+            <a href="/s/difficulty/roblox" target="_blank">/s/{TYPE}/{USER}</a>
+            - Short link a screenshot.
             <h3>Tips & Recommendations</h3>
             <ul>
                 <li>
-                    If your image is out of date when sent on Discord; add <code>#random_letters</code> to the end of
-                    the URL. This will bypass Discord's image cache. Example:
+                    If your image is out of date when sent on Discord; add
+                    <code>#random_letters</code>
+                    to the end of the URL. This will bypass Discord's image cache. Example:
                     <code>jtoh.pro/roblox#abc123</code>
+                    You'll also need to have the correct permissions to embed links for the URL to display on Discord.
                 </li>
                 <li>
                     Depending on how busy the backend server is, and if you've ever loaded your stats before, then the
                     image may take longer to load. It's also important to keep in mind that banned or deactivated
                     accounts are not supported.
                 </li>
+                <li>
+                    If a link isn't working, open it in your browser. You'll likely receive an error message that will
+                    point you in the right direction. If that is not the case, then please contact me and I'll take a
+                    look!
+                </li>
             </ul>
+            <div class="split"></div>
+            <h2>Stats & Uptime</h2>
+            <p>
+                <a href="https://uptime.jtoh.pro" target="_blank">Click here to view website uptime. (UptimeRobot)</a>
+            </p>
+            <h3>Requests Received</h3>
+            <div id="requestStats">
+                <p>
+                    <b>Today</b>
+                    <br />
+                    <span id="requestStatsWeek">Loading...</span>
+                </p>
+                <p>
+                    <b>This Month</b>
+                    <br />
+                    <span id="requestStatsMonth">Loading...</span>
+                </p>
+                <p>
+                    <b>This Year</b>
+                    <br />
+                    <span id="requestStatsYear">Loading...</span>
+                </p>
+                <p>
+                    <b>Total</b>
+                    <br />
+                    <span id="requestStatsTotal">Loading...</span>
+                </p>
+            </div>
+            <div class="split"></div>
+            <h2>Get in Contact</h2>
+            <p>
+                If you would like to provide feedback, suggest a feature, or have an issue. Then send me an email at
+                <a href="mailto:jacob@jtoh.pro?subject=jtoh.pro Inquiry">jacob@jtoh.pro</a>
+                and I'll get back to you as soon as possible.
+                <i>You may have to check your spam folder for my response!</i>
+            </p>
             <div class="split"></div>
             <h2>Support the project!</h2>
             <p>
-                You can support <b>jtoh.pro</b> by buying me a coffee or by
-                <a href="https://www.roblox.com/games/13617492376/LovelyJacobs-Donations" target="_blank"
-                    >donating Robux</a
-                >. If you would like to support
+                You can support
+                <b>jtoh.pro</b>
+                by buying me a coffee or by
+                <a href="https://www.roblox.com/games/13617492376/LovelyJacobs-Donations" target="_blank">
+                    donating Robux
+                </a>
+                . If you would like to support
                 <b><span class="towerstatsUrl">towerstats.com</span></b>
                 as well, then you can do so
-                <a href="https://www.roblox.com/games/106826240347281/JToH-Tracker-Hub" target="_blank">here</a>.
-                <br /><br />
-                <a href="https://www.buymeacoffee.com/lovelyjacob"
-                    ><img
+                <a href="https://www.roblox.com/games/106826240347281/JToH-Tracker-Hub" target="_blank">here</a>
+                .
+                <br />
+                <br />
+                <a href="https://www.buymeacoffee.com/lovelyjacob">
+                    <img
                         src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee!&emoji=☕&slug=lovelyjacob&button_colour=FFDD00&font_colour=000000&font_family=Poppins&outline_colour=000000&coffee_colour=ffffff"
-                /></a>
+                    />
+                </a>
             </p>
+            <div class="split"></div>
+            <p>
+                <b>Disclaimer:</b>
+                This website is not affiliated with Roblox or Juke's Towers of Hell. All rights belong to their
+                respective owners. The data provided originates from publicly available sources and is not retained by
+                <b>jtoh.pro</b>
+                after being received by the requester.
+            </p>
+            <p>Created by LovelyJacob - 2024 ©</p>
         </div>
     </body>
 </html>

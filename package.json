@@ -16,8 +16,11 @@
         "start-prod": "pm2 start --interpreter ~/.bun/bin/bun src/index.ts"
     },
     "dependencies": {
+        "@keyv/sqlite": "^4.0.1",
         "@napi-rs/canvas": "^0.1.55",
+        "date-fns": "^3.6.0",
         "hono": "^4.5.11",
+        "keyv": "^5.0.1",
         "puppeteer": "^23.3.0"
     }
 }

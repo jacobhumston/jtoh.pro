@@ -5,7 +5,9 @@ import { serveStatic } from 'hono/bun';
 import { createCanvas, loadImage, GlobalFonts } from '@napi-rs/canvas';
 import { centerText, colorText, drawRoundedRect } from './util';
 import puppeteer from 'puppeteer';
-import temporaryTestData from '../example-data.json';
+import { statsDB } from './db';
+import { startOfMonth, startOfWeek, startOfYear, parse, isAfter } from 'date-fns';
+import type { TowerData } from './type';
 
 const browser = await puppeteer.launch({ headless: 'shell', userDataDir: './.cache/puppeteer-user-data' });
 const app = new Hono();
@@ -16,6 +18,22 @@ const images = {
 };
 GlobalFonts.registerFromPath('src/web/Poppins-Regular.ttf', 'Poppins');
 GlobalFonts.registerFromPath('src/web/Twemoji-15.1.0.ttf', 'Twemoji');
+
+{
+    const pages = await browser.pages();
+    for (const page of pages) {
+        await page.close();
+    }
+}
+
+app.use('*', async (_, next) => {
+    const today = new Date()
+        .toLocaleString('en-US', { timeZone: 'America/New_York' })
+        .split(',')[0]
+        .replaceAll('/', '-');
+    statsDB.set(today, ((await statsDB.get<number>(today)) ?? 0) + 1);
+    return await next();
+});
 
 app.use('/*', serveStatic({ root: './src/web/' }));
 
@@ -100,6 +118,11 @@ app.get('/:user', async (context) => {
         return context.body(await new Blob([image]).arrayBuffer());
     } else {
         const thumbnail = data.thumbnail !== undefined ? await loadImage(data.thumbnail) : images.defaultRobloxProfile;
+        const towerStats: TowerData | undefined = await fetch(
+            `https://api.towerstats.com/?id=${data.id}&apiKey=2f8a7a78-9b03-4e95-ace9-1cd06334a16b-d2444398-630c-445a-b5b1-486b92d5d4fe`
+        )
+            .then((res) => res.json())
+            .catch(() => undefined);
 
         ctx.save();
         drawRoundedRect(ctx, 10, 5, 100, 100, 50);
@@ -107,79 +130,158 @@ app.get('/:user', async (context) => {
         ctx.drawImage(thumbnail, 10, 5, 100, 100);
         ctx.restore();
 
-        ctx.textAlign = 'left';
-        ctx.fillStyle = 'white';
-        ctx.font = 'bold 25px Poppins, Twemoji';
-        if (data.id === 2614622891) {
-            ctx.fillStyle = '#ff9f8e';
-            ctx.fillText(`💖 ${data.displayName}`, 120, 55);
-        } else if (data.id === 257770975) {
-            ctx.fillStyle = '#6eadff';
-            ctx.fillText(`🤓 ${data.displayName}`, 120, 55);
-        } else if (temporaryTestData.donated_amount > 0) {
-            ctx.fillStyle = '#fff88f';
-            ctx.fillText(`⭐ ${data.displayName}`, 120, 55);
-        } else {
-            ctx.fillText(`${data.displayName}`, 120, 55);
-        }
+        if (towerStats !== undefined) {
+            ctx.textAlign = 'left';
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 25px Poppins, Twemoji';
+            if (data.id === 2614622891) {
+                ctx.fillStyle = '#ff9f8e';
+                ctx.fillText(`💖 ${data.displayName}`, 120, 40);
+            } else if (data.id === 257770975) {
+                ctx.fillStyle = '#6eadff';
+                ctx.fillText(`🤓 ${data.displayName}`, 120, 40);
+            } else if (towerStats.donated_amount > 0) {
+                ctx.fillStyle = '#fff88f';
+                ctx.fillText(`⭐ ${data.displayName}`, 120, 40);
+            } else {
+                ctx.fillText(`${data.displayName}`, 120, 40);
+            }
 
-        ctx.fillStyle = '#bdbdbd';
-        ctx.font = '20px Poppins';
-        ctx.fillText(`@${user?.name}`, 120, 85);
+            ctx.fillStyle = '#bdbdbd';
+            ctx.font = '20px Poppins';
+            ctx.fillText(`@${user?.name}`, 120, 70);
 
-        ctx.font = '18px Poppins';
-        ctx.textAlign = 'left';
-        colorText(
-            ctx,
-            `Hardest tower is ${temporaryTestData.hardest_abbreviation} - ${temporaryTestData.hardest_raw_difficulty.toString()}`,
-            [
-                {
-                    string: temporaryTestData.hardest_abbreviation,
-                    // @ts-ignore-next-line
-                    color: temporaryTestData.difficulty_colors[
-                        // @ts-ignore-next-line
-                        temporaryTestData.difficulties[
-                            temporaryTestData.hardest_raw_difficulty.toString().split('.')[0]
-                        ]
-                    ]
-                },
-                {
-                    string: `${temporaryTestData.hardest_raw_difficulty.toString()}`,
-                    color: '#a3a3a3'
+            ctx.font = '18px Poppins';
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#bdbdbd';
+            if (towerStats.hardest_abbreviation !== null && towerStats.hardest_tower !== null) {
+                if ((towerStats.hardest_tower?.length as number) > 30) {
+                    colorText(
+                        ctx,
+                        `Hardest tower is ${towerStats.hardest_abbreviation} - ${towerStats.hardest_raw_difficulty.toString()}`,
+                        [
+                            {
+                                string: towerStats.hardest_abbreviation as string,
+                                // @ts-ignore-next-line
+                                color: towerStats.difficulty_colors[
+                                    // @ts-ignore-next-line
+                                    towerStats.difficulties[towerStats.hardest_raw_difficulty.toString().split('.')[0]]
+                                ]
+                            },
+                            {
+                                string: `${towerStats.hardest_raw_difficulty.toString()}`,
+                                color: '#a3a3a3'
+                            }
+                        ],
+                        120,
+                        98,
+                        '#bdbdbd'
+                    );
+                } else {
+                    colorText(
+                        ctx,
+                        `Hardest tower is ${towerStats.hardest_tower?.replaceAll(' ', '_')} - ${towerStats.hardest_raw_difficulty.toString()}`,
+                        [
+                            {
+                                string: towerStats.hardest_tower?.replaceAll(' ', '_') as string,
+                                // @ts-ignore-next-line
+                                color: towerStats.difficulty_colors[
+                                    // @ts-ignore-next-line
+                                    towerStats.difficulties[towerStats.hardest_raw_difficulty.toString().split('.')[0]]
+                                ]
+                            },
+                            {
+                                string: `${towerStats.hardest_raw_difficulty.toString()}`,
+                                color: '#a3a3a3'
+                            }
+                        ],
+                        120,
+                        98,
+                        '#bdbdbd'
+                    );
                 }
-            ],
-            120,
-            115,
-            '#bdbdbd'
-        );
+            } else {
+                ctx.fillText('This user has not completed a tower!', 120, 98);
+            }
 
-        {
-            const difficultyOrder = [
-                'Easy',
-                'Medium',
-                'Hard',
-                'Difficult',
-                'Challenging',
-                'Intense',
-                'Remorseless',
-                'Insane',
-                'Extreme',
-                'Terrifying',
-                'Impossible',
-                'Catastrophic'
-            ];
-            difficultyOrder.forEach((difficulty, index) => {
-                // @ts-ignore-next-line
-                const difficultyColor = temporaryTestData.difficulty_colors[difficulty];
-                // @ts-ignore-next-line
-                const difficultyAmount = temporaryTestData.difficulty_progress[difficulty];
-                const difficultyX = 120 + (index % 4) * 170;
-                const difficultyY = 150 + Math.floor(index / 4) * 30;
+            {
+                const length = 600;
+                const startY = 260;
+                ctx.fillStyle = '#5a5a5a';
+                ctx.fillRect(50, startY, 600, 5);
+                const difficultyOrder = [];
+                for (const [key, string] of Object.entries(towerStats.difficulties)) {
+                    if (parseInt(key) > 11) continue;
+                    difficultyOrder[parseInt(key) - 1] = string;
+                }
+                difficultyOrder.forEach((difficulty, index) => {
+                    const difficultyColor = towerStats.difficulty_colors[difficulty];
+                    const difficultyAmount = towerStats.difficulty_progress[difficulty];
+                    // 700 by 300
+                    const completed = difficultyAmount[0];
+                    const total = difficultyAmount[1];
+                    const width = (completed / total) * (length / difficultyOrder.length);
+                    const startX = (700 - length) / 2 + index * (length / difficultyOrder.length);
+                    ctx.fillStyle = difficultyColor;
+                    ctx.fillRect(startX, startY, width, 5);
+                    ctx.textAlign = 'left';
+                    ctx.font = 'bold 15px Poppins';
+                    ctx.fillText(`${Math.floor((completed / total) * 100)}%`, startX, startY - 6);
+                });
+                ctx.textAlign = 'left';
+                ctx.fillStyle = '#bdbdbd';
+                ctx.font = 'bold 15px Poppins';
+                ctx.fillText(
+                    `${towerStats.completed_towers} - ${Math.floor((towerStats.completed_towers / towerStats.total_towers) * 100)}%`,
+                    50,
+                    startY + 20
+                );
+                ctx.textAlign = 'right';
+                ctx.fillText(`${towerStats.total_towers} Total`, 650, startY + 20);
+            }
 
-                ctx.fillStyle = difficultyColor;
-                ctx.font = 'bold 20px Poppins';
-                ctx.fillText(`${difficulty} - ${difficultyAmount}`, difficultyX, difficultyY);
-            });
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#bdbdbd';
+            ctx.font = 'bold 15px Poppins, Twemoji';
+            ctx.fillText(
+                `${towerStats.completed_types.steeple ?? 0} Steeples, ${towerStats.completed_types.tower ?? 0} Towers, ${towerStats.completed_types.citadel ?? 0} Citadels`,
+                50,
+                205
+            );
+            if (towerStats.completed_areas.length > 0) {
+                ctx.fillText(
+                    `${towerStats.completed_areas
+                        .map((area) =>
+                            area
+                                .split(' ')
+                                .map((e) => e.charAt(0))
+                                .join('')
+                        )
+                        .join(', ')}`,
+                    50,
+                    225
+                );
+            } else {
+                ctx.fillText('This user has not completed any areas.', 50, 225);
+            }
+        } else {
+            ctx.textAlign = 'left';
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 25px Poppins, Twemoji';
+            ctx.fillText(`${data.displayName}`, 120, 55);
+
+            ctx.fillStyle = '#bdbdbd';
+            ctx.font = '20px Poppins';
+            ctx.fillText(`@${user?.name}`, 120, 85);
+
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#ff7e7e';
+            ctx.font = '30px Poppins';
+            ctx.fillText("Failed to load the user's stats.", canvas.width / 2, canvas.height / 2);
+
+            ctx.fillStyle = 'white';
+            ctx.font = '25px Poppins';
+            ctx.fillText('Please try again later.', canvas.width / 2, canvas.height / 2 + 30);
         }
 
         ctx.fillStyle = '#a8a8a8';
@@ -284,6 +386,40 @@ app.get('/s/:type/:user', async (context) => {
 
 app.get('/', async (context) => {
     return context.redirect('/app/');
+});
+
+app.get('/ext/request-count', async (context) => {
+    const now = new Date();
+    const startOfCurrentMonth = startOfMonth(now);
+    const startOfCurrentWeek = startOfWeek(now, { weekStartsOn: 1 });
+    const startOfCurrentYear = startOfYear(now);
+
+    let monthCount = 0;
+    let weekCount = 0;
+    let yearCount = 0;
+    let totalCount = 0;
+
+    // @ts-ignore-next-line
+    for await (const [key, value] of statsDB.iterator()) {
+        const date = parse(key, 'MM-dd-yyyy', new Date());
+        if (isAfter(date, startOfCurrentMonth)) {
+            monthCount += value;
+        }
+        if (isAfter(date, startOfCurrentWeek)) {
+            weekCount += value;
+        }
+        if (isAfter(date, startOfCurrentYear)) {
+            yearCount += value;
+        }
+        totalCount += value;
+    }
+
+    return context.json({
+        month: monthCount,
+        week: weekCount,
+        year: yearCount,
+        total: totalCount
+    });
 });
 
 app.notFound((context) => {
