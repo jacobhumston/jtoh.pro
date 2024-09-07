@@ -121,7 +121,10 @@ app.get('/:user', async (context) => {
         context.header('Content-Type', 'image/png');
         return context.body(await new Blob([image]).arrayBuffer());
     } else {
-        const thumbnail = data.thumbnail !== undefined ? await loadImage(data.thumbnail) : images.defaultRobloxProfile;
+        const thumbnail =
+            data.thumbnail !== undefined
+                ? await loadImage(data.thumbnail).catch(() => images.defaultRobloxProfile)
+                : images.defaultRobloxProfile;
         const towerStats: TowerData | undefined = await fetch(
             `https://api.towerstats.com/?id=${data.id}&apiKey=2f8a7a78-9b03-4e95-ace9-1cd06334a16b-d2444398-630c-445a-b5b1-486b92d5d4fe`
         )
