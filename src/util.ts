@@ -32,11 +32,12 @@ export function colorText(
 ) {
     const words = str.split(' ');
     let currentX = x;
-    for (const word of words) {
+    for (let word of words) {
         const thisColor = color.find((c) => c.string === word);
         if (thisColor) {
             ctx.fillStyle = thisColor.color;
         }
+        word = word.replaceAll('_', ' ');
         ctx.fillText(word, currentX, y);
         ctx.fillStyle = pastColor;
         currentX += ctx.measureText(word + ' ').width;
