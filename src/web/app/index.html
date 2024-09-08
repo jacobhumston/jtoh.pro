@@ -16,6 +16,10 @@
     </head>
     <body>
         <div id="container">
+            <div id="menuBar">
+                <a href="/app/">Home Page</a>
+                <a href="/app/update-log.html">Update Log</a>
+            </div>
             <h1>jtoh.pro</h1>
             <p>
                 Easily share your Juke's Towers of Hell stats/progress on Discord or other social medias with a single
@@ -65,32 +69,73 @@
             <a href="/e/roblox" target="_blank">/e/{USER}</a>
             - Short link an embed.
 
-            <h3>Tips & Recommendations</h3>
-            <ul>
-                <li>
-                    If your image is out of date when sent on Discord; add
-                    <code>#random_letters</code>
-                    to the end of the URL. This will bypass Discord's image cache. Example:
-                    <code>jtoh.pro/roblox#abc123</code>
-                    You'll also need to have the correct permissions to embed links for the URL to display on Discord.
-                </li>
-                <li>
-                    Depending on how busy the backend server is, and if you've ever loaded your stats before, then the
-                    image may take longer to load. It's also important to keep in mind that banned or deactivated
-                    accounts are not supported.
-                </li>
-                <li>
-                    If a link isn't working, open it in your browser. You'll likely receive an error message that will
-                    point you in the right direction. If that is not the case, then please contact me and I'll take a
-                    look!
-                </li>
-            </ul>
+            <br />
+            <br />
             <div class="split"></div>
+
+            <h2>Frequently Asked Questions</h2>
+            <h3>The image is outdated when sent on Discord, what's wrong?</h3>
+            <p>
+                Discord saves (or technically known as "caches") the image when it is first sent. This means that if the
+                same exact URL is sent again, Discord will display the cached image for a while instead of fetching a
+                new one. To prevent this from happening:
+                <br />
+                <b>- Copy and paste the image from this page.</b>
+                <br />
+                <b>
+                    - Add a random query string to the end of the URL, such as
+                    <code>?abc1234</code>
+                    .
+                </b>
+                <br />
+                <b>
+                    - Use the embed link instead, as the embed's image includes a
+                    <code>nocache</code>
+                    query string.
+                </b>
+                <br />
+                <b>
+                    - Use the "Copy URL" button provided on this page, as it automatically adds a
+                    <code>nocache</code>
+                    query string for you.
+                </b>
+                <br />
+                If none of the above fixes your problem, wait at least 5 minutes before sending the image again.
+            </p>
+
+            <h3>Are banned accounts not supported?</h3>
+            <p>
+                Terminated and deactivated Roblox accounts are not supported, and will return a "User not found." error.
+            </p>
+
+            <h3>Why is this user's name a different color on the card?</h3>
+            <p>
+                Users that have donated any amount of Robux to
+                <span class="towerstatsUrl">towerstats.com</span>
+                will display as yellow on the card. They will also have a star emoji next to their display name. Other
+                colors are specific to other people that I personally know.
+                <br />
+                <i>I do plan on adding some customization options soon.</i>
+            </p>
+
+            <h3>Will other fan games be supported?</h3>
+            <p>
+                <b>Yes!</b>
+                I will add fan game support as they are added to
+                <span class="towerstatsUrl">towerstats.com</span>
+                . Every fan game will have its own unique URL, if available.
+            </p>
+
+            <div class="split"></div>
+
             <h2>Stats & Uptime</h2>
             <p>
                 <a href="https://uptime.jtoh.pro" target="_blank">Click here to view website uptime. (UptimeRobot)</a>
             </p>
             <h3>Requests Received</h3>
+            Note that only requests made for profile cards are counted.
+            <br />
+            <br />
             <div id="requestStats">
                 <p>
                     <b>This Week</b>

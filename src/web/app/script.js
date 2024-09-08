@@ -1,15 +1,26 @@
 function updateExampleOutput() {
-    const username = document.getElementById('exampleInputUsername').value;
-    if (!username || username.length === 0) return;
+    let username = document.getElementById('exampleInputUsername').value;
+    if (!username || username.length === 0) username = 'LoveliestJacob';
     document.getElementById('exampleImageOutput').src = `/${username}`;
 }
 
 async function copyExampleOutputURL(button) {
-    const username = document.getElementById('exampleInputUsername').value;
-    if (!username || username.length === 0) return;
+    let username = document.getElementById('exampleInputUsername').value;
+    if (!username || username.length === 0) username = 'LoveliestJacob';
     document.getElementById('exampleImageOutput').src = `/${username}`;
     const url = document.getElementById('exampleImageOutput').src;
-    await navigator.clipboard.writeText(url).catch(() => alert('Failed to copy to clipboard!'));
+    let uuid = '';
+    try {
+        uuid = window.crypto.randomUUID();
+    } catch (e) {
+        console.error(e);
+        uuid = '';
+    } finally {
+        if (uuid !== '') {
+            uuid = `?nocache=${uuid.split('-')[0]}`;
+        }
+    }
+    await navigator.clipboard.writeText(`${url}${uuid}`).catch(() => alert('Failed to copy to clipboard!'));
     let ogText = button.innerText;
     if (button.innerText === 'Copied!') return;
     button.innerText = 'Copied!';
@@ -37,6 +48,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const month = document.getElementById('requestStatsMonth');
     const year = document.getElementById('requestStatsYear');
     const total = document.getElementById('requestStatsTotal');
+    if (!week || !month || !year || !total) return;
     const formatter = new Intl.NumberFormat();
     fetch('/ext/request-count')
         .then((response) => response.json())

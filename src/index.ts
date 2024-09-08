@@ -3,10 +3,12 @@ import type { BasicRobloxUserResult } from './roblox';
 import { Hono } from 'hono';
 import { serveStatic } from 'hono/bun';
 import { createCanvas, loadImage, GlobalFonts } from '@napi-rs/canvas';
-import { centerText, colorText, drawRoundedRect, randomizeCase } from './util';
+import { centerText, colorText, drawRoundedRect } from './util';
 import { statsDB } from './db';
 import { startOfMonth, startOfWeek, startOfYear, parse, isAfter } from 'date-fns';
 import type { TowerData } from './type';
+import { v4 } from 'uuid';
+import Color from 'color';
 
 const app = new Hono();
 const images = {
@@ -17,18 +19,23 @@ const images = {
 GlobalFonts.registerFromPath('src/web/Poppins-Regular.ttf', 'Poppins');
 GlobalFonts.registerFromPath('src/web/Twemoji-15.1.0.ttf', 'Twemoji');
 
-app.use('*', async (_, next) => {
+async function updateRequestCount() {
     const today = new Date()
         .toLocaleString('en-US', { timeZone: 'America/New_York' })
         .split(',')[0]
         .replaceAll('/', '-');
     statsDB.set(today, ((await statsDB.get<number>(today)) ?? 0) + 1);
-    return await next();
-});
+}
 
 app.use('/*', serveStatic({ root: './src/web/' }));
 
 app.get('/:user', async (context) => {
+    context.header('Cache-Control', 'no-cache, no-store, must-revalidate');
+    context.header('Pragma', 'no-cache');
+    context.header('Expires', '0');
+
+    updateRequestCount().catch(() => undefined);
+
     const providedUser: string = context.req.param('user').slice(0, 20);
     let user: BasicRobloxUserResult | undefined = undefined;
     if (providedUser.startsWith('!')) {
@@ -145,64 +152,68 @@ app.get('/:user', async (context) => {
             ctx.font = '20px Poppins';
             ctx.fillText(`@${user?.name}`, 120, 70);
 
+            ctx.save();
             ctx.font = '18px Poppins';
             ctx.textAlign = 'left';
             ctx.fillStyle = '#bdbdbd';
-            if (towerStats.hardest_abbreviation !== null && towerStats.hardest_tower !== null) {
-                if ((towerStats.hardest_tower?.length as number) > 30) {
-                    colorText(
-                        ctx,
-                        `Hardest tower is ${towerStats.hardest_abbreviation} - ${towerStats.hardest_raw_difficulty.toString()}`,
-                        [
-                            {
-                                string: towerStats.hardest_abbreviation as string,
+            if (
+                towerStats.hardest_abbreviation !== null &&
+                towerStats.hardest_tower !== null &&
+                towerStats.hardest_abbreviation !== undefined &&
+                towerStats.hardest_tower !== undefined
+            ) {
+                let text = towerStats.hardest_tower?.replaceAll(' ', '_');
+                if (text.length > 30) text = towerStats.hardest_abbreviation;
+                colorText(
+                    ctx,
+                    `Hardest tower is ${text} (${towerStats.hardest_raw_difficulty.toString()})`,
+                    [
+                        {
+                            string: text as string,
+                            // @ts-ignore-next-line
+                            color: towerStats.difficulty_colors[
                                 // @ts-ignore-next-line
-                                color: towerStats.difficulty_colors[
-                                    // @ts-ignore-next-line
-                                    towerStats.difficulties[towerStats.hardest_raw_difficulty.toString().split('.')[0]]
-                                ]
+                                towerStats.difficulties[towerStats.hardest_raw_difficulty.toString().split('.')[0]]
+                            ],
+                            beforeCallback: (x, w, c) => {
+                                ctx.font = 'bold 18px Poppins';
+                                const color = Color(c);
+                                ctx.strokeStyle = color.darken(0.5).hex();
+                                ctx.globalAlpha = 0.5;
+                                ctx.lineWidth = 3;
+                                ctx.lineJoin = 'miter';
+                                ctx.miterLimit = 2;
+                                ctx.strokeText(w, x, 98);
+                                ctx.globalAlpha = 1;
                             },
-                            {
-                                string: `${towerStats.hardest_raw_difficulty.toString()}`,
-                                color: '#a3a3a3'
+                            afterCallback: () => {
+                                ctx.font = '18px Poppins';
                             }
-                        ],
-                        120,
-                        98,
-                        '#bdbdbd'
-                    );
-                } else {
-                    colorText(
-                        ctx,
-                        `Hardest tower is ${towerStats.hardest_tower?.replaceAll(' ', '_')} - ${towerStats.hardest_raw_difficulty.toString()}`,
-                        [
-                            {
-                                string: towerStats.hardest_tower?.replaceAll(' ', '_') as string,
-                                // @ts-ignore-next-line
-                                color: towerStats.difficulty_colors[
-                                    // @ts-ignore-next-line
-                                    towerStats.difficulties[towerStats.hardest_raw_difficulty.toString().split('.')[0]]
-                                ]
+                        },
+                        {
+                            string: `(${towerStats.hardest_raw_difficulty.toString()})`,
+                            color: '#a3a3a3',
+                            beforeCallback: () => {
+                                ctx.font = 'italic 18px Poppins';
                             },
-                            {
-                                string: `${towerStats.hardest_raw_difficulty.toString()}`,
-                                color: '#a3a3a3'
+                            afterCallback: () => {
+                                ctx.font = '18px Poppins';
                             }
-                        ],
-                        120,
-                        98,
-                        '#bdbdbd'
-                    );
-                }
+                        }
+                    ],
+                    120,
+                    98,
+                    '#bdbdbd'
+                );
             } else {
                 ctx.fillText('This user has not completed a tower!', 120, 98);
             }
 
             {
-                const length = 600;
-                const startY = 260;
+                const length = 660;
+                const startY = 245;
                 ctx.fillStyle = '#5a5a5a';
-                ctx.fillRect(50, startY, 600, 5);
+                ctx.fillRect(20, startY, 660, 5);
                 const difficultyOrder = [];
                 for (const [key, string] of Object.entries(towerStats.difficulties)) {
                     if (parseInt(key) > 11) continue;
@@ -216,32 +227,58 @@ app.get('/:user', async (context) => {
                     const total = difficultyAmount[1];
                     const width = (completed / total) * (length / difficultyOrder.length);
                     const startX = (700 - length) / 2 + index * (length / difficultyOrder.length);
+                    ctx.fillStyle = Color(difficultyColor).darken(0.7).hex();
+                    ctx.fillRect(startX, startY, length / difficultyOrder.length, 5);
                     ctx.fillStyle = difficultyColor;
                     ctx.fillRect(startX, startY, width, 5);
                     ctx.textAlign = 'left';
-                    ctx.font = 'bold 15px Poppins';
+                    ctx.font = 'bold 16px Poppins';
+                    {
+                        const color = Color(difficultyColor);
+                        ctx.strokeStyle = color.darken(0.5).hex();
+                        ctx.globalAlpha = 0.5;
+                        ctx.lineWidth = 3;
+                        ctx.lineJoin = 'miter';
+                        ctx.miterLimit = 2;
+                        ctx.strokeText(`${Math.floor((completed / total) * 100)}%`, startX, startY - 6, 98);
+                        ctx.globalAlpha = 1;
+                    }
                     ctx.fillText(`${Math.floor((completed / total) * 100)}%`, startX, startY - 6);
                 });
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#bdbdbd';
                 ctx.font = 'bold 15px Poppins';
+                ctx.fillText(`${towerStats.completed_towers} Completed`, 20, startY + 20);
+                ctx.textAlign = 'right';
+                ctx.fillText(`${towerStats.total_towers} Total`, 680, startY + 20);
+                ctx.textAlign = 'center';
                 ctx.fillText(
-                    `${towerStats.completed_towers} - ${Math.floor((towerStats.completed_towers / towerStats.total_towers) * 100)}%`,
-                    50,
+                    `${Math.floor((towerStats.completed_towers / towerStats.total_towers) * 100)}% Progress`,
+                    680 / 2,
                     startY + 20
                 );
-                ctx.textAlign = 'right';
-                ctx.fillText(`${towerStats.total_towers} Total`, 650, startY + 20);
             }
+
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#f8f8f8';
+            ctx.font = 'bold 15px Poppins, Twemoji';
+            ctx.fillText(`Completed Tower Types`, 20, 135);
 
             ctx.textAlign = 'left';
             ctx.fillStyle = '#bdbdbd';
             ctx.font = 'bold 15px Poppins, Twemoji';
             ctx.fillText(
                 `${towerStats.completed_types.steeple ?? 0} Steeples, ${towerStats.completed_types.tower ?? 0} Towers, ${towerStats.completed_types.citadel ?? 0} Citadels`,
-                50,
-                205
+                20,
+                155
             );
+
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#f8f8f8';
+            ctx.font = 'bold 15px Poppins, Twemoji';
+            ctx.fillText(`Completed Areas`, 20, 185);
+
+            ctx.fillStyle = '#bdbdbd';
             if (towerStats.completed_areas.length > 0) {
                 ctx.fillText(
                     `${towerStats.completed_areas
@@ -252,11 +289,11 @@ app.get('/:user', async (context) => {
                                 .join('')
                         )
                         .join(', ')}`,
-                    50,
-                    225
+                    20,
+                    205
                 );
             } else {
-                ctx.fillText('This user has not completed any areas.', 50, 225);
+                ctx.fillText('This user has not completed any areas.', 20, 205);
             }
         } else {
             ctx.textAlign = 'left';
@@ -279,7 +316,7 @@ app.get('/:user', async (context) => {
         }
 
         ctx.fillStyle = '#a8a8a8';
-        ctx.font = 'bold italic 15px Poppins';
+        ctx.font = 'bold italic 13px Poppins';
         ctx.textAlign = 'left';
         colorText(
             ctx,
@@ -289,14 +326,14 @@ app.get('/:user', async (context) => {
                 { string: 'towerstats.com', color: '#dfd474' }
             ],
             centerText(canvas, ctx, 'Provided by jtoh.pro with stats from towerstats.com.'),
-            canvas.height / 2 + 135,
+            canvas.height / 2 + 140,
             '#a8a8a8'
         );
 
         ctx.fillStyle = '#6d6d6d';
-        ctx.font = 'italic 12px Poppins';
+        ctx.font = '12px Poppins';
         ctx.textAlign = 'right';
-        ctx.fillText(context.req.url, 680, 15);
+        ctx.fillText(`jtoh.pro${new URL(context.req.url).pathname}`, 675, 18);
 
         const image = canvas.toBuffer('image/png');
         context.header('Content-Type', 'image/png');
@@ -326,7 +363,7 @@ app.get('/embed/:user', async (context) => {
         return context.redirect(`/${providedUser}`);
     } else {
         return context.html(
-            `<html><head> <!-- ${new Date().toISOString()} --!> <meta property="og:title" content="Stats for ${data.displayName}"><meta property="og:description" content="Viewing @${data.name}'s Juke's Towers of Hell stats. Click the link above to view more stats."><meta property="og:image" content="${new URL(context.req.url).origin}/${randomizeCase(data.name)}"><meta property="og:type" content="image"><meta property="og:url" content="https://towerstats.com/jtoh?username=${data.name}"><meta property="twitter:card" content="summary_large_image"><meta http-equiv="refresh" content="0; url=https://towerstats.com/jtoh?username=${data.name}" /><style>body,html{background-color:#000000;}</style></head></html>`
+            `<html><head> <!-- ${new Date().toISOString()} --!> <meta property="og:title" content="Stats for ${data.displayName}"><meta property="og:description" content="Viewing @${data.name}'s Juke's Towers of Hell stats. Click the link above to view more stats."><meta property="og:image" content="${new URL(context.req.url).origin}/${data.name}?nocache=${v4()}"><meta property="og:type" content="image"><meta property="og:url" content="https://towerstats.com/jtoh?username=${data.name}"><meta property="twitter:card" content="summary_large_image"><meta http-equiv="refresh" content="0; url=https://towerstats.com/jtoh?username=${data.name}" /><style>body,html{background-color:#000000;}</style></head></html>`
         );
     }
 });
