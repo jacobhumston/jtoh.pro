@@ -164,18 +164,19 @@ app.get('/:user', async (context) => {
                 towerStats.hardest_raw_difficulty !== undefined &&
                 towerStats.hardest_raw_difficulty !== null
             ) {
-                let text = towerStats.hardest_tower?.replaceAll(' ', '_');
+                let text = towerStats.hardest_tower.replaceAll(' ', '_');
                 if (text.length > 30) text = towerStats.hardest_abbreviation;
+                const raw = towerStats.hardest_raw_difficulty.toString();
                 colorText(
                     ctx,
-                    `Hardest tower is ${text} (${towerStats.hardest_raw_difficulty?.toString()})`,
+                    `Hardest tower is ${text} (${raw})`,
                     [
                         {
                             string: text as string,
                             // @ts-ignore-next-line
                             color: towerStats.difficulty_colors[
                                 // @ts-ignore-next-line
-                                towerStats.difficulties[towerStats.hardest_raw_difficulty?.toString().split('.')[0]]
+                                towerStats.difficulties[raw.split('.')[0]]
                             ],
                             beforeCallback: (x, w, c) => {
                                 ctx.font = 'bold 18px Poppins';
@@ -193,7 +194,7 @@ app.get('/:user', async (context) => {
                             }
                         },
                         {
-                            string: `(${towerStats.hardest_raw_difficulty?.toString()})`,
+                            string: `(${raw})`,
                             color: '#a3a3a3',
                             beforeCallback: () => {
                                 ctx.font = 'italic 18px Poppins';
