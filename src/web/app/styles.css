@@ -16,6 +16,7 @@
     --color-text-link: #70b5ffda;
     --color-text-header: #9a71f8c9;
     --color-text-bold: #b58dffde;
+    --color-background-darker: #2b2a2ade;
 }
 
 html,
@@ -165,4 +166,16 @@ code {
 .successButton {
     background-color: #58a35a !important;
     color: rgba(255, 255, 255, 0.822) !important;
+}
+
+#menuBar {
+    padding: 10px;
+    text-align: center;
+    background-color: var(--color-background-darker);
+    border-radius: 20px;
+}
+
+#menuBar a {
+    margin-left: 5px;
+    margin-right: 5px;
 }

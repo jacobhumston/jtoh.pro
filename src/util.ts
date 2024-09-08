@@ -25,7 +25,12 @@ export function drawRoundedRect(
 export function colorText(
     ctx: SKRSContext2D,
     str: string,
-    color: Array<{ string: string; color: string }>,
+    color: Array<{
+        string: string;
+        color: string;
+        beforeCallback?: (prevX: number, word: string, color: string) => void;
+        afterCallback?: (prevX: number, word: string, color: string) => void;
+    }>,
     x: number,
     y: number,
     pastColor: string
@@ -37,10 +42,17 @@ export function colorText(
         if (thisColor) {
             ctx.fillStyle = thisColor.color;
         }
+        const prevX = currentX;
         word = word.replaceAll('_', ' ');
+        if (thisColor?.beforeCallback) {
+            thisColor.beforeCallback(prevX, word, thisColor.color);
+        }
         ctx.fillText(word, currentX, y);
         ctx.fillStyle = pastColor;
         currentX += ctx.measureText(word + ' ').width;
+        if (thisColor?.afterCallback) {
+            thisColor.afterCallback(prevX, word, thisColor.color);
+        }
     }
 }
 

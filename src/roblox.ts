@@ -20,7 +20,6 @@ export async function usernameToUser(username: string): Promise<BasicRobloxUserR
             usernames: [username],
             excludeBannedUsers: true
         }),
-        cache: 'force-cache',
         headers: {
             'Content-Type': 'application/json'
         }
@@ -35,7 +34,6 @@ export async function userIdToUser(userId: number): Promise<BasicRobloxUserResul
             userIds: [userId],
             excludeBannedUsers: true
         }),
-        cache: 'force-cache',
         headers: {
             'Content-Type': 'application/json'
         }
@@ -48,7 +46,6 @@ export async function userIdToThumbnail(userId: number): Promise<string> {
         baseUrls.thumbnails(`/v1/users/avatar-headshot?userIds=${userId}&size=352x352&format=Png&isCircular=false`),
         {
             method: 'GET',
-            cache: 'force-cache',
             headers: {
                 'Content-Type': 'application/json'
             }
