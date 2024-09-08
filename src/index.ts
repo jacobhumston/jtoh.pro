@@ -160,7 +160,9 @@ app.get('/:user', async (context) => {
                 towerStats.hardest_abbreviation !== null &&
                 towerStats.hardest_tower !== null &&
                 towerStats.hardest_abbreviation !== undefined &&
-                towerStats.hardest_tower !== undefined
+                towerStats.hardest_tower !== undefined &&
+                towerStats.hardest_raw_difficulty !== undefined &&
+                towerStats.hardest_raw_difficulty !== null
             ) {
                 let text = towerStats.hardest_tower?.replaceAll(' ', '_');
                 if (text.length > 30) text = towerStats.hardest_abbreviation;
