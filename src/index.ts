@@ -30,10 +30,6 @@ async function updateRequestCount() {
 app.use('/*', serveStatic({ root: './src/web/' }));
 
 app.get('/:user', async (context) => {
-    context.header('Cache-Control', 'no-cache, no-store, must-revalidate');
-    context.header('Pragma', 'no-cache');
-    context.header('Expires', '0');
-
     updateRequestCount().catch(() => undefined);
 
     const providedUser: string = context.req.param('user').slice(0, 20);
