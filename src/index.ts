@@ -156,6 +156,7 @@ app.get('/:user', async (context) => {
             ctx.font = '18px Poppins';
             ctx.textAlign = 'left';
             ctx.fillStyle = '#bdbdbd';
+            console.log(towerStats.hardest_raw_difficulty);
             if (
                 towerStats.hardest_abbreviation !== null &&
                 towerStats.hardest_tower !== null &&
