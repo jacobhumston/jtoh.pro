@@ -15,7 +15,7 @@
     "scripts": {
         "format": "npx prettier ./ --write",
         "start": "bun src/index.ts",
-        "start-prod": "pm2 start b\"bunx bun run src/index.ts\""
+        "start-prod": "pm2 start \"bunx bun run src/index.ts\""
     },
     "dependencies": {
         "@keyv/sqlite": "^4.0.1",
