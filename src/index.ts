@@ -12,11 +12,11 @@ GlobalFonts.registerFromPath('src/web/Twemoji-15.1.0.ttf', 'Twemoji');
 
 app.use('/*', serveStatic({ root: './src/web/' }));
 
-app.get('/jtohxl', async (context) => {
+app.get('/jtohxl/', async (context) => {
     return context.redirect('/app/jtohxl/');
 });
 
-app.get('/cscd', async (context) => {
+app.get('/cscd/', async (context) => {
     return context.redirect('/app/cscd/');
 });
 
