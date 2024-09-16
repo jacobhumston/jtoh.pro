@@ -10,7 +10,7 @@
         "prettier": "^3.3.3"
     },
     "peerDependencies": {
-        "typescript": "^5.0.0"
+        "typescript": "^5.5.4"
     },
     "scripts": {
         "format": "npx prettier ./ --write",
@@ -23,7 +23,7 @@
         "bun": "v1.1.26",
         "color": "^4.2.3",
         "date-fns": "^3.6.0",
-        "hono": "^4.5.11",
+        "hono": "^4.6.1",
         "keyv": "^5.0.1",
         "uuid": "^10.0.0"
     }

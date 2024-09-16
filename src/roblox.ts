@@ -1,3 +1,5 @@
+import type { Context } from 'hono';
+
 const baseUrls = {
     users: function (path: string): string {
         return `https://users.roblox.com${path}`;
@@ -52,4 +54,24 @@ export async function userIdToThumbnail(userId: number): Promise<string> {
         }
     );
     return (await response.json()).data[0].imageUrl as string;
+}
+
+export async function auth(context: Context) {
+    const providedUser: string = context.req.param('user').slice(0, 20);
+    let user: BasicRobloxUserResult | undefined = undefined;
+    if (providedUser.startsWith('!')) {
+        user = await userIdToUser(parseInt(providedUser.slice(1))).catch(() => undefined);
+    } else {
+        user = await usernameToUser(providedUser).catch(() => undefined);
+    }
+    const data =
+        user !== undefined
+            ? {
+                  id: user.id,
+                  name: user.name,
+                  displayName: user.displayName,
+                  thumbnail: await userIdToThumbnail(user.id).catch(() => undefined)
+              }
+            : undefined;
+    return data;
 }
