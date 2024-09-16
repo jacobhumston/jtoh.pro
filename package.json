@@ -14,10 +14,11 @@
     },
     "scripts": {
         "format": "npx prettier ./ --write",
-        "start": "bun src/index.ts",
+        "start": "bun src/index.ts --dev",
         "start-prod": "pm2 start \"bunx bun run src/index.ts\""
     },
     "dependencies": {
+        "@date-fns/utc": "^2.1.0",
         "@keyv/sqlite": "^4.0.1",
         "@napi-rs/canvas": "^0.1.55",
         "bun": "v1.1.26",
@@ -25,6 +26,7 @@
         "date-fns": "^3.6.0",
         "hono": "^4.6.1",
         "keyv": "^5.0.1",
+        "tweetnacl": "^1.0.3",
         "uuid": "^10.0.0"
     }
 }
