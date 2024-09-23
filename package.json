@@ -20,12 +20,12 @@
     "dependencies": {
         "@date-fns/utc": "^2.1.0",
         "@keyv/sqlite": "^4.0.1",
-        "@napi-rs/canvas": "^0.1.55",
+        "@napi-rs/canvas": "^0.1.56",
         "bun": "v1.1.26",
         "color": "^4.2.3",
         "date-fns": "^3.6.0",
-        "hono": "^4.6.1",
-        "keyv": "^5.0.1",
+        "hono": "^4.6.2",
+        "keyv": "^5.0.3",
         "tweetnacl": "^1.0.3",
         "uuid": "^10.0.0"
     }
