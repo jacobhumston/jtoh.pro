@@ -47,13 +47,14 @@ export const commands = [
 
 export async function publishDiscordCommands() {
     const commandString = JSON.stringify(commands);
+    const commandHash = btoa(commandString);
     if (!fs.existsSync('cache/')) fs.mkdirSync('cache/');
-    if (!fs.existsSync('cache/discord-commands.txt')) fs.writeFileSync('cache/discord-commands.txt', '');
+    if (!fs.existsSync('cache/discord-commands')) fs.writeFileSync('cache/discord-commands', '');
 
-    const cache = fs.readFileSync('cache/discord-commands.txt', 'utf-8');
-    if (cache === commandString) return;
+    const cache = fs.readFileSync('cache/discord-commands', 'utf-8');
+    if (cache === commandHash) return;
 
-    fs.writeFileSync('cache/discord-commands.txt', commandString);
+    fs.writeFileSync('cache/discord-commands', commandHash);
 
     const appId = discordInteractionsApplicationId;
     const url = `https://discord.com/api/v10/applications/${appId}/commands`;
