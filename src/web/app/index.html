@@ -13,21 +13,11 @@
         />
         <meta property="og:image" content="" />
         <meta property="twitter:card" content="summary_large_image" />
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:FILL@1" rel="stylesheet" />
     </head>
     <body>
         <div id="container">
-            <div id="menuBar">
-                <a href="/app/">JToH</a>
-                <a href="/app/cscd/">CSCD</a>
-                <a href="/app/jtohxl/">JToHXL</a>
-                <a href="/app/eta/">eta</a>
-                <a href="/app/jtohxl/">JToHXL</a>
-                <a href="/app/update-log">Update Log</a>
-                <a href="/app/faq">FAQ</a>
-                <a href="https://discord.com/oauth2/authorize?client_id=1285148080189997107" target="_blank">
-                    Discord Bot
-                </a>
-            </div>
+            <template data-name="headerLinks"></template>
             <h1>jtoh.pro</h1>
             <p>
                 Easily share your Juke's Towers of Hell stats/progress on Discord or other social medias with a single
@@ -40,9 +30,23 @@
                 Input a Roblox username below to try it out!
                 <i>You can also input a user ID by starting the input with an exclamation mark.</i>
             </p>
-            <input type="text" id="exampleInputUsername" placeholder="Roblox Username" />
-            <button type="button" onclick="updateExampleOutput()">Get Image</button>
-            <button type="button" onclick="copyExampleOutputURL(this)">Copy URL</button>
+            <div id="interactionFlex">
+                <input type="text" id="exampleInputUsername" placeholder="Roblox Username" />
+                <button type="button" onclick="updateExampleOutput()">
+                    <span class="material-symbols-rounded">refresh</span>
+                    Get Image
+                </button>
+            </div>
+            <div id="interactionFlex">
+                <button type="button" onclick="copyExampleOutputImage(this)">
+                    <span class="material-symbols-rounded">file_copy</span>
+                    Copy Image
+                </button>
+                <button type="button" onclick="copyExampleOutputURL(this)">
+                    <span class="material-symbols-rounded">content_copy</span>
+                    Copy URL
+                </button>
+            </div>
             <div class="extraPadding"></div>
             <img
                 id="exampleImageOutput"
