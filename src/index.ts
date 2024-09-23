@@ -7,7 +7,11 @@ import { UTCDate } from '@date-fns/utc';
 import jtoh from './jtoh';
 import discordInteractions, { publishDiscordCommands } from './discord';
 
-const app = new Hono();
+const app = new Hono({
+    getPath: (context) => {
+        return new URL(context.url).pathname;
+    }
+});
 
 GlobalFonts.registerFromPath('src/web/app/assets/Poppins-Regular.ttf', 'Poppins');
 GlobalFonts.registerFromPath('src/web/app/assets/Twemoji-15.1.0.ttf', 'Twemoji');
