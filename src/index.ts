@@ -1,45 +1,27 @@
 import { Hono } from 'hono';
-import { serveStatic } from 'hono/bun';
 import { GlobalFonts } from '@napi-rs/canvas';
 import { statsDB } from './db';
 import { startOfMonth, startOfWeek, startOfYear, parse, isAfter } from 'date-fns';
 import { UTCDate } from '@date-fns/utc';
 import jtoh from './jtoh';
 import discordInteractions, { publishDiscordCommands } from './discord';
+import redirects from './redirects';
+import serveStatic from './static';
 
-const app = new Hono({
-    getPath: (context) => {
-        return new URL(context.url).pathname;
-    }
-});
+const app = new Hono();
 
 GlobalFonts.registerFromPath('src/web/app/assets/Poppins-Regular.ttf', 'Poppins');
 GlobalFonts.registerFromPath('src/web/app/assets/Twemoji-15.1.0.ttf', 'Twemoji');
 
-app.use(
-    '/*',
-    serveStatic({
-        root: './src/web/',
-        rewriteRequestPath: (path: string) => {
-            if (!path.includes('.') && !path.endsWith('/')) {
-                path += '.html';
-            }
-            return path;
-        }
-    })
-);
-app.get('/favicon.ico', async (context) => {
-    return context.redirect('/app/assets/favicon.ico');
+app.use(async (context, next) => {
+    const url = new URL(context.req.url);
+    const subdomain = url.hostname.split('.')[0];
+    if (subdomain !== 'localhost') return context.json({ error: 'Unknown subdomain.' }, 404) as any;
+    return await next();
 });
 
-app.get('/jtohxl/', async (context) => {
-    return context.redirect('/app/jtohxl/');
-});
-
-app.get('/cscd/', async (context) => {
-    return context.redirect('/app/cscd/');
-});
-
+serveStatic(app);
+redirects(app);
 jtoh(app);
 
 app.get('/', async (context) => {

@@ -58,6 +58,36 @@ async function copyExampleOutputImage(button) {
     }, 2000);
 }
 
+async function downloadExampleOutputImage(button) {
+    if (
+        button.innerHTML === `${getGoogleIconHTML('check')} Downloaded!` ||
+        button.innerHTML === `${getGoogleIconHTML('downloading')} Downloading...`
+    )
+        return;
+    let username = document.getElementById('exampleInputUsername').value;
+    if (!username || username.length === 0) username = 'LoveliestJacob';
+    document.getElementById('exampleImageOutput').src = `/${username}`;
+    const url = document.getElementById('exampleImageOutput').src;
+    let ogText = button.innerHTML;
+    button.innerHTML = `${getGoogleIconHTML('downloading')} Downloading...`;
+    const image = await fetch(url)
+        .then((response) => response.blob())
+        .catch(() => null);
+    URL.createObjectURL(image);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${username.toLowerCase()}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    button.innerHTML = `${getGoogleIconHTML('check')} Downloaded!`;
+    button.classList.add('successButton');
+    setTimeout(() => {
+        button.innerHTML = ogText;
+        button.classList.remove('successButton');
+    }, 2000);
+}
+
 async function copyURL(url, button) {
     if (button.innerHTML === `${getGoogleIconHTML('check')} Copied!`) return;
     await navigator.clipboard.writeText(url).catch(() => alert('Failed to copy to clipboard!'));
@@ -109,7 +139,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 <a href="/app/fangame/atos/">AToS</a>
             </div>
             <div id="menuBar">
-                <a href="/app">Home</a>
+                <a href="/app/">Home</a>
                 <a href="/app/update-log">Update Log</a>
                 <a href="/app/faq">FAQ</a>
                 <a href="https://discord.com/oauth2/authorize?client_id=1285148080189997107" target="_blank">
