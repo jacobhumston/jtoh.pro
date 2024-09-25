@@ -178,3 +178,4 @@ dist
 db/
 
 cache/
+.VSCodeCounter/

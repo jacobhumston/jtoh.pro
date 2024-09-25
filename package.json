@@ -4,7 +4,10 @@
     "type": "module",
     "devDependencies": {
         "@types/bun": "latest",
+        "@types/clean-css": "^4.2.11",
         "@types/color": "^3.0.6",
+        "@types/mime-types": "^2.1.4",
+        "@types/uglify-js": "^3.17.5",
         "@types/uuid": "^10.0.0",
         "pm2": "^5.4.2",
         "prettier": "^3.3.3"
@@ -22,11 +25,14 @@
         "@keyv/sqlite": "^4.0.1",
         "@napi-rs/canvas": "^0.1.56",
         "bun": "v1.1.26",
+        "clean-css": "^5.3.3",
         "color": "^4.2.3",
         "date-fns": "^3.6.0",
         "hono": "^4.6.2",
         "keyv": "^5.0.3",
+        "mime-types": "^2.1.35",
         "tweetnacl": "^1.0.3",
+        "uglify-js": "^3.19.3",
         "uuid": "^10.0.0"
     }
 }
