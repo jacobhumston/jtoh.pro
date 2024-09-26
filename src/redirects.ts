@@ -24,4 +24,8 @@ export default function redirects(app: Hono) {
     app.get('/app', async (context) => {
         return context.redirect('/app/');
     });
+
+    app.get('/uptime', async (context) => {
+        return context.redirect('https://uptime.jtoh.pro');
+    });
 }
