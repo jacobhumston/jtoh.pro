@@ -13,13 +13,6 @@ const app = new Hono();
 GlobalFonts.registerFromPath('src/web/app/assets/Poppins-Regular.ttf', 'Poppins');
 GlobalFonts.registerFromPath('src/web/app/assets/Twemoji-15.1.0.ttf', 'Twemoji');
 
-app.use(async (context, next) => {
-    const url = new URL(context.req.url);
-    const subdomain = url.hostname.split('.')[0];
-    if (subdomain !== 'localhost') return context.json({ error: 'Unknown subdomain.' }, 404) as any;
-    return await next();
-});
-
 serveStatic(app);
 redirects(app);
 jtoh(app);

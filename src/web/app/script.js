@@ -35,7 +35,7 @@ async function copyExampleOutputURL(button) {
 async function copyExampleOutputImage(button) {
     if (
         button.innerHTML === `${getGoogleIconHTML('check')} Copied!` ||
-        button.innerHTML === `${getGoogleIconHTML('downloading')} Loading...`
+        button.innerHTML === `${getGoogleIconHTML('pending')} Loading...`
     )
         return;
     let username = document.getElementById('exampleInputUsername').value;
@@ -43,7 +43,7 @@ async function copyExampleOutputImage(button) {
     document.getElementById('exampleImageOutput').src = `/${username}`;
     const url = document.getElementById('exampleImageOutput').src;
     let ogText = button.innerHTML;
-    button.innerHTML = `${getGoogleIconHTML('downloading')} Loading...`;
+    button.innerHTML = `${getGoogleIconHTML('pending')} Loading...`;
     const image = await fetch(url)
         .then((response) => response.blob())
         .catch(() => null);
@@ -128,6 +128,8 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// Switched to server setup.
+/*
 window.addEventListener('DOMContentLoaded', () => {
     const root = document.documentElement;
     const templates = {
@@ -153,7 +155,16 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+*/
 
 function getGoogleIconHTML(name) {
     return `<span class="material-symbols-rounded">${name}</span>`;
 }
+
+window.addEventListener('DOMContentLoaded', () => {
+    const head = document.head;
+    const title = head.dataset.page;
+    if (title) {
+        document.title = `jtoh.pro - ${title}`;
+    }
+});

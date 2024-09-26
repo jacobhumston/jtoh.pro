@@ -127,7 +127,7 @@ export default function jtoh(app: Hono) {
                     towerStats.hardest_raw_difficulty !== null
                 ) {
                     let text = towerStats.hardest_tower.replaceAll(' ', '_');
-                    if (text.length > 30) text = towerStats.hardest_abbreviation;
+                    if (text.length > 35) text = towerStats.hardest_abbreviation;
                     const raw = towerStats.hardest_raw_difficulty.toString();
                     colorText(
                         ctx,
