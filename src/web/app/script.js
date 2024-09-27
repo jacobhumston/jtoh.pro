@@ -168,3 +168,13 @@ window.addEventListener('DOMContentLoaded', () => {
         document.title = `jtoh.pro - ${title}`;
     }
 });
+
+window.addEventListener('DOMContentLoaded', () => {
+    const url = new URL(window.location.href);
+    const params = url.searchParams;
+    const username = params.get('user');
+    if (username && document.getElementById('exampleInputUsername')) {
+        document.getElementById('exampleInputUsername').value = username;
+        updateExampleOutput();
+    }
+});
