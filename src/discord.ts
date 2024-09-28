@@ -123,9 +123,9 @@ export default function discordInteractions(app: Hono) {
                 username = encodeURIComponent(username);
 
                 if (!url.includes('?')) {
-                    url += `&=${v4().split('-')[0]}`;
-                } else {
                     url += `?nocache=${v4().split('-')[0]}`;
+                } else {
+                    url += `&nocache=${v4().split('-')[0]}`;
                 }
 
                 return context.json({
