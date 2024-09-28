@@ -38,6 +38,21 @@ export const commands = [
                         max_length: 20
                     }
                 ]
+            },
+            {
+                name: 'try-it-out',
+                description: 'Get a JToH try it out link.',
+                type: 1,
+                options: [
+                    {
+                        name: 'username',
+                        description: 'The Roblox username of the player.',
+                        type: 3,
+                        required: true,
+                        min_length: 3,
+                        max_length: 20
+                    }
+                ]
             }
         ],
         contexts: [0, 1, 2],
@@ -96,13 +111,23 @@ export default function discordInteractions(app: Hono) {
             if (data.data.name === 'jtoh') {
                 const command = data.data.options[0];
                 let url = `https://jtoh.pro/`;
-                const username = command.options[0].value;
+                let username = command.options[0].value;
                 if (command.name === 'card') {
                     url += username;
                 } else if (command.name === 'embed') {
                     url += `embed/${username}`;
+                } else if (command.name === 'try-it-out') {
+                    url += `app/?user=${username}`;
                 }
-                url += `?nocache=${v4().split('-')[0]}`;
+
+                username = encodeURIComponent(username);
+
+                if (!url.includes('?')) {
+                    url += `&=${v4().split('-')[0]}`;
+                } else {
+                    url += `?nocache=${v4().split('-')[0]}`;
+                }
+
                 return context.json({
                     type: 4,
                     data: {
@@ -122,6 +147,17 @@ export default function discordInteractions(app: Hono) {
                                         style: 5,
                                         label: 'jtoh.pro',
                                         url: 'https://jtoh.pro'
+                                    }
+                                ]
+                            },
+                            {
+                                type: 1,
+                                components: [
+                                    {
+                                        type: 2,
+                                        style: 5,
+                                        label: 'View towerstats.com Profile',
+                                        url: `https://towerstats.com/jtoh?username=${username}`
                                     }
                                 ]
                             }

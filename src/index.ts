@@ -7,6 +7,10 @@ import jtoh from './jtoh';
 import discordInteractions, { publishDiscordCommands } from './discord';
 import redirects from './redirects';
 import serveStatic from './static';
+import logger from './logger';
+import fs from 'node:fs';
+
+logger.info('Starting server...');
 
 const app = new Hono();
 
@@ -56,13 +60,23 @@ app.get('/ext/request-count', async (context) => {
 });
 
 discordInteractions(app);
-publishDiscordCommands().catch(console.error);
+publishDiscordCommands().catch(() => {
+    if (fs.existsSync('cache/discord-commands')) fs.rmSync('cache/discord-commands');
+    logger.error('Failed to publish Discord commands.');
+});
 
 app.notFound((context) => {
     return context.json({ error: 'Not found.' }, 404);
+});
+
+app.onError((error, context) => {
+    logger.error(error);
+    return context.json({ error: 'Internal server error.' }, 500);
 });
 
 export default {
     port: 80,
     fetch: app.fetch
 };
+
+logger.info('Server started.');
