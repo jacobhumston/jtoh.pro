@@ -1,16 +1,18 @@
 @font-face {
     font-family: 'Poppins';
     src: url('/app/assets/Poppins-Regular.ttf') format('truetype');
+    font-display: swap;
 }
 
 @font-face {
     font-family: 'JetBrainsMono';
     src: url('/app/assets/JetBrainsMono-Regular.ttf') format('truetype');
+    font-display: swap;
 }
 
 :root {
     --font: 'Poppins', Arial, sans-serif;
-    --color-text: #cececec4;
+    --color-text: #e9e9e9c4;
     --color-background: #222222;
     --color-background-lighter: rgba(75, 75, 75, 0.973);
     --color-text-link: #70b5ffda;
@@ -194,6 +196,7 @@ code {
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
     text-align: center;
+    line-height: 2.5;
 }
 
 #websitesBar a {
@@ -234,3 +237,9 @@ code {
     flex-basis: 100%;
     height: 0;
 }
+
+/*
+:root:not(.isLoaded) .material-symbols-rounded {
+    display: none !important;
+}
+*/
