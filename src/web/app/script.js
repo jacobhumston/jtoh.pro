@@ -174,7 +174,12 @@ window.addEventListener('DOMContentLoaded', () => {
     const params = url.searchParams;
     const username = params.get('user');
     if (username && document.getElementById('exampleInputUsername')) {
-        document.getElementById('exampleInputUsername').value = username;
+        document.getElementById('exampleInputUsername').value = encodeURIComponent(username);
         updateExampleOutput();
     }
+});
+
+window.addEventListener('load', () => {
+    const root = document.documentElement;
+    root.classList.add('isLoaded');
 });
