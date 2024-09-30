@@ -174,7 +174,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const params = url.searchParams;
     const username = params.get('user');
     if (username && document.getElementById('exampleInputUsername')) {
-        document.getElementById('exampleInputUsername').value = encodeURIComponent(username);
+        document.getElementById('exampleInputUsername').value = encodeURIComponent(username.slice(0, 20));
         updateExampleOutput();
     }
 });
@@ -182,4 +182,45 @@ window.addEventListener('DOMContentLoaded', () => {
 window.addEventListener('load', () => {
     const root = document.documentElement;
     root.classList.add('isLoaded');
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+    const leaderboards = [{ div: 'jtohCardLeaderboard', id: 'jtoh' }];
+    for (const leaderboard of leaderboards) {
+        const div = document.getElementById(leaderboard.div);
+        if (!div) continue;
+        fetch(`/ext/leaderboards/${leaderboard.id}`)
+            .then((response) => response.json())
+            .then((response) => {
+                if (response.error) {
+                    div.innerHTML = `<p>Something went wrong.</p>`;
+                    console.log(response.error);
+                    return;
+                }
+                for (const data of response.result) {
+                    const user = data.user;
+                    const count = data.count;
+                    const row = document.createElement('div');
+                    row.classList.add('leaderboardRow');
+                    const icon = document.createElement('img');
+                    icon.src = user.thumbnail;
+                    icon.alt = 'User Icon';
+                    icon.classList.add('leaderboardIcon');
+                    row.appendChild(icon);
+                    const name = document.createElement('span');
+                    name.innerText = user.name;
+                    name.classList.add('leaderboardName');
+                    row.appendChild(name);
+                    const countElement = document.createElement('span');
+                    countElement.innerText = count;
+                    countElement.classList.add('leaderboardCount');
+                    row.appendChild(countElement);
+                    div.appendChild(row);
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+                div.innerHTML = '<p>Failed to fetch data.</p>';
+            });
+    }
 });

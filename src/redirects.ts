@@ -7,7 +7,9 @@ export default function redirects(app: Hono) {
         { path: '/atos/', target: '/app/fangame/atos/' },
         { path: '/eta/', target: '/app/fangame/eta/' },
         { path: '/app', target: '/app/' },
-        { path: '/uptime', target: 'https://uptime.jtoh.pro' }
+        { path: '/uptime', target: 'https://uptime.jtoh.pro' },
+        { path: '/terms', target: '/app/terms' },
+        { path: '/privacy', target: '/app/privacy' }
     ];
 
     redirectRoutes.forEach((route) => {

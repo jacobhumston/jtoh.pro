@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import mime from 'mime-types';
 import cleanCSS from 'clean-css';
 import minifyHTML from 'html-minifier';
+import logger from './logger';
 
 const templates: { name: string; content: string }[] = [];
 for (const file of fs.readdirSync(join(__dirname, 'web', 'app', 'templates'))) {
@@ -15,6 +16,8 @@ for (const file of fs.readdirSync(join(__dirname, 'web', 'app', 'templates'))) {
         });
     }
 }
+
+logger.info(`Loaded ${templates.length} HTML templates.`);
 
 export default async function serveStatic(app: Hono) {
     app.use('/*', async (context, next) => {

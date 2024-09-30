@@ -4,7 +4,7 @@ import type { TowerData } from './type';
 import { v4 } from 'uuid';
 import Color from 'color';
 import { Hono } from 'hono';
-import { updateRequestCount } from './db';
+import { updateRequestCount, updateCardRequestCount } from './db';
 import * as roblox from './roblox';
 import images from './images';
 
@@ -14,6 +14,10 @@ export default function jtoh(app: Hono) {
 
         const providedUser: string = context.req.param('user').slice(0, 20);
         const data = await roblox.auth(context);
+
+        if (data !== undefined) {
+            updateCardRequestCount('jtoh', data).catch(() => undefined);
+        }
 
         const canvas = createCanvas(700, 300);
         const ctx = canvas.getContext('2d');
