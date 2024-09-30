@@ -15,6 +15,10 @@ export type BasicRobloxUserResult = {
     displayName: string;
 };
 
+export interface RobloxUserResult extends BasicRobloxUserResult {
+    thumbnail: string | undefined;
+}
+
 export async function usernameToUser(username: string): Promise<BasicRobloxUserResult> {
     const response = await fetch(baseUrls.users(`/v1/usernames/users`), {
         method: 'POST',
@@ -56,7 +60,7 @@ export async function userIdToThumbnail(userId: number): Promise<string> {
     return (await response.json()).data[0].imageUrl as string;
 }
 
-export async function auth(context: Context) {
+export async function auth(context: Context): Promise<RobloxUserResult | undefined> {
     const providedUser: string = context.req.param('user').slice(0, 20);
     let user: BasicRobloxUserResult | undefined = undefined;
     if (providedUser.startsWith('!')) {

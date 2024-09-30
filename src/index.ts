@@ -9,14 +9,16 @@ import redirects from './redirects';
 import serveStatic from './static';
 import logger from './logger';
 import fs from 'node:fs';
-
-logger.info('Starting server...');
+import webUtils from './webutils';
+import serveLeaderboards from './leaderboards';
 
 const app = new Hono();
 
 GlobalFonts.registerFromPath('src/web/app/assets/Poppins-Regular.ttf', 'Poppins');
 GlobalFonts.registerFromPath('src/web/app/assets/Twemoji-15.1.0.ttf', 'Twemoji');
 
+webUtils(app);
+serveLeaderboards(app);
 serveStatic(app);
 redirects(app);
 jtoh(app);
@@ -28,7 +30,7 @@ app.get('/', async (context) => {
 app.get('/ext/request-count', async (context) => {
     const now = new UTCDate();
     const startOfCurrentMonth = startOfMonth(now);
-    const startOfCurrentWeek = startOfWeek(now, { weekStartsOn: 1 });
+    const startOfCurrentWeek = startOfWeek(now);
     const startOfCurrentYear = startOfYear(now);
 
     let monthCount = 0;

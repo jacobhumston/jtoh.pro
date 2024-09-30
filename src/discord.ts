@@ -3,6 +3,7 @@ import tweetnacl from 'tweetnacl';
 import { discordInteractionsApplicationId, discordInteractionsPublicKey, discordInteractionsToken } from './tokens';
 import { v4 } from 'uuid';
 import fs from 'node:fs';
+import logger from './logger';
 
 export const commands = [
     {
@@ -67,8 +68,12 @@ export async function publishDiscordCommands() {
     if (!fs.existsSync('cache/discord-commands')) fs.writeFileSync('cache/discord-commands', '');
 
     const cache = fs.readFileSync('cache/discord-commands', 'utf-8');
-    if (cache === commandHash) return;
+    if (cache === commandHash) {
+        logger.info('Discord commands are already up to date.');
+        return;
+    }
 
+    logger.info('Publishing Discord commands...');
     fs.writeFileSync('cache/discord-commands', commandHash);
 
     const appId = discordInteractionsApplicationId;
