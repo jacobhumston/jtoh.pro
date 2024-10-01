@@ -248,6 +248,7 @@ code {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    margin-bottom: 15px;
 }
 
 .leaderboardRow {
@@ -255,6 +256,13 @@ code {
     flex-direction: row;
     gap: 10px;
     align-items: center;
+    vertical-align: middle;
+    text-align: center;
+    align-content: center;
+    justify-items: center;
+    margin-bottom: 5px;
+    background-color: var(--color-background-darker);
+    border-radius: 25px;
 }
 
 .leaderboardIcon {
@@ -262,4 +270,12 @@ code {
     height: 50px;
     border-radius: 50%;
     overflow: hidden;
+}
+
+.leaderboardCount {
+    margin-left: auto;
+    margin-right: 25px;
+    display: block;
+    font-weight: bold;
+    color: var(--color-text-bold);
 }

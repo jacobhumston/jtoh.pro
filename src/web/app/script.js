@@ -186,6 +186,7 @@ window.addEventListener('load', () => {
 
 window.addEventListener('DOMContentLoaded', () => {
     const leaderboards = [{ div: 'jtohCardLeaderboard', id: 'jtoh' }];
+    const formatter = new Intl.NumberFormat();
     for (const leaderboard of leaderboards) {
         const div = document.getElementById(leaderboard.div);
         if (!div) continue;
@@ -212,7 +213,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     name.classList.add('leaderboardName');
                     row.appendChild(name);
                     const countElement = document.createElement('span');
-                    countElement.innerText = count;
+                    countElement.innerText = formatter.format(count);
                     countElement.classList.add('leaderboardCount');
                     row.appendChild(countElement);
                     div.appendChild(row);

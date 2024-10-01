@@ -8,6 +8,6 @@ export default function serveLeaderboards(app: Hono) {
         const game = context.req.param('game') as gameNames;
         if (!gameNamesArray.includes(game)) return context.json({ error: 'Invalid game.' }, 400) as any;
         const cardRequests = await getOrderedCardRequests(game).catch(() => []);
-        return context.json({ result: cardRequests });
+        return context.json({ result: cardRequests.slice(0, 100) });
     });
 }
