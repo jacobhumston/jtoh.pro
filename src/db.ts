@@ -34,6 +34,7 @@ export async function getOrderedCardRequests(game: gameNames) {
     for await (const [key, value] of cardsRequestedDB.iterator()) {
         const [gameKey, _] = key.split('-');
         if (gameKey === game) {
+            if (value.user.name === 'LoveliestJacob') continue;
             values.push(value);
         }
     }
