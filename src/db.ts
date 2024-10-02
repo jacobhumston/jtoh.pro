@@ -30,6 +30,7 @@ export async function updateCardRequestCount(game: gameNames, user: RobloxUserRe
 
 export async function getOrderedCardRequests(game: gameNames) {
     const values: any = [];
+
     // @ts-ignore-next-line
     for await (const [key, value] of cardsRequestedDB.iterator()) {
         const [gameKey, _] = key.split('-');
@@ -39,6 +40,7 @@ export async function getOrderedCardRequests(game: gameNames) {
         }
     }
     values.sort((a: { count: number }, b: { count: number }) => b.count - a.count);
+    values.forEach((value: { count: number; rank: number }, index: number) => (value.rank = index + 1));
     return values;
 }
 

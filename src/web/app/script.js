@@ -201,22 +201,47 @@ window.addEventListener('DOMContentLoaded', () => {
                 for (const data of response.result) {
                     const user = data.user;
                     const count = data.count;
+
                     const row = document.createElement('div');
                     row.classList.add('leaderboardRow');
+
+                    const rank = document.createElement('span');
+                    rank.innerText = `#${data.rank}`;
+                    rank.classList.add('leaderboardRank');
+                    row.appendChild(rank);
+
+                    const iconContainer = document.createElement('div');
+                    iconContainer.classList.add('leaderboardIconContainer');
+
                     const icon = document.createElement('img');
-                    icon.src = user.thumbnail;
+                    if (user.thumbnail === '') {
+                        icon.src = '/app/assets/default-roblox-profile.png';
+                    } else {
+                        icon.src = user.thumbnail;
+                    }
                     icon.alt = 'User Icon';
                     icon.classList.add('leaderboardIcon');
-                    row.appendChild(icon);
+                    iconContainer.appendChild(icon);
+                    row.appendChild(iconContainer);
+
                     const name = document.createElement('span');
                     name.innerText = user.name;
                     name.classList.add('leaderboardName');
                     row.appendChild(name);
+
                     const countElement = document.createElement('span');
                     countElement.innerText = formatter.format(count);
                     countElement.classList.add('leaderboardCount');
                     row.appendChild(countElement);
                     div.appendChild(row);
+
+                    if (data.rank === 1) {
+                        iconContainer.classList.add('leaderboardIconContainerFirst');
+                    } else if (data.rank === 2) {
+                        iconContainer.classList.add('leaderboardIconContainerSecond');
+                    } else if (data.rank === 3) {
+                        iconContainer.classList.add('leaderboardIconContainerThird');
+                    }
                 }
             })
             .catch((error) => {
