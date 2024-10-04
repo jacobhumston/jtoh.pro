@@ -185,12 +185,15 @@ window.addEventListener('load', () => {
 });
 
 window.addEventListener('DOMContentLoaded', () => {
+    const url = new URL(window.location.href);
+    const params = url.searchParams;
+    const includeJacob = params.get('includeJacob') === 'true';
     const leaderboards = [{ div: 'jtohCardLeaderboard', id: 'jtoh' }];
     const formatter = new Intl.NumberFormat();
     for (const leaderboard of leaderboards) {
         const div = document.getElementById(leaderboard.div);
         if (!div) continue;
-        fetch(`/ext/leaderboards/${leaderboard.id}`)
+        fetch(`/ext/leaderboards/card-requests/${leaderboard.id}?includeJacob=${includeJacob}`)
             .then((response) => response.json())
             .then((response) => {
                 if (response.error) {
@@ -198,6 +201,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     console.log(response.error);
                     return;
                 }
+                div.innerHTML = '';
                 for (const data of response.result) {
                     const user = data.user;
                     const count = data.count;
@@ -205,13 +209,14 @@ window.addEventListener('DOMContentLoaded', () => {
                     const row = document.createElement('div');
                     row.classList.add('leaderboardRow');
 
+                    const iconContainer = document.createElement('div');
+                    iconContainer.classList.add('leaderboardIconContainer');
+                    row.appendChild(iconContainer);
+
                     const rank = document.createElement('span');
                     rank.innerText = `#${data.rank}`;
                     rank.classList.add('leaderboardRank');
-                    row.appendChild(rank);
-
-                    const iconContainer = document.createElement('div');
-                    iconContainer.classList.add('leaderboardIconContainer');
+                    iconContainer.appendChild(rank);
 
                     const icon = document.createElement('img');
                     if (user.thumbnail === '') {
@@ -222,12 +227,17 @@ window.addEventListener('DOMContentLoaded', () => {
                     icon.alt = 'User Icon';
                     icon.classList.add('leaderboardIcon');
                     iconContainer.appendChild(icon);
-                    row.appendChild(iconContainer);
 
                     const name = document.createElement('span');
-                    name.innerText = user.name;
+                    name.innerText = user.displayName;
                     name.classList.add('leaderboardName');
+                    name.appendChild(document.createElement('br'));
                     row.appendChild(name);
+
+                    const fullName = document.createElement('span');
+                    fullName.innerText = `@${user.name}`;
+                    fullName.classList.add('leaderboardFullName');
+                    name.appendChild(fullName);
 
                     const countElement = document.createElement('span');
                     countElement.innerText = formatter.format(count);
@@ -237,10 +247,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
                     if (data.rank === 1) {
                         iconContainer.classList.add('leaderboardIconContainerFirst');
+                        name.classList.add('leaderboardNameFirst');
                     } else if (data.rank === 2) {
                         iconContainer.classList.add('leaderboardIconContainerSecond');
+                        name.classList.add('leaderboardNameSecond');
                     } else if (data.rank === 3) {
                         iconContainer.classList.add('leaderboardIconContainerThird');
+                        name.classList.add('leaderboardNameThird');
                     }
                 }
             })
