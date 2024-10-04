@@ -25,17 +25,18 @@ export async function updateCardRequestCount(game: gameNames, user: RobloxUserRe
     const current = (await cardsRequestedDB.get<data>(key)) ?? { count: 0, user: user };
     if (current.user.thumbnail === undefined) current.user.thumbnail = '/app/assets/default-roblox-profile.png';
     current.count++;
+    current.user = user;
     return await cardsRequestedDB.set(key, current);
 }
 
-export async function getOrderedCardRequests(game: gameNames) {
+export async function getOrderedCardRequests(game: gameNames, includeJacob: boolean = false) {
     const values: any = [];
 
     // @ts-ignore-next-line
     for await (const [key, value] of cardsRequestedDB.iterator()) {
         const [gameKey, _] = key.split('-');
         if (gameKey === game) {
-            if (value.user.name === 'LoveliestJacob') continue;
+            if (value.user.name === 'LoveliestJacob' && !includeJacob) continue;
             values.push(value);
         }
     }

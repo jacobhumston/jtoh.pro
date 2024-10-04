@@ -5,19 +5,6 @@ import fs from 'node:fs';
 import mime from 'mime-types';
 import cleanCSS from 'clean-css';
 import minifyHTML from 'html-minifier';
-import logger from './logger';
-
-const templates: { name: string; content: string }[] = [];
-for (const file of fs.readdirSync(join(__dirname, 'web', 'app', 'templates'))) {
-    if (file.endsWith('.html')) {
-        templates.push({
-            name: file.slice(0, -5),
-            content: fs.readFileSync(join(__dirname, 'web', 'app', 'templates', file)).toString()
-        });
-    }
-}
-
-logger.info(`Loaded ${templates.length} HTML templates.`);
 
 export default async function serveStatic(app: Hono) {
     app.use('/*', async (context, next) => {
@@ -51,8 +38,12 @@ export default async function serveStatic(app: Hono) {
             file = Buffer.from(new cleanCSS().minify(file.toString()).styles);
         } else if (fileExt === '.html') {
             let content = file.toString();
-            for (const template of templates) {
-                content = content.replaceAll(`<template data-name="${template.name}"></template>`, template.content);
+            for (const file of fs.readdirSync(join(__dirname, 'web', 'app', 'templates'))) {
+                if (file.endsWith('.html')) {
+                    const name = file.slice(0, -5);
+                    const thisContent = fs.readFileSync(join(__dirname, 'web', 'app', 'templates', file)).toString();
+                    content = content.replaceAll(`<template data-name="${name}"></template>`, thisContent);
+                }
             }
             file = Buffer.from(
                 minifyHTML.minify(content, {
