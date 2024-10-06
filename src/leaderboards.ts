@@ -18,7 +18,7 @@ export default function serveLeaderboards(app: Hono) {
             page: page,
             total: {
                 users: cardRequests.length,
-                pages: Math.ceil(cardRequests.length / 100)
+                pages: Math.max(1, Math.ceil(cardRequests.length / 100))
             }
         });
     });

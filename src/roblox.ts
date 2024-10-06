@@ -49,7 +49,33 @@ export async function userIdToUser(userId: number): Promise<BasicRobloxUserResul
 
 export async function userIdToThumbnail(userId: number): Promise<string> {
     const response = await fetch(
-        baseUrls.thumbnails(`/v1/users/avatar-headshot?userIds=${userId}&size=352x352&format=Png&isCircular=false`),
+        baseUrls.thumbnails(`/v1/users/avatar-headshot?userIds=${userId}&size=352x352&format=Webp&isCircular=false`),
+        {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+    );
+    return (await response.json()).data[0].imageUrl as string;
+}
+
+export async function userIdToThumbnailFull(userId: number): Promise<string> {
+    const response = await fetch(
+        baseUrls.thumbnails(`/v1/users/avatar?userIds=${userId}&size=352x352&format=Webp&isCircular=false`),
+        {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+    );
+    return (await response.json()).data[0].imageUrl as string;
+}
+
+export async function userIdToThumbnailBust(userId: number): Promise<string> {
+    const response = await fetch(
+        baseUrls.thumbnails(`/v1/users/avatar-bust?userIds=${userId}&size=352x352&format=Webp&isCircular=false`),
         {
             method: 'GET',
             headers: {

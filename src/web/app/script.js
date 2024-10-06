@@ -185,15 +185,70 @@ window.addEventListener('load', () => {
 });
 
 window.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('leaderboardsContainer')) return;
+
     const url = new URL(window.location.href);
     const params = url.searchParams;
     const includeJacob = params.get('includeJacob') === 'true';
-    const leaderboards = [{ div: 'jtohCardLeaderboard', id: 'jtoh' }];
+    const type = params.get('type') ?? 'card-requests';
+    const other = params.get('other') ?? 'jtoh';
+    const page = parseInt(params.get('page') ?? 1) ?? 1;
     const formatter = new Intl.NumberFormat();
-    for (const leaderboard of leaderboards) {
-        const div = document.getElementById(leaderboard.div);
-        if (!div) continue;
-        fetch(`/ext/leaderboards/card-requests/${leaderboard.id}?includeJacob=${includeJacob}`)
+    const description = document.getElementById('leaderboardCurrentDescription');
+    const selectionContainer = document.getElementById('leaderboardSelectionContainer');
+    const container = document.getElementById('leaderboardDivContainer');
+    const leaderboards = [
+        {
+            name: 'Card Requests',
+            type: 'card-requests',
+            other: ['jtoh', 'atos', 'eta', 'jtohxl'],
+            description: 'The number of cards requested for a specific user.'
+        }
+    ];
+
+    leaderboards.forEach((type) => {
+        const typeContainer = document.createElement('div');
+        typeContainer.classList.add('leaderboardSelectionTypeContainer');
+        const name = document.createElement('span');
+        name.innerHTML = `<b>${type.name}</b> Leaderboard`;
+        name.classList.add('leaderboardSelectionType');
+        typeContainer.appendChild(name);
+        typeContainer.appendChild(document.createElement('br'));
+        selectionContainer.appendChild(typeContainer);
+        type.other.forEach((other) => {
+            const button = document.createElement('button');
+            button.innerText = other;
+            button.classList.add('leaderboardSelectionButton');
+            button.onclick = () => {
+                window.location.href = `/app/leaderboards?type=${type.type}&other=${other}&page=1${includeJacob ? '&includeJacob=true' : ''}`;
+            };
+            button.type = 'button';
+            typeContainer.appendChild(button);
+        });
+    });
+
+    const typeObject = leaderboards.find((x) => x.type === type);
+    if (!typeObject) {
+        description.innerHTML = `<p>Invalid leaderboard type.</p>`;
+        return;
+    }
+
+    description.innerHTML = `<p><b>${typeObject.name}</b> (${other}) - ${typeObject.description}</p>`;
+
+    if (isNaN(page) || page < 1) {
+        description.innerHTML = `<p>Invalid page number.</p>`;
+        return;
+    }
+
+    if (!typeObject.other.includes(other)) {
+        description.innerHTML = `<p>Invalid other parameter.</p>`;
+        return;
+    }
+
+    loadLeaderboard(container, type, other);
+
+    function loadLeaderboard(div, type, other) {
+        fetch(`/ext/leaderboards/${type}/${other}?includeJacob=${includeJacob}&page=${page}`)
             .then((response) => response.json())
             .then((response) => {
                 if (response.error) {
@@ -201,7 +256,56 @@ window.addEventListener('DOMContentLoaded', () => {
                     console.log(response.error);
                     return;
                 }
+                div.innerHTML = 'Loading...';
+
+                if (response.result.length === 0) {
+                    div.innerHTML = '<p>No data available for this leaderboard.</p>';
+                    return;
+                }
+
                 div.innerHTML = '';
+
+                if (response.total.pages > 1) {
+                    const pagination = document.createElement('div');
+                    pagination.classList.add('leaderboardPagination');
+                    div.appendChild(pagination);
+
+                    const previous = document.createElement('button');
+                    previous.innerText = 'Previous';
+                    previous.classList.add('leaderboardPaginationButton');
+                    previous.type = 'button';
+                    if (page > 1) {
+                        previous.onclick = () => {
+                            window.location.href = `/app/leaderboards?type=${type}&other=${other}&page=${page - 1}${
+                                includeJacob ? '&includeJacob=true' : ''
+                            }`;
+                        };
+                    } else {
+                        previous.disabled = true;
+                    }
+                    pagination.appendChild(previous);
+
+                    const pageText = document.createElement('span');
+                    pageText.innerText = `Page ${page} of ${response.total.pages}`;
+                    pageText.classList.add('leaderboardPaginationText');
+                    pagination.appendChild(pageText);
+
+                    const next = document.createElement('button');
+                    next.innerText = 'Next';
+                    next.classList.add('leaderboardPaginationButton');
+                    next.type = 'button';
+                    if (page < response.total.pages) {
+                        next.onclick = () => {
+                            window.location.href = `/app/leaderboards?type=${type}&other=${other}&page=${page + 1}${
+                                includeJacob ? '&includeJacob=true' : ''
+                            }`;
+                        };
+                    } else {
+                        next.disabled = true;
+                    }
+                    pagination.appendChild(next);
+                }
+
                 for (const data of response.result) {
                     const user = data.user;
                     const count = data.count;
@@ -214,15 +318,28 @@ window.addEventListener('DOMContentLoaded', () => {
                     row.appendChild(iconContainer);
 
                     const rank = document.createElement('span');
-                    rank.innerText = `#${data.rank}`;
+                    rank.innerText = `#${formatter.format(data.rank)}`;
                     rank.classList.add('leaderboardRank');
                     iconContainer.appendChild(rank);
 
                     const icon = document.createElement('img');
+                    icon.onerror = () => {
+                        if (icon.src !== '/app/assets/default-roblox-profile.png') {
+                            icon.src = '/app/assets/default-roblox-profile.png';
+                        }
+                    };
                     if (user.thumbnail === '') {
                         icon.src = '/app/assets/default-roblox-profile.png';
                     } else {
-                        icon.src = user.thumbnail;
+                        if (data.rank < 4) {
+                            fetch(`/ext/util/user-roblox-thumbnails/${user.id}`)
+                                .then(async (response) => {
+                                    icon.src = (await response.json()).bust;
+                                })
+                                .catch(() => {});
+                        } else {
+                            icon.src = user.thumbnail;
+                        }
                     }
                     icon.alt = 'User Icon';
                     icon.classList.add('leaderboardIcon');
@@ -248,12 +365,18 @@ window.addEventListener('DOMContentLoaded', () => {
                     if (data.rank === 1) {
                         iconContainer.classList.add('leaderboardIconContainerFirst');
                         name.classList.add('leaderboardNameFirst');
+                        row.classList.add('leaderboardRowFirst');
+                        icon.classList.add('leaderboardIconFirst');
                     } else if (data.rank === 2) {
                         iconContainer.classList.add('leaderboardIconContainerSecond');
                         name.classList.add('leaderboardNameSecond');
+                        row.classList.add('leaderboardRowSecond');
+                        icon.classList.add('leaderboardIconSecond');
                     } else if (data.rank === 3) {
                         iconContainer.classList.add('leaderboardIconContainerThird');
                         name.classList.add('leaderboardNameThird');
+                        row.classList.add('leaderboardRowThird');
+                        icon.classList.add('leaderboardIconThird');
                     }
                 }
             })
