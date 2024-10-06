@@ -71,6 +71,7 @@ b {
     margin-right: auto;
     padding: 20px;
     display: block;
+    padding-top: 0px;
 }
 
 .towerstatsUrl {
@@ -181,8 +182,10 @@ code {
     padding: 10px;
     text-align: center;
     background-color: var(--color-background-darker);
+    /*
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
+    */
 }
 
 #menuBar a {
@@ -194,8 +197,10 @@ code {
 #websitesBar {
     background-color: var(--color-background-even-more-darker);
     padding: 10px;
+    /*
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
+    */
     text-align: center;
     line-height: 2.5;
 }
@@ -263,19 +268,18 @@ code {
     justify-items: center;
     background-color: var(--color-background-darker);
     border-radius: 25px;
-    overflow: hidden;
     height: 50px;
 }
 
 .leaderboardIconContainer {
     width: 50px;
-    height: 48px;
+    height: 45px;
     background: rgba(255, 251, 255, 0);
     background: linear-gradient(180deg, rgba(255, 251, 255, 0), rgba(18, 18, 18, 1));
     border-top-right-radius: 45%;
     border-top-left-radius: 45%;
-    margin-top: 2px;
-    margin-left: 20px;
+    margin-top: 5px;
+    margin-left: 24px;
 }
 
 .leaderboardIconContainerFirst {
@@ -294,12 +298,18 @@ code {
 }
 
 .leaderboardIcon {
-    width: 45px;
+    width: 50px;
     height: 45px;
     object-fit: cover;
     display: inline-block;
     text-align: center;
-    margin-top: -20px;
+    margin-top: -25px;
+}
+
+.leaderboardIconFirst,
+.leaderboardIconSecond,
+.leaderboardIconThird {
+    margin-top: -21px !important;
 }
 
 .leaderboardCount {
@@ -314,9 +324,10 @@ code {
     color: var(--color-text-bold);
     display: block;
     position: relative;
-    margin-left: -45px;
+    margin-left: -15px;
     text-shadow: var(--color-background-even-more-darker) 0px 0px 2px;
     -webkit-font-smoothing: antialiased;
+    text-align: left;
 }
 
 .leaderboardName {
@@ -341,4 +352,85 @@ code {
 
 .leaderboardNameThird {
     color: #815a5a !important;
+}
+
+.leaderboardRowFirst {
+    border-bottom-color: #5aa6b8;
+    border-bottom-width: 4px;
+    border-bottom-style: solid;
+}
+
+.leaderboardRowSecond {
+    border-bottom-color: #f4ff79;
+    border-bottom-width: 4px;
+    border-bottom-style: solid;
+}
+
+.leaderboardRowThird {
+    border-bottom-color: #815a5a;
+    border-bottom-width: 4px;
+    border-bottom-style: solid;
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-text-header);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-background-even-more-darker);
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-bold);
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-text-header) var(--color-background-even-more-darker);
+}
+
+.leaderboardSelectionTypeContainer {
+    display: inline-block;
+    padding: 10px;
+    background-color: var(--color-background-darker);
+    border-radius: 15px;
+}
+
+.leaderboardSelectionButton {
+    font-size: medium;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.leaderboardPagination {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    background-color: var(--color-background-even-more-darker);
+    border-radius: 15px;
+    padding: 5px;
+}
+
+.leaderboardPaginationButton {
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 10px;
+}
+
+button:disabled {
+    background-color: var(--color-background-darker);
+    color: var(--color-text-darker);
+}
+
+button:disabled:hover {
+    cursor: not-allowed;
 }

@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { GlobalFonts } from '@napi-rs/canvas';
 import { statsDB } from './db';
-import { startOfMonth, startOfWeek, startOfYear, parse, isAfter } from 'date-fns';
+import { startOfMonth, startOfWeek, startOfYear, parse, isAfter, isToday } from 'date-fns';
 import { UTCDate } from '@date-fns/utc';
 import jtoh from './jtoh';
 import discordInteractions, { publishDiscordCommands } from './discord';
@@ -41,13 +41,13 @@ app.get('/ext/request-count', async (context) => {
     // @ts-ignore-next-line
     for await (const [key, value] of statsDB.iterator()) {
         const date = parse(key, 'MM-dd-yyyy', new UTCDate());
-        if (isAfter(date, startOfCurrentMonth)) {
+        if (isAfter(date, startOfCurrentMonth) || isToday(date)) {
             monthCount += value;
         }
-        if (isAfter(date, startOfCurrentWeek)) {
+        if (isAfter(date, startOfCurrentWeek) || isToday(date)) {
             weekCount += value;
         }
-        if (isAfter(date, startOfCurrentYear)) {
+        if (isAfter(date, startOfCurrentYear) || isToday(date)) {
             yearCount += value;
         }
         totalCount += value;
