@@ -1,3 +1,21 @@
+{
+    const root = document.documentElement;
+    const localStorage = window.localStorage;
+    const currentTheme = localStorage.getItem('theme');
+    if (!currentTheme) root.classList.add('themesDark');
+    else root.classList.add(currentTheme);
+}
+
+function updateTheme(theme) {
+    const root = document.documentElement;
+    const localStorage = window.localStorage;
+    root.classList.forEach((value) => {
+        if (value.startsWith('themes')) root.classList.remove(value);
+    });
+    root.classList.add(theme);
+    localStorage.setItem('theme', theme);
+}
+
 function updateExampleOutput() {
     let username = document.getElementById('exampleInputUsername').value;
     if (!username || username.length === 0) username = 'LoveliestJacob';
@@ -185,7 +203,8 @@ window.addEventListener('load', () => {
 });
 
 window.addEventListener('DOMContentLoaded', () => {
-    if (document.getElementById('leaderboardsContainer')) return;
+    const container = document.getElementById('leaderboardDivContainer');
+    if (!container) return;
 
     const url = new URL(window.location.href);
     const params = url.searchParams;
@@ -196,7 +215,6 @@ window.addEventListener('DOMContentLoaded', () => {
     const formatter = new Intl.NumberFormat();
     const description = document.getElementById('leaderboardCurrentDescription');
     const selectionContainer = document.getElementById('leaderboardSelectionContainer');
-    const container = document.getElementById('leaderboardDivContainer');
     const leaderboards = [
         {
             name: 'Card Requests',
@@ -286,7 +304,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     pagination.appendChild(previous);
 
                     const pageText = document.createElement('span');
-                    pageText.innerText = `Page ${page} of ${response.total.pages}`;
+                    pageText.innerText = `Page ${page}/${response.total.pages}`;
                     pageText.classList.add('leaderboardPaginationText');
                     pagination.appendChild(pageText);
 
@@ -385,4 +403,22 @@ window.addEventListener('DOMContentLoaded', () => {
                 div.innerHTML = '<p>Failed to fetch data.</p>';
             });
     }
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+    const themeChangeOpener = document.getElementById('themeChangeOpener');
+    if (!themeChangeOpener) return;
+    let enabled = false;
+    themeChangeOpener.addEventListener('click', () => {
+        enabled = !enabled;
+        const themes = document.getElementsByClassName('themeChanger');
+        for (const theme of themes) {
+            theme.dataset.enabled = enabled.toString();
+        }
+        if (enabled) {
+            themeChangeOpener.innerHTML = `${getGoogleIconHTML('visibility_off')} Hide Themes`;
+        } else {
+            themeChangeOpener.innerHTML = `${getGoogleIconHTML('brush')} Change Theme`;
+        }
+    });
 });

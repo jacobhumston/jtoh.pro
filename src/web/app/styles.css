@@ -12,6 +12,9 @@
 
 :root {
     --font: 'Poppins', Arial, sans-serif;
+}
+
+.themesDark {
     --color-text: #e9e9e9c4;
     --color-text-darker: rgba(185, 185, 185, 0.521);
     --color-background: #222222;
@@ -21,6 +24,34 @@
     --color-text-bold: #b58dffde;
     --color-background-darker: #2b2a2ade;
     --color-background-even-more-darker: #1d1d1d;
+    --color-text-highlight: #ffd54cd3;
+    --color-success: #58a35a;
+    --leaderboard-row-background: rgba(255, 251, 255, 0);
+    --leaderboard-row-background-part2: rgba(18, 18, 18, 1);
+    --leaderboard-first: #5aa6b8;
+    --leaderboard-second: #f4ff79;
+    --leaderboard-third: #815a5a;
+    --transparent: #00000000;
+}
+
+.themesLight {
+    --color-text: #2c2c2c;
+    --color-text-darker: rgb(22, 22, 22);
+    --color-background: #d1d1d1;
+    --color-background-lighter: rgba(255, 255, 255, 0.973);
+    --color-text-link: #133c68;
+    --color-text-header: #8e83a8;
+    --color-text-bold: #6c33d6de;
+    --color-background-darker: #dfdedede;
+    --color-background-even-more-darker: #c7c7c7;
+    --color-text-highlight: #c51a1ad3;
+    --color-success: #58a35a;
+    --leaderboard-row-background: rgba(255, 251, 255, 0);
+    --leaderboard-row-background-part2: rgba(18, 18, 18, 1);
+    --leaderboard-first: #5aa6b8;
+    --leaderboard-second: #f4ff79;
+    --leaderboard-third: #815a5a;
+    --transparent: #00000000;
 }
 
 html,
@@ -75,7 +106,7 @@ b {
 }
 
 .towerstatsUrl {
-    color: #ffd54cd3 !important;
+    color: var(--color-text-highlight) !important;
 }
 
 .split {
@@ -174,8 +205,8 @@ code {
 }
 
 .successButton {
-    background-color: #58a35a !important;
-    color: rgba(255, 255, 255, 0.822) !important;
+    background-color: var(--color-success) !important;
+    color: var(--color-text) !important;
 }
 
 #menuBar {
@@ -224,15 +255,15 @@ code {
     vertical-align: middle;
 }
 
-#interactionFlex {
+.interactionFlex {
     display: flex;
     flex-basis: 1;
     flex-direction: row;
     flex-wrap: wrap;
 }
 
-#interactionFlex button,
-#interactionFlex input {
+.interactionFlex button,
+.interactionFlex input {
     flex-grow: 1;
     display: inline-block;
     max-width: 100%;
@@ -274,8 +305,8 @@ code {
 .leaderboardIconContainer {
     width: 50px;
     height: 45px;
-    background: rgba(255, 251, 255, 0);
-    background: linear-gradient(180deg, rgba(255, 251, 255, 0), rgba(18, 18, 18, 1));
+    background: var(--leaderboard-row-background);
+    background: linear-gradient(180deg, var(--leaderboard-row-background), var(--leaderboard-row-background-part2));
     border-top-right-radius: 45%;
     border-top-left-radius: 45%;
     margin-top: 5px;
@@ -283,18 +314,18 @@ code {
 }
 
 .leaderboardIconContainerFirst {
-    background: #5aa6b8 !important;
-    background: linear-gradient(0deg, #5aa6b8, #ffffff00) !important;
+    background: var(--leaderboard-first) !important;
+    background: linear-gradient(0deg, var(--leaderboard-first), var(--transparent)) !important;
 }
 
 .leaderboardIconContainerSecond {
-    background: #f4ff79 !important;
-    background: linear-gradient(0deg, #f4ff79, #ffffff00) !important;
+    background: var(--leaderboard-second) !important;
+    background: linear-gradient(0deg, var(--leaderboard-second), var(--transparent)) !important;
 }
 
 .leaderboardIconContainerThird {
-    background: #815a5a !important;
-    background: linear-gradient(0deg, #815a5a, #ffffff00) !important;
+    background: var(--leaderboard-third) !important;
+    background: linear-gradient(0deg, var(--leaderboard-third), var(--transparent)) !important;
 }
 
 .leaderboardIcon {
@@ -343,31 +374,31 @@ code {
 }
 
 .leaderboardNameFirst {
-    color: #5aa6b8 !important;
+    color: var(--leaderboard-first) !important;
 }
 
 .leaderboardNameSecond {
-    color: #f4ff79 !important;
+    color: var(--leaderboard-second) !important;
 }
 
 .leaderboardNameThird {
-    color: #815a5a !important;
+    color: var(--leaderboard-third) !important;
 }
 
 .leaderboardRowFirst {
-    border-bottom-color: #5aa6b8;
+    border-bottom-color: var(--leaderboard-first);
     border-bottom-width: 4px;
     border-bottom-style: solid;
 }
 
 .leaderboardRowSecond {
-    border-bottom-color: #f4ff79;
+    border-bottom-color: var(--leaderboard-second);
     border-bottom-width: 4px;
     border-bottom-style: solid;
 }
 
 .leaderboardRowThird {
-    border-bottom-color: #815a5a;
+    border-bottom-color: var(--leaderboard-third);
     border-bottom-width: 4px;
     border-bottom-style: solid;
 }
@@ -424,6 +455,7 @@ code {
     padding-left: 10px;
     padding-right: 10px;
     border-radius: 10px;
+    width: 100px;
 }
 
 button:disabled {
@@ -433,4 +465,38 @@ button:disabled {
 
 button:disabled:hover {
     cursor: not-allowed;
+}
+
+#themeChangeOpener,
+.themeChanger {
+    padding: 10px;
+    background-color: var(--color-background-darker);
+    display: inline-block;
+    margin: 0px;
+    margin-left: 5px;
+}
+
+#themeChangeOpener .material-symbols-rounded,
+.themeChanger .material-symbols-rounded {
+    vertical-align: bottom;
+}
+
+#themeContainer {
+    text-align: right;
+    padding: 10px;
+    float: right;
+}
+
+#themeChangeOpener:hover,
+.themeChanger:hover {
+    background-color: var(--color-background-even-more-darker);
+    color: var(--color-text);
+}
+
+.themeChanger[data-enabled='true'] {
+    display: inline-block;
+}
+
+.themeChanger[data-enabled='false'] {
+    display: none;
 }
