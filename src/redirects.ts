@@ -6,10 +6,12 @@ export default function redirects(app: Hono) {
         { path: '/cscd/', target: '/app/fangame/cscd/' },
         { path: '/atos/', target: '/app/fangame/atos/' },
         { path: '/eta/', target: '/app/fangame/eta/' },
+        { path: '/jtohxxl/', target: '/app/fangame/jtohxxl/' },
         { path: '/app', target: '/app/' },
         { path: '/uptime', target: 'https://uptime.jtoh.pro' },
         { path: '/terms', target: '/app/terms' },
-        { path: '/privacy', target: '/app/privacy' }
+        { path: '/privacy', target: '/app/privacy' },
+        { path: '/discord-bot', target: 'https://discord.com/oauth2/authorize?client_id=1285148080189997107' }
     ];
 
     redirectRoutes.forEach((route) => {
