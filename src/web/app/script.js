@@ -2,7 +2,8 @@
     const root = document.documentElement;
     const localStorage = window.localStorage;
     const currentTheme = localStorage.getItem('theme');
-    if (!currentTheme) root.classList.add('themesDark');
+    const prefersLightMode = window.matchMedia('(prefers-color-scheme: light)').matches;
+    if (!currentTheme) prefersLightMode ? root.classList.add('themesLight') : root.classList.add('themesDark');
     else root.classList.add(currentTheme);
 }
 
@@ -421,4 +422,33 @@ window.addEventListener('DOMContentLoaded', () => {
             themeChangeOpener.innerHTML = `${getGoogleIconHTML('brush')} Change Theme`;
         }
     });
+
+    const loggedInDetails = document.getElementById('loggedInDetails');
+    if (loggedInDetails) {
+        fetch('/ext/auth/@me').then(async (response) => {
+            const data = await response.json();
+            const user = data.user;
+            if (!user) {
+                loggedInDetails.innerHTML = '<a id="loginButton" href="/login">Login</a>';
+                return;
+            }
+            const icon = document.createElement('img');
+            icon.onerror = () => {
+                if (icon.src !== '/app/assets/default-roblox-profile.png') {
+                    icon.src = '/app/assets/default-roblox-profile.png';
+                }
+            };
+            icon.src = user.thumbnail;
+            icon.alt = 'User Icon';
+            icon.id = 'loggedInIcon';
+            loggedInDetails.appendChild(icon);
+
+            const name = document.createElement('span');
+            name.innerText = user.name;
+            name.id = 'loggedInName';
+            loggedInDetails.appendChild(name);
+
+            loggedInDetails.classList.add('loggedIn');
+        });
+    }
 });

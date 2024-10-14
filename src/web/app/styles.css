@@ -500,3 +500,50 @@ button:disabled:hover {
 .themeChanger[data-enabled='false'] {
     display: none;
 }
+
+#loggedInDetails {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+#loginButton {
+    background-color: var(--color-text-header);
+    color: var(--color-text);
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#loginButton:hover {
+    background-color: var(--color-text);
+    color: var(--color-background);
+}
+
+#loggedInIcon {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    display: inline;
+    text-align: center;
+    border-radius: 50%;
+    vertical-align: middle;
+    background-color: var(--color-background-lighter);
+}
+
+#loggedInName {
+    vertical-align: middle;
+    margin-left: 10px;
+    font-size: large;
+}
+
+.loggedIn {
+    background-color: var(--color-background-even-more-darker);
+    border-radius: 20px;
+    padding-right: 15px;
+}

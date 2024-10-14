@@ -14,6 +14,7 @@ export default function jtoh(app: Hono) {
 
         const providedUser: string = context.req.param('user').slice(0, 20);
         const data = await roblox.auth(context);
+        const formatter = new Intl.NumberFormat('en-US');
 
         if (data !== undefined) {
             updateCardRequestCount('jtoh', data).catch(() => undefined);
@@ -241,6 +242,16 @@ export default function jtoh(app: Hono) {
                     20,
                     155
                 );
+
+                ctx.textAlign = 'left';
+                ctx.fillStyle = '#f8f8f8';
+                ctx.font = 'bold 15px Poppins, Twemoji';
+                ctx.fillText(`Skill Points (Calculated)`, 400, 135);
+
+                ctx.textAlign = 'left';
+                ctx.fillStyle = '#bdbdbd';
+                ctx.font = 'bold 15px Poppins, Twemoji';
+                ctx.fillText(`${formatter.format(towerStats.skill_points)}`, 400, 155);
 
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#f8f8f8';

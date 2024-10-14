@@ -6,7 +6,6 @@ import type { RobloxUserResult } from './roblox';
 import type { gameNames } from './gamelist';
 
 if (!fs.existsSync('db/')) fs.mkdirSync('db/');
-if (!fs.existsSync('db/stats.sqlite')) fs.writeFileSync('db/stats.sqlite', '');
 
 const statsDBSqlite = new KeyvSqlite('sqlite://db/stats.sqlite');
 const statsDB = new Keyv({ store: statsDBSqlite });
@@ -45,4 +44,7 @@ export async function getOrderedCardRequests(game: gameNames, includeJacob: bool
     return values;
 }
 
-export { statsDB, cardsRequestedDB };
+const loginAuthDBSqlite = new KeyvSqlite('sqlite://db/authLogin.sqlite');
+const loginAuthDB = new Keyv({ store: loginAuthDBSqlite });
+
+export { statsDB, cardsRequestedDB, loginAuthDB };
