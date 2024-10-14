@@ -12,3 +12,5 @@ export const discordInteractionsToken = isDev
 
 export const robloxAuthClientId = '2567423461004624377';
 export const robloxAuthSecret = 'RBX-KkLtWcojrUu8-RE95CFx4MenWvsMH6ty2Pvv7COmX4slZTNQ0Mb8tIVinmrXuE2_';
+
+export const theCatApiToken = 'live_2nTZ9TxN25x26zvxK3MGh00CALdsOJ4GNX552EQ3mqa6YCKM29nGRTBrA0ks45Ao';

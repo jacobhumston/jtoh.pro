@@ -12,8 +12,10 @@ export default function redirects(app: Hono) {
         { path: '/terms', target: '/app/terms' },
         { path: '/privacy', target: '/app/privacy' },
         { path: '/discord-bot', target: 'https://discord.com/oauth2/authorize?client_id=1285148080189997107' },
-        { path: 'login', target: '/ext/auth' },
-        { path: 'logout', target: '/ext/auth/logout' }
+        { path: '/login', target: '/ext/auth' },
+        { path: '/logout', target: '/ext/auth/logout' },
+        { path: '/app/admin', target: '/app/admin/' },
+        { path: '/app/update-log', target: '/app/announcements' }
     ];
 
     redirectRoutes.forEach((route) => {

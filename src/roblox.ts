@@ -105,3 +105,32 @@ export async function auth(context: Context): Promise<RobloxUserResult | undefin
             : undefined;
     return data;
 }
+
+// https://devforum.roblox.com/t/using-robloxs-avatar-3d-api-to-import-users-avatars-into-a-website-or-whatever-youd-like/2432524
+
+export function getRobloxCDNFromHash(hash: string) {
+    for (var i = 31, t = 0; t < 38; t++) i ^= hash[t].charCodeAt(0);
+    return `https://t${(i % 8).toString()}.rbxcdn.com/${hash}`;
+}
+
+export async function getRobloxAvatar3dAssets(userId: number) {
+    const result1 = await fetch(`https://thumbnails.roblox.com/v1/users/avatar-3d?userId=${userId}`)
+        .then((res) => res.json())
+        .catch(() => undefined);
+    if (!result1) return null;
+    if (!result1.imageUrl) return null;
+
+    const result2 = await fetch(result1.imageUrl)
+        .then((res) => res.json())
+        .catch(() => undefined);
+    if (!result2) return null;
+    if (!result2.camera || !result2.aabb || !result2.mtl || !result2.obj || !result2.textures) return null;
+
+    return {
+        camera: result2.camera,
+        aabb: result2.aabb,
+        mtl: getRobloxCDNFromHash(result2.mtl),
+        obj: getRobloxCDNFromHash(result2.obj),
+        textures: result2.textures.map((texture: string) => getRobloxCDNFromHash(texture))
+    };
+}

@@ -86,11 +86,18 @@ export default function jtoh(app: Hono) {
                 data.thumbnail !== undefined
                     ? await loadImage(data.thumbnail).catch(() => images.defaultRobloxProfile)
                     : images.defaultRobloxProfile;
-            const towerStats: TowerData | undefined = await fetch(
+            let towerStats: TowerData | undefined = await fetch(
                 `https://api.towerstats.com/?id=${data.id}&apiKey=2f8a7a78-9b03-4e95-ace9-1cd06334a16b-d2444398-630c-445a-b5b1-486b92d5d4fe`
             )
-                .then((res) => res.json())
+                .then((res) => {
+                    if (res.ok) return res.json();
+                    return undefined;
+                })
                 .catch(() => undefined);
+
+            if (towerStats !== undefined && (towerStats.error as any) !== undefined) {
+                towerStats = undefined;
+            }
 
             ctx.save();
             drawRoundedRect(ctx, 10, 5, 100, 100, 50);
@@ -179,7 +186,11 @@ export default function jtoh(app: Hono) {
                     ctx.fillText('This user has not completed a tower!', 120, 98);
                 }
 
-                {
+                if (
+                    towerStats.difficulties !== undefined &&
+                    towerStats.difficulty_colors !== undefined &&
+                    towerStats.difficulty_progress !== undefined
+                ) {
                     const length = 660;
                     const startY = 245;
                     ctx.fillStyle = '#5a5a5a';
@@ -292,7 +303,15 @@ export default function jtoh(app: Hono) {
 
                 ctx.fillStyle = 'white';
                 ctx.font = '25px Poppins';
-                ctx.fillText('Please try again later.', canvas.width / 2, canvas.height / 2 + 30);
+                ctx.fillText('Please try again in a minute.', canvas.width / 2, canvas.height / 2 + 30);
+
+                ctx.fillStyle = '#a8a8a8';
+                ctx.font = 'italic 22px Poppins';
+                ctx.fillText(
+                    'Please avoid spamming card requests if possible.',
+                    canvas.width / 2,
+                    canvas.height / 2 + 80
+                );
             }
 
             ctx.fillStyle = '#a8a8a8';

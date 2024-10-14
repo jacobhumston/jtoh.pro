@@ -17,20 +17,22 @@
         "typescript": "^5.5.4"
     },
     "scripts": {
-        "format": "npx prettier ./ --write",
+        "format": "npx prettier ./ --write --cache",
         "start": "bun src/index.ts --dev",
         "start-prod": "pm2 start \"bunx bun run src/index.ts\""
     },
     "dependencies": {
         "@date-fns/utc": "^2.1.0",
         "@keyv/sqlite": "^4.0.1",
-        "@napi-rs/canvas": "^0.1.56",
+        "@napi-rs/canvas": "^0.1.58",
+        "@thatapicompany/thecatapi": "^1.0.2",
         "bun": "v1.1.26",
         "clean-css": "^5.3.3",
         "color": "^4.2.3",
         "date-fns": "^3.6.0",
         "euphoria-logger": "^1.1.6",
         "hono": "^4.6.4",
+        "hono-rate-limiter": "^0.4.0",
         "html-minifier": "^4.0.0",
         "keyv": "^5.1.0",
         "loglevel": "^1.9.2",

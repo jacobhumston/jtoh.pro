@@ -10,7 +10,7 @@ import { v4 } from 'uuid';
 export default function setupLoginAuth(app: Hono) {
     app.get('/ext/auth/@me', async (context) => {
         const user = await getSignedInRobloxUser(context);
-        return context.json({ user: user });
+        return context.json({ user: user, admin: await isSignedInAdmin(context) });
     });
 
     app.get('/ext/auth', async (context) => {
@@ -35,7 +35,7 @@ export default function setupLoginAuth(app: Hono) {
                     failed = true;
                     return;
                 }
-                const userResponse = await fetch('https://apis.roblox.com/oauth/v1/userinfo', {
+                fetch('https://apis.roblox.com/oauth/v1/userinfo', {
                     headers: {
                         Authorization: `Bearer ${tokenResponseJSON.access_token}`
                     }
@@ -86,7 +86,7 @@ export default function setupLoginAuth(app: Hono) {
         const token = getCookie(context, 'auth-token') as string;
         await loginAuthDB.delete(token);
         setCookie(context, 'auth-token', '', { expires: new Date(0) });
-        return context.json({ success: true });
+        return context.redirect('/');
     });
 }
 
@@ -100,4 +100,10 @@ export async function getSignedInRobloxUser(context: Context) {
 
 export function getAuthLoginURL() {
     return `https://apis.roblox.com/oauth/v1/authorize?client_id=${robloxAuthClientId}&redirect_uri=${isDev ? 'http://localhost/ext/auth' : 'http://jtoh.pro/ext/auth'}&scope=openid%20profile&response_type=code`;
+}
+
+export async function isSignedInAdmin(context: Context) {
+    const user = await getSignedInRobloxUser(context);
+    if (!user) return false;
+    return user.id === 2614622891;
 }
