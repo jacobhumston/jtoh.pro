@@ -11,7 +11,9 @@ export default function redirects(app: Hono) {
         { path: '/uptime', target: 'https://uptime.jtoh.pro' },
         { path: '/terms', target: '/app/terms' },
         { path: '/privacy', target: '/app/privacy' },
-        { path: '/discord-bot', target: 'https://discord.com/oauth2/authorize?client_id=1285148080189997107' }
+        { path: '/discord-bot', target: 'https://discord.com/oauth2/authorize?client_id=1285148080189997107' },
+        { path: 'login', target: '/ext/auth' },
+        { path: 'logout', target: '/ext/auth/logout' }
     ];
 
     redirectRoutes.forEach((route) => {

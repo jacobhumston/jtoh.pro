@@ -29,6 +29,7 @@ export interface TowerData {
     hardest_tower: string | null;
     has_sc_completion: boolean;
     id: number;
+    skill_points: number;
     sub_difficulties: {
         '0.01': 'Bottom';
         '0.11': 'Bottom-Low';
@@ -43,3 +44,10 @@ export interface TowerData {
     total_towers: number;
     username: string;
 }
+
+export type LoggedInUser = {
+    id: number;
+    username: string;
+    name: string;
+    thumbnail: string;
+};

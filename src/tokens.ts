@@ -9,3 +9,6 @@ export const discordInteractionsApplicationId = isDev ? '1285146763455365194' : 
 export const discordInteractionsToken = isDev
     ? 'MTI4NTE0Njc2MzQ1NTM2NTE5NA.Gs9R9w.-dXTS8YXPAY-o-33PoKuuUuAy5SiT0RtYDF7uw'
     : 'MTI4NTE0ODA4MDE4OTk5NzEwNw.GRRp8v.My3_48n6vIWOKZwQOOjPzZ1RaxTbvpyu6PiG5E';
+
+export const robloxAuthClientId = '2567423461004624377';
+export const robloxAuthSecret = 'RBX-KkLtWcojrUu8-RE95CFx4MenWvsMH6ty2Pvv7COmX4slZTNQ0Mb8tIVinmrXuE2_';
