@@ -14,7 +14,8 @@ import fs from 'node:fs';
 import webUtils from './webutils';
 import serveLeaderboards from './leaderboards';
 import { isDev } from './dev';
-import setupLoginAuth from './loginauth';
+import setupLoginAuth, { isSignedInAdmin } from './loginauth';
+import { rateLimiter } from 'hono-rate-limiter';
 
 const app = new Hono();
 
@@ -32,6 +33,28 @@ app.use(async (context, next) => {
         return context.json({ error: 'Invalid host.' }, 400);
     }
     await next();
+});
+
+app.use(
+    rateLimiter({
+        windowMs: 1 * 60 * 1000,
+        limit: 30,
+        standardHeaders: 'draft-6',
+        keyGenerator: (context) => {
+            return context.req.path;
+        },
+        handler: async (context) => {
+            return context.json({ error: 'Rate limit exceeded. Please wait and try again.' }, 429) as any;
+        }
+    })
+);
+
+app.use('/app/admin/*', async (context, next) => {
+    if (await isSignedInAdmin(context)) {
+        await next();
+    } else {
+        return context.json({ error: 'Unauthorized.' }, 401);
+    }
 });
 
 setupLoginAuth(app);

@@ -424,7 +424,8 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     const loggedInDetails = document.getElementById('loggedInDetails');
-    if (loggedInDetails) {
+    const menuBar = document.getElementById('menuBar');
+    if (loggedInDetails && menuBar) {
         fetch('/ext/auth/@me').then(async (response) => {
             const data = await response.json();
             const user = data.user;
@@ -449,6 +450,13 @@ window.addEventListener('DOMContentLoaded', () => {
             loggedInDetails.appendChild(name);
 
             loggedInDetails.classList.add('loggedIn');
+
+            if (data.admin === true) {
+                const link = document.createElement('a');
+                link.href = '/app/admin';
+                link.innerText = 'Admin Panel';
+                menuBar.appendChild(link);
+            }
         });
     }
 });

@@ -43,6 +43,7 @@ export interface TowerData {
     };
     total_towers: number;
     username: string;
+    error: string | undefined;
 }
 
 export type LoggedInUser = {
