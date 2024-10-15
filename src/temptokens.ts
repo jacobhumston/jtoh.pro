@@ -8,6 +8,7 @@ const tokens: { [key: string]: string } = {};
 export function generateTempToken(name: string) {
     const token = `T$${v4()}-${v4()}-${v4()}-${v4()}-${v4()}-${v4()}`;
     tokens[name] = token;
+    return token;
 }
 
 /**

@@ -46,7 +46,7 @@ export default function setupLoginAuth(app: Hono) {
                             failed = true;
                             return;
                         }
-                        const token = `${v4()}-${v4()}-${v4()}-${v4()}-${v4()}-${v4()}`;
+                        const token = `${v4()}-${v4()}-${v4()}-${v4()}-${v4()}-${v4()}-${v4()}-${v4()}`;
                         await loginAuthDB.set(
                             token,
                             {

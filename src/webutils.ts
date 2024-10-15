@@ -43,9 +43,6 @@ export default function webUtils(app: Hono) {
     app.get('/ext/util/user-roblox-avatar-3d/:userId', async (context) => {
         const userId = parseInt(context.req.param('userId'));
         if (isNaN(userId)) return context.json({ error: 'Invalid userId.' }, 400);
-        return context.json({
-            id: userId,
-            avatar: await getRobloxAvatar3dAssets(userId).catch(() => null)
-        });
+        return context.json(Object.assign({ userId }, await getRobloxAvatar3dAssets(userId).catch(() => null)));
     });
 }
