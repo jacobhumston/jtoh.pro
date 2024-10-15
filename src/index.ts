@@ -16,6 +16,7 @@ import serveLeaderboards from './leaderboards';
 import { isDev } from './dev';
 import setupLoginAuth, { isSignedInAdmin } from './loginauth';
 import { rateLimiter } from 'hono-rate-limiter';
+import { getTempToken } from './temptokens';
 
 const app = new Hono();
 
@@ -45,6 +46,9 @@ app.use(
         },
         handler: async (context) => {
             return context.json({ error: 'Rate limit exceeded. Please wait and try again.' }, 429) as any;
+        },
+        skip: async (context) => {
+            return (context.req.query('rlb-token') ?? '') === getTempToken('rlb-token');
         }
     })
 );
