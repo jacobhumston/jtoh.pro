@@ -220,29 +220,48 @@ window.addEventListener('DOMContentLoaded', () => {
         {
             name: 'Card Requests',
             type: 'card-requests',
-            other: ['jtoh', 'atos', 'eta', 'jtohxl'],
+            other: ['JToH', 'AToS', 'TEA', 'JToH XL', 'JToH XXL'],
             description: 'The number of cards requested for a specific user.'
+        },
+        {
+            name: 'Skill Points',
+            type: 'skill-points',
+            other: ['JToH', 'AToS', 'TEA', 'JToH XL', 'JToH XXL'],
+            description: 'The number of skill points for a specific user.'
         }
     ];
+    const fixOther = (string) => string.toLowerCase().replaceAll(' ', '');
 
     leaderboards.forEach((type) => {
         const typeContainer = document.createElement('div');
         typeContainer.classList.add('leaderboardSelectionTypeContainer');
         const name = document.createElement('span');
-        name.innerHTML = `<b>${type.name}</b> Leaderboard`;
+        name.innerHTML = `<b>${type.name}</b>`;
         name.classList.add('leaderboardSelectionType');
         typeContainer.appendChild(name);
         typeContainer.appendChild(document.createElement('br'));
         selectionContainer.appendChild(typeContainer);
-        type.other.forEach((other) => {
+        type.other.forEach((other, index) => {
             const button = document.createElement('button');
             button.innerText = other;
             button.classList.add('leaderboardSelectionButton');
+            const link = `/app/leaderboards?type=${type.type}&other=${fixOther(other)}&page=1${includeJacob ? '&includeJacob=true' : ''}`;
             button.onclick = () => {
-                window.location.href = `/app/leaderboards?type=${type.type}&other=${other}&page=1${includeJacob ? '&includeJacob=true' : ''}`;
+                window.location.href = link;
             };
             button.type = 'button';
+            if (link === ((url) => url.pathname + url.search)(new URL(window.location.href))) {
+                button.classList.add('leaderboardSelectionButtonSelected');
+                button.disabled = true;
+                const check = setInterval(() => {
+                    if (document.documentElement.classList.contains('isLoaded')) {
+                        clearInterval(check);
+                        button.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }, 100);
+            }
             typeContainer.appendChild(button);
+            if (index - (1 % 3) === 1) typeContainer.appendChild(document.createElement('br'));
         });
     });
 
@@ -259,7 +278,8 @@ window.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    if (!typeObject.other.includes(other)) {
+    const otherValue = typeObject.other.find((x) => fixOther(x) === other);
+    if (!otherValue) {
         description.innerHTML = `<p>Invalid other parameter.</p>`;
         return;
     }
@@ -413,13 +433,21 @@ window.addEventListener('DOMContentLoaded', () => {
     themeChangeOpener.addEventListener('click', () => {
         enabled = !enabled;
         const themes = document.getElementsByClassName('themeChanger');
+        const loggedInName = document.getElementById('loggedInName');
+        const loggedInDetails = document.getElementById('loggedInDetails');
         for (const theme of themes) {
             theme.dataset.enabled = enabled.toString();
         }
         if (enabled) {
-            themeChangeOpener.innerHTML = `${getGoogleIconHTML('visibility_off')} Hide Themes`;
+            //themeChangeOpener.innerHTML = `${getGoogleIconHTML('visibility_off')} Hide Themes`;
+            themeChangeOpener.innerHTML = `${getGoogleIconHTML('visibility_off')}`;
+            if (loggedInName) loggedInName.style.display = 'none';
+            if (loggedInDetails) loggedInDetails.style.paddingRight = '0px';
         } else {
-            themeChangeOpener.innerHTML = `${getGoogleIconHTML('brush')} Change Theme`;
+            //themeChangeOpener.innerHTML = `${getGoogleIconHTML('brush')} Change Theme`;
+            themeChangeOpener.innerHTML = `${getGoogleIconHTML('brush')}`;
+            if (loggedInName) loggedInName.style.display = '';
+            if (loggedInDetails) loggedInDetails.style.paddingRight = '';
         }
     });
 

@@ -13,6 +13,9 @@ const statsDB = new Keyv({ store: statsDBSqlite });
 const cardsRequestedDBSqlite = new KeyvSqlite('sqlite://db/cardsRequested.sqlite');
 const cardsRequestedDB = new Keyv({ store: cardsRequestedDBSqlite });
 
+const skillPointsDBSqlite = new KeyvSqlite('sqlite://db/skillpoints.sqlite');
+const skillPointsDB = new Keyv({ store: skillPointsDBSqlite });
+
 export async function updateRequestCount() {
     const today = new UTCDate().toLocaleString('en-US').split(',')[0].replaceAll('/', '-');
     statsDB.set(today, ((await statsDB.get<number>(today)) ?? 0) + 1);
@@ -28,14 +31,18 @@ export async function updateCardRequestCount(game: gameNames, user: RobloxUserRe
     return await cardsRequestedDB.set(key, current);
 }
 
-export async function getOrderedCardRequests(game: gameNames, includeJacob: boolean = false) {
+export async function getOrderedDB(
+    db: typeof skillPointsDB | typeof cardsRequestedDB,
+    game: gameNames,
+    includeJacob: boolean = false
+) {
     const values: any = [];
 
     // @ts-ignore-next-line
-    for await (const [key, value] of cardsRequestedDB.iterator()) {
+    for await (const [key, value] of db.iterator()) {
         const [gameKey, _] = key.split('-');
         if (gameKey === game) {
-            if (value.user.name === 'LoveliestJacob' && !includeJacob) continue;
+            if (value.user.name === 'LoveliestJacob' && !includeJacob && db === cardsRequestedDB) continue;
             values.push(value);
         }
     }
@@ -44,7 +51,34 @@ export async function getOrderedCardRequests(game: gameNames, includeJacob: bool
     return values;
 }
 
+export async function updateSkillPoints(game: gameNames, user: RobloxUserResult, points: number) {
+    type data = { count: number; user: RobloxUserResult };
+    const key = `${game}-${user.id}`;
+    const current = (await skillPointsDB.get<data>(key)) ?? { count: 0, user: user };
+    if (current.user.thumbnail === undefined) current.user.thumbnail = '/app/assets/default-roblox-profile.png';
+    current.count = points;
+    current.user = user;
+    return await skillPointsDB.set(key, current);
+}
+
+export async function getPlaceInLeaderboard(
+    db: typeof skillPointsDB | typeof cardsRequestedDB,
+    game: gameNames,
+    user: RobloxUserResult,
+    includeJacob: boolean = false
+) {
+    const values = await getOrderedDB(db, game, includeJacob);
+    const userValue = values.find((value: { user: RobloxUserResult }) => value.user.id === user.id);
+    if (userValue === undefined) return null;
+    return userValue.rank;
+}
+
+export async function getTotalInLeaderboard(db: typeof skillPointsDB | typeof cardsRequestedDB, game: gameNames) {
+    const values = await getOrderedDB(db, game);
+    return values.length;
+}
+
 const loginAuthDBSqlite = new KeyvSqlite('sqlite://db/authLogin.sqlite');
 const loginAuthDB = new Keyv({ store: loginAuthDBSqlite });
 
-export { statsDB, cardsRequestedDB, loginAuthDB };
+export { statsDB, cardsRequestedDB, loginAuthDB, skillPointsDB };
