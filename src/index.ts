@@ -17,6 +17,7 @@ import { isDev } from './dev';
 import setupLoginAuth, { isSignedInAdmin } from './loginauth';
 import { rateLimiter } from 'hono-rate-limiter';
 import { getTempToken } from './temptokens';
+import { convert as timeConvert } from '@jacobhumston/tc.js';
 
 const app = new Hono();
 
@@ -38,8 +39,8 @@ app.use(async (context, next) => {
 
 app.use(
     rateLimiter({
-        windowMs: 1 * 60 * 1000,
-        limit: 30,
+        windowMs: timeConvert({ minutes: 1 }).milliseconds,
+        limit: 10,
         standardHeaders: 'draft-6',
         keyGenerator: (context) => {
             return context.req.path;
@@ -48,7 +49,11 @@ app.use(
             return context.json({ error: 'Rate limit exceeded. Please wait and try again.' }, 429) as any;
         },
         skip: async (context) => {
-            return (context.req.query('rlb-token') ?? '') === getTempToken('rlb-token');
+            return (
+                (context.req.query('rlb-token') ?? '') === getTempToken('rlb-token') ||
+                context.req.path.startsWith('/app/') ||
+                context.req.path.startsWith('/ext/')
+            );
         }
     })
 );
@@ -70,6 +75,12 @@ jtoh(app);
 
 app.get('/', async (context) => {
     return context.redirect('/app/');
+});
+
+app.get('/wiki/*', async (context) => {
+    const path = context.req.path.slice(6);
+    if (path === '' || path === '/') return context.redirect('/app/wiki');
+    return context.redirect(`https://jtoh.fandom.com/wiki/${path}`);
 });
 
 app.get('/ext/request-count', async (context) => {

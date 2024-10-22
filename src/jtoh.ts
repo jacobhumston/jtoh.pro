@@ -4,7 +4,14 @@ import type { TowerData } from './type';
 import { v4 } from 'uuid';
 import Color from 'color';
 import { Hono } from 'hono';
-import { updateRequestCount, updateCardRequestCount } from './db';
+import {
+    updateRequestCount,
+    updateCardRequestCount,
+    updateSkillPoints,
+    getPlaceInLeaderboard,
+    skillPointsDB,
+    getTotalInLeaderboard
+} from './db';
 import * as roblox from './roblox';
 import images from './images';
 
@@ -15,10 +22,6 @@ export default function jtoh(app: Hono) {
         const providedUser: string = context.req.param('user').slice(0, 20);
         const data = await roblox.auth(context);
         const formatter = new Intl.NumberFormat('en-US');
-
-        if (data !== undefined) {
-            updateCardRequestCount('jtoh', data).catch(() => undefined);
-        }
 
         const canvas = createCanvas(700, 300);
         const ctx = canvas.getContext('2d');
@@ -86,6 +89,11 @@ export default function jtoh(app: Hono) {
                 data.thumbnail !== undefined
                     ? await loadImage(data.thumbnail).catch(() => images.defaultRobloxProfile)
                     : images.defaultRobloxProfile;
+
+            //const thumbnail = await loadImage(await roblox.userIdToThumbnailBust(data.id)).catch(() => {
+            //    return images.defaultRobloxProfile;
+            //});
+
             let towerStats: TowerData | undefined = await fetch(
                 `https://api.towerstats.com/?id=${data.id}&apiKey=2f8a7a78-9b03-4e95-ace9-1cd06334a16b-d2444398-630c-445a-b5b1-486b92d5d4fe`
             )
@@ -99,32 +107,35 @@ export default function jtoh(app: Hono) {
                 towerStats = undefined;
             }
 
-            ctx.save();
-            drawRoundedRect(ctx, 10, 5, 100, 100, 50);
-            ctx.clip();
-            ctx.drawImage(thumbnail, 10, 5, 100, 100);
-            ctx.restore();
+            // ctx.save();
+            // drawRoundedRect(ctx, 10, 5, 100, 100, 50);
+            // ctx.clip();
+            ctx.drawImage(thumbnail, 20, 5, 100, 100);
+            // ctx.restore();
 
             if (towerStats !== undefined) {
+                updateCardRequestCount('jtoh', data).catch(() => undefined);
+                updateSkillPoints('jtoh', data, towerStats.skill_points).catch(() => undefined);
+
                 ctx.textAlign = 'left';
                 ctx.fillStyle = 'white';
                 ctx.font = 'bold 25px Poppins, Twemoji';
                 if (data.id === 2614622891) {
                     ctx.fillStyle = '#ff9f8e';
-                    ctx.fillText(`💖 ${data.displayName}`, 120, 40);
+                    ctx.fillText(`💖 ${data.displayName}`, 130, 40);
                 } else if (data.id === 257770975) {
                     ctx.fillStyle = '#6eadff';
-                    ctx.fillText(`🤓 ${data.displayName}`, 120, 40);
+                    ctx.fillText(`🤓 ${data.displayName}`, 130, 40);
                 } else if (towerStats.donated_amount > 0) {
                     ctx.fillStyle = '#fff88f';
-                    ctx.fillText(`⭐ ${data.displayName}`, 120, 40);
+                    ctx.fillText(`⭐ ${data.displayName}`, 130, 40);
                 } else {
-                    ctx.fillText(`${data.displayName}`, 120, 40);
+                    ctx.fillText(`${data.displayName}`, 130, 40);
                 }
 
                 ctx.fillStyle = '#bdbdbd';
                 ctx.font = '20px Poppins';
-                ctx.fillText(`@${data?.name}`, 120, 70);
+                ctx.fillText(`@${data?.name}`, 130, 70);
 
                 ctx.save();
                 ctx.font = '18px Poppins';
@@ -178,12 +189,12 @@ export default function jtoh(app: Hono) {
                                 }
                             }
                         ],
-                        120,
+                        130,
                         98,
                         '#bdbdbd'
                     );
                 } else {
-                    ctx.fillText('This user has not completed a tower!', 120, 98);
+                    ctx.fillText('This user has not completed a tower!', 130, 98);
                 }
 
                 if (
@@ -257,12 +268,47 @@ export default function jtoh(app: Hono) {
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#f8f8f8';
                 ctx.font = 'bold 15px Poppins, Twemoji';
-                ctx.fillText(`Skill Points (Calculated)`, 400, 135);
+                ctx.fillText(`Skill Points`, 340, 135);
 
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#bdbdbd';
                 ctx.font = 'bold 15px Poppins, Twemoji';
-                ctx.fillText(`${formatter.format(towerStats.skill_points)}`, 400, 155);
+                ctx.fillText(`${formatter.format(towerStats.skill_points)}`, 340, 155);
+
+                ctx.textAlign = 'left';
+                ctx.fillStyle = '#f8f8f8';
+                ctx.font = 'bold 15px Poppins, Twemoji';
+                ctx.fillText(`Rank (SP)`, 475, 135);
+
+                ctx.textAlign = 'left';
+                ctx.fillStyle = '#bdbdbd';
+                ctx.font = 'bold 15px Poppins, Twemoji';
+                /*
+                ctx.fillText(
+                    `#${(await getPlaceInLeaderboard(skillPointsDB, 'jtoh', data).catch(() => undefined)) ?? '???'}`,
+                    490,
+                    155
+                );
+                */
+                const spRank = `#${(await getPlaceInLeaderboard(skillPointsDB, 'jtoh', data).catch(() => undefined)) ?? '???'}`;
+                const spTotal =
+                    `out of ${formatter.format(await getTotalInLeaderboard(skillPointsDB, 'jtoh'))}`.replaceAll(
+                        ' ',
+                        '_'
+                    );
+                colorText(
+                    ctx,
+                    `${spRank} ${spTotal}`,
+                    [
+                        {
+                            string: spTotal,
+                            color: '#7c7c7c'
+                        }
+                    ],
+                    475,
+                    155,
+                    '#bdbdbd'
+                );
 
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#f8f8f8';
@@ -290,11 +336,11 @@ export default function jtoh(app: Hono) {
                 ctx.textAlign = 'left';
                 ctx.fillStyle = 'white';
                 ctx.font = 'bold 25px Poppins, Twemoji';
-                ctx.fillText(`${data.displayName}`, 120, 55);
+                ctx.fillText(`${data.displayName}`, 130, 55);
 
                 ctx.fillStyle = '#bdbdbd';
                 ctx.font = '20px Poppins';
-                ctx.fillText(`@${data?.name}`, 120, 85);
+                ctx.fillText(`@${data?.name}`, 130, 85);
 
                 ctx.textAlign = 'center';
                 ctx.fillStyle = '#ff7e7e';

@@ -1,2 +1,2 @@
-export type gameNames = 'jtoh' | 'atos' | 'eta' | 'jtohxl';
-export const gameNamesArray: gameNames[] = ['jtoh', 'atos', 'eta', 'jtohxl'];
+export type gameNames = 'jtoh' | 'atos' | 'tea' | 'jtohxl' | 'jtohxxl';
+export const gameNamesArray: gameNames[] = ['jtoh', 'atos', 'tea', 'jtohxl', 'jtohxxl'];
