@@ -244,7 +244,7 @@ export default function jtoh(app: Hono) {
                         ctx.fillText(`${Math.floor((completed / total) * 100)}%`, startX, startY - 6);
                         {
                             ctx.font = 'bold 14px Poppins';
-                            ctx.fillStyle = Color('#bdbdbd').darken(0.5).hex();
+                            ctx.fillStyle = Color(difficultyColor).darken(0.5).hex();
                             ctx.fillText(`${total - completed}`, startX, startY + 22);
                         }
                     });
