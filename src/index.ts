@@ -53,7 +53,8 @@ app.use(
             return (
                 (context.req.query('rlb-token') ?? '') === getTempToken('rlb-token') ||
                 context.req.path.startsWith('/app/') ||
-                context.req.path.startsWith('/ext/')
+                context.req.path.startsWith('/ext/') ||
+                isDev
             );
         }
     })

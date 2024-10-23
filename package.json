@@ -20,7 +20,8 @@
     "scripts": {
         "format": "npx prettier ./ --write --cache",
         "start": "bun src/index.ts --dev",
-        "start-prod": "pm2 start \"bunx bun run src/index.ts\""
+        "start-prod": "pm2 start \"bunx bun run src/index.ts\"",
+        "tools-jtoh-group-members": "bun run tools/jtoh-group-members.ts"
     },
     "dependencies": {
         "@date-fns/utc": "^2.1.0",
@@ -41,6 +42,7 @@
         "loglevel": "^1.9.2",
         "markdown-it": "^14.1.0",
         "mime-types": "^2.1.35",
+        "sxcu.api": "^2.0.6",
         "tweetnacl": "^1.0.3",
         "uglify-js": "^3.19.3",
         "uuid": "^10.0.0",
