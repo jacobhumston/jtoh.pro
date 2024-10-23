@@ -300,6 +300,7 @@ code {
     background-color: var(--color-background-darker);
     border-radius: 25px;
     height: 50px;
+    overflow: hidden;
 }
 
 .leaderboardIconContainer {
@@ -310,7 +311,7 @@ code {
     border-top-right-radius: 45%;
     border-top-left-radius: 45%;
     margin-top: 5px;
-    margin-left: 24px;
+    margin-left: 10px;
 }
 
 .leaderboardIconContainerFirst {
@@ -334,14 +335,15 @@ code {
     object-fit: cover;
     display: inline-block;
     text-align: center;
-    margin-top: -25px;
 }
 
+/*
 .leaderboardIconFirst,
 .leaderboardIconSecond,
 .leaderboardIconThird {
     margin-top: -21px !important;
 }
+*/
 
 .leaderboardCount {
     margin-left: auto;
@@ -353,12 +355,20 @@ code {
 .leaderboardRank {
     font-weight: bold;
     color: var(--color-text-bold);
-    display: block;
+    display: inline;
     position: relative;
+    font-size: small;
     margin-left: -15px;
-    text-shadow: var(--color-background-even-more-darker) 0px 0px 2px;
     -webkit-font-smoothing: antialiased;
     text-align: left;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    text-align: center;
+    background-color: color-mix(in srgb, var(--color-background-even-more-darker), #0000 40%);
+    border-radius: 15px;
+    max-width: fit-content;
+    margin-bottom: -25px;
 }
 
 .leaderboardName {

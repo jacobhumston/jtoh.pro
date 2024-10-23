@@ -14,10 +14,11 @@ import fs from 'node:fs';
 import webUtils from './webutils';
 import serveLeaderboards from './leaderboards';
 import { isDev } from './dev';
-import setupLoginAuth, { isSignedInAdmin } from './loginauth';
+import setupLoginAuth from './loginauth';
 import { rateLimiter } from 'hono-rate-limiter';
 import { getTempToken } from './temptokens';
 import { convert as timeConvert } from '@jacobhumston/tc.js';
+import { admin } from './admin';
 
 const app = new Hono();
 
@@ -58,15 +59,8 @@ app.use(
     })
 );
 
-app.use('/app/admin/*', async (context, next) => {
-    if (await isSignedInAdmin(context)) {
-        await next();
-    } else {
-        return context.json({ error: 'Unauthorized.' }, 401);
-    }
-});
-
 setupLoginAuth(app);
+admin(app);
 webUtils(app);
 serveLeaderboards(app);
 serveStatic(app);
