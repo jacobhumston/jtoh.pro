@@ -30,6 +30,8 @@ export default function jtoh(app: Hono) {
         drawRoundedRect(ctx, 0, 0, 700, 300, 30);
 
         if (data === undefined) {
+            context.header('Content-Disposition', 'inline; filename="unknown.png"');
+
             {
                 ctx.save();
                 ctx.globalAlpha = 0.1;
@@ -85,6 +87,8 @@ export default function jtoh(app: Hono) {
             context.header('Content-Type', 'image/png');
             return context.body(await new Blob([image]).arrayBuffer());
         } else {
+            context.header('Content-Disposition', `inline; filename="${encodeURIComponent(data.name)}.png"`);
+
             const thumbnail =
                 data.thumbnail !== undefined
                     ? await loadImage(data.thumbnail).catch(() => images.defaultRobloxProfile)
@@ -107,15 +111,17 @@ export default function jtoh(app: Hono) {
                 towerStats = undefined;
             }
 
-            // ctx.save();
-            // drawRoundedRect(ctx, 10, 5, 100, 100, 50);
-            // ctx.clip();
-            ctx.drawImage(thumbnail, 20, 5, 100, 100);
-            // ctx.restore();
+            ctx.save();
+            drawRoundedRect(ctx, 20, 8, 100, 100, 30);
+            ctx.clip();
+            ctx.fillStyle = Color('#2e2e2e').darken(0.3).hex();
+            drawRoundedRect(ctx, 20, 8, 100, 100, 30);
+            ctx.drawImage(thumbnail, 20, 8, 100, 100);
+            ctx.restore();
 
             if (towerStats !== undefined) {
                 updateCardRequestCount('jtoh', data).catch(() => undefined);
-                updateSkillPoints('jtoh', data, towerStats.skill_points).catch(() => undefined);
+                await updateSkillPoints('jtoh', data, towerStats.skill_points).catch(() => undefined);
 
                 ctx.textAlign = 'left';
                 ctx.fillStyle = 'white';
@@ -219,7 +225,7 @@ export default function jtoh(app: Hono) {
                         const total = difficultyAmount[1];
                         const width = (completed / total) * (length / difficultyOrder.length);
                         const startX = (700 - length) / 2 + index * (length / difficultyOrder.length);
-                        ctx.fillStyle = Color(difficultyColor).darken(0.7).hex();
+                        ctx.fillStyle = Color(difficultyColor).darken(0.75).hex();
                         ctx.fillRect(startX, startY, length / difficultyOrder.length, 5);
                         ctx.fillStyle = difficultyColor;
                         ctx.fillRect(startX, startY, width, 5);
@@ -236,18 +242,23 @@ export default function jtoh(app: Hono) {
                             ctx.globalAlpha = 1;
                         }
                         ctx.fillText(`${Math.floor((completed / total) * 100)}%`, startX, startY - 6);
+                        {
+                            ctx.font = 'bold 14px Poppins';
+                            ctx.fillStyle = Color('#bdbdbd').darken(0.5).hex();
+                            ctx.fillText(`${total - completed}`, startX, startY + 22);
+                        }
                     });
                     ctx.textAlign = 'left';
                     ctx.fillStyle = '#bdbdbd';
                     ctx.font = 'bold 15px Poppins';
-                    ctx.fillText(`${towerStats.completed_towers} Completed`, 20, startY + 20);
+                    ctx.fillText(`${towerStats.completed_towers} Completed`, 60, startY + 45);
                     ctx.textAlign = 'right';
-                    ctx.fillText(`${towerStats.total_towers} Total`, 680, startY + 20);
+                    ctx.fillText(`${towerStats.total_towers} Total`, 640, startY + 45);
                     ctx.textAlign = 'center';
                     ctx.fillText(
                         `${Math.floor((towerStats.completed_towers / towerStats.total_towers) * 100)}% Progress`,
                         680 / 2,
-                        startY + 20
+                        startY + 45
                     );
                 }
 
@@ -290,7 +301,7 @@ export default function jtoh(app: Hono) {
                     155
                 );
                 */
-                const spRank = `#${(await getPlaceInLeaderboard(skillPointsDB, 'jtoh', data).catch(() => undefined)) ?? '???'}`;
+                const spRank = `#${formatter.format(await getPlaceInLeaderboard(skillPointsDB, 'jtoh', data).catch(() => undefined)) ?? '???'}`;
                 const spTotal =
                     `out of ${formatter.format(await getTotalInLeaderboard(skillPointsDB, 'jtoh'))}`.replaceAll(
                         ' ',
@@ -360,6 +371,7 @@ export default function jtoh(app: Hono) {
                 );
             }
 
+            /*
             ctx.fillStyle = '#a8a8a8';
             ctx.font = 'bold italic 13px Poppins';
             ctx.textAlign = 'left';
@@ -374,11 +386,22 @@ export default function jtoh(app: Hono) {
                 canvas.height / 2 + 140,
                 '#a8a8a8'
             );
+            */
 
-            ctx.fillStyle = '#6d6d6d';
-            ctx.font = '12px Poppins';
-            ctx.textAlign = 'right';
-            ctx.fillText(`jtoh.pro/${data.name}`, 675, 18);
+            ctx.fillStyle = '#986cba';
+            ctx.font = '13px Poppins';
+            drawRoundedRect(
+                ctx,
+                700 - (ctx.measureText(`jtoh.pro/${data.name}`).width + 60),
+                -10,
+                ctx.measureText(`jtoh.pro/${data.name}`).width + 18,
+                35,
+                10
+            );
+
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'left';
+            ctx.fillText(`jtoh.pro/${data.name}`, 700 - (ctx.measureText(`jtoh.pro/${data.name}`).width + 60) + 10, 15);
 
             const image = canvas.toBuffer('image/png');
             context.header('Content-Type', 'image/png');

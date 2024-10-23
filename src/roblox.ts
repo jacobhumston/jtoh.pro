@@ -1,4 +1,6 @@
 import type { Context } from 'hono';
+import jtohGroupMembers from '../etc/group-members/jtoh.json';
+import { getSignedInRobloxUser } from './loginauth';
 
 const baseUrls = {
     users: function (path: string): string {
@@ -91,6 +93,15 @@ export async function auth(context: Context): Promise<RobloxUserResult | undefin
     let user: BasicRobloxUserResult | undefined = undefined;
     if (providedUser.startsWith('!')) {
         user = await userIdToUser(parseInt(providedUser.slice(1))).catch(() => undefined);
+    } else if (providedUser === '$me') {
+        let me = await getSignedInRobloxUser(context);
+        if (!me) return undefined;
+        user = await userIdToUser(me.id).catch(() => undefined);
+    } else if (providedUser === '$random') {
+        user = await userIdToUser(
+            // @ts-ignore-next-line
+            jtohGroupMembers.members[Math.floor(Math.random() * jtohGroupMembers.members.length)].id
+        ).catch(() => undefined);
     } else {
         user = await usernameToUser(providedUser).catch(() => undefined);
     }
