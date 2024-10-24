@@ -1,5 +1,5 @@
 import { createCanvas, loadImage } from '@napi-rs/canvas';
-import { centerText, colorText, drawRoundedRect } from './util';
+import { centerText, colorText, drawRoundedRect, drawRoundedRectv2 } from './util';
 import type { TowerData } from './type';
 import { v4 } from 'uuid';
 import Color from 'color';
@@ -111,12 +111,28 @@ export default function jtoh(app: Hono) {
                 towerStats = undefined;
             }
 
+            /*
             ctx.save();
-            drawRoundedRect(ctx, 20, 8, 100, 100, 30);
+            drawRoundedRectv2(ctx, 20, 0, 100, 100, { bottomLeft: 0, bottomRight: 0, topLeft: 20, topRight: 20 });
             ctx.clip();
-            ctx.fillStyle = Color('#2e2e2e').darken(0.3).hex();
-            drawRoundedRect(ctx, 20, 8, 100, 100, 30);
-            ctx.drawImage(thumbnail, 20, 8, 100, 100);
+            */
+
+            ctx.fillStyle = Color('#2e2e2e').darken(0.4).hex();
+            drawRoundedRectv2(ctx, 20, 20, 100, 80, { bottomLeft: 0, bottomRight: 0, topLeft: 50, topRight: 50 });
+            ctx.drawImage(thumbnail, 20, 0, 100, 100);
+
+            ctx.save();
+            ctx.fillStyle = Color('#2e2e2e').darken(0.4).hex();
+            ctx.beginPath();
+            ctx.moveTo(20, 100);
+            ctx.lineTo(20 + 100 / 6, 115);
+            ctx.lineTo(20 + (100 / 6) * 2, 105);
+            ctx.lineTo(20 + (100 / 6) * 3, 115);
+            ctx.lineTo(20 + (100 / 6) * 4, 105);
+            ctx.lineTo(20 + (100 / 6) * 5, 115);
+            ctx.lineTo(20 + (100 / 6) * 6, 100);
+            ctx.lineTo(20, 100);
+            ctx.fill();
             ctx.restore();
 
             if (towerStats !== undefined) {
