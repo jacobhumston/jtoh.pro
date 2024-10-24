@@ -22,6 +22,35 @@ export function drawRoundedRect(
     ctx.fill();
 }
 
+export function drawRoundedRectv2(
+    ctx: SKRSContext2D,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    radii: {
+        topLeft: number;
+        topRight: number;
+        bottomRight: number;
+        bottomLeft: number;
+    }
+) {
+    const { topLeft, topRight, bottomRight, bottomLeft } = radii;
+
+    ctx.beginPath();
+    ctx.moveTo(x + topLeft, y);
+    ctx.lineTo(x + width - topRight, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + topRight);
+    ctx.lineTo(x + width, y + height - bottomRight);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - bottomRight, y + height);
+    ctx.lineTo(x + bottomLeft, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - bottomLeft);
+    ctx.lineTo(x, y + topLeft);
+    ctx.quadraticCurveTo(x, y, x + topLeft, y);
+    ctx.closePath();
+    ctx.fill();
+}
+
 export function colorText(
     ctx: SKRSContext2D,
     str: string,
