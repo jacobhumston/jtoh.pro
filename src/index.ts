@@ -25,6 +25,7 @@ const app = new Hono();
 GlobalFonts.registerFromPath('src/web/app/assets/Poppins-Regular.ttf', 'Poppins');
 GlobalFonts.registerFromPath('src/web/app/assets/Twemoji-15.1.0.ttf', 'Twemoji');
 
+/*
 app.use(async (context, next) => {
     const host = context.req.header('host');
     if (host) {
@@ -37,6 +38,7 @@ app.use(async (context, next) => {
     }
     await next();
 });
+*/
 
 app.use(
     rateLimiter({

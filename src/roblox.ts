@@ -88,7 +88,7 @@ export async function userIdToThumbnailBust(userId: number): Promise<string> {
     return (await response.json()).data[0].imageUrl as string;
 }
 
-export async function auth(context: Context): Promise<RobloxUserResult | undefined> {
+export async function parseRobloxAccount(context: Context): Promise<RobloxUserResult | undefined> {
     const providedUser: string = context.req.param('user').slice(0, 20);
     let user: BasicRobloxUserResult | undefined = undefined;
     if (providedUser.startsWith('!')) {

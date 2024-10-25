@@ -180,6 +180,31 @@ function getGoogleIconHTML(name) {
     return `<span class="material-symbols-rounded">${name}</span>`;
 }
 
+async function sec() {
+    document.getElementById('captchaContainer').innerHTML = '';
+    return new Promise((resolve) => {
+        turnstile.render('#captchaContainer', {
+            sitekey: '0x4AAAAAAAyKalxef6nTkf7o',
+            action: 'leaderboard',
+            callback: function (token) {
+                document.getElementById('captchaContainer').innerHTML = '';
+                resolve(token);
+            },
+            'error-callback': function (error) {
+                console.error(error);
+                resolve(undefined);
+            },
+            'unsupported-callback': function () {
+                console.error('Unsupported browser');
+                alert(
+                    'Your browser is not supported by our captcha system, please update your browser or try a different one.'
+                );
+                resolve(undefined);
+            }
+        });
+    });
+}
+
 window.addEventListener('DOMContentLoaded', () => {
     const head = document.head;
     const title = head.dataset.page;
@@ -203,7 +228,7 @@ window.addEventListener('load', () => {
     root.classList.add('isLoaded');
 });
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
     const container = document.getElementById('leaderboardDivContainer');
     if (!container) return;
 
@@ -285,150 +310,152 @@ window.addEventListener('DOMContentLoaded', () => {
 
     loadLeaderboard(container, type, other);
 
-    function loadLeaderboard(div, type, other) {
-        turnstile.render('#captchaContainer', {
-            sitekey: '0x4AAAAAAAyKalxef6nTkf7o',
-            action: 'leaderboard',
-            callback: function (token) {
-                document.getElementById('captchaContainer').innerHTML = '';
-                fetch(`/ext/leaderboards/${type}/${other}?includeJacob=${includeJacob}&page=${page}&captcha=${token}`)
-                    .then((response) => response.json())
-                    .then((response) => {
-                        if (response.error) {
-                            div.innerHTML = `<p>Something went wrong.</p>`;
-                            console.log(response.error);
-                            return;
+    async function loadLeaderboard(div, type, other) {
+        const token = await sec();
+        fetch(`/ext/leaderboards/${type}/${other}?includeJacob=${includeJacob}&page=${page}&captcha=${token}`)
+            .then((response) => response.json())
+            .then((response) => {
+                if (response.error) {
+                    div.innerHTML = `<p>Something went wrong.</p>`;
+                    console.log(response.error);
+                    return;
+                }
+                div.innerHTML = 'Loading...';
+
+                if (response.result.length === 0) {
+                    div.innerHTML = '<p>No data available for this leaderboard.</p>';
+                    return;
+                }
+
+                div.innerHTML = '';
+
+                if (response.total.pages > 0) {
+                    const pagination = document.createElement('div');
+                    pagination.classList.add('leaderboardPagination');
+                    div.appendChild(pagination);
+
+                    const previous = document.createElement('button');
+                    previous.innerText = 'Previous';
+                    previous.classList.add('leaderboardPaginationButton');
+                    previous.type = 'button';
+                    if (page > 1) {
+                        previous.onclick = () => {
+                            window.location.href = `/app/leaderboards?type=${type}&other=${other}&page=${page - 1}${
+                                includeJacob ? '&includeJacob=true' : ''
+                            }`;
+                        };
+                    } else {
+                        previous.disabled = true;
+                    }
+                    pagination.appendChild(previous);
+
+                    const pageText = document.createElement('span');
+                    pageText.innerText = `Page ${page}/${response.total.pages}`;
+                    pageText.classList.add('leaderboardPaginationText');
+                    pagination.appendChild(pageText);
+
+                    const next = document.createElement('button');
+                    next.innerText = 'Next';
+                    next.classList.add('leaderboardPaginationButton');
+                    next.type = 'button';
+                    if (page < response.total.pages) {
+                        next.onclick = () => {
+                            window.location.href = `/app/leaderboards?type=${type}&other=${other}&page=${page + 1}${
+                                includeJacob ? '&includeJacob=true' : ''
+                            }`;
+                        };
+                    } else {
+                        next.disabled = true;
+                    }
+                    pagination.appendChild(next);
+                }
+
+                for (const data of response.result) {
+                    const user = data.user;
+                    const count = data.count;
+
+                    const row = document.createElement('div');
+                    row.classList.add('leaderboardRow');
+
+                    const rank = document.createElement('span');
+                    rank.innerText = `#${formatter.format(data.rank)}`;
+                    rank.classList.add('leaderboardRank');
+                    div.appendChild(rank);
+
+                    const iconContainer = document.createElement('div');
+                    iconContainer.classList.add('leaderboardIconContainer');
+                    row.appendChild(iconContainer);
+
+                    const icon = document.createElement('img');
+                    icon.onerror = () => {
+                        if (icon.src !== '/app/assets/default-roblox-profile.png') {
+                            icon.src = '/app/assets/default-roblox-profile.png';
                         }
-                        div.innerHTML = 'Loading...';
-
-                        if (response.result.length === 0) {
-                            div.innerHTML = '<p>No data available for this leaderboard.</p>';
-                            return;
+                    };
+                    if (user.thumbnail === '') {
+                        icon.src = '/app/assets/default-roblox-profile.png';
+                    } else {
+                        if (data.rank < 4) {
+                            fetch(`/ext/util/user-roblox-thumbnails/${user.id}`)
+                                .then(async (response) => {
+                                    icon.src = (await response.json()).bust;
+                                })
+                                .catch(() => {});
+                        } else {
+                            icon.src = user.thumbnail;
                         }
+                    }
+                    icon.alt = 'User Icon';
+                    icon.classList.add('leaderboardIcon');
+                    iconContainer.appendChild(icon);
 
-                        div.innerHTML = '';
+                    const name = document.createElement('span');
+                    name.innerText = user.displayName;
+                    name.classList.add('leaderboardName');
+                    name.appendChild(document.createElement('br'));
+                    row.appendChild(name);
 
-                        if (response.total.pages > 0) {
-                            const pagination = document.createElement('div');
-                            pagination.classList.add('leaderboardPagination');
-                            div.appendChild(pagination);
+                    const fullName = document.createElement('span');
+                    fullName.innerText = `@${user.name}`;
+                    fullName.classList.add('leaderboardFullName');
+                    name.appendChild(fullName);
 
-                            const previous = document.createElement('button');
-                            previous.innerText = 'Previous';
-                            previous.classList.add('leaderboardPaginationButton');
-                            previous.type = 'button';
-                            if (page > 1) {
-                                previous.onclick = () => {
-                                    window.location.href = `/app/leaderboards?type=${type}&other=${other}&page=${page - 1}${
-                                        includeJacob ? '&includeJacob=true' : ''
-                                    }`;
-                                };
-                            } else {
-                                previous.disabled = true;
-                            }
-                            pagination.appendChild(previous);
+                    const countElement = document.createElement('span');
+                    countElement.innerText = formatter.format(count);
+                    if (countElement.innerText.includes('.')) {
+                        const decimal = countElement.innerText.split('.')[1];
+                        countElement.innerText = countElement.innerText.split('.')[0];
+                        const decimalElement = document.createElement('span');
+                        decimalElement.innerText = `.${decimal}`;
+                        decimalElement.classList.add('leaderboardDecimal');
+                        countElement.appendChild(decimalElement);
+                    }
+                    countElement.classList.add('leaderboardCount');
+                    row.appendChild(countElement);
+                    div.appendChild(row);
 
-                            const pageText = document.createElement('span');
-                            pageText.innerText = `Page ${page}/${response.total.pages}`;
-                            pageText.classList.add('leaderboardPaginationText');
-                            pagination.appendChild(pageText);
-
-                            const next = document.createElement('button');
-                            next.innerText = 'Next';
-                            next.classList.add('leaderboardPaginationButton');
-                            next.type = 'button';
-                            if (page < response.total.pages) {
-                                next.onclick = () => {
-                                    window.location.href = `/app/leaderboards?type=${type}&other=${other}&page=${page + 1}${
-                                        includeJacob ? '&includeJacob=true' : ''
-                                    }`;
-                                };
-                            } else {
-                                next.disabled = true;
-                            }
-                            pagination.appendChild(next);
-                        }
-
-                        for (const data of response.result) {
-                            const user = data.user;
-                            const count = data.count;
-
-                            const row = document.createElement('div');
-                            row.classList.add('leaderboardRow');
-
-                            const rank = document.createElement('span');
-                            rank.innerText = `#${formatter.format(data.rank)}`;
-                            rank.classList.add('leaderboardRank');
-                            div.appendChild(rank);
-
-                            const iconContainer = document.createElement('div');
-                            iconContainer.classList.add('leaderboardIconContainer');
-                            row.appendChild(iconContainer);
-
-                            const icon = document.createElement('img');
-                            icon.onerror = () => {
-                                if (icon.src !== '/app/assets/default-roblox-profile.png') {
-                                    icon.src = '/app/assets/default-roblox-profile.png';
-                                }
-                            };
-                            if (user.thumbnail === '') {
-                                icon.src = '/app/assets/default-roblox-profile.png';
-                            } else {
-                                if (data.rank < 4) {
-                                    fetch(`/ext/util/user-roblox-thumbnails/${user.id}`)
-                                        .then(async (response) => {
-                                            icon.src = (await response.json()).bust;
-                                        })
-                                        .catch(() => {});
-                                } else {
-                                    icon.src = user.thumbnail;
-                                }
-                            }
-                            icon.alt = 'User Icon';
-                            icon.classList.add('leaderboardIcon');
-                            iconContainer.appendChild(icon);
-
-                            const name = document.createElement('span');
-                            name.innerText = user.displayName;
-                            name.classList.add('leaderboardName');
-                            name.appendChild(document.createElement('br'));
-                            row.appendChild(name);
-
-                            const fullName = document.createElement('span');
-                            fullName.innerText = `@${user.name}`;
-                            fullName.classList.add('leaderboardFullName');
-                            name.appendChild(fullName);
-
-                            const countElement = document.createElement('span');
-                            countElement.innerText = formatter.format(count);
-                            countElement.classList.add('leaderboardCount');
-                            row.appendChild(countElement);
-                            div.appendChild(row);
-
-                            if (data.rank === 1) {
-                                iconContainer.classList.add('leaderboardIconContainerFirst');
-                                name.classList.add('leaderboardNameFirst');
-                                row.classList.add('leaderboardRowFirst');
-                                icon.classList.add('leaderboardIconFirst');
-                            } else if (data.rank === 2) {
-                                iconContainer.classList.add('leaderboardIconContainerSecond');
-                                name.classList.add('leaderboardNameSecond');
-                                row.classList.add('leaderboardRowSecond');
-                                icon.classList.add('leaderboardIconSecond');
-                            } else if (data.rank === 3) {
-                                iconContainer.classList.add('leaderboardIconContainerThird');
-                                name.classList.add('leaderboardNameThird');
-                                row.classList.add('leaderboardRowThird');
-                                icon.classList.add('leaderboardIconThird');
-                            }
-                        }
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                        div.innerHTML = '<p>Failed to fetch data.</p>';
-                    });
-            }
-        });
+                    if (data.rank === 1) {
+                        iconContainer.classList.add('leaderboardIconContainerFirst');
+                        name.classList.add('leaderboardNameFirst');
+                        row.classList.add('leaderboardRowFirst');
+                        icon.classList.add('leaderboardIconFirst');
+                    } else if (data.rank === 2) {
+                        iconContainer.classList.add('leaderboardIconContainerSecond');
+                        name.classList.add('leaderboardNameSecond');
+                        row.classList.add('leaderboardRowSecond');
+                        icon.classList.add('leaderboardIconSecond');
+                    } else if (data.rank === 3) {
+                        iconContainer.classList.add('leaderboardIconContainerThird');
+                        name.classList.add('leaderboardNameThird');
+                        row.classList.add('leaderboardRowThird');
+                        icon.classList.add('leaderboardIconThird');
+                    }
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+                div.innerHTML = '<p>Failed to fetch data.</p>';
+            });
     }
 });
 
