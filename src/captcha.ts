@@ -16,5 +16,5 @@ export async function verifyCaptcha(token: string) {
     });
     if (!response) return false;
     const data = await response.json();
-    return data.success && data.hostname === (isDev ? 'localhost' : 'jtoh.pro');
+    return data.success; //&& data.hostname === (isDev ? 'localhost' : 'jtoh.pro');
 }

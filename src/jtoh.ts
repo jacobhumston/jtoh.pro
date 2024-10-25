@@ -20,7 +20,7 @@ export default function jtoh(app: Hono) {
         updateRequestCount().catch(() => undefined);
 
         const providedUser: string = context.req.param('user').slice(0, 20);
-        const data = await roblox.auth(context);
+        const data = await roblox.parseRobloxAccount(context);
         const formatter = new Intl.NumberFormat('en-US');
 
         const canvas = createCanvas(700, 300);
@@ -427,7 +427,7 @@ export default function jtoh(app: Hono) {
 
     app.get('/embed/:user', async (context) => {
         const providedUser: string = context.req.param('user').slice(0, 20);
-        const data = await roblox.auth(context);
+        const data = await roblox.parseRobloxAccount(context);
 
         if (data === undefined) {
             return context.redirect(`/${providedUser}`);

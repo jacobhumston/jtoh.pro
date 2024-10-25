@@ -22,7 +22,7 @@
         "format": "npx prettier ./ --write --cache",
         "start": "bun src/index.ts --dev",
         "start-prod": "pm2 start \"bunx bun run src/index.ts\"",
-        "tools-jtoh-group-members": "bun run tools/jtoh-group-members.ts"
+        "tools-group-members": "bun run tools/group-members.ts"
     },
     "dependencies": {
         "@date-fns/utc": "^2.1.0",

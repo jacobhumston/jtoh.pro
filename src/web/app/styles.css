@@ -352,6 +352,13 @@ code {
     font-weight: bold;
 }
 
+.leaderboardDecimal {
+    font-size: small;
+    font-weight: normal;
+    margin-left: 2px;
+    color: color-mix(in srgb, var(--color-text), transparent 50%);
+}
+
 .leaderboardRank {
     font-weight: bold;
     color: var(--color-text-bold);
