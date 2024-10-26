@@ -6,8 +6,12 @@ async function wrap(groupid: string) {
         let url = `https://groups.roblox.com/v1/groups/${groupid}/users?limit=100&sortOrder=Asc`;
         if (cursor) url = `${url}&cursor=${cursor}`;
         console.log(`[${groupid}] Fetching members...`);
-        const response = await fetch(url);
-        if (response.status !== 200) {
+        const response = await fetch(url).catch(() => null);
+        if (!response) {
+            console.log(`[${groupid}] Failed to load badges, trying again in 5 seconds...`);
+            await new Promise((resolve) => setTimeout(resolve, 5000));
+            return await getMembers(groupid, cursor);
+        } else if (response.status !== 200) {
             console.log(`[${groupid}] Failed to load badges, trying again in 5 seconds...`);
             await new Promise((resolve) => setTimeout(resolve, 5000));
             return await getMembers(groupid, cursor);
@@ -42,7 +46,7 @@ async function wrap(groupid: string) {
 
 if (!fs.existsSync('etc/group-members')) fs.mkdirSync('etc/group-members', { recursive: true });
 
-new Promise(async (resolve) => {
+{
     const users = await wrap('4777338'); // jtoh
     const name = 'JToH';
     console.log(`[${name}] All ${users.length} members have been loaded.`);
@@ -51,10 +55,9 @@ new Promise(async (resolve) => {
         JSON.stringify({ lastUpdated: new Date(), count: users.length, members: users })
     );
     console.log(`[${name}] Updated json`);
-    resolve(0);
-});
+}
 
-new Promise(async (resolve) => {
+{
     const users = await wrap('15425334'); // cscd
     const name = 'CSCD';
     console.log(`[${name}] All ${users.length} members have been loaded.`);
@@ -63,10 +66,9 @@ new Promise(async (resolve) => {
         JSON.stringify({ lastUpdated: new Date(), count: users.length, members: users })
     );
     console.log(`[${name}] Updated json`);
-    resolve(0);
-});
+}
 
-new Promise(async (resolve) => {
+{
     const users = await wrap('4199740'); // roblox video starts
     const name = 'Roblox Video Starts';
     console.log(`[${name}] All ${users.length} members have been loaded.`);
@@ -75,10 +77,9 @@ new Promise(async (resolve) => {
         JSON.stringify({ lastUpdated: new Date(), count: users.length, members: users })
     );
     console.log(`[${name}] Updated json`);
-    resolve(0);
-});
+}
 
-new Promise(async (resolve) => {
+{
     const users = await wrap('3959677'); // BIG Games Pets
     const name = 'BIG Games Pets';
     console.log(`[${name}] All ${users.length} members have been loaded.`);
@@ -87,5 +88,4 @@ new Promise(async (resolve) => {
         JSON.stringify({ lastUpdated: new Date(), count: users.length, members: users })
     );
     console.log(`[${name}] Updated json`);
-    resolve(0);
-});
+}
