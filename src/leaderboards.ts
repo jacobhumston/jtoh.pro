@@ -2,16 +2,24 @@ import { Hono } from 'hono';
 import { getOrderedDB, cardsRequestedDB, skillPointsDB } from './db';
 import type { gameNames } from './gamelist';
 import { gameNamesArray } from './gamelist';
-import { verifyCaptcha } from './captcha';
+import { verifyCaptcha, verifyCaptchaBypass } from './captcha';
+import { getSignedInRobloxUser } from './loginauth';
 
 export default function serveLeaderboards(app: Hono) {
     app.get('/ext/leaderboards/:type/:game', async (context) => {
         const includeJacob = context.req.query('includeJacob') === 'true';
         const game = context.req.param('game') as gameNames;
         const token = context.req.query('captcha') ?? '';
+        const user = await getSignedInRobloxUser(context);
 
-        const captchaPassed = await verifyCaptcha(token);
-        if (!captchaPassed) return context.json<{ error: string }>({ error: 'Something went wrong.' }, 400);
+        if (user) {
+            const success = await verifyCaptchaBypass(user.id, token);
+            if (!success) return context.json({ error: 'Captcha failed, please try again.' }, 400) as any;
+        } else {
+            const captchaPassed = await verifyCaptcha(token);
+            if (!captchaPassed)
+                return context.json<{ error: string }>({ error: 'Captcha failed, please try again.' }, 400);
+        }
 
         let db = null;
         if (context.req.param('type') === 'card-requests') db = cardsRequestedDB;

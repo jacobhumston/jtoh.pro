@@ -16,6 +16,9 @@ const cardsRequestedDB = new Keyv({ store: cardsRequestedDBSqlite });
 const skillPointsDBSqlite = new KeyvSqlite('sqlite://db/skillpoints.sqlite');
 const skillPointsDB = new Keyv({ store: skillPointsDBSqlite });
 
+const captchaBypassDBSqlite = new KeyvSqlite('sqlite://db/captchaBypass.sqlite');
+const captchaBypassDB = new Keyv({ store: captchaBypassDBSqlite });
+
 export async function updateRequestCount() {
     const today = new UTCDate().toLocaleString('en-US').split(',')[0].replaceAll('/', '-');
     statsDB.set(today, ((await statsDB.get<number>(today)) ?? 0) + 1);
@@ -31,21 +34,37 @@ export async function updateCardRequestCount(game: gameNames, user: RobloxUserRe
     return await cardsRequestedDB.set(key, current);
 }
 
+const orderedDBCache: { [key: string]: { value: any[]; lastUpdated: number } } = {};
 export async function getOrderedDB(
     db: typeof skillPointsDB | typeof cardsRequestedDB,
     game: gameNames,
     includeJacob: boolean = false
 ) {
-    const values: any = [];
+    let values: any[] = [];
 
-    // @ts-ignore-next-line
-    for await (const [key, value] of db.iterator()) {
-        const [gameKey, _] = key.split('-');
-        if (gameKey === game) {
-            if (value.user.name === 'LoveliestJacob' && !includeJacob && db === cardsRequestedDB) continue;
-            values.push(value);
-        }
+    let cached = false;
+    const cache = orderedDBCache[(db === skillPointsDB ? 'skillPoints' : 'cardsRequested') + game + `${includeJacob}`];
+    if (cache !== undefined && Date.now() - cache.lastUpdated < 1000 * 60 * 5) {
+        cached = true;
+        values = cache.value;
     }
+
+    if (!cached) {
+        // @ts-ignore-next-line
+        for await (const [key, value] of db.iterator()) {
+            const [gameKey, _] = key.split('-');
+            if (gameKey === game) {
+                if (value.user.name === 'LoveliestJacob' && !includeJacob && db === cardsRequestedDB) continue;
+                values.push(value);
+            }
+        }
+        orderedDBCache[(db === skillPointsDB ? 'skillPoints' : 'cardsRequested') + game + `${includeJacob}`] = {
+            value: values,
+            lastUpdated: Date.now()
+        };
+    }
+
+    values = values.filter((value: { count: number }) => value.count > 0);
     values.sort((a: { count: number }, b: { count: number }) => b.count - a.count);
     values.forEach((value: { count: number; rank: number }, index: number) => (value.rank = index + 1));
     return values;
@@ -81,4 +100,4 @@ export async function getTotalInLeaderboard(db: typeof skillPointsDB | typeof ca
 const loginAuthDBSqlite = new KeyvSqlite('sqlite://db/authLogin.sqlite');
 const loginAuthDB = new Keyv({ store: loginAuthDBSqlite });
 
-export { statsDB, cardsRequestedDB, loginAuthDB, skillPointsDB };
+export { statsDB, cardsRequestedDB, loginAuthDB, skillPointsDB, captchaBypassDB };

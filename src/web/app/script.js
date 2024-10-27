@@ -180,29 +180,59 @@ function getGoogleIconHTML(name) {
     return `<span class="material-symbols-rounded">${name}</span>`;
 }
 
-async function sec() {
-    document.getElementById('captchaContainer').innerHTML = '';
+async function isLoggedIn() {
     return new Promise((resolve) => {
-        turnstile.render('#captchaContainer', {
-            sitekey: '0x4AAAAAAAyKalxef6nTkf7o',
-            action: 'leaderboard',
-            callback: function (token) {
-                document.getElementById('captchaContainer').innerHTML = '';
-                resolve(token);
-            },
-            'error-callback': function (error) {
-                console.error(error);
-                resolve(undefined);
-            },
-            'unsupported-callback': function () {
-                console.error('Unsupported browser');
-                alert(
-                    'Your browser is not supported by our captcha system, please update your browser or try a different one.'
-                );
-                resolve(undefined);
-            }
-        });
+        const me = setInterval(() => {
+            if (window.loggedIn === undefined) return;
+            resolve(window.loggedIn);
+            clearInterval(me);
+        }, 0);
     });
+}
+
+async function sec() {
+    const getTurnstileToken = () =>
+        new Promise((resolve) => {
+            document.getElementById('captchaContainer').innerHTML = '';
+            turnstile.render('#captchaContainer', {
+                sitekey: '0x4AAAAAAAyKalxef6nTkf7o',
+                action: 'leaderboard',
+                callback: function (token) {
+                    document.getElementById('captchaContainer').innerHTML = '';
+                    resolve(token);
+                },
+                'error-callback': function (error) {
+                    console.error(error);
+                    resolve(undefined);
+                },
+                'unsupported-callback': function () {
+                    console.error('Unsupported browser');
+                    alert(
+                        'Your browser is not supported by our captcha system, please update your browser or try a different one.'
+                    );
+                    resolve(undefined);
+                }
+            });
+        });
+    if (await isLoggedIn()) {
+        const token = sessionStorage.getItem('captchaGateway');
+        const verified = await fetch(`/ext/captcha/verify?token=${token}`).catch(() => false);
+        const verifiedData = await verified.json();
+        if (verifiedData.success === true) {
+            return token;
+        } else {
+            const newToken = await getTurnstileToken();
+            const newVerified = await fetch(`/ext/captcha/gateway?token=${newToken}`).catch(() => undefined);
+            if (!newVerified) return await getTurnstileToken();
+            const data = await newVerified.json();
+            if (data.error) return await getTurnstileToken();
+            const verifiedToken = data.token;
+            sessionStorage.setItem('captchaGateway', verifiedToken);
+            return verifiedToken;
+        }
+    } else {
+        return await getTurnstileToken();
+    }
 }
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -246,13 +276,14 @@ window.addEventListener('DOMContentLoaded', async () => {
             name: 'Card Requests',
             type: 'card-requests',
             other: ['JToH', 'AToS', 'TEA', 'JToH XL', 'JToH XXL'],
-            description: 'The number of cards requested for a specific user.'
+            description: 'Leaderboard for the most amount of cards requested for a specific user.'
         },
         {
             name: 'Skill Points',
             type: 'skill-points',
             other: ['JToH', 'AToS', 'TEA', 'JToH XL', 'JToH XXL'],
-            description: 'The number of skill points for a specific user.'
+            description:
+                "Leaderboard of the user's with the most amount of skill points. Note that skill points are calculated with completed towers and other factors."
         }
     ];
     const fixOther = (string) => string.toLowerCase().replaceAll(' ', '');
@@ -312,6 +343,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     async function loadLeaderboard(div, type, other) {
         const token = await sec();
+        div.innerHTML = 'Loading... Please wait.';
         fetch(`/ext/leaderboards/${type}/${other}?includeJacob=${includeJacob}&page=${page}&captcha=${token}`)
             .then((response) => response.json())
             .then((response) => {
@@ -492,8 +524,12 @@ window.addEventListener('DOMContentLoaded', () => {
             const user = data.user;
             if (!user) {
                 loggedInDetails.innerHTML = '<a id="loginButton" href="/login">Login</a>';
+                window.loggedIn = false;
+                window.loggedInUser = null;
                 return;
             }
+            window.loggedIn = true;
+            window.loggedInUser = user;
             const icon = document.createElement('img');
             icon.onerror = () => {
                 if (icon.src !== '/app/assets/default-roblox-profile.png') {

@@ -317,7 +317,10 @@ export default function jtoh(app: Hono) {
                     155
                 );
                 */
-                const spRank = `#${formatter.format(await getPlaceInLeaderboard(skillPointsDB, 'jtoh', data).catch(() => undefined)) ?? '???'}`;
+                const spRank = ((value: number | null) => {
+                    if (value === null) return 'N/A';
+                    return `#${formatter.format(value)}`;
+                })(await getPlaceInLeaderboard(skillPointsDB, 'jtoh', data).catch(() => undefined));
                 const spTotal =
                     `out of ${formatter.format(await getTotalInLeaderboard(skillPointsDB, 'jtoh'))}`.replaceAll(
                         ' ',
