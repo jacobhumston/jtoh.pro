@@ -19,6 +19,7 @@ import { rateLimiter } from 'hono-rate-limiter';
 import { getTempToken } from './temptokens';
 import { convert as timeConvert } from '@jacobhumston/tc.js';
 import { admin } from './admin';
+import { captchaManager } from './captcha';
 
 const app = new Hono();
 
@@ -63,6 +64,7 @@ app.use(
 );
 
 setupLoginAuth(app);
+captchaManager(app);
 admin(app);
 webUtils(app);
 serveLeaderboards(app);
