@@ -13,7 +13,7 @@ import logger from './logger';
 import fs from 'node:fs';
 import webUtils from './webutils';
 import serveLeaderboards from './leaderboards';
-import { isDev } from './dev';
+import { isDev, getURL } from './dev';
 import setupLoginAuth from './loginauth';
 import { rateLimiter } from 'hono-rate-limiter';
 import { getTempToken } from './temptokens';
@@ -26,20 +26,19 @@ const app = new Hono();
 GlobalFonts.registerFromPath('src/web/app/assets/Poppins-Regular.ttf', 'Poppins');
 GlobalFonts.registerFromPath('src/web/app/assets/Twemoji-15.1.0.ttf', 'Twemoji');
 
-/*
 app.use(async (context, next) => {
     const host = context.req.header('host');
     if (host) {
         const parts = host.split('.');
+        const link = new URL(context.req.url);
         if (parts.length > 1) {
-            return isDev ? context.redirect('http://localhost') : context.redirect('https://jtoh.pro');
+            return context.redirect(getURL() + link.pathname + link.search);
         }
     } else {
         return context.json({ error: 'Invalid host.' }, 400);
     }
     await next();
 });
-*/
 
 app.use(
     rateLimiter({

@@ -4,7 +4,7 @@ import { Hono } from 'hono';
 import type { Context } from 'hono';
 import type { LoggedInUser } from './type';
 import { robloxAuthClientId, robloxAuthSecret } from './tokens';
-import { isDev } from './dev';
+import { getURL } from './dev';
 import { v4 } from 'uuid';
 
 export default function setupLoginAuth(app: Hono) {
@@ -99,7 +99,7 @@ export async function getSignedInRobloxUser(context: Context) {
 }
 
 export function getAuthLoginURL() {
-    return `https://apis.roblox.com/oauth/v1/authorize?client_id=${robloxAuthClientId}&redirect_uri=${isDev ? 'http://localhost/ext/auth' : 'http://jtoh.pro/ext/auth'}&scope=openid%20profile&response_type=code`;
+    return `https://apis.roblox.com/oauth/v1/authorize?client_id=${robloxAuthClientId}&redirect_uri=${getURL()}/ext/auth&scope=openid%20profile&response_type=code`;
 }
 
 export async function isSignedInAdmin(context: Context) {

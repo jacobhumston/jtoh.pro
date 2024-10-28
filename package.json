@@ -23,7 +23,10 @@
         "format": "npx prettier ./ --write --cache",
         "start": "bun src/index.ts --dev",
         "start-prod": "pm2 start \"bunx bun run src/index.ts\"",
-        "tools-group-members": "bun run tools/group-members.ts"
+        "start-beta": "bun src/index.ts --beta",
+        "start-beta-prod": "pm2 start \"bunx bun run src/index.ts --beta\"",
+        "tools-group-members": "bun run tools/group-members.ts",
+        "tools-populate": "bun run tools/populate.ts"
     },
     "dependencies": {
         "@date-fns/utc": "^2.1.0",
@@ -36,6 +39,7 @@
         "clean-css": "^5.3.3",
         "color": "^4.2.3",
         "date-fns": "^3.6.0",
+        "discord.js": "^14.16.3",
         "euphoria-logger": "^1.1.6",
         "hono": "^4.6.6",
         "hono-rate-limiter": "^0.4.0",
