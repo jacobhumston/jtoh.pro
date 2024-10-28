@@ -1,4 +1,4 @@
-import { isDev } from './dev';
+import { getURLHost } from './dev';
 import { getSignedInRobloxUser } from './loginauth';
 import { cloudflareCaptchaSecret } from './tokens';
 import { Hono } from 'hono';
@@ -20,7 +20,7 @@ export async function verifyCaptcha(token: string) {
     });
     if (!response) return false;
     const data = await response.json();
-    return data.success && data.hostname === (isDev ? 'localhost' : 'jtoh.pro');
+    return data.success && data.hostname === getURLHost();
 }
 
 export async function verifyCaptchaBypass(userId: number, token: string) {

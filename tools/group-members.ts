@@ -79,6 +79,7 @@ if (!fs.existsSync('etc/group-members')) fs.mkdirSync('etc/group-members', { rec
     console.log(`[${name}] Updated json`);
 }
 
+/*
 {
     const users = await wrap('3959677'); // BIG Games Pets
     const name = 'BIG Games Pets';
@@ -89,3 +90,4 @@ if (!fs.existsSync('etc/group-members')) fs.mkdirSync('etc/group-members', { rec
     );
     console.log(`[${name}] Updated json`);
 }
+*/
