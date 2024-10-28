@@ -32,6 +32,7 @@ app.use(async (context, next) => {
         const parts = host.split('.');
         const link = new URL(context.req.url);
         if (parts.length > 1) {
+            if (parts[0] === 'beta' && getURL() === 'https://beta.jtoh.pro') return await next();
             return context.redirect(getURL() + link.pathname + link.search);
         }
     } else {
