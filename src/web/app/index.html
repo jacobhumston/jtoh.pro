@@ -19,21 +19,21 @@
             </p>
             <div class="interactionFlex">
                 <input type="text" id="exampleInputUsername" placeholder="Roblox Username" />
-                <button type="button" onclick="updateExampleOutput()">
+                <button type="button" onclick="window.func.updateExampleOutput()">
                     <span class="material-symbols-rounded">refresh</span>
                     Get Image
                 </button>
             </div>
             <div class="interactionFlex">
-                <button type="button" onclick="copyExampleOutputImage(this)">
+                <button type="button" onclick="window.func.copyExampleOutputImage(this)">
                     <span class="material-symbols-rounded">file_copy</span>
                     Copy Image
                 </button>
-                <button type="button" onclick="copyExampleOutputURL(this)">
+                <button type="button" onclick="window.func.copyExampleOutputURL(this)">
                     <span class="material-symbols-rounded">content_copy</span>
                     Copy URL
                 </button>
-                <button type="button" onclick="downloadExampleOutputImage(this)">
+                <button type="button" onclick="window.func.downloadExampleOutputImage(this)">
                     <span class="material-symbols-rounded">download</span>
                     Download Image
                 </button>
@@ -56,14 +56,22 @@
             .
             <div class="extraPadding"></div>
 
-            <button class="smallCopyButton" type="button" onclick="copyURL('https:\/\/jtoh.pro/roblox', this)">
+            <button
+                class="smallCopyButton"
+                type="button"
+                onclick="window.func.copyURL('https:\/\/jtoh.pro/roblox', this)"
+            >
                 Copy
             </button>
             <a href="/roblox" target="_blank">/{USER}</a>
             - Get an image of a user's tower stats.
             <div class="extraPadding"></div>
 
-            <button class="smallCopyButton" type="button" onclick="copyURL('https:\/\/jtoh.pro/embed/roblox', this)">
+            <button
+                class="smallCopyButton"
+                type="button"
+                onclick="window.func.copyURL('https:\/\/jtoh.pro/embed/roblox', this)"
+            >
                 Copy
             </button>
             <a href="/embed/roblox" target="_blank">/embed/{USER}</a>
@@ -72,7 +80,11 @@
             profile.
 
             <h3>Short Links</h3>
-            <button class="smallCopyButton" type="button" onclick="copyURL('https:\/\/jtoh.pro/e/roblox', this)">
+            <button
+                class="smallCopyButton"
+                type="button"
+                onclick="window.func.copyURL('https:\/\/jtoh.pro/e/roblox', this)"
+            >
                 Copy
             </button>
             <a href="/e/roblox" target="_blank">/e/{USER}</a>
