@@ -1,5 +1,3 @@
-console.log('Booting up...');
-
 import { Hono } from 'hono';
 import { GlobalFonts } from '@napi-rs/canvas';
 import { statsDB } from './db';
@@ -136,4 +134,4 @@ export default {
     fetch: app.fetch
 };
 
-logger.info('Server started.');
+logger.info(`Server started. ${getURL()}`);
