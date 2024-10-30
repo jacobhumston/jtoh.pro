@@ -236,7 +236,11 @@ _window.addEventListener('DOMContentLoaded', () => {
             });
         if (await isLoggedIn()) {
             const token = sessionStorage.getItem('captchaGateway');
-            const verified = await fetch(`/ext/captcha/verify?token=${token}`).catch(() => false);
+            const verified = await fetch(`/ext/captcha/verify?token=${token}`).catch(() => ({
+                json: () => ({
+                    success: false
+                })
+            }));
             const verifiedData = await verified.json();
             if (verifiedData.success === true) {
                 return token;
@@ -303,7 +307,7 @@ _window.addEventListener('DOMContentLoaded', () => {
                 type: 'skill-points',
                 other: ['JToH', 'AToS', 'TEA', 'JToH XL', 'JToH XXL'],
                 description:
-                    "Leaderboard of the user's with the most amount of skill points. Note that skill points are calculated with completed towers and other factors."
+                    "Leaderboard of the user's with the most amount of skill points. Skill points are calculated via completed towers amoungst other factors."
             }
         ];
         const fixOther = (string) => string.toLowerCase().replaceAll(' ', '');
@@ -576,5 +580,19 @@ _window.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
+
+        (async () => {
+            if (_document.getElementById('captchaNotice')) {
+                const url = new URL(_window.location.href);
+                const params = url.searchParams;
+                const type = params.get('type');
+                if (type === 'auth') {
+                    const token = await sec();
+                    _document.location.href = `/ext/auth?captcha=${token}&code=${params.get('code')}`;
+                } else {
+                    _document.location.href = '/';
+                }
+            }
+        })();
     });
 })();

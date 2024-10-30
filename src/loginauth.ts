@@ -6,6 +6,17 @@ import type { LoggedInUser } from './type';
 import { robloxAuthClientId, robloxAuthSecret } from './tokens';
 import { getURL } from './dev';
 import { v4 } from 'uuid';
+import { isDev } from './dev';
+import { verifyCaptcha } from './captcha';
+import { getTempToken } from './temptokens';
+import { encryptCode, decryptCode } from './util';
+import crypto from 'node:crypto';
+
+const hashingTokenForCodes = crypto
+    .createHash('sha256')
+    .update(String(getTempToken('hashingTokenForCodes')))
+    .digest('base64')
+    .substr(0, 32);
 
 export default function setupLoginAuth(app: Hono) {
     app.get('/ext/auth/@me', async (context) => {
@@ -16,9 +27,14 @@ export default function setupLoginAuth(app: Hono) {
     app.get('/ext/auth', async (context) => {
         const user = await getSignedInRobloxUser(context);
         if (user) return context.redirect('/app/');
-        const code = context.req.query('code');
+        let code = context.req.query('code');
         if (!code) return context.redirect(getAuthLoginURL());
         let failed: null | boolean = null;
+        const captcha = context.req.query('captcha');
+        if ((await verifyCaptcha(captcha ?? '')) !== true)
+            return context.redirect(`/app/captcha?type=auth&code=${encryptCode(code, hashingTokenForCodes)}`);
+
+        code = decryptCode(code, hashingTokenForCodes);
 
         fetch('https://apis.roblox.com/oauth/v1/token', {
             body: new URLSearchParams({
@@ -46,6 +62,12 @@ export default function setupLoginAuth(app: Hono) {
                             failed = true;
                             return;
                         }
+                        // @ts-ignore-next-line
+                        for await (const [key, value] of loginAuthDB.iterator()) {
+                            if (value.id == parseInt(userResponseJSON.sub)) {
+                                await loginAuthDB.delete(key);
+                            }
+                        }
                         const token = `${v4()}-${v4()}-${v4()}-${v4()}-${v4()}-${v4()}-${v4()}-${v4()}`;
                         await loginAuthDB.set(
                             token,
@@ -57,7 +79,7 @@ export default function setupLoginAuth(app: Hono) {
                             },
                             3 * 24 * 60 * 60 * 1000
                         );
-                        setCookie(context, 'auth-token', token);
+                        setCookie(context, 'auth-token', token, { httpOnly: true, secure: isDev ? false : true });
                         failed = false;
                     })
                     .catch(() => {
@@ -96,6 +118,14 @@ export async function getSignedInRobloxUser(context: Context) {
     const uuidRegex = /^[0-9a-fA-F-]+$/;
     if (!uuidRegex.test(token)) return null;
     return (await loginAuthDB.get<LoggedInUser>(token)) ?? null;
+}
+
+export async function getSignedInRobloxUserAuthToken(context: Context) {
+    const token = getCookie(context, 'auth-token');
+    if (!token) return null;
+    const uuidRegex = /^[0-9a-fA-F-]+$/;
+    if (!uuidRegex.test(token)) return null;
+    return ((await loginAuthDB.get<LoggedInUser>(token)) ?? null) ? token : null;
 }
 
 export function getAuthLoginURL() {

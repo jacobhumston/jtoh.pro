@@ -1,4 +1,5 @@
 import type { Canvas, SKRSContext2D } from '@napi-rs/canvas';
+import crypto from 'node:crypto';
 
 export function drawRoundedRect(
     ctx: SKRSContext2D,
@@ -105,4 +106,24 @@ export function randomizeCase(input: string): string {
             }
         })
         .join('');
+}
+
+export function encryptCode(code: string, key: string): string {
+    const algorithm = 'aes-256-ctr';
+    const iv = crypto.randomBytes(16);
+    // @ts-ignore-next-line
+    const cipher = crypto.createCipheriv(algorithm, key, iv);
+    let encrypted = cipher.update(code, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    return `${iv.toString('hex')}:${encrypted}`;
+}
+
+export function decryptCode(encryptedCode: string, key: string): string {
+    const algorithm = 'aes-256-ctr';
+    const [iv, encrypted] = encryptedCode.split(':');
+    // @ts-ignore-next-line
+    const decipher = crypto.createDecipheriv(algorithm, key, Buffer.from(iv, 'hex'));
+    let decrypted = decipher.update(encrypted, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    return decrypted;
 }
