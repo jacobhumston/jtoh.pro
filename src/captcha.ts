@@ -1,7 +1,7 @@
 import { getURLHost } from './dev';
 import { getSignedInRobloxUser } from './loginauth';
 import { cloudflareCaptchaSecret } from './tokens';
-import { Hono } from 'hono';
+import { Hono, type Context } from 'hono';
 import { v4 } from 'uuid';
 import { captchaBypassDB } from './db';
 
@@ -58,4 +58,16 @@ export function captchaManager(app: Hono) {
 
         return context.json({ success: true });
     });
+}
+
+export async function verifyContext(context: Context) {
+    const token = context.req.query('captcha') ?? '';
+    const user = await getSignedInRobloxUser(context);
+    if (user) {
+        const success = await verifyCaptchaBypass(user.id, token);
+        if (!success) return context.json({ error: 'Captcha failed, please try again.' }, 400) as any;
+    } else {
+        const captchaPassed = await verifyCaptcha(token);
+        if (!captchaPassed) return context.json<{ error: string }>({ error: 'Captcha failed, please try again.' }, 400);
+    }
 }

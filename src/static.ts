@@ -33,7 +33,9 @@ export default async function serveStatic(app: Hono) {
         let file = fs.readFileSync(filePath);
 
         if (fileExt === '.js') {
-            file = Buffer.from(uglifyJs.minify(file.toString(), { mangle: true }).code);
+            file = Buffer.from(
+                uglifyJs.minify(file.toString(), { mangle: true, compress: { unsafe: true, passes: 3 } }).code
+            );
         } else if (fileExt === '.css') {
             file = Buffer.from(new cleanCSS().minify(file.toString()).styles);
         } else if (fileExt === '.html') {

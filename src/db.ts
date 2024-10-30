@@ -101,3 +101,14 @@ const loginAuthDBSqlite = new KeyvSqlite('sqlite://db/authLogin.sqlite');
 const loginAuthDB = new Keyv({ store: loginAuthDBSqlite });
 
 export { statsDB, cardsRequestedDB, loginAuthDB, skillPointsDB, captchaBypassDB };
+
+export function getDBName(
+    db: typeof statsDB | typeof cardsRequestedDB | typeof skillPointsDB | typeof loginAuthDB | typeof captchaBypassDB
+) {
+    if (db === statsDB) return 'stats';
+    if (db === cardsRequestedDB) return 'cardsRequested';
+    if (db === skillPointsDB) return 'skillPoints';
+    if (db === loginAuthDB) return 'authLogin';
+    if (db === captchaBypassDB) return 'captchaBypass';
+    throw new Error('Invalid DB.');
+}
