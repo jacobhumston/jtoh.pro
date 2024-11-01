@@ -1,5 +1,5 @@
 import { createCanvas, loadImage } from '@napi-rs/canvas';
-import { centerText, colorText, drawRoundedRect, drawRoundedRectv2 } from './util';
+import { centerText, colorText, drawIconWithText, drawRoundedRect, drawRoundedRectv2 } from './util';
 import type { TowerData } from './type';
 import { v4 } from 'uuid';
 import Color from 'color';
@@ -281,7 +281,8 @@ export default function jtoh(app: Hono) {
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#f8f8f8';
                 ctx.font = 'bold 15px Poppins, Twemoji';
-                ctx.fillText(`Completed Tower Types`, 20, 135);
+                //ctx.fillText(`Completed Tower Types`, 20, 135);
+                drawIconWithText(ctx, 'inventory', '18px', 18, 'Completed Tower Types', '#f8f8f8', 20, 135);
 
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#bdbdbd';
@@ -295,7 +296,8 @@ export default function jtoh(app: Hono) {
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#f8f8f8';
                 ctx.font = 'bold 15px Poppins, Twemoji';
-                ctx.fillText(`Skill Points`, 340, 135);
+                //ctx.fillText(`Skill Points`, 340, 135);
+                drawIconWithText(ctx, 'timeline', '18px', 18, 'Skill Points', '#f8f8f8', 340, 135);
 
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#bdbdbd';
@@ -305,7 +307,8 @@ export default function jtoh(app: Hono) {
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#f8f8f8';
                 ctx.font = 'bold 15px Poppins, Twemoji';
-                ctx.fillText(`Rank (SP)`, 475, 135);
+                //ctx.fillText(`Rank (SP)`, 475, 135);
+                drawIconWithText(ctx, 'trophy', '18px', 18, 'Skill Points Rank', '#f8f8f8', 475, 135);
 
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#bdbdbd';
@@ -343,7 +346,8 @@ export default function jtoh(app: Hono) {
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#f8f8f8';
                 ctx.font = 'bold 15px Poppins, Twemoji';
-                ctx.fillText(`Completed Areas`, 20, 185);
+                drawIconWithText(ctx, 'map', '18px', 18, 'Completed Areas', '#f8f8f8', 20, 185);
+                //ctx.fillText(`map Completed Areas`, 20, 185);
 
                 ctx.fillStyle = '#bdbdbd';
                 if (towerStats.completed_areas.length > 0) {

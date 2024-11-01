@@ -197,7 +197,7 @@ _window.addEventListener('DOMContentLoaded', () => {
 */
 
     function getGoogleIconHTML(name) {
-        return `<span class="material-symbols-rounded">${name}</span>`;
+        return `<span class="materialSymbolsRounded">${name}</span>`;
     }
 
     async function isLoggedIn() {
@@ -452,6 +452,7 @@ _window.addEventListener('DOMContentLoaded', () => {
                             icon.src = '/app/assets/default-roblox-profile.png';
                         } else {
                             if (data.rank < 4) {
+                                icon.src = user.thumbnail;
                                 fetch(`/ext/util/user-roblox-thumbnails/${user.id}`)
                                     .then(async (response) => {
                                         icon.src = (await response.json()).bust;
@@ -587,11 +588,62 @@ _window.addEventListener('DOMContentLoaded', () => {
                 const params = url.searchParams;
                 const type = params.get('type');
                 if (type === 'auth') {
+                    try {
+                        window.history.replaceState({}, document.title, '/app/captcha');
+                    } catch (e) {
+                        console.error(e);
+                    }
                     const token = await sec();
                     _document.location.href = `/ext/auth?captcha=${token}&code=${params.get('code')}`;
                 } else {
                     _document.location.href = '/';
                 }
+            }
+        })();
+
+        (() => {
+            function addImageEventListeners(img) {
+                img.addEventListener('load', (event) => {
+                    event.target.classList.add('imageIsLoaded');
+                });
+                img.addEventListener('error', (event) => {
+                    event.target.classList.remove('imageIsLoaded');
+                });
+                if (img.complete && img.naturalWidth !== 0) {
+                    img.classList.add('imageIsLoaded');
+                }
+                const attributeObserver = new MutationObserver((mutationsList) => {
+                    for (const mutation of mutationsList) {
+                        if (mutation.type === 'attributes' && mutation.attributeName === 'src') {
+                            img.classList.remove('imageIsLoaded');
+                        }
+                    }
+                });
+                attributeObserver.observe(img, { attributes: true });
+            }
+
+            const observer = new MutationObserver((mutationsList) => {
+                for (const mutation of mutationsList) {
+                    if (mutation.type === 'childList') {
+                        for (const node of mutation.addedNodes) {
+                            if (node.tagName === 'IMG') {
+                                addImageEventListeners(node);
+                            } else if (node.nodeType === Node.ELEMENT_NODE) {
+                                const imgs = node.getElementsByTagName('img');
+                                for (const img of imgs) {
+                                    addImageEventListeners(img);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            observer.observe(_document.body, { childList: true, subtree: true });
+
+            const existingImages = _document.getElementsByTagName('img');
+            for (const img of existingImages) {
+                addImageEventListeners(img);
             }
         })();
     });

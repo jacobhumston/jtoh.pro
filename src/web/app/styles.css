@@ -10,6 +10,14 @@
     font-display: swap;
 }
 
+@font-face {
+    font-family: 'MaterialSymbolsRounded';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('/app/assets/MaterialSymbolsRounded.woff2') format('woff2');
+}
+
 :root {
     --font: 'Poppins', Arial, sans-serif;
 }
@@ -32,6 +40,7 @@
     --leaderboard-second: #f4ff79;
     --leaderboard-third: #815a5a;
     --transparent: #00000000;
+    --loading-svg: url('/app/assets/loading-dark.svg');
 }
 
 .themesLight {
@@ -52,6 +61,7 @@
     --leaderboard-second: #f4ff79;
     --leaderboard-third: #815a5a;
     --transparent: #00000000;
+    --loading-svg: url('/app/assets/loading-light.svg');
 }
 
 html,
@@ -182,7 +192,7 @@ code {
     border-radius: 5px;
 }
 
-.smallCopyButton .material-symbols-rounded {
+.smallCopyButton .materialSymbolsRounded {
     font-size: 17px;
 }
 
@@ -251,7 +261,7 @@ code {
     background-color: var(--color-background) !important;
 }
 
-.material-symbols-rounded {
+.materialSymbolsRounded {
     vertical-align: middle;
 }
 
@@ -276,7 +286,7 @@ code {
 }
 
 /*
-:root:not(.isLoaded) .material-symbols-rounded {
+:root:not(.isLoaded) .materialSymbolsRounded {
     display: none !important;
 }
 */
@@ -518,8 +528,8 @@ button:disabled:hover {
     margin-left: 5px;
 }
 
-#themeChangeOpener .material-symbols-rounded,
-.themeChanger .material-symbols-rounded {
+#themeChangeOpener .materialSymbolsRounded,
+.themeChanger .materialSymbolsRounded {
     vertical-align: bottom;
 }
 
@@ -588,4 +598,33 @@ button:disabled:hover {
     background-color: var(--color-background-even-more-darker);
     border-radius: 20px;
     padding-right: 15px;
+}
+
+img {
+    background-image: var(--loading-svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    background-size: contain;
+}
+
+.imageIsLoaded {
+    background-image: none !important;
+}
+
+.materialSymbolsRounded {
+    font-family: 'MaterialSymbolsRounded';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: 'liga';
 }
