@@ -86,6 +86,24 @@ export function colorText(
     }
 }
 
+export function drawIconWithText(
+    ctx: SKRSContext2D,
+    iconName: string,
+    fontAppend: string,
+    size: number,
+    text: string,
+    color: string,
+    x: number,
+    y: number
+) {
+    ctx.save();
+    ctx.font = `${fontAppend} MaterialSymbolsRounded`
+    ctx.fillStyle = color;
+    ctx.fillText(iconName, x - 2, y + 5);
+    ctx.restore();
+    ctx.fillText(text, x - 2 + size + 3, y);
+}
+
 export function centerText(canvas: Canvas, ctx: SKRSContext2D, str: string): number {
     return (canvas.width - ctx.measureText(str).width) / 2;
 }
