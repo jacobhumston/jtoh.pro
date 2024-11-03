@@ -628,3 +628,8 @@ img {
     -webkit-font-smoothing: antialiased;
     font-feature-settings: 'liga';
 }
+
+.leaderboardUserCount .materialSymbolsRounded {
+    color: var(--color-text-bold);
+    vertical-align: text-bottom;
+}

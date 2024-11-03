@@ -4,6 +4,7 @@ import { discordInteractionsApplicationId, discordInteractionsPublicKey, discord
 import { v4 } from 'uuid';
 import fs from 'node:fs';
 import logger from './logger';
+import { getURL } from './dev';
 
 export const commands = [
     {
@@ -63,7 +64,7 @@ export const commands = [
 
 export async function publishDiscordCommands() {
     const commandString = JSON.stringify(commands);
-    const commandHash = btoa(commandString);
+    const commandHash = getURL() + '\n' + btoa(commandString);
     if (!fs.existsSync('cache/')) fs.mkdirSync('cache/');
     if (!fs.existsSync('cache/discord-commands')) fs.writeFileSync('cache/discord-commands', '');
 
