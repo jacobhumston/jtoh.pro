@@ -386,6 +386,11 @@ _window.addEventListener('DOMContentLoaded', () => {
                     div.innerHTML = '';
 
                     if (response.total.pages > 0) {
+                        const userCount = _document.createElement('span');
+                        userCount.innerHTML = `${getGoogleIconHTML('group')} <b>${formatter.format(response.total.users)}</b> users in this leaderboard.`;
+                        userCount.classList.add('leaderboardUserCount');
+                        div.appendChild(userCount);
+
                         const pagination = _document.createElement('div');
                         pagination.classList.add('leaderboardPagination');
                         div.appendChild(pagination);
@@ -448,20 +453,37 @@ _window.addEventListener('DOMContentLoaded', () => {
                                 icon.src = '/app/assets/default-roblox-profile.png';
                             }
                         };
-                        if (user.thumbnail === '') {
-                            icon.src = '/app/assets/default-roblox-profile.png';
-                        } else {
-                            if (data.rank < 4) {
-                                icon.src = user.thumbnail;
-                                fetch(`/ext/util/user-roblox-thumbnails/${user.id}`)
-                                    .then(async (response) => {
-                                        icon.src = (await response.json()).bust;
-                                    })
-                                    .catch(() => {});
+
+                        function setImageSource(icon) {
+                            if (user.thumbnail === '') {
+                                icon.src = '/app/assets/default-roblox-profile.png';
                             } else {
-                                icon.src = user.thumbnail;
+                                if (data.rank < 4) {
+                                    icon.src = user.thumbnail;
+                                    fetch(`/ext/util/user-roblox-thumbnails/${user.id}`)
+                                        .then(async (response) => {
+                                            icon.src = (await response.json()).bust;
+                                        })
+                                        .catch(() => {});
+                                } else {
+                                    icon.src = user.thumbnail;
+                                }
                             }
                         }
+
+                        const iconObserver = new IntersectionObserver(
+                            (entries, observer) => {
+                                entries.forEach((entry) => {
+                                    if (entry.isIntersecting) {
+                                        setImageSource(icon);
+                                        observer.unobserve(icon);
+                                    }
+                                });
+                            },
+                            { threshold: 0.1 }
+                        );
+                        iconObserver.observe(icon);
+
                         icon.alt = 'User Icon';
                         icon.classList.add('leaderboardIcon');
                         iconContainer.appendChild(icon);

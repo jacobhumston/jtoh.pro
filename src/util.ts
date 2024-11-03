@@ -97,7 +97,7 @@ export function drawIconWithText(
     y: number
 ) {
     ctx.save();
-    ctx.font = `${fontAppend} MaterialSymbolsRounded`
+    ctx.font = `${fontAppend} MaterialSymbolsRounded`;
     ctx.fillStyle = color;
     ctx.fillText(iconName, x - 2, y + 5);
     ctx.restore();

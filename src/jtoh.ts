@@ -119,7 +119,7 @@ export default function jtoh(app: Hono) {
 
             ctx.fillStyle = Color('#2e2e2e').darken(0.4).hex();
             drawRoundedRectv2(ctx, 20, 20, 100, 80, { bottomLeft: 0, bottomRight: 0, topLeft: 50, topRight: 50 });
-            ctx.drawImage(thumbnail, 20, 0, 100, 100);
+            ctx.drawImage(thumbnail, 23, 6, 94, 94);
 
             ctx.save();
             ctx.fillStyle = Color('#2e2e2e').darken(0.4).hex();
@@ -259,9 +259,44 @@ export default function jtoh(app: Hono) {
                         }
                         ctx.fillText(`${Math.floor((completed / total) * 100)}%`, startX, startY - 6);
                         {
-                            ctx.font = 'bold 14px Poppins';
-                            ctx.fillStyle = Color(difficultyColor).darken(0.5).hex();
-                            ctx.fillText(`${total - completed}`, startX, startY + 22);
+                            ctx.fillStyle = Color(difficultyColor).darken(0.75).hex();
+                            if (total - completed === 0) {
+                                ctx.fillStyle = difficultyColor;
+                                drawRoundedRectv2(ctx, startX, startY + 5, 3, 15, {
+                                    bottomLeft: 3,
+                                    bottomRight: 3,
+                                    topLeft: 0,
+                                    topRight: 0
+                                });
+                                //ctx.fillRect(startX, startY + 5, 3, 15);
+                            } else {
+                                drawRoundedRectv2(ctx, startX, startY + 5, 3, 20, {
+                                    bottomLeft: 3,
+                                    bottomRight: 3,
+                                    topLeft: 0,
+                                    topRight: 0
+                                });
+                                //ctx.fillRect(startX, startY + 5, 3, 20);
+                            }
+                            ctx.font = 'bold 14px Poppins, Twemoji';
+                            if (total - completed === 0) ctx.font = 'bold 11px Poppins, Twemoji';
+                            ctx.strokeStyle = Color('#e2335f').darken(0.5).hex();
+                            ctx.globalAlpha = 0.5;
+                            ctx.lineWidth = 3;
+                            ctx.lineJoin = 'miter';
+                            ctx.miterLimit = 2;
+                            ctx.strokeText(
+                                `${total - completed === 0 ? '✅' : `❌ ${total - completed}`}`,
+                                startX + 5,
+                                startY + (total - completed === 0 ? 17 : 21)
+                            );
+                            ctx.globalAlpha = 1;
+                            ctx.fillStyle = '#e2335f';
+                            ctx.fillText(
+                                `${total - completed === 0 ? '' : `❌ ${total - completed}`}`,
+                                startX + 5,
+                                startY + (total - completed === 0 ? 17 : 21)
+                            );
                         }
                     });
                     ctx.textAlign = 'left';
