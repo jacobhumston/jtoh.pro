@@ -1,3 +1,4 @@
+import { convertTo, type AvailableConversions } from '@jacobhumston/tc.js';
 import type { Canvas, SKRSContext2D } from '@napi-rs/canvas';
 import crypto from 'node:crypto';
 
@@ -144,4 +145,8 @@ export function decryptCode(encryptedCode: string, key: string): string {
     let decrypted = decipher.update(encrypted, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
     return decrypted;
+}
+
+export async function wait(time: AvailableConversions) {
+    return new Promise((resolve) => setTimeout(resolve, convertTo(time, 'milliseconds')));
 }
