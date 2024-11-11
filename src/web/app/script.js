@@ -306,8 +306,7 @@ _window.addEventListener('DOMContentLoaded', () => {
                 name: 'Skill Points',
                 type: 'skill-points',
                 other: ['JToH', 'AToS', 'TEA', 'JToH XL', 'JToH XXL'],
-                description:
-                    "Leaderboard of the user's with the most amount of skill points. Skill points are calculated via completed towers amoungst other factors."
+                description: `Leaderboard of the user's with the most amount of skill points. \n${getGoogleIconHTML('info')} Skill points are calculated via completed towers amoungst other factors.`
             }
         ];
         const fixOther = (string) => string.toLowerCase().replaceAll(' ', '');
@@ -350,7 +349,11 @@ _window.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        description.innerHTML = `<p><b>${typeObject.name}</b> (${other}) - ${typeObject.description}</p>`;
+        description.innerHTML =
+            `<p>${getGoogleIconHTML('trophy')} <b>${typeObject.name}</b> (${other}) - ${typeObject.description}</p>`.replaceAll(
+                '\n',
+                '<br>'
+            );
 
         if (isNaN(page) || page < 1) {
             description.innerHTML = `<p>Invalid page number.</p>`;
@@ -390,6 +393,13 @@ _window.addEventListener('DOMContentLoaded', () => {
                         userCount.innerHTML = `${getGoogleIconHTML('group')} <b>${formatter.format(response.total.users)}</b> users in this leaderboard.`;
                         userCount.classList.add('leaderboardUserCount');
                         div.appendChild(userCount);
+
+                        if (response.me) {
+                            const myRank = _document.createElement('span');
+                            myRank.innerHTML = `${getGoogleIconHTML('person')} You are ranked <b>#${formatter.format(response.me.rank)}</b>.`;
+                            myRank.classList.add('leaderboardMyRank');
+                            div.appendChild(myRank);
+                        }
 
                         const pagination = _document.createElement('div');
                         pagination.classList.add('leaderboardPagination');

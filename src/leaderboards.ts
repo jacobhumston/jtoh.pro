@@ -3,6 +3,7 @@ import { getOrderedDB, cardsRequestedDB, skillPointsDB } from './db';
 import type { gameNames } from './gamelist';
 import { gameNamesArray } from './gamelist';
 import { verifyContext } from './captcha';
+import { getSignedInRobloxUser } from './loginauth';
 
 export default function serveLeaderboards(app: Hono) {
     app.get('/ext/leaderboards/:type/:game', async (context) => {
@@ -26,13 +27,27 @@ export default function serveLeaderboards(app: Hono) {
         const cardRequests = await getOrderedDB(db, game, includeJacob).catch(() => []);
         const start = (page - 1) * 100;
 
-        return context.json({
+        const data: any = {
             result: cardRequests.slice(start, start + 100),
             page: page,
             total: {
                 users: cardRequests.length,
                 pages: Math.max(1, Math.ceil(cardRequests.length / 100))
             }
-        });
+        };
+
+        const me = await getSignedInRobloxUser(context);
+        if (me) {
+            const meIndex = cardRequests.findIndex((x) => x.user.id === me.id);
+            if (meIndex !== -1) {
+                data['me'] = cardRequests[meIndex];
+            } else {
+                data['me'] = null;
+            }
+        } else {
+            data['me'] = null;
+        }
+
+        return context.json(data);
     });
 }
