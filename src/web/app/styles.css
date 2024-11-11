@@ -629,7 +629,9 @@ img {
     font-feature-settings: 'liga';
 }
 
-.leaderboardUserCount .materialSymbolsRounded {
+.leaderboardUserCount .materialSymbolsRounded,
+.leaderboardMyRank .materialSymbolsRounded,
+#leaderboardCurrentDescription .materialSymbolsRounded {
     color: var(--color-text-bold);
     vertical-align: text-bottom;
 }
