@@ -1,10 +1,10 @@
 import type { Hono } from 'hono';
 import { extname, join, normalize } from 'path';
-import uglifyJs from 'uglify-js';
 import fs from 'node:fs';
 import mime from 'mime-types';
 import cleanCSS from 'clean-css';
 import minifyHTML from 'html-minifier';
+import { minify as minifyJS } from 'terser';
 
 export default async function serveStatic(app: Hono) {
     app.use('/*', async (context, next) => {
@@ -34,10 +34,31 @@ export default async function serveStatic(app: Hono) {
 
         if (fileExt === '.js') {
             file = Buffer.from(
-                uglifyJs.minify(file.toString(), { mangle: true, compress: { unsafe: true, passes: 3 } }).code
+                (
+                    await minifyJS(file.toString(), {
+                        mangle: true,
+                        compress: {
+                            ecma: 2020,
+                            hoist_funs: true,
+                            drop_console: true,
+                            booleans_as_integers: true,
+                            arguments: true,
+                            unsafe: true,
+                            passes: 3,
+                            unsafe_Function: true,
+                            unsafe_math: true,
+                            unsafe_methods: true,
+                            unsafe_proto: true
+                        }
+                    })
+                ).code ?? ''
             );
         } else if (fileExt === '.css') {
-            file = Buffer.from(new cleanCSS().minify(file.toString()).styles);
+            file = Buffer.from(
+                new cleanCSS({
+                    level: 2
+                }).minify(file.toString()).styles
+            );
         } else if (fileExt === '.html') {
             let content = file.toString();
             for (const file of fs.readdirSync(join(__dirname, 'web', 'app', 'templates'))) {
