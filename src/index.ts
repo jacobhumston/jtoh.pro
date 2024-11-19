@@ -18,6 +18,8 @@ import { getTempToken } from './temptokens';
 import { convert as timeConvert } from '@jacobhumston/tc.js';
 import { admin } from './admin';
 import { captchaManager } from './captcha';
+import { charts } from './chart';
+import { parseRobloxAccount } from './roblox';
 
 const app = new Hono();
 
@@ -70,6 +72,7 @@ serveLeaderboards(app);
 serveStatic(app);
 redirects(app);
 jtoh(app);
+charts(app);
 
 app.get('/', async (context) => {
     return context.redirect('/app/');
@@ -119,6 +122,12 @@ discordInteractions(app);
 publishDiscordCommands().catch(() => {
     if (fs.existsSync('cache/discord-commands')) fs.rmSync('cache/discord-commands');
     logger.error('Failed to publish Discord commands.');
+});
+
+app.get('/towerstats/:game/:user', async (context) => {
+    const account = await parseRobloxAccount(context);
+    if (!account) return context.json({ error: 'Invalid user.' }, 400);
+    return context.redirect(`https://towerstats.com/${context.req.param().game}?username=${account.name}`);
 });
 
 app.notFound((context) => {
