@@ -4,7 +4,7 @@ import { discordInteractionsApplicationId, discordInteractionsPublicKey, discord
 import { v4 } from 'uuid';
 import fs from 'node:fs';
 import logger from './logger';
-import { getURL } from './dev';
+import { getURL, getURLHost, getURLWithSlash } from './dev';
 
 export const commands = [
     {
@@ -29,21 +29,6 @@ export const commands = [
             {
                 name: 'embed',
                 description: 'Get a JToH embed.',
-                type: 1,
-                options: [
-                    {
-                        name: 'username',
-                        description: 'The Roblox username of the player.',
-                        type: 3,
-                        required: true,
-                        min_length: 3,
-                        max_length: 20
-                    }
-                ]
-            },
-            {
-                name: 'try-it-out',
-                description: 'Get a JToH try it out link.',
                 type: 1,
                 options: [
                     {
@@ -116,14 +101,12 @@ export default function discordInteractions(app: Hono) {
         } else if (data.type === 2) {
             if (data.data.name === 'jtoh') {
                 const command = data.data.options[0];
-                let url = `https://jtoh.pro/`;
+                let url = getURLWithSlash();
                 let username = command.options[0].value;
                 if (command.name === 'card') {
                     url += username;
                 } else if (command.name === 'embed') {
                     url += `embed/${username}`;
-                } else if (command.name === 'try-it-out') {
-                    url += `app/?user=${username}`;
                 }
 
                 username = encodeURIComponent(username);
@@ -137,7 +120,16 @@ export default function discordInteractions(app: Hono) {
                 return context.json({
                     type: 4,
                     data: {
-                        content: url,
+                        content: command.name === 'card' ? undefined : url,
+                        attachments:
+                            command.name === 'card'
+                                ? [
+                                      {
+                                          id: 'jtoh-card',
+                                          url: url
+                                      }
+                                  ]
+                                : undefined,
                         components: [
                             {
                                 type: 1,
@@ -151,8 +143,8 @@ export default function discordInteractions(app: Hono) {
                                     {
                                         type: 2,
                                         style: 5,
-                                        label: 'jtoh.pro',
-                                        url: 'https://jtoh.pro'
+                                        label: getURLHost(),
+                                        url: getURL()
                                     }
                                 ]
                             },
@@ -163,7 +155,7 @@ export default function discordInteractions(app: Hono) {
                                         type: 2,
                                         style: 5,
                                         label: 'View towerstats.com Profile',
-                                        url: `https://towerstats.com/jtoh?username=${username}`
+                                        url: `${getURL()}/towerstats/jtoh/${username}`
                                     }
                                 ]
                             }
