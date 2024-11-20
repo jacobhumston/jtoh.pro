@@ -5,7 +5,9 @@ import { v4 } from 'uuid';
 import fs from 'node:fs';
 import logger from './logger';
 import { getURL, getURLHost, getURLWithSlash } from './dev';
+import { getTempToken } from './temptokens';
 
+export const discordAPIURL = 'https://discord.com/api/v10';
 export const commands = [
     {
         name: 'jtoh',
@@ -63,7 +65,7 @@ export async function publishDiscordCommands() {
     fs.writeFileSync('cache/discord-commands', commandHash);
 
     const appId = discordInteractionsApplicationId;
-    const url = `https://discord.com/api/v10/applications/${appId}/commands`;
+    const url = `${discordAPIURL}/applications/${appId}/commands`;
     return fetch(url, {
         method: 'PUT',
         headers: {
@@ -117,51 +119,78 @@ export default function discordInteractions(app: Hono) {
                     url += `&nocache=${v4().split('-')[0]}`;
                 }
 
-                return context.json({
-                    type: 4,
-                    data: {
-                        content: command.name === 'card' ? undefined : url,
-                        attachments:
-                            command.name === 'card'
-                                ? [
-                                      {
-                                          id: 'jtoh-card',
-                                          url: url
-                                      }
-                                  ]
-                                : undefined,
+                const buttons = [
+                    {
+                        type: 1,
                         components: [
                             {
-                                type: 1,
-                                components: [
-                                    {
-                                        type: 2,
-                                        style: 5,
-                                        label: 'Open in Browser',
-                                        url: url
-                                    },
-                                    {
-                                        type: 2,
-                                        style: 5,
-                                        label: getURLHost(),
-                                        url: getURL()
-                                    }
-                                ]
+                                type: 2,
+                                style: 5,
+                                label: 'Open in Browser',
+                                url: url
                             },
                             {
-                                type: 1,
-                                components: [
-                                    {
-                                        type: 2,
-                                        style: 5,
-                                        label: 'View towerstats.com Profile',
-                                        url: `${getURL()}/towerstats/jtoh/${username}`
-                                    }
-                                ]
+                                type: 2,
+                                style: 5,
+                                label: getURLHost(),
+                                url: getURL()
+                            }
+                        ]
+                    },
+                    {
+                        type: 1,
+                        components: [
+                            {
+                                type: 2,
+                                style: 5,
+                                label: 'View towerstats.com Profile',
+                                url: `${getURL()}/towerstats/jtoh/${username}`
                             }
                         ]
                     }
-                });
+                ];
+
+                if (command.name === 'embed') {
+                    return context.json({
+                        type: 4,
+                        data: {
+                            content: url,
+                            components: buttons
+                        }
+                    });
+                } else {
+                    new Promise(async () => {
+                        const image = await fetch(url + `&rlb-token=${getTempToken('rlb-token')}`);
+                        const file = new File([await image.blob()], 'card.png', { type: 'image/png' });
+                        const formData = new FormData();
+                        formData.append(
+                            'payload_json',
+                            JSON.stringify({
+                                components: buttons,
+                                attachments: [
+                                    {
+                                        id: 0,
+                                        filename: 'card.png'
+                                    }
+                                ]
+                            })
+                        );
+                        formData.append('files[0]', file, 'card.png');
+                        await fetch(
+                            `${discordAPIURL}/webhooks/${discordInteractionsApplicationId}/${data.token}/messages/@original`,
+                            {
+                                body: formData,
+                                headers: {
+                                    Authorization: `Bot ${discordInteractionsToken}`
+                                },
+                                method: 'PATCH'
+                            }
+                        ).catch(logger.error);
+                    });
+                    return context.json({
+                        type: 5
+                    });
+                }
             } else {
                 return context.json({ error: 'Invalid command.' }, 400);
             }
