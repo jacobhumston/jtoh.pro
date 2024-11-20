@@ -28,7 +28,7 @@ export function charts(app: Hono) {
                 ),
                 datasets: [
                     {
-                        label: `Card Requests - ${getURLHost()}`,
+                        label: `Card Requests`,
                         data: data.map((x) => x.requests),
                         fill: true,
                         tension: 0.1,
@@ -47,6 +47,11 @@ export function charts(app: Hono) {
                         labels: {
                             color: '#ebebeb'
                         }
+                    },
+                    title: {
+                        display: true,
+                        text: `${getURLHost()} - ${new Date().toDateString()}`,
+                        color: '#ebebeb'
                     }
                 },
                 layout: {
