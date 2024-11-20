@@ -48,7 +48,17 @@ export default async function serveStatic(app: Hono) {
                             unsafe_Function: true,
                             unsafe_math: true,
                             unsafe_methods: true,
-                            unsafe_proto: true
+                            unsafe_proto: true,
+                            toplevel: true,
+                            module: true,
+                            reduce_vars: true,
+                            inline: true,
+                            collapse_vars: true,
+                            pure_funcs: ['console.log'],
+                            pure_getters: true
+                        },
+                        output: {
+                            comments: false
                         }
                     })
                 ).code ?? ''
