@@ -299,13 +299,13 @@ _window.addEventListener('DOMContentLoaded', () => {
             {
                 name: 'Card Requests',
                 type: 'card-requests',
-                other: ['JToH', 'AToS', 'TEA', 'JToH XL', 'JToH XXL'],
+                other: ['JToH', 'CSCD', 'AToS', 'TEA', 'JToH XL', 'JToH XXL'],
                 description: 'Leaderboard for the most amount of cards requested for a specific user.'
             },
             {
                 name: 'Skill Points',
                 type: 'skill-points',
-                other: ['JToH', 'AToS', 'TEA', 'JToH XL', 'JToH XXL'],
+                other: ['JToH', 'CSCD', 'AToS', 'TEA', 'JToH XL', 'JToH XXL'],
                 description: `Leaderboard of the user's with the most amount of skill points. \n${getGoogleIconHTML('info')} Skill points are calculated via completed towers amoungst other factors.`
             }
         ];

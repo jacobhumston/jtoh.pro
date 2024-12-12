@@ -233,12 +233,16 @@ export default function jtoh(app: Hono) {
                         if (parseInt(key) > 11) continue;
                         difficultyOrder[parseInt(key) - 1] = string;
                     }
+                    let totalCompleted = 0;
+                    let totalTotal = 0;
                     difficultyOrder.forEach((difficulty, index) => {
                         const difficultyColor = towerStats.difficulty_colors[difficulty];
                         const difficultyAmount = towerStats.difficulty_progress[difficulty];
                         // 700 by 300
                         const completed = difficultyAmount[0];
                         const total = difficultyAmount[1];
+                        totalCompleted += completed;
+                        totalTotal += total;
                         const width = (completed / total) * (length / difficultyOrder.length);
                         const startX = (700 - length) / 2 + index * (length / difficultyOrder.length);
                         ctx.fillStyle = Color(difficultyColor).darken(0.75).hex();
@@ -258,58 +262,25 @@ export default function jtoh(app: Hono) {
                             ctx.globalAlpha = 1;
                         }
                         ctx.fillText(`${Math.floor((completed / total) * 100)}%`, startX, startY - 6);
-                        {
-                            ctx.fillStyle = Color(difficultyColor).darken(0.75).hex();
-                            if (total - completed === 0) {
-                                ctx.fillStyle = difficultyColor;
-                                drawRoundedRectv2(ctx, startX, startY + 5, 3, 15, {
-                                    bottomLeft: 3,
-                                    bottomRight: 3,
-                                    topLeft: 0,
-                                    topRight: 0
-                                });
-                                //ctx.fillRect(startX, startY + 5, 3, 15);
-                            } else {
-                                drawRoundedRectv2(ctx, startX, startY + 5, 3, 20, {
-                                    bottomLeft: 3,
-                                    bottomRight: 3,
-                                    topLeft: 0,
-                                    topRight: 0
-                                });
-                                //ctx.fillRect(startX, startY + 5, 3, 20);
-                            }
-                            ctx.font = 'bold 14px Poppins, Twemoji';
-                            if (total - completed === 0) ctx.font = 'bold 11px Poppins, Twemoji';
-                            ctx.strokeStyle = Color('#e2335f').darken(0.5).hex();
-                            ctx.globalAlpha = 0.5;
-                            ctx.lineWidth = 3;
-                            ctx.lineJoin = 'miter';
-                            ctx.miterLimit = 2;
-                            ctx.strokeText(
-                                `${total - completed === 0 ? '✅' : `❌ ${total - completed}`}`,
-                                startX + 5,
-                                startY + (total - completed === 0 ? 17 : 21)
-                            );
-                            ctx.globalAlpha = 1;
-                            ctx.fillStyle = '#e2335f';
-                            ctx.fillText(
-                                `${total - completed === 0 ? '' : `❌ ${total - completed}`}`,
-                                startX + 5,
-                                startY + (total - completed === 0 ? 17 : 21)
-                            );
-                        }
+                        ctx.fillStyle = new Color('#bdbdbd').darken(0.5).hex();
+                        ctx.font = 'bold 15px Poppins';
+                        ctx.fillText(`${total - completed}`, startX, startY + 20);
                     });
+                    ctx.fillStyle = new Color('#2e2e2e').darken(0.3).hex();
+                    drawRoundedRect(ctx, 20, startY + 27, 660, 24, 10);
+                    ctx.fillStyle = new Color('#2e2e2e').darken(0.2).hex();
+                    drawRoundedRect(ctx, 20, startY + 27, (totalCompleted / totalTotal) * 660, 24, 10);
                     ctx.textAlign = 'left';
                     ctx.fillStyle = '#bdbdbd';
                     ctx.font = 'bold 15px Poppins';
-                    ctx.fillText(`${towerStats.completed_towers} Completed`, 60, startY + 45);
+                    ctx.fillText(`${towerStats.completed_towers} Completed`, 60, startY + 44);
                     ctx.textAlign = 'right';
-                    ctx.fillText(`${towerStats.total_towers} Total`, 640, startY + 45);
+                    ctx.fillText(`${towerStats.total_towers} Total`, 640, startY + 44);
                     ctx.textAlign = 'center';
                     ctx.fillText(
                         `${Math.floor((towerStats.completed_towers / towerStats.total_towers) * 100)}% Progress`,
                         680 / 2,
-                        startY + 45
+                        startY + 44
                     );
                 }
 
