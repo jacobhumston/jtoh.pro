@@ -10,6 +10,8 @@ export default async function serveStatic(app: Hono) {
     app.use('/*', async (context, next) => {
         let path = context.req.path;
         const reqPath = context.req.path;
+        const searchParams = new URL(context.req.url).searchParams;
+        const searchParamsString = searchParams.toString().length > 0 ? '?' + searchParams.toString() : '';
 
         if (!path.includes('.')) {
             if (path.endsWith('/')) {
@@ -27,7 +29,7 @@ export default async function serveStatic(app: Hono) {
         if (!fs.existsSync(filePath)) {
             return next();
         } else {
-            if (reqPath.endsWith('.html')) return context.redirect(reqPath.slice(0, -5));
+            if (reqPath.endsWith('.html')) return context.redirect(reqPath.slice(0, -5) + searchParamsString);
         }
 
         let file = fs.readFileSync(filePath);
