@@ -75,7 +75,9 @@ jtoh(app);
 charts(app);
 
 app.get('/', async (context) => {
-    return context.redirect('/app/');
+    const searchParams = new URL(context.req.url).searchParams;
+    const searchParamsString = searchParams.toString().length > 0 ? '?' + searchParams.toString() : '';
+    return context.redirect('/app/' + searchParamsString);
 });
 
 app.get('/wiki/*', async (context) => {
