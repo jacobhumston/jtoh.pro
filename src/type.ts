@@ -1,28 +1,20 @@
-type CompletedTypes = {
-    citadel?: number;
-    steeple?: number;
-    tower?: number;
-};
-
-type Difficulties = {
-    [key: string]: string;
-};
-
-type DifficultyColors = {
-    [key: string]: string;
-};
-
-type DifficultyProgress = {
-    [key: string]: [number, number];
-};
-
 export interface TowerData {
     completed_areas: string[];
     completed_towers: number;
-    completed_types: CompletedTypes;
-    difficulties: Difficulties;
-    difficulty_colors: DifficultyColors;
-    difficulty_progress: DifficultyProgress;
+    completed_types: {
+        citadel?: number;
+        steeple?: number;
+        tower?: number;
+    };
+    difficulties: {
+        [key: string]: string;
+    };
+    difficulty_colors: {
+        [key: string]: string;
+    };
+    difficulty_progress: {
+        [key: string]: [number, number];
+    };
     donated_amount: number;
     hardest_abbreviation: string | null;
     hardest_raw_difficulty: number;
