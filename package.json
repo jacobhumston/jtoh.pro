@@ -37,7 +37,7 @@
         "clean-css": "^5.3.3",
         "color": "^4.2.3",
         "date-fns": "^3.6.0",
-        "hono": "^4.6.14",
+        "hono": "^4.6.15",
         "hono-rate-limiter": "^0.4.2",
         "html-minifier": "^4.0.0",
         "keyv": "^5.2.3",
