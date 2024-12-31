@@ -1,6 +1,7 @@
 (() => {
     const _window = window;
     const _document = document;
+    const _MutationObserver = MutationObserver;
 
     if (!_window.func) _window.func = {};
     const publicFunctions = _window.func;
@@ -10,8 +11,11 @@
         const localStorage = _window.localStorage;
         const currentTheme = localStorage.getItem('theme');
         const prefersLightMode = _window.matchMedia('(prefers-color-scheme: light)').matches;
-        if (!currentTheme) prefersLightMode ? root.classList.add('themesLight') : root.classList.add('themesDark');
-        else root.classList.add(currentTheme);
+        if (!currentTheme) {
+            prefersLightMode ? classListAdd(root, 'themesLight') : classListAdd(root, 'themesDark');
+        } else {
+            classListAdd(root, currentTheme);
+        }
     }
 
     function genUUID() {
@@ -30,40 +34,67 @@
         return uuid;
     }
 
+    /**
+     * @param {HTMLElement} element
+     * @param {...string} classes
+     */
+    function classListAdd(element, ...classes) {
+        element.classList.add(...classes);
+    }
+
+    /**
+     * @param {HTMLElement} element
+     * @param {...string} classes
+     */
+    function classListRemove(element, ...classes) {
+        element.classList.remove(...classes);
+    }
+
+    /**
+     * @param {HTMLElement} element
+     * @param {Node} child
+     */
+    function appendChild(element, child) {
+        element.appendChild(child);
+    }
+
+    const createElement = (...agrs) => _document.createElement(...agrs);
+    const getElementById = (...agrs) => _document.getElementById(...agrs);
+
     function updateTheme(theme) {
         const root = _document.documentElement;
         const localStorage = _window.localStorage;
         root.classList.forEach((value) => {
-            if (value.startsWith('themes')) root.classList.remove(value);
+            if (value.startsWith('themes')) classListRemove(root, value);
         });
-        root.classList.add(theme);
+        classListAdd(root, theme);
         localStorage.setItem('theme', theme);
     }
     publicFunctions.updateTheme = updateTheme;
 
     function updateExampleOutput() {
-        let username = _document.getElementById('exampleInputUsername').value;
+        let username = getElementById('exampleInputUsername').value;
         if (!username || username.length === 0) username = 'LoveliestJacob';
-        _document.getElementById('exampleImageOutput').src = '';
-        _document.getElementById('exampleImageOutput').src = `/${username}?nocache=${genUUID()}`;
+        getElementById('exampleImageOutput').src = '';
+        getElementById('exampleImageOutput').src = `/${username}?nocache=${genUUID()}`;
     }
     publicFunctions.updateExampleOutput = updateExampleOutput;
 
     async function copyExampleOutputURL(button) {
         if (button.innerHTML === `${getGoogleIconHTML('check')} Copied!`) return;
-        let username = _document.getElementById('exampleInputUsername').value;
+        let username = getElementById('exampleInputUsername').value;
         if (!username || username.length === 0) username = 'LoveliestJacob';
-        _document.getElementById('exampleImageOutput').src = `/${username}?nocache=${genUUID()}`;
-        const url = _document.getElementById('exampleImageOutput').src;
+        getElementById('exampleImageOutput').src = `/${username}?nocache=${genUUID()}`;
+        const url = getElementById('exampleImageOutput').src;
         await navigator.clipboard
             .writeText(`${url}?nocache=${genUUID()}`)
             .catch(() => alert('Failed to copy to clipboard!'));
         let ogText = button.innerHTML;
         button.innerHTML = `${getGoogleIconHTML('check')} Copied!`;
-        button.classList.add('successButton');
+        classListAdd(button, 'successButton');
         setTimeout(() => {
             button.innerHTML = ogText;
-            button.classList.remove('successButton');
+            classListRemove(button, 'successButton');
         }, 2000);
     }
     publicFunctions.copyExampleOutputURL = copyExampleOutputURL;
@@ -74,10 +105,10 @@
             button.innerHTML === `${getGoogleIconHTML('pending')} Loading...`
         )
             return;
-        let username = _document.getElementById('exampleInputUsername').value;
+        let username = getElementById('exampleInputUsername').value;
         if (!username || username.length === 0) username = 'LoveliestJacob';
-        _document.getElementById('exampleImageOutput').src = `/${username}?nocache=${genUUID()}`;
-        const url = _document.getElementById('exampleImageOutput').src;
+        getElementById('exampleImageOutput').src = `/${username}?nocache=${genUUID()}`;
+        const url = getElementById('exampleImageOutput').src;
         let ogText = button.innerHTML;
         button.innerHTML = `${getGoogleIconHTML('pending')} Loading...`;
         const image = await fetch(url)
@@ -87,10 +118,10 @@
             .write([new ClipboardItem({ 'image/png': image })])
             .catch(() => alert('Failed to copy to clipboard!'));
         button.innerHTML = `${getGoogleIconHTML('check')} Copied!`;
-        button.classList.add('successButton');
+        classListAdd(button, 'successButton');
         setTimeout(() => {
             button.innerHTML = ogText;
-            button.classList.remove('successButton');
+            classListRemove(button, 'successButton');
         }, 2000);
     }
     publicFunctions.copyExampleOutputImage = copyExampleOutputImage;
@@ -101,27 +132,27 @@
             button.innerHTML === `${getGoogleIconHTML('downloading')} Downloading...`
         )
             return;
-        let username = _document.getElementById('exampleInputUsername').value;
+        let username = getElementById('exampleInputUsername').value;
         if (!username || username.length === 0) username = 'LoveliestJacob';
-        _document.getElementById('exampleImageOutput').src = `/${username}?nocache=${genUUID()}`;
-        const url = _document.getElementById('exampleImageOutput').src;
+        getElementById('exampleImageOutput').src = `/${username}?nocache=${genUUID()}`;
+        const url = getElementById('exampleImageOutput').src;
         let ogText = button.innerHTML;
         button.innerHTML = `${getGoogleIconHTML('downloading')} Downloading...`;
         const image = await fetch(url)
             .then((response) => response.blob())
             .catch(() => null);
         URL.createObjectURL(image);
-        const link = _document.createElement('a');
+        const link = createElement('a');
         link.href = url;
         link.download = `${username.toLowerCase()}.png`;
-        _document.body.appendChild(link);
+        appendChild(_document.body, link);
         link.click();
         _document.body.removeChild(link);
         button.innerHTML = `${getGoogleIconHTML('check')} Downloaded!`;
-        button.classList.add('successButton');
+        classListAdd(button, 'successButton');
         setTimeout(() => {
             button.innerHTML = ogText;
-            button.classList.remove('successButton');
+            classListRemove(button, 'successButton');
         }, 2000);
     }
     publicFunctions.downloadExampleOutputImage = downloadExampleOutputImage;
@@ -131,19 +162,19 @@
         await navigator.clipboard.writeText(url).catch(() => alert('Failed to copy to clipboard!'));
         let ogText = button.innerHTML;
         button.innerHTML = `${getGoogleIconHTML('check')} Copied!`;
-        button.classList.add('successButton');
+        classListAdd(button, 'successButton');
         setTimeout(() => {
             button.innerHTML = ogText;
-            button.classList.remove('successButton');
+            classListRemove(button, 'successButton');
         }, 2000);
     }
     publicFunctions.copyURL = copyURL;
 
     _window.addEventListener('DOMContentLoaded', () => {
-        const week = _document.getElementById('requestStatsWeek');
-        const month = _document.getElementById('requestStatsMonth');
-        const year = _document.getElementById('requestStatsYear');
-        const total = _document.getElementById('requestStatsTotal');
+        const week = getElementById('requestStatsWeek');
+        const month = getElementById('requestStatsMonth');
+        const year = getElementById('requestStatsYear');
+        const total = getElementById('requestStatsTotal');
         if (!week || !month || !year || !total) return;
         const formatter = new Intl.NumberFormat();
         fetch('/ext/request-count')
@@ -160,7 +191,7 @@
                 year.innerText = 'Failed to fetch data';
                 total.innerText = 'Failed to fetch data';
             });
-        _document.getElementById('exampleInputUsername').addEventListener('keyup', (event) => {
+        getElementById('exampleInputUsername').addEventListener('keyup', (event) => {
             if (event.key === 'Enter') {
                 updateExampleOutput();
             }
@@ -213,12 +244,12 @@ _window.addEventListener('DOMContentLoaded', () => {
     async function sec() {
         const getTurnstileToken = () =>
             new Promise((resolve) => {
-                _document.getElementById('captchaContainer').innerHTML = '';
+                getElementById('captchaContainer').innerHTML = '';
                 turnstile.render('#captchaContainer', {
                     sitekey: '0x4AAAAAAAyKalxef6nTkf7o',
                     action: 'leaderboard',
                     callback: function (token) {
-                        _document.getElementById('captchaContainer').innerHTML = '';
+                        getElementById('captchaContainer').innerHTML = '';
                         resolve(token);
                     },
                     'error-callback': function (error) {
@@ -271,19 +302,19 @@ _window.addEventListener('DOMContentLoaded', () => {
         const url = new URL(_window.location.href);
         const params = url.searchParams;
         const username = params.get('user');
-        if (username && _document.getElementById('exampleInputUsername')) {
-            _document.getElementById('exampleInputUsername').value = encodeURIComponent(username.slice(0, 20));
+        if (username && getElementById('exampleInputUsername')) {
+            getElementById('exampleInputUsername').value = encodeURIComponent(username.slice(0, 20));
             updateExampleOutput();
         }
     });
 
     _window.addEventListener('load', () => {
         const root = _document.documentElement;
-        root.classList.add('isLoaded');
+        classListAdd(root, 'isLoaded');
     });
 
     _window.addEventListener('DOMContentLoaded', async () => {
-        const container = _document.getElementById('leaderboardDivContainer');
+        const container = getElementById('leaderboardDivContainer');
         if (!container) return;
 
         const url = new URL(_window.location.href);
@@ -293,8 +324,8 @@ _window.addEventListener('DOMContentLoaded', () => {
         const other = params.get('other') ?? 'jtoh';
         const page = parseInt(params.get('page') ?? 1) ?? 1;
         const formatter = new Intl.NumberFormat();
-        const description = _document.getElementById('leaderboardCurrentDescription');
-        const selectionContainer = _document.getElementById('leaderboardSelectionContainer');
+        const description = getElementById('leaderboardCurrentDescription');
+        const selectionContainer = getElementById('leaderboardSelectionContainer');
         const leaderboards = [
             {
                 name: 'Card Requests',
@@ -312,24 +343,24 @@ _window.addEventListener('DOMContentLoaded', () => {
         const fixOther = (string) => string.toLowerCase().replaceAll(' ', '');
 
         leaderboards.forEach((thisType) => {
-            const typeContainer = _document.createElement('div');
-            typeContainer.classList.add('leaderboardSelectionTypeContainer');
-            const name = _document.createElement('span');
+            const typeContainer = createElement('div');
+            classListAdd(typeContainer, 'leaderboardSelectionTypeContainer');
+            const name = createElement('span');
             name.innerHTML = `<b>${thisType.name}</b>`;
-            name.classList.add('leaderboardSelectionType');
-            typeContainer.appendChild(name);
-            typeContainer.appendChild(_document.createElement('br'));
-            selectionContainer.appendChild(typeContainer);
+            classListAdd(name, 'leaderboardSelectionType');
+            appendChild(typeContainer, name);
+            appendChild(typeContainer, createElement('br'));
+            appendChild(selectionContainer, typeContainer);
             thisType.other.forEach((thisOther, index) => {
-                const button = _document.createElement('button');
+                const button = createElement('button');
                 button.innerText = thisOther;
-                button.classList.add('leaderboardSelectionButton');
+                classListAdd(button, 'leaderboardSelectionButton');
                 button.onclick = () => {
                     _window.location.href = `/app/leaderboards?type=${thisType.type}&other=${fixOther(thisOther)}&page=1${includeJacob ? '&includeJacob=true' : ''}`;
                 };
                 button.type = 'button';
                 if (thisType.type === type && fixOther(thisOther) === other) {
-                    button.classList.add('leaderboardSelectionButtonSelected');
+                    classListAdd(button, 'leaderboardSelectionButtonSelected');
                     button.disabled = true;
                     const check = setInterval(() => {
                         if (_document.documentElement.classList.contains('isLoaded')) {
@@ -338,8 +369,8 @@ _window.addEventListener('DOMContentLoaded', () => {
                         }
                     }, 100);
                 }
-                typeContainer.appendChild(button);
-                if (index - (1 % 3) === 1) typeContainer.appendChild(_document.createElement('br'));
+                appendChild(typeContainer, button);
+                if (index - (1 % 3) === 1) appendChild(typeContainer, createElement('br'));
             });
         });
 
@@ -389,25 +420,25 @@ _window.addEventListener('DOMContentLoaded', () => {
                     div.innerHTML = '';
 
                     if (response.total.pages > 0) {
-                        const userCount = _document.createElement('span');
+                        const userCount = createElement('span');
                         userCount.innerHTML = `${getGoogleIconHTML('group')} <b>${formatter.format(response.total.users)}</b> users in this leaderboard.`;
-                        userCount.classList.add('leaderboardUserCount');
-                        div.appendChild(userCount);
+                        classListAdd(userCount, 'leaderboardUserCount');
+                        appendChild(div, userCount);
 
                         if (response.me) {
-                            const myRank = _document.createElement('span');
+                            const myRank = createElement('span');
                             myRank.innerHTML = `${getGoogleIconHTML('person')} You are ranked <b>#${formatter.format(response.me.rank)}</b>.`;
-                            myRank.classList.add('leaderboardMyRank');
-                            div.appendChild(myRank);
+                            classListAdd(myRank, 'leaderboardMyRank');
+                            appendChild(div, myRank);
                         }
 
-                        const pagination = _document.createElement('div');
-                        pagination.classList.add('leaderboardPagination');
-                        div.appendChild(pagination);
+                        const pagination = createElement('div');
+                        classListAdd(pagination, 'leaderboardPagination');
+                        appendChild(div, pagination);
 
-                        const previous = _document.createElement('button');
+                        const previous = createElement('button');
                         previous.innerText = 'Previous';
-                        previous.classList.add('leaderboardPaginationButton');
+                        classListAdd(previous, 'leaderboardPaginationButton');
                         previous.type = 'button';
                         if (page > 1) {
                             previous.onclick = () => {
@@ -418,16 +449,16 @@ _window.addEventListener('DOMContentLoaded', () => {
                         } else {
                             previous.disabled = true;
                         }
-                        pagination.appendChild(previous);
+                        appendChild(pagination, previous);
 
-                        const pageText = _document.createElement('span');
+                        const pageText = createElement('span');
                         pageText.innerText = `Page ${page}/${response.total.pages}`;
-                        pageText.classList.add('leaderboardPaginationText');
-                        pagination.appendChild(pageText);
+                        classListAdd(pageText, 'leaderboardPaginationText');
+                        appendChild(pagination, pageText);
 
-                        const next = _document.createElement('button');
+                        const next = createElement('button');
                         next.innerText = 'Next';
-                        next.classList.add('leaderboardPaginationButton');
+                        classListAdd(next, 'leaderboardPaginationButton');
                         next.type = 'button';
                         if (page < response.total.pages) {
                             next.onclick = () => {
@@ -438,26 +469,26 @@ _window.addEventListener('DOMContentLoaded', () => {
                         } else {
                             next.disabled = true;
                         }
-                        pagination.appendChild(next);
+                        appendChild(pagination, next);
                     }
 
                     for (const data of response.result) {
                         const user = data.user;
                         const count = data.count;
 
-                        const row = _document.createElement('div');
-                        row.classList.add('leaderboardRow');
+                        const row = createElement('div');
+                        classListAdd(row, 'leaderboardRow');
 
-                        const rank = _document.createElement('span');
+                        const rank = createElement('span');
                         rank.innerText = `#${formatter.format(data.rank)}`;
-                        rank.classList.add('leaderboardRank');
-                        div.appendChild(rank);
+                        classListAdd(rank, 'leaderboardRank');
+                        appendChild(div, rank);
 
-                        const iconContainer = _document.createElement('div');
-                        iconContainer.classList.add('leaderboardIconContainer');
-                        row.appendChild(iconContainer);
+                        const iconContainer = createElement('div');
+                        classListAdd(iconContainer, 'leaderboardIconContainer');
+                        appendChild(row, iconContainer);
 
-                        const icon = _document.createElement('img');
+                        const icon = createElement('img');
                         icon.onerror = () => {
                             if (icon.src !== '/app/assets/default-roblox-profile.png') {
                                 icon.src = '/app/assets/default-roblox-profile.png';
@@ -495,49 +526,49 @@ _window.addEventListener('DOMContentLoaded', () => {
                         iconObserver.observe(icon);
 
                         icon.alt = 'User Icon';
-                        icon.classList.add('leaderboardIcon');
-                        iconContainer.appendChild(icon);
+                        classListAdd(icon, 'leaderboardIcon');
+                        appendChild(iconContainer, icon);
 
-                        const name = _document.createElement('span');
+                        const name = createElement('span');
                         name.innerText = user.displayName;
-                        name.classList.add('leaderboardName');
-                        name.appendChild(_document.createElement('br'));
-                        row.appendChild(name);
+                        classListAdd(name, 'leaderboardName');
+                        appendChild(name, createElement('br'));
+                        appendChild(row, name);
 
-                        const fullName = _document.createElement('span');
+                        const fullName = createElement('span');
                         fullName.innerText = `@${user.name}`;
-                        fullName.classList.add('leaderboardFullName');
-                        name.appendChild(fullName);
+                        classListAdd(fullName, 'leaderboardFullName');
+                        appendChild(name, fullName);
 
-                        const countElement = _document.createElement('span');
+                        const countElement = createElement('span');
                         countElement.innerText = formatter.format(count);
                         if (countElement.innerText.includes('.')) {
                             const decimal = countElement.innerText.split('.')[1];
                             countElement.innerText = countElement.innerText.split('.')[0];
-                            const decimalElement = _document.createElement('span');
+                            const decimalElement = createElement('span');
                             decimalElement.innerText = `.${decimal}`;
-                            decimalElement.classList.add('leaderboardDecimal');
-                            countElement.appendChild(decimalElement);
+                            classListAdd(decimalElement, 'leaderboardDecimal');
+                            appendChild(countElement, decimalElement);
                         }
-                        countElement.classList.add('leaderboardCount');
-                        row.appendChild(countElement);
-                        div.appendChild(row);
+                        classListAdd(countElement, 'leaderboardCount');
+                        appendChild(row, countElement);
+                        appendChild(div, row);
 
                         if (data.rank === 1) {
-                            iconContainer.classList.add('leaderboardIconContainerFirst');
-                            name.classList.add('leaderboardNameFirst');
-                            row.classList.add('leaderboardRowFirst');
-                            icon.classList.add('leaderboardIconFirst');
+                            classListAdd(iconContainer, 'leaderboardIconContainerFirst');
+                            classListAdd(name, 'leaderboardNameFirst');
+                            classListAdd(row, 'leaderboardRowFirst');
+                            classListAdd(icon, 'leaderboardIconFirst');
                         } else if (data.rank === 2) {
-                            iconContainer.classList.add('leaderboardIconContainerSecond');
-                            name.classList.add('leaderboardNameSecond');
-                            row.classList.add('leaderboardRowSecond');
-                            icon.classList.add('leaderboardIconSecond');
+                            classListAdd(iconContainer, 'leaderboardIconContainerSecond');
+                            classListAdd(name, 'leaderboardNameSecond');
+                            classListAdd(row, 'leaderboardRowSecond');
+                            classListAdd(icon, 'leaderboardIconSecond');
                         } else if (data.rank === 3) {
-                            iconContainer.classList.add('leaderboardIconContainerThird');
-                            name.classList.add('leaderboardNameThird');
-                            row.classList.add('leaderboardRowThird');
-                            icon.classList.add('leaderboardIconThird');
+                            classListAdd(iconContainer, 'leaderboardIconContainerThird');
+                            classListAdd(name, 'leaderboardNameThird');
+                            classListAdd(row, 'leaderboardRowThird');
+                            classListAdd(icon, 'leaderboardIconThird');
                         }
                     }
                 })
@@ -549,14 +580,14 @@ _window.addEventListener('DOMContentLoaded', () => {
     });
 
     _window.addEventListener('DOMContentLoaded', () => {
-        const themeChangeOpener = _document.getElementById('themeChangeOpener');
+        const themeChangeOpener = getElementById('themeChangeOpener');
         if (!themeChangeOpener) return;
         let enabled = false;
         themeChangeOpener.addEventListener('click', () => {
             enabled = !enabled;
             const themes = _document.getElementsByClassName('themeChanger');
-            const loggedInName = _document.getElementById('loggedInName');
-            const loggedInDetails = _document.getElementById('loggedInDetails');
+            const loggedInName = getElementById('loggedInName');
+            const loggedInDetails = getElementById('loggedInDetails');
             for (const theme of themes) {
                 theme.dataset.enabled = enabled.toString();
             }
@@ -573,8 +604,8 @@ _window.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        const loggedInDetails = _document.getElementById('loggedInDetails');
-        const menuBar = _document.getElementById('menuBar');
+        const loggedInDetails = getElementById('loggedInDetails');
+        const menuBar = getElementById('menuBar');
         if (loggedInDetails && menuBar) {
             fetch('/ext/auth/@me').then(async (response) => {
                 const data = await response.json();
@@ -587,7 +618,7 @@ _window.addEventListener('DOMContentLoaded', () => {
                 }
                 _window.loggedIn = true;
                 _window.loggedInUser = user;
-                const icon = _document.createElement('img');
+                const icon = createElement('img');
                 icon.onerror = () => {
                     if (icon.src !== '/app/assets/default-roblox-profile.png') {
                         icon.src = '/app/assets/default-roblox-profile.png';
@@ -596,32 +627,32 @@ _window.addEventListener('DOMContentLoaded', () => {
                 icon.src = user.thumbnail;
                 icon.alt = 'User Icon';
                 icon.id = 'loggedInIcon';
-                loggedInDetails.appendChild(icon);
+                appendChild(loggedInDetails, icon);
 
-                const name = _document.createElement('span');
+                const name = createElement('span');
                 name.innerText = user.name;
                 name.id = 'loggedInName';
-                loggedInDetails.appendChild(name);
+                appendChild(loggedInDetails, name);
 
-                loggedInDetails.classList.add('loggedIn');
+                classListAdd(loggedInDetails, 'loggedIn');
 
                 if (data.admin === true) {
-                    const link = _document.createElement('a');
+                    const link = createElement('a');
                     link.href = '/app/admin';
                     link.innerText = 'Admin Panel';
-                    menuBar.appendChild(link);
+                    appendChild(menuBar, link);
                 }
             });
         }
 
         (async () => {
-            if (_document.getElementById('captchaNotice')) {
+            if (getElementById('captchaNotice')) {
                 const url = new URL(_window.location.href);
                 const params = url.searchParams;
                 const type = params.get('type');
                 if (type === 'auth') {
                     try {
-                        window.history.replaceState({}, document.title, '/app/captcha');
+                        _window.history.replaceState({}, document.title, '/app/captcha');
                     } catch (e) {
                         console.error(e);
                     }
@@ -636,25 +667,25 @@ _window.addEventListener('DOMContentLoaded', () => {
         (() => {
             function addImageEventListeners(img) {
                 img.addEventListener('load', (event) => {
-                    event.target.classList.add('imageIsLoaded');
+                    classListAdd(event.target, 'imageIsLoaded');
                 });
                 img.addEventListener('error', (event) => {
-                    event.target.classList.remove('imageIsLoaded');
+                    classListRemove(event.target, 'imageIsLoaded');
                 });
                 if (img.complete && img.naturalWidth !== 0) {
-                    img.classList.add('imageIsLoaded');
+                    classListAdd(img, 'imageIsLoaded');
                 }
-                const attributeObserver = new MutationObserver((mutationsList) => {
+                const attributeObserver = new _MutationObserver((mutationsList) => {
                     for (const mutation of mutationsList) {
                         if (mutation.type === 'attributes' && mutation.attributeName === 'src') {
-                            img.classList.remove('imageIsLoaded');
+                            classListRemove(img, 'imageIsLoaded');
                         }
                     }
                 });
                 attributeObserver.observe(img, { attributes: true });
             }
 
-            const observer = new MutationObserver((mutationsList) => {
+            const observer = new _MutationObserver((mutationsList) => {
                 for (const mutation of mutationsList) {
                     if (mutation.type === 'childList') {
                         for (const node of mutation.addedNodes) {

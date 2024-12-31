@@ -143,7 +143,8 @@ app.onError((error, context) => {
 
 export default {
     port: 80,
-    fetch: app.fetch
+    fetch: app.fetch,
+    idleTimeout: 180
 };
 
 logger.info(`Server started. ${getURL()}`);
