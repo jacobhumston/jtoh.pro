@@ -635,3 +635,18 @@ img {
     color: var(--color-text-bold);
     vertical-align: text-bottom;
 }
+
+.copyLinkSection {
+    display: inline-block;
+    padding: 10px;
+    background-color: var(--color-background-darker);
+    border-radius: 15px;
+}
+
+.copyLinkSectionDescription {
+    display: block;
+    background-color: var(--color-background-even-more-darker);
+    margin-top: 5px;
+    padding: 10px;
+    border-radius: 15px;
+}

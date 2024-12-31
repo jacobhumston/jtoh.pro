@@ -612,6 +612,8 @@ _window.addEventListener('DOMContentLoaded', () => {
                 const user = data.user;
                 if (!user) {
                     loggedInDetails.innerHTML = '<a id="loginButton" href="/login">Login</a>';
+                    const url = new URL(_window.location.href);
+                    if (url.pathname === '/app/captcha') loggedInDetails.innerHTML = '';
                     _window.loggedIn = false;
                     _window.loggedInUser = null;
                     return;
