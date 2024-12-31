@@ -1,5 +1,5 @@
 import { createCanvas, loadImage } from '@napi-rs/canvas';
-import { centerText, colorText, drawIconWithText, drawRoundedRect, drawRoundedRectv2 } from './util';
+import { centerText, colorText, drawIconWithText, drawRoundedRect, drawRoundedRectv2, roundedRect } from './util';
 import type { TowerData } from './type';
 import { v4 } from 'uuid';
 import Color from 'color';
@@ -266,21 +266,29 @@ export default function jtoh(app: Hono) {
                         ctx.font = 'bold 15px Poppins';
                         ctx.fillText(`${total - completed}`, startX, startY + 20);
                     });
+
+                    ctx.save();
+                    roundedRect(ctx, 0, 0, 700, 300, 30);
+                    ctx.clip();
+
                     ctx.fillStyle = new Color('#2e2e2e').darken(0.3).hex();
-                    drawRoundedRect(ctx, 20, startY + 27, 660, 24, 10);
-                    ctx.fillStyle ='#218f3e';
-                    drawRoundedRect(ctx, 20, startY + 27, (totalCompleted / totalTotal) * 660, 24, 10);
+                    drawRoundedRect(ctx, 0, startY + 31, 700, 24, 0);
+                    ctx.fillStyle = '#218f3e';
+                    drawRoundedRect(ctx, 0, startY + 31, (totalCompleted / totalTotal) * 700, 24, 0);
+
+                    ctx.restore();
+
                     ctx.textAlign = 'left';
                     ctx.fillStyle = '#e3e3e3';
                     ctx.font = 'bold 15px Poppins';
-                    ctx.fillText(`${towerStats.completed_towers} Completed`, 60, startY + 44);
+                    ctx.fillText(`${towerStats.completed_towers} Completed`, 60, startY + 48);
                     ctx.textAlign = 'right';
-                    ctx.fillText(`${towerStats.total_towers} Total`, 640, startY + 44);
+                    ctx.fillText(`${towerStats.total_towers} Total`, 640, startY + 48);
                     ctx.textAlign = 'center';
                     ctx.fillText(
                         `${Math.floor((towerStats.completed_towers / towerStats.total_towers) * 100)}% Progress`,
                         680 / 2,
-                        startY + 44
+                        startY + 48
                     );
                 }
 
