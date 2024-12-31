@@ -43,6 +43,7 @@
         "keyv": "^5.2.3",
         "markdown-it": "^14.1.0",
         "mime-types": "^2.1.35",
+        "postcss": "^8.4.49",
         "terser": "^5.37.0",
         "tweetnacl": "^1.0.3",
         "uuid": "^10.0.0",

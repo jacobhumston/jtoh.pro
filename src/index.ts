@@ -20,6 +20,7 @@ import { admin } from './admin';
 import { captchaManager } from './captcha';
 import { charts } from './chart';
 import { parseRobloxAccount } from './roblox';
+import { quickWebTest } from './quickwebtest';
 
 const app = new Hono();
 
@@ -146,5 +147,7 @@ export default {
     fetch: app.fetch,
     idleTimeout: 180
 };
+
+quickWebTest();
 
 logger.info(`Server started. ${getURL()}`);
