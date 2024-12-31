@@ -182,18 +182,19 @@ code {
     background-color: var(--color-background-lighter);
     color: var(--color-text);
     border: none;
-    padding: 5px 10px;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 12px;
-    margin: 4px 2px;
+    font-size: medium;
     cursor: pointer;
     border-radius: 5px;
 }
 
 .smallCopyButton .materialSymbolsRounded {
-    font-size: 17px;
+    vertical-align: top;
 }
 
 #requestStats {
@@ -648,5 +649,16 @@ img {
     background-color: var(--color-background-even-more-darker);
     margin-top: 5px;
     padding: 10px;
+    padding-left: 12px;
+    padding-right: 12px;
     border-radius: 15px;
+}
+
+.copyLinkSectionDescription .materialSymbolsRounded {
+    vertical-align: top;
+}
+
+.linkSectionCornerIcon {
+    vertical-align: top;
+    float: right;
 }

@@ -268,10 +268,10 @@ export default function jtoh(app: Hono) {
                     });
                     ctx.fillStyle = new Color('#2e2e2e').darken(0.3).hex();
                     drawRoundedRect(ctx, 20, startY + 27, 660, 24, 10);
-                    ctx.fillStyle = new Color('#2e2e2e').darken(0.2).hex();
+                    ctx.fillStyle ='#218f3e';
                     drawRoundedRect(ctx, 20, startY + 27, (totalCompleted / totalTotal) * 660, 24, 10);
                     ctx.textAlign = 'left';
-                    ctx.fillStyle = '#bdbdbd';
+                    ctx.fillStyle = '#e3e3e3';
                     ctx.font = 'bold 15px Poppins';
                     ctx.fillText(`${towerStats.completed_towers} Completed`, 60, startY + 44);
                     ctx.textAlign = 'right';

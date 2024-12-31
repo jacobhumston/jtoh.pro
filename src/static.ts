@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import mime from 'mime-types';
 import cleanCSS from 'clean-css';
 import minifyHTML from 'html-minifier';
+import postcss from 'postcss';
 import { minify as minifyJS } from 'terser';
 
 export default async function serveStatic(app: Hono) {
