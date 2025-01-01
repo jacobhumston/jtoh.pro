@@ -110,6 +110,10 @@ export function blog(app: Hono) {
             return context.json({
                 posts: posts.sort((a, b) => new Date(b.lastEdited).getTime() - new Date(a.lastEdited).getTime())
             });
+        } else if (sort === 'title') {
+            return context.json({
+                posts: posts.sort((a, b) => a.title.localeCompare(b.title))
+            });
         }
         return context.json({ error: 'Invalid sort method.' }, 400);
     });

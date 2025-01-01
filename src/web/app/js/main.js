@@ -664,8 +664,12 @@ _window.addEventListener('DOMContentLoaded', () => {
                 const editedSpan = createElement('span');
                 editedSpan.innerHTML = `${getGoogleIconHTML('edit')} <b>Last Edited:</b> ${new Date(data.lastEdited).toLocaleString()}${data.editCount > 1 ? ` <i>(${data.editCount} Edits)</i>` : ''}`;
                 appendChild(blogDetails, editedSpan);
-                const parent = blogDetails.parentElement
-                
+                const parent = blogDetails.parentElement;
+                const source = createElement('a');
+                source.href = data.source;
+                source.innerText = 'This post is open source.';
+                classListAdd(source, 'blogSource');
+                appendChild(parent, source);
             }
         }
 
@@ -738,46 +742,116 @@ _window.addEventListener('DOMContentLoaded', () => {
     _window.addEventListener('load', async () => {
         const blogPostsList = getElementById('blogPostsList');
         if (!blogPostsList) return;
-        const list = await fetch('/ext/blog-posts').catch(() => null);
+
+        let sort = 'created';
+        const url = new _URL(_window.location.href);
+        const params = url.searchParams;
+        if (params.has('sort')) {
+            sort = params.get('sort');
+        }
+
+        const list = await fetch('/ext/blog-posts?sort=' + sort).catch(() => null);
+
         if (!list) {
             blogPostsList.innerHTML = '<p>Failed to fetch data.</p>';
             return;
         }
+
         const data = await list.json();
         if (data.error) {
             blogPostsList.innerHTML = '<p>Failed to fetch data.</p>';
             return;
         }
-        blogPostsList.innerHTML = '';
-        for (post of data.posts) {
-            const postElement = createElement('div');
-            classListAdd(postElement, 'blogPostListElement');
 
-            const title = createElement('h2');
-            title.innerText = post.title;
-            appendChild(postElement, title);
+        function update() {
+            let posts = data.posts;
+            const search = getElementById('blogSearch').value;
+            if (search && search.length > 0) {
+                posts = posts.filter((post) => {
+                    return (
+                        post.title.toLowerCase().includes(search.toLowerCase()) ||
+                        post.summary.toLowerCase().includes(search.toLowerCase()) ||
+                        post.author.user.displayName.toLowerCase().includes(search.toLowerCase())
+                    );
+                });
+            }
 
-            const author = createElement('span');
-            author.innerHTML = `${getGoogleIconHTML('person')} <b>By:</b> <a href="https://roblox.com/users/${post.author.user.id}/profile/">${post.author.user.displayName}</a>`;
-            appendChild(postElement, author);
+            blogPostsList.innerHTML = '';
+            for (const post of posts) {
+                const postElement = createElement('div');
+                classListAdd(postElement, 'blogPostListElement');
 
-            appendChild(postElement, createElement('br'));
+                const title = createElement('h2');
+                title.innerText = post.title;
+                appendChild(postElement, title);
 
-            const created = createElement('span');
-            created.innerHTML = `${getGoogleIconHTML('calendar_add_on')} <b>Posted:</b> ${new Date(post.created).toLocaleString()}`;
-            appendChild(postElement, created);
+                const author = createElement('span');
+                author.innerHTML = `${getGoogleIconHTML('person')} <b>By:</b> <a href="https://roblox.com/users/${post.author.user.id}/profile/">${post.author.user.displayName}</a>`;
+                appendChild(postElement, author);
 
-            const summary = createElement('p');
-            summary.innerText = post.summary;
-            appendChild(postElement, summary);
+                appendChild(postElement, createElement('br'));
 
-            const viewButton = createElement('a');
-            viewButton.innerText = 'View Post';
-            viewButton.href = post.path;
-            classListAdd(viewButton, 'blogPostViewButton');
-            appendChild(postElement, viewButton);
+                const created = createElement('span');
+                created.innerHTML = `${getGoogleIconHTML('calendar_add_on')} <b>Posted:</b> ${new Date(post.created).toLocaleString()}`;
+                appendChild(postElement, created);
 
-            appendChild(blogPostsList, postElement);
+                const summary = createElement('p');
+                summary.innerText = post.summary;
+                appendChild(postElement, summary);
+
+                const viewButton = createElement('a');
+                viewButton.innerText = 'View Post';
+                viewButton.href = post.path;
+                classListAdd(viewButton, 'blogPostViewButton');
+                appendChild(postElement, viewButton);
+                appendChild(blogPostsList, postElement);
+
+                if (search && search.length > 0) {
+                    const searchRegex = new RegExp(search, 'gi');
+                    title.innerHTML = title.innerHTML.replaceAll(
+                        searchRegex,
+                        (match) => `<span class="highlight">${match}</span>`
+                    );
+                    summary.innerHTML = summary.innerHTML.replaceAll(
+                        searchRegex,
+                        (match) => `<span class="highlight">${match}</span>`
+                    );
+                    author.innerHTML = `${getGoogleIconHTML('person')} <b>By:</b> <a href="https://roblox.com/users/${post.author.user.id}/profile/">${post.author.user.displayName.replaceAll(searchRegex, (match) => `<span class="highlight">${match}</span>`)}</a>`;
+                }
+            }
+
+            if (posts.length === 0) {
+                blogPostsList.innerHTML = '<p>No results found for your search query.</p>';
+            }
         }
+
+        update();
+
+        const blogSort = getElementById('blogSort');
+        if (blogSort) {
+            blogSort.addEventListener('change', (event) => {
+                _window.location.href = `/app/blog?sort=${event.target.value}`;
+            });
+            for (const option of blogSort.getElementsByTagName('option')) {
+                if (option.value === sort) {
+                    option.selected = true;
+                }
+            }
+        }
+
+        const blogSearch = getElementById('blogSearch');
+        const blogSearchButton = getElementById('blogSearchButton');
+        const blogClearSearchButton = getElementById('blogClearSearchButton');
+
+        blogSearch.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') {
+                update();
+            }
+        });
+        blogSearchButton.addEventListener('click', update);
+        blogClearSearchButton.addEventListener('click', () => {
+            blogSearch.value = '';
+            update();
+        });
     });
 })();
