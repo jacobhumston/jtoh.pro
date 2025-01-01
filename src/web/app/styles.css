@@ -76,6 +76,7 @@ body {
 
 button,
 textarea,
+select,
 input {
     font-family: var(--font);
 }
@@ -105,7 +106,6 @@ b {
 }
 
 #container {
-    margin-top: 30px;
     max-width: 700px;
     border-radius: 25px;
     margin-left: auto;
@@ -693,7 +693,7 @@ img {
     display: inline-block;
     padding: 10px;
     background-color: var(--color-background-darker);
-    border-radius: 25px;
+    border-radius: 15px;
 }
 
 #blogAuthor a {
@@ -735,7 +735,7 @@ img {
 #blogContainer {
     background-color: var(--color-background-even-more-darker);
     padding: 20px;
-    border-radius: 50px;
+    border-radius: 25px;
     padding-left: 30px;
     padding-right: 30px;
     margin-bottom: 10px;
@@ -746,12 +746,11 @@ img {
 }
 
 .blogPostListElement {
-    display: block;
+    display: inline-block;
     padding: 15px 20px;
     background-color: var(--color-background-darker);
     border-radius: 25px;
-    margin-top: 10px;
-    margin-bottom: 25px;
+    flex-grow: 1;
 }
 
 .blogPostListElement h2 {
@@ -782,4 +781,65 @@ img {
 .blogPostListElement span .materialSymbolsRounded {
     vertical-align: top;
     color: var(--color-text-bold);
+}
+
+#container h1:first-of-type {
+    margin-top: 0px;
+}
+
+.blogSource {
+    font-size: small;
+    font-style: italic;
+}
+
+#blogPostsList {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+    background-color: var(--color-background-even-more-darker);
+    padding: 10px;
+    border-radius: 25px;
+}
+
+select {
+    background-color: var(--color-background-lighter);
+    color: var(--color-text);
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    text-align: left;
+}
+
+select:focus {
+    outline: none;
+}
+
+#blogControls {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+#blogClearSearchButton {
+    padding: 10px 15px;
+}
+
+#blogSearchButton .materialSymbolsRounded {
+    vertical-align: top;
+}
+
+.highlight {
+    border-bottom: solid 2px var(--color-text-highlight);
 }

@@ -7,6 +7,22 @@
         <template data-name="headerLinks"></template>
         <div id="container">
             <h1>Blog</h1>
+            <p>View our blog posts to see news about the site (such as update logs) and other information.</p>
+            <div id="blogControls">
+                <div>
+                    <input type="text" id="blogSearch" placeholder="Search blog posts..." />
+                    <button id="blogSearchButton">
+                        <span class="materialSymbolsRounded">search</span>
+                        Search
+                    </button>
+                    <button id="blogClearSearchButton"><span class="materialSymbolsRounded">refresh</span></button>
+                </div>
+                <select id="blogSort">
+                    <option value="created">Sort by: Created</option>
+                    <option value="edited">Sort by: Edited</option>
+                    <option value="title">Sort by: Title</option>
+                </select>
+            </div>
             <div id="blogPostsList">Loading...</div>
             <template data-name="footer"></template>
         </div>
