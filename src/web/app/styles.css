@@ -560,7 +560,10 @@ button:disabled:hover {
 #themeContainer {
     text-align: right;
     padding: 10px;
-    float: right;
+    display: block;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #themeChangeOpener:hover,
@@ -693,6 +696,10 @@ img {
     border-radius: 25px;
 }
 
+#blogAuthor a {
+    white-space: nowrap;
+}
+
 #blogAuthor img {
     border-radius: 50%;
     width: 40px;
@@ -713,6 +720,7 @@ img {
 
 #blogDetails i {
     color: var(--color-text-highlight);
+    white-space: nowrap;
 }
 
 #blogDetails {
@@ -731,13 +739,6 @@ img {
     padding-left: 30px;
     padding-right: 30px;
     margin-bottom: 10px;
-}
-
-#blogContainer h1 {
-    text-align: center;
-    background-color: var(--color-background-darker);
-    padding: 10px;
-    border-radius: 50px;
 }
 
 #blogContainer h1:first-of-type {
