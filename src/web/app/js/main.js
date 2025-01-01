@@ -658,12 +658,14 @@ _window.addEventListener('DOMContentLoaded', () => {
             if (blogDetails) {
                 const data = JSON.parse(decodeURIComponent(blogDetails.dataset.json));
                 const createdSpan = createElement('span');
-                createdSpan.innerHTML = `${getGoogleIconHTML('calendar_add_on')} <b>Created:</b> ${new Date(data.created).toLocaleString()}`;
+                createdSpan.innerHTML = `${getGoogleIconHTML('calendar_add_on')} <b>Posted:</b> ${new Date(data.created).toLocaleString()}`;
                 appendChild(blogDetails, createdSpan);
                 appendChild(blogDetails, createElement('br'));
                 const editedSpan = createElement('span');
                 editedSpan.innerHTML = `${getGoogleIconHTML('edit')} <b>Last Edited:</b> ${new Date(data.lastEdited).toLocaleString()}${data.editCount > 1 ? ` <i>(${data.editCount} Edits)</i>` : ''}`;
                 appendChild(blogDetails, editedSpan);
+                const parent = blogDetails.parentElement
+                
             }
         }
 

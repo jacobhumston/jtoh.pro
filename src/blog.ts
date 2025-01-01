@@ -75,13 +75,14 @@ async function setup() {
             path: `/app/blog/${file.name.replace('.md', '.html')}`,
             created,
             lastEdited,
-            editCount
+            editCount,
+            source: file.html_url
         };
 
         const html = renderMarkdown(content.replace(dataString, ''));
         const final = renderTemplate(
             title + ' - Blog Post',
-            `<h1>Blog Post</h1><p>Click <a href="/app/blog">here</a> to view all blog posts.</p><p id="blogAuthor"><img alt="Blog Post Author Profile Picture" src="${thumbnail}" onerror="this.src='/app/assets/default-roblox-profile.png'"> <span id="blogAuthorDetails">Blog post was authored by <a href="https://www.roblox.com/users/${user.id}/profile" target="_blank">${user.displayName}</a>.</span><br><span id="blogDetails" data-json="${encodeURIComponent(JSON.stringify(postData))}"></span></p><div id="blogContainer">${html}</div>`
+            `<h1>Blog Post</h1><p>Click <a href="/app/blog">here</a> to view all blog posts.</p><p id="blogAuthor"><img alt="Blog Post Author Profile Picture" src="${thumbnail}" onerror="this.src='/app/assets/default-roblox-profile.png'"> <span id="blogAuthorDetails">This post was authored by <a href="https://www.roblox.com/users/${user.id}/profile" target="_blank">${user.displayName}</a>.</span><br><span id="blogDetails" data-json="${encodeURIComponent(JSON.stringify(postData))}"></span></p><div id="blogContainer">${html}</div>`
         );
 
         fs.writeFileSync(`src/web/app/blog/${file.name.replace('.md', '.html')}`, final);
