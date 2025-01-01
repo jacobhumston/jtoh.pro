@@ -21,6 +21,7 @@ import { captchaManager } from './captcha';
 import { charts } from './chart';
 import { parseRobloxAccount } from './roblox';
 import { quickWebTest } from './quickwebtest';
+import { blog } from './blog';
 
 const app = new Hono();
 
@@ -65,6 +66,10 @@ app.use(
     })
 );
 
+app.get('/app/templates/*', async (context) => {
+    return context.json({ error: 'Not found.' }, 404);
+});
+
 setupLoginAuth(app);
 captchaManager(app);
 admin(app);
@@ -74,6 +79,7 @@ serveStatic(app);
 redirects(app);
 jtoh(app);
 charts(app);
+blog(app);
 
 app.get('/', async (context) => {
     const searchParams = new URL(context.req.url).searchParams;

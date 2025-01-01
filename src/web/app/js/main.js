@@ -2,6 +2,7 @@
     const _window = window;
     const _document = document;
     const _MutationObserver = MutationObserver;
+    const _URL = URL;
 
     if (!_window.func) _window.func = {};
     const publicFunctions = _window.func;
@@ -299,7 +300,7 @@ _window.addEventListener('DOMContentLoaded', () => {
     });
 
     _window.addEventListener('DOMContentLoaded', () => {
-        const url = new URL(_window.location.href);
+        const url = new _URL(_window.location.href);
         const params = url.searchParams;
         const username = params.get('user');
         if (username && getElementById('exampleInputUsername')) {
@@ -317,7 +318,7 @@ _window.addEventListener('DOMContentLoaded', () => {
         const container = getElementById('leaderboardDivContainer');
         if (!container) return;
 
-        const url = new URL(_window.location.href);
+        const url = new _URL(_window.location.href);
         const params = url.searchParams;
         const includeJacob = params.get('includeJacob') === 'true';
         const type = params.get('type') ?? 'card-requests';
@@ -612,7 +613,7 @@ _window.addEventListener('DOMContentLoaded', () => {
                 const user = data.user;
                 if (!user) {
                     loggedInDetails.innerHTML = '<a id="loginButton" href="/login">Login</a>';
-                    const url = new URL(_window.location.href);
+                    const url = new _URL(_window.location.href);
                     if (url.pathname === '/app/captcha') loggedInDetails.innerHTML = '';
                     _window.loggedIn = false;
                     _window.loggedInUser = null;
@@ -645,11 +646,30 @@ _window.addEventListener('DOMContentLoaded', () => {
                     appendChild(menuBar, link);
                 }
             });
+
+            const menuBarLinks = menuBar.getElementsByTagName('a');
+            for (const link of menuBarLinks) {
+                if (new _URL(link.href).pathname === new _URL(_window.location.href).pathname) {
+                    classListAdd(link, 'menuBarActive');
+                }
+            }
+
+            const blogDetails = getElementById('blogDetails');
+            if (blogDetails) {
+                const data = JSON.parse(decodeURIComponent(blogDetails.dataset.json));
+                const createdSpan = createElement('span');
+                createdSpan.innerHTML = `${getGoogleIconHTML('calendar_add_on')} <b>Created:</b> ${new Date(data.created).toLocaleString()}`;
+                appendChild(blogDetails, createdSpan);
+                appendChild(blogDetails, createElement('br'));
+                const editedSpan = createElement('span');
+                editedSpan.innerHTML = `${getGoogleIconHTML('edit')} <b>Last Edited:</b> ${new Date(data.lastEdited).toLocaleString()}${data.editCount > 1 ? ` <i>(${data.editCount} Edits)</i>` : ''}`;
+                appendChild(blogDetails, editedSpan);
+            }
         }
 
         (async () => {
             if (getElementById('captchaNotice')) {
-                const url = new URL(_window.location.href);
+                const url = new _URL(_window.location.href);
                 const params = url.searchParams;
                 const type = params.get('type');
                 if (type === 'auth') {
@@ -711,5 +731,51 @@ _window.addEventListener('DOMContentLoaded', () => {
                 addImageEventListeners(img);
             }
         })();
+    });
+
+    _window.addEventListener('load', async () => {
+        const blogPostsList = getElementById('blogPostsList');
+        if (!blogPostsList) return;
+        const list = await fetch('/ext/blog-posts').catch(() => null);
+        if (!list) {
+            blogPostsList.innerHTML = '<p>Failed to fetch data.</p>';
+            return;
+        }
+        const data = await list.json();
+        if (data.error) {
+            blogPostsList.innerHTML = '<p>Failed to fetch data.</p>';
+            return;
+        }
+        blogPostsList.innerHTML = '';
+        for (post of data.posts) {
+            const postElement = createElement('div');
+            classListAdd(postElement, 'blogPostListElement');
+
+            const title = createElement('h2');
+            title.innerText = post.title;
+            appendChild(postElement, title);
+
+            const author = createElement('span');
+            author.innerHTML = `${getGoogleIconHTML('person')} <b>By:</b> <a href="https://roblox.com/users/${post.author.user.id}/profile/">${post.author.user.displayName}</a>`;
+            appendChild(postElement, author);
+
+            appendChild(postElement, createElement('br'));
+
+            const created = createElement('span');
+            created.innerHTML = `${getGoogleIconHTML('calendar_add_on')} <b>Posted:</b> ${new Date(post.created).toLocaleString()}`;
+            appendChild(postElement, created);
+
+            const summary = createElement('p');
+            summary.innerText = post.summary;
+            appendChild(postElement, summary);
+
+            const viewButton = createElement('a');
+            viewButton.innerText = 'View Post';
+            viewButton.href = post.path;
+            classListAdd(viewButton, 'blogPostViewButton');
+            appendChild(postElement, viewButton);
+
+            appendChild(blogPostsList, postElement);
+        }
     });
 })();

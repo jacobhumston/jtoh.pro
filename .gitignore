@@ -179,3 +179,5 @@ db/
 
 cache/
 .VSCodeCounter/
+
+src/web/app/blog/

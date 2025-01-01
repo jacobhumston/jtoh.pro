@@ -4,8 +4,8 @@ import fs from 'node:fs';
 import mime from 'mime-types';
 import cleanCSS from 'clean-css';
 import minifyHTML from 'html-minifier';
-import postcss from 'postcss';
 import { minify as minifyJS } from 'terser';
+import { isDev } from './dev';
 
 export default async function serveStatic(app: Hono) {
     app.use('/*', async (context, next) => {
@@ -14,18 +14,19 @@ export default async function serveStatic(app: Hono) {
         const searchParams = new URL(context.req.url).searchParams;
         const searchParamsString = searchParams.toString().length > 0 ? '?' + searchParams.toString() : '';
 
-        if (!path.includes('.')) {
-            if (path.endsWith('/')) {
-                path = `${path}index.html`;
-            } else {
-                path = `${path}.html`;
-            }
+        if (path.endsWith('/')) {
+            path = `${path}index.html`;
         }
 
         path = normalize(path).replace(/^(\.\.(\/|\\|$))+/, '');
 
-        const filePath = join(__dirname, 'web', path);
-        const fileExt = extname(filePath);
+        let filePath = join(__dirname, 'web', path);
+        let fileExt = extname(filePath);
+
+        if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
+            filePath = join(__dirname, 'web', path + '.html');
+            fileExt = extname(filePath);
+        }
 
         if (!fs.existsSync(filePath)) {
             return next();
@@ -36,14 +37,14 @@ export default async function serveStatic(app: Hono) {
         let file = fs.readFileSync(filePath);
 
         if (fileExt === '.js') {
-            file = Buffer.from(
+            let code =
                 (
                     await minifyJS(file.toString(), {
                         mangle: true,
                         compress: {
                             ecma: 2020,
                             hoist_funs: true,
-                            drop_console: true,
+                            drop_console: !isDev,
                             booleans_as_integers: true,
                             arguments: true,
                             unsafe: true,
@@ -57,15 +58,20 @@ export default async function serveStatic(app: Hono) {
                             reduce_vars: true,
                             inline: true,
                             collapse_vars: true,
-                            pure_funcs: ['console.log'],
                             pure_getters: true
                         },
                         output: {
                             comments: false
                         }
                     })
-                ).code ?? ''
-            );
+                ).code ?? '';
+
+            /*
+                if (filePath.endsWith('me.js')) {
+                code = `// SOURCE: https://github.com/damianobarbati/get-browser-fingerprint/blob/05aaa43791a89eba75d4f708324622f4f864dea6/src/index.js \n${code}`;
+            }*/ // meh
+
+            file = Buffer.from(code);
         } else if (fileExt === '.css') {
             file = Buffer.from(
                 new cleanCSS({
