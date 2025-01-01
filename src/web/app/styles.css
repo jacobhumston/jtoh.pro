@@ -228,12 +228,33 @@ code {
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
     */
+    overflow-x: auto;
+    white-space: nowrap;
 }
 
 #menuBar a {
     margin-left: 5px;
     margin-right: 5px;
     white-space: nowrap;
+    background-color: var(--color-background-even-more-darker);
+    padding: 5px;
+    border-radius: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+#menuBar .menuBarActive {
+    background-color: var(--color-text-bold) !important;
+    color: var(--color-background-even-more-darker) !important;
+}
+
+#menuBar a .materialSymbolsRounded {
+    vertical-align: top;
+}
+
+#menuBar .menuBarActive:hover {
+    background-color: var(--color-background) !important;
+    color: var(--color-text-link) !important;
 }
 
 #websitesBar {
@@ -245,6 +266,8 @@ code {
     */
     text-align: center;
     line-height: 2.5;
+    overflow-x: auto;
+    white-space: nowrap;
 }
 
 #websitesBar a {
@@ -661,4 +684,101 @@ img {
 .linkSectionCornerIcon {
     vertical-align: top;
     float: right;
+}
+
+#blogAuthor {
+    display: inline-block;
+    padding: 10px;
+    background-color: var(--color-background-darker);
+    border-radius: 25px;
+}
+
+#blogAuthor img {
+    border-radius: 50%;
+    width: 40px;
+    background-color: var(--color-background-lighter);
+    vertical-align: middle;
+}
+
+#blogAuthorDetails {
+    vertical-align: middle;
+    margin-left: 5px;
+    margin-right: 10px;
+}
+
+#blogDetails .materialSymbolsRounded {
+    vertical-align: top;
+    color: var(--color-text-bold);
+}
+
+#blogDetails i {
+    color: var(--color-text-highlight);
+}
+
+#blogDetails {
+    display: block;
+    padding: 10px;
+    background-color: var(--color-background-even-more-darker);
+    border-radius: 15px;
+    margin-top: 0px;
+    margin-top: 10px;
+}
+
+#blogContainer {
+    background-color: var(--color-background-even-more-darker);
+    padding: 20px;
+    border-radius: 50px;
+    padding-left: 30px;
+    padding-right: 30px;
+    margin-bottom: 10px;
+}
+
+#blogContainer h1 {
+    text-align: center;
+    background-color: var(--color-background-darker);
+    padding: 10px;
+    border-radius: 50px;
+}
+
+#blogContainer h1:first-of-type {
+    margin-top: 0px;
+}
+
+.blogPostListElement {
+    display: block;
+    padding: 15px 20px;
+    background-color: var(--color-background-darker);
+    border-radius: 25px;
+    margin-top: 10px;
+    margin-bottom: 25px;
+}
+
+.blogPostListElement h2 {
+    margin-top: 0px;
+    margin-bottom: 5px;
+}
+
+.blogPostViewButton {
+    background-color: var(--color-text-header);
+    color: var(--color-text);
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.blogPostViewButton:hover {
+    background-color: var(--color-text);
+    color: var(--color-background);
+    border: none !important;
+}
+
+.blogPostListElement span .materialSymbolsRounded {
+    vertical-align: top;
+    color: var(--color-text-bold);
 }
