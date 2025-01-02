@@ -77,19 +77,15 @@
         let username = getElementById('exampleInputUsername').value;
         if (!username || username.length === 0) username = 'LoveliestJacob';
         getElementById('exampleImageOutput').src = '';
-        getElementById('exampleImageOutput').src = `/${username}?nocache=${genUUID()}`;
+        getElementById('exampleImageOutput').src = `/${username}?nocache=${genUUID().substring(0, 6)}`;
     }
     publicFunctions.updateExampleOutput = updateExampleOutput;
 
     async function copyExampleOutputURL(button) {
-        if (button.innerHTML === `${getGoogleIconHTML('check')} Copied!`) return;
-        let username = getElementById('exampleInputUsername').value;
-        if (!username || username.length === 0) username = 'LoveliestJacob';
-        getElementById('exampleImageOutput').src = `/${username}?nocache=${genUUID()}`;
+        updateExampleOutput();
+
         const url = getElementById('exampleImageOutput').src;
-        await navigator.clipboard
-            .writeText(`${url}?nocache=${genUUID()}`)
-            .catch(() => alert('Failed to copy to clipboard!'));
+        await navigator.clipboard.writeText(`${url}`).catch(() => alert('Failed to copy to clipboard!'));
         let ogText = button.innerHTML;
         button.innerHTML = `${getGoogleIconHTML('check')} Copied!`;
         classListAdd(button, 'successButton');
@@ -106,9 +102,9 @@
             button.innerHTML === `${getGoogleIconHTML('pending')} Loading...`
         )
             return;
-        let username = getElementById('exampleInputUsername').value;
-        if (!username || username.length === 0) username = 'LoveliestJacob';
-        getElementById('exampleImageOutput').src = `/${username}?nocache=${genUUID()}`;
+
+        updateExampleOutput();
+
         const url = getElementById('exampleImageOutput').src;
         let ogText = button.innerHTML;
         button.innerHTML = `${getGoogleIconHTML('pending')} Loading...`;
@@ -133,9 +129,9 @@
             button.innerHTML === `${getGoogleIconHTML('downloading')} Downloading...`
         )
             return;
-        let username = getElementById('exampleInputUsername').value;
-        if (!username || username.length === 0) username = 'LoveliestJacob';
-        getElementById('exampleImageOutput').src = `/${username}?nocache=${genUUID()}`;
+
+        updateExampleOutput();
+
         const url = getElementById('exampleImageOutput').src;
         let ogText = button.innerHTML;
         button.innerHTML = `${getGoogleIconHTML('downloading')} Downloading...`;
