@@ -843,3 +843,7 @@ select:focus {
 .highlight {
     border-bottom: solid 2px var(--color-text-highlight);
 }
+
+a {
+    word-wrap: break-word;
+}
