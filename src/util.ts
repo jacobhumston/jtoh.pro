@@ -164,3 +164,7 @@ export function decryptCode(encryptedCode: string, key: string): string {
 export async function wait(time: AvailableConversions) {
     return new Promise((resolve) => setTimeout(resolve, convertTo(time, 'milliseconds')));
 }
+
+export function clamp(number: number, min: number, max: number): number {
+    return Math.max(min, Math.min(number, max));
+}

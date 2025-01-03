@@ -3,7 +3,7 @@ import { Canvas } from '@napi-rs/canvas';
 import { statsDB } from './db';
 import type { Hono } from 'hono';
 import { getURLHost } from './dev';
-import { drawRoundedRect } from './util';
+import { clamp, drawRoundedRect } from './util';
 
 Chart.register(...registerables);
 
@@ -14,7 +14,11 @@ export function charts(app: Hono) {
         for await (const [key, value] of statsDB.iterator()) {
             data.push({ date: key, requests: value });
         }
-        const canvas = new Canvas(500, 500);
+
+        const width = parseInt(context.req.query('width') ?? '500');
+        const height = parseInt(context.req.query('height') ?? '500');
+
+        const canvas = new Canvas(clamp(width, 100, 500), clamp(height, 100, 500));
         // @ts-ignore-next-line
         new Chart(canvas, {
             type: 'line',
@@ -39,19 +43,28 @@ export function charts(app: Hono) {
                 ]
             },
             options: {
+                font: {
+                    family: 'Poppins'
+                },
                 plugins: {
                     customCanvasBackgroundColor: {
                         color: '#1c1c1c'
                     },
                     legend: {
                         labels: {
-                            color: '#ebebeb'
+                            color: '#ebebeb',
+                            font: {
+                                family: 'Poppins'
+                            }
                         }
                     },
                     title: {
-                        display: true,
+                        display: false,
                         text: `${getURLHost()} - ${new Date().toDateString()}`,
-                        color: '#ebebeb'
+                        color: '#ebebeb',
+                        font: {
+                            family: 'Poppins'
+                        }
                     }
                 },
                 layout: {
@@ -85,7 +98,7 @@ export function charts(app: Hono) {
                         ctx.globalCompositeOperation = 'destination-over';
                         ctx.fillStyle = options.color;
                         // @ts-ignore-next-line
-                        drawRoundedRect(ctx, 0, 0, chart.width, chart.height, 0);
+                        drawRoundedRect(ctx, 0, 0, chart.width, chart.height, 10);
                         ctx.restore();
                     }
                 }
