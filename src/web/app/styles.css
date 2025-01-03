@@ -198,12 +198,15 @@ code {
 }
 
 #requestStats {
-    display: flexbox;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
     margin-top: -10px;
     margin-bottom: 10px;
+    overflow-x: auto;
+    white-space: nowrap;
+    background-color: var(--color-background-darker);
+    padding: 10px;
+    border-radius: 15px;
+    display: block;
+    max-width: 480px;
 }
 
 #requestStats p {
@@ -830,6 +833,23 @@ select:focus {
     gap: 10px;
     margin-bottom: 10px;
     flex-wrap: wrap;
+    flex-grow: 1;
+}
+
+#blogSearchContainer,
+#blogSort {
+    flex-grow: 1;
+}
+
+#blogSearchContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+#blogSearchContainer input,
+#blogSearchContainer button {
+    flex-grow: 1;
 }
 
 #blogClearSearchButton {
@@ -846,4 +866,10 @@ select:focus {
 
 a {
     word-wrap: break-word;
+}
+
+#cardRequestChartImage {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 10px;
 }

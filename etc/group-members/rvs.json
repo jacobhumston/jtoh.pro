@@ -1,6 +1,6 @@
 {
-    "lastUpdated": "2024-11-20T08:07:08.631Z",
-    "count": 616,
+    "lastUpdated": "2025-01-03T21:50:36.999Z",
+    "count": 660,
     "members": [
         {
             "username": "Terrisaurus",
@@ -150,7 +150,7 @@
             "username": "ImNotThinknoodles",
             "displayName": "ImNotThinknoodles",
             "id": 87162006,
-            "hasVerifiedBadge": true,
+            "hasVerifiedBadge": false,
             "role": "Member"
         },
         {
@@ -1017,7 +1017,7 @@
             "role": "Member"
         },
         {
-            "username": "lcespicebabyyy",
+            "username": "3SBMiichael",
             "displayName": "MICHAEL",
             "id": 157186058,
             "hasVerifiedBadge": false,
@@ -1321,9 +1321,9 @@
         },
         {
             "username": "BigBst4tz22",
-            "displayName": "BigBst4tz22",
+            "displayName": "BigB",
             "id": 99159164,
-            "hasVerifiedBadge": true,
+            "hasVerifiedBadge": false,
             "role": "Member"
         },
         {
@@ -1472,7 +1472,7 @@
             "username": "BianoBetero",
             "displayName": "BianoBetero",
             "id": 170638732,
-            "hasVerifiedBadge": true,
+            "hasVerifiedBadge": false,
             "role": "Member"
         },
         {
@@ -1911,7 +1911,7 @@
             "username": "BREN0RJ7",
             "displayName": "BREN0RJ",
             "id": 571739716,
-            "hasVerifiedBadge": false,
+            "hasVerifiedBadge": true,
             "role": "Member"
         },
         {
@@ -1922,10 +1922,10 @@
             "role": "Member"
         },
         {
-            "username": "iii_Amandinha",
-            "displayName": "iii_Amandinha",
+            "username": "MandiinhaGame",
+            "displayName": "MandiinhaGame",
             "id": 160815719,
-            "hasVerifiedBadge": true,
+            "hasVerifiedBadge": false,
             "role": "Member"
         },
         {
@@ -2454,7 +2454,7 @@
             "username": "EuriWings",
             "displayName": "Euri",
             "id": 1177616618,
-            "hasVerifiedBadge": false,
+            "hasVerifiedBadge": true,
             "role": "Member"
         },
         {
@@ -2765,13 +2765,6 @@
             "role": "Member"
         },
         { "username": "DevounTV", "displayName": "Devoun", "id": 1162541, "hasVerifiedBadge": false, "role": "Member" },
-        {
-            "username": "AlanConejito_7u7",
-            "displayName": "MrBunny",
-            "id": 471664661,
-            "hasVerifiedBadge": true,
-            "role": "Member"
-        },
         { "username": "Heorua", "displayName": "Heorua", "id": 126206150, "hasVerifiedBadge": true, "role": "Member" },
         {
             "username": "notBeaPlays",
@@ -3496,13 +3489,7 @@
             "hasVerifiedBadge": true,
             "role": "Member"
         },
-        {
-            "username": "nanndoyt",
-            "displayName": "Nanndo",
-            "id": 2450762569,
-            "hasVerifiedBadge": true,
-            "role": "Member"
-        },
+        { "username": "Nanndo", "displayName": "Nanndo", "id": 2450762569, "hasVerifiedBadge": true, "role": "Member" },
         {
             "username": "UseStarCode_VANILLA",
             "displayName": "VANILLA",
@@ -3547,7 +3534,7 @@
         },
         {
             "username": "PandaLemonTart",
-            "displayName": "Panda",
+            "displayName": "PandaLemonTart",
             "id": 920678519,
             "hasVerifiedBadge": false,
             "role": "Member"
@@ -3619,14 +3606,14 @@
             "username": "iamtheonepoundfish",
             "displayName": "SulyMazing",
             "id": 195548090,
-            "hasVerifiedBadge": false,
+            "hasVerifiedBadge": true,
             "role": "Member"
         },
         {
             "username": "spokchris",
             "displayName": "spokchris",
             "id": 153829946,
-            "hasVerifiedBadge": false,
+            "hasVerifiedBadge": true,
             "role": "Member"
         },
         { "username": "Rupthy", "displayName": "Rupthy", "id": 56186502, "hasVerifiedBadge": true, "role": "Member" },
@@ -3747,7 +3734,7 @@
         { "username": "OIixYT", "displayName": "Olix", "id": 343202642, "hasVerifiedBadge": true, "role": "Member" },
         {
             "username": "TheTrustlyDragon",
-            "displayName": "Dragon",
+            "displayName": "HallowPunk",
             "id": 141935371,
             "hasVerifiedBadge": false,
             "role": "Member"
@@ -3873,7 +3860,7 @@
         },
         {
             "username": "jpepsteve",
-            "displayName": "MORK",
+            "displayName": "jpepsteve",
             "id": 1961559432,
             "hasVerifiedBadge": false,
             "role": "Member"
@@ -3903,6 +3890,273 @@
             "username": "robloxStar90701",
             "displayName": "robloxStar90701",
             "id": 7360657237,
+            "hasVerifiedBadge": false,
+            "role": "Member"
+        },
+        {
+            "username": "ellasparis",
+            "displayName": "ella",
+            "id": 199592047,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        { "username": "Uzoth", "displayName": "Uzoth", "id": 17884881, "hasVerifiedBadge": true, "role": "Member" },
+        { "username": "aly1263", "displayName": "Aly", "id": 72121088, "hasVerifiedBadge": true, "role": "Member" },
+        {
+            "username": "WaffleTrades",
+            "displayName": "WaffleTrades",
+            "id": 2672900117,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        {
+            "username": "shrekyou21",
+            "displayName": "Shrek",
+            "id": 1303176748,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        {
+            "username": "Its_CxldKid",
+            "displayName": "Its_CxldKid",
+            "id": 96315796,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        { "username": "LOUDNAYU", "displayName": "NAYU", "id": 4281081788, "hasVerifiedBadge": true, "role": "Member" },
+        {
+            "username": "vindooly",
+            "displayName": "vindooly",
+            "id": 1521562782,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        {
+            "username": "BestrolYT",
+            "displayName": "BestrolYT",
+            "id": 1958329523,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        {
+            "username": "Wittyyb",
+            "displayName": "Wittyyb",
+            "id": 2031825814,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        { "username": "VanilBean", "displayName": "vani", "id": 103762395, "hasVerifiedBadge": true, "role": "Member" },
+        {
+            "username": "KiwiOnTheSticks",
+            "displayName": "KiwiOnTheSticks",
+            "id": 7066686410,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        { "username": "s7ud", "displayName": "STUD", "id": 19044882, "hasVerifiedBadge": true, "role": "Member" },
+        {
+            "username": "Meelxicano",
+            "displayName": "MelzinhoBonitao",
+            "id": 3787241100,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        {
+            "username": "blacklowie",
+            "displayName": "chef rae",
+            "id": 4885398,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        {
+            "username": "MiauzinhaYT",
+            "displayName": "Miauzinha",
+            "id": 876331712,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        {
+            "username": "KatakuriKloudz",
+            "displayName": "KatakuriKloudz",
+            "id": 3655596791,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        {
+            "username": "Kreative_Kyle",
+            "displayName": "Kreative",
+            "id": 64123009,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        {
+            "username": "Chizeled_YT",
+            "displayName": "Chizeled",
+            "id": 565264495,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        {
+            "username": "bbllinblox",
+            "displayName": "bbllinblox",
+            "id": 4560582547,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        {
+            "username": "Rxbuilds",
+            "displayName": "Robuilds",
+            "id": 63766979,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        {
+            "username": "shailarocio12",
+            "displayName": "Sharblox",
+            "id": 316448867,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        {
+            "username": "Andshotx",
+            "displayName": "Andshot",
+            "id": 3437532068,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        {
+            "username": "CafajesteGOD",
+            "displayName": "Cafazera",
+            "id": 460395727,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        {
+            "username": "WeirdBloxOfficial",
+            "displayName": "WeirdBlox",
+            "id": 431900130,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        {
+            "username": "Hihi2234xd2",
+            "displayName": "BossObama187",
+            "id": 1902738836,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        {
+            "username": "LiipeYoutuber",
+            "displayName": "LipeBlox",
+            "id": 2983924208,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        {
+            "username": "angelchopped",
+            "displayName": "Angeltanked",
+            "id": 586299670,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        {
+            "username": "ClashON_Lucas",
+            "displayName": "ClashON_Lucas",
+            "id": 3818273238,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        {
+            "username": "ClashWar10101010",
+            "displayName": "LuanClashWar",
+            "id": 4358286401,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        { "username": "steakwad", "displayName": "steak", "id": 21349438, "hasVerifiedBadge": true, "role": "Member" },
+        {
+            "username": "NinjagamingRBYT",
+            "displayName": "Ninjagaming",
+            "id": 1192791216,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        {
+            "username": "AL3XEEY",
+            "displayName": "AL3XEY",
+            "id": 1740217343,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        {
+            "username": "CeddyCrew",
+            "displayName": "Ceddy",
+            "id": 990333021,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        { "username": "z1oee", "displayName": "Zoe", "id": 1606091770, "hasVerifiedBadge": true, "role": "Member" },
+        {
+            "username": "molizanekk",
+            "displayName": "molizanekk",
+            "id": 4356710580,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        {
+            "username": "WillyandGaming1",
+            "displayName": "MotherRoach",
+            "id": 1555586532,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        {
+            "username": "YTWhiteArrow",
+            "displayName": "WhiteArrow",
+            "id": 3472071777,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        {
+            "username": "NicolaS_TheNick",
+            "displayName": "xnicklc",
+            "id": 605347114,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        {
+            "username": "carmiYTgames",
+            "displayName": "carmiYTgames",
+            "id": 2325628119,
+            "hasVerifiedBadge": false,
+            "role": "Member"
+        },
+        {
+            "username": "AAAAAAAAAAAAAASPEN",
+            "displayName": "Aspen",
+            "id": 1696014956,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        { "username": "tekkyoos", "displayName": "tekk", "id": 972936143, "hasVerifiedBadge": true, "role": "Member" },
+        {
+            "username": "SeekMeVicki",
+            "displayName": "SEEKME",
+            "id": 1099709081,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        {
+            "username": "CeloBloxYoutuber",
+            "displayName": "CeloBlox",
+            "id": 2413734630,
+            "hasVerifiedBadge": true,
+            "role": "Member"
+        },
+        {
+            "username": "Blecusito",
+            "displayName": "SoyBlecus",
+            "id": 4041635170,
             "hasVerifiedBadge": false,
             "role": "Member"
         }
