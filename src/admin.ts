@@ -2,17 +2,19 @@ import { Hono } from 'hono';
 import { isSignedInAdmin } from './loginauth';
 import { createBunWebSocket } from 'hono/bun';
 import type { ServerWebSocket } from 'bun';
-import pty from 'node-pty';
+import { spawn } from './libs/pty';
 import os from 'os';
 import type { WSContext } from 'hono/ws';
 
-const { upgradeWebSocket } = createBunWebSocket<ServerWebSocket>();
+const { upgradeWebSocket, websocket } = createBunWebSocket<ServerWebSocket>();
+
+export const socket = websocket;
 
 const shell = os.platform() === 'win32' ? 'powershell.exe' : 'bash';
 const sockets: Array<WSContext> = [];
 
-const ptyProcess = pty.spawn(shell, [], {
-    name: 'xterm-color',
+const ptyProcess = spawn(shell, [], {
+    name: 'xterm-256color',
     cols: 80,
     rows: 30,
     cwd: process.env.HOME,
@@ -53,7 +55,7 @@ export function admin(app: Hono) {
     });
 
     app.get(
-        '/ext/admin/terminal',
+        '/terminal',
         upgradeWebSocket(() => {
             return {
                 onMessage: (message) => {
@@ -64,6 +66,7 @@ export function admin(app: Hono) {
                 },
                 onOpen: (_, ws) => {
                     sockets.push(ws);
+                    ptyProcess.write('echo "Welcome to the terminal!"\n');
                 }
             };
         })
