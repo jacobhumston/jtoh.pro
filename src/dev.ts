@@ -9,6 +9,12 @@ const { values } = parseArgs({
         },
         beta: {
             type: 'boolean'
+        },
+        port: {
+            type: 'string'
+        },
+        url: {
+            type: 'string'
         }
     },
     strict: true,
@@ -17,13 +23,15 @@ const { values } = parseArgs({
 
 export const isDev = values.dev ?? false;
 export const isBeta = (values.beta ?? false) && isDev == false;
+export const port = parseInt(values.port ?? '80') ?? 80;
 
 if (isDev) process.env.NODE_ENV = 'development';
 else process.env.NODE_ENV = 'production';
 
 export function getURL() {
+    if (values.url) return values.url;
     if (isBeta) return 'https://beta.jtoh.pro';
-    if (isDev) return 'http://localhost';
+    if (isDev) return `http://localhost:${port}`;
     return 'https://jtoh.pro';
 }
 

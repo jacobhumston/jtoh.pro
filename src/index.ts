@@ -11,17 +11,18 @@ import logger from './logger';
 import fs from 'node:fs';
 import webUtils from './webutils';
 import serveLeaderboards from './leaderboards';
-import { isDev, getURL } from './dev';
+import { isDev, getURL, port } from './dev';
 import setupLoginAuth from './loginauth';
 import { rateLimiter } from 'hono-rate-limiter';
 import { getTempToken } from './temptokens';
 import { convert as timeConvert } from '@jacobhumston/tc.js';
-import { admin } from './admin';
+import { admin, socket } from './admin';
 import { captchaManager } from './captcha';
 import { charts } from './chart';
 import { parseRobloxAccount } from './roblox';
 import { quickWebTest } from './quickwebtest';
 import { blog } from './blog';
+import type { Serve } from "bun";
 
 const app = new Hono();
 
@@ -149,10 +150,11 @@ app.onError((error, context) => {
 });
 
 export default {
-    port: 80,
+    port: port,
     fetch: app.fetch,
-    idleTimeout: 180
-};
+    idleTimeout: 180,
+    websocket: socket as any
+} satisfies Serve;
 
 quickWebTest();
 
