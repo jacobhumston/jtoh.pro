@@ -19,7 +19,7 @@ import { convert as timeConvert } from '@jacobhumston/tc.js';
 import { admin, socket } from './admin';
 import { captchaManager } from './captcha';
 import { charts } from './chart';
-import { parseRobloxAccount } from './roblox';
+import { parseRobloxAccount } from './loginauth';
 import { quickWebTest } from './quickwebtest';
 import { blog } from './blog';
 import type { Serve } from 'bun';

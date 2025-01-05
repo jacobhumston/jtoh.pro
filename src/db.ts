@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import { UTCDate } from '@date-fns/utc';
 import type { RobloxUserResult } from './roblox';
 import type { gameNames } from './gamelist';
+import { createLeadboardBlacklistFile } from './files';
 
 if (!fs.existsSync('db/')) fs.mkdirSync('db/');
 
@@ -64,6 +65,9 @@ export async function getOrderedDB(
         };
     }
 
+    const blackListedUsers: number[] = JSON.parse(fs.readFileSync(createLeadboardBlacklistFile(), 'utf-8'));
+
+    values = values.filter((value) => !blackListedUsers.includes(value.user.id));
     values = values.filter((value: { count: number }) => value.count > 0);
     values.sort((a: { count: number }, b: { count: number }) => b.count - a.count);
     values.forEach((value: { count: number; rank: number }, index: number) => (value.rank = index + 1));

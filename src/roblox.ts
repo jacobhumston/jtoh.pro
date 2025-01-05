@@ -1,7 +1,3 @@
-import type { Context } from 'hono';
-import jtohGroupMembers from '../etc/group-members/jtoh.json';
-import { getSignedInRobloxUser } from './loginauth';
-
 const baseUrls = {
     users: function (path: string): string {
         return `https://users.roblox.com${path}`;
@@ -86,35 +82,6 @@ export async function userIdToThumbnailBust(userId: number): Promise<string> {
         }
     );
     return (await response.json()).data[0].imageUrl as string;
-}
-
-export async function parseRobloxAccount(context: Context): Promise<RobloxUserResult | undefined> {
-    const providedUser: string = context.req.param('user').slice(0, 20);
-    let user: BasicRobloxUserResult | undefined = undefined;
-    if (providedUser.startsWith('!')) {
-        user = await userIdToUser(parseInt(providedUser.slice(1))).catch(() => undefined);
-    } else if (providedUser === '$me') {
-        let me = await getSignedInRobloxUser(context);
-        if (!me) return undefined;
-        user = await userIdToUser(me.id).catch(() => undefined);
-    } else if (providedUser === '$random') {
-        user = await userIdToUser(
-            // @ts-ignore-next-line
-            jtohGroupMembers.members[Math.floor(Math.random() * jtohGroupMembers.members.length)].id
-        ).catch(() => undefined);
-    } else {
-        user = await usernameToUser(providedUser).catch(() => undefined);
-    }
-    const data =
-        user !== undefined
-            ? {
-                  id: user.id,
-                  name: user.name,
-                  displayName: user.displayName,
-                  thumbnail: await userIdToThumbnail(user.id).catch(() => undefined)
-              }
-            : undefined;
-    return data;
 }
 
 // https://devforum.roblox.com/t/using-robloxs-avatar-3d-api-to-import-users-avatars-into-a-website-or-whatever-youd-like/2432524

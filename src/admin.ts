@@ -5,6 +5,7 @@ import type { ServerWebSocket } from 'bun';
 import { spawn } from './libs/pty';
 import os from 'os';
 import type { WSContext } from 'hono/ws';
+import process from 'node:process';
 
 const { upgradeWebSocket, websocket } = createBunWebSocket<ServerWebSocket>();
 
@@ -21,7 +22,10 @@ const ptyProcess = spawn(shell, [], {
     env: process.env
 });
 
+// https://stackoverflow.com/a/28938235
+
 ptyProcess.write('alias cli="bun cli"\r');
+ptyProcess.write('PS1="$ \\w\n$ -> jtoh.pro$ "\r');
 
 ptyProcess.onData((data) => {
     sockets.forEach((ws) => {
