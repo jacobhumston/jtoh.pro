@@ -873,3 +873,16 @@ a {
     height: auto;
     margin-bottom: 10px;
 }
+
+.terminal {
+    padding: 10px;
+}
+
+.xterm-viewport {
+    border-radius: 15px !important;
+    background-color: var(--color-background-even-more-darker) !important;
+}
+
+.xterm-rows {
+    color: var(--color-text) !important;
+}

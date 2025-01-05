@@ -81,6 +81,7 @@ export default function setupLoginAuth(app: Hono) {
                         );
                         setCookie(context, 'auth-token', token, {
                             httpOnly: true,
+                            sameSite: 'Strict',
                             secure: isDev ? false : true,
                             expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
                         });
