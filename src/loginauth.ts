@@ -3,7 +3,7 @@ import { loginAuthDB } from './db';
 import { Hono } from 'hono';
 import type { Context } from 'hono';
 import type { LoggedInUser } from './type';
-import { robloxAuthClientId, robloxAuthSecret } from './tokens';
+import { robloxAdminUserId, robloxAuthClientId, robloxAuthSecret } from './tokens';
 import { getURL } from './dev';
 import { v4 } from 'uuid';
 import { isDev } from './dev';
@@ -11,6 +11,9 @@ import { verifyCaptcha } from './captcha';
 import { getTempToken } from './temptokens';
 import { encryptCode, decryptCode } from './util';
 import crypto from 'node:crypto';
+import type { BasicRobloxUserResult, RobloxUserResult } from './roblox';
+import { userIdToUser, userIdToThumbnail, usernameToUser } from './roblox';
+import jtohGroupMembers from '../etc/group-members/jtoh.json';
 
 const hashingTokenForCodes = crypto
     .createHash('sha256')
@@ -140,5 +143,34 @@ export function getAuthLoginURL() {
 export async function isSignedInAdmin(context: Context) {
     const user = await getSignedInRobloxUser(context);
     if (!user) return false;
-    return user.id === 2614622891;
+    return user.id === robloxAdminUserId;
+}
+
+export async function parseRobloxAccount(context: Context): Promise<RobloxUserResult | undefined> {
+    const providedUser: string = context.req.param('user').slice(0, 20);
+    let user: BasicRobloxUserResult | undefined = undefined;
+    if (providedUser.startsWith('!')) {
+        user = await userIdToUser(parseInt(providedUser.slice(1))).catch(() => undefined);
+    } else if (providedUser === '$me') {
+        let me = await getSignedInRobloxUser(context);
+        if (!me) return undefined;
+        user = await userIdToUser(me.id).catch(() => undefined);
+    } else if (providedUser === '$random') {
+        user = await userIdToUser(
+            // @ts-ignore-next-line
+            jtohGroupMembers.members[Math.floor(Math.random() * jtohGroupMembers.members.length)].id
+        ).catch(() => undefined);
+    } else {
+        user = await usernameToUser(providedUser).catch(() => undefined);
+    }
+    const data =
+        user !== undefined
+            ? {
+                  id: user.id,
+                  name: user.name,
+                  displayName: user.displayName,
+                  thumbnail: await userIdToThumbnail(user.id).catch(() => undefined)
+              }
+            : undefined;
+    return data;
 }

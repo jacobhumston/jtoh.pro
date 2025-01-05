@@ -18,6 +18,7 @@ export default {
                 logger.info(`\t|    [${index}] ${arg.name} (${arg.type}) [${arg.required ? 'Required' : 'Optional'}]`);
                 logger.info(`\t|    -- ${arg.description}`);
             });
+            logger.info('');
         });
     }
 } as Command;

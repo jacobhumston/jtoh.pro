@@ -1,14 +1,16 @@
 (async () => {
     const _window = window;
     _window.addEventListener('load', () => {
-        /** @type {import('@xterm/xterm').Terminal} */
-        const terminal = new Terminal();
         const _document = document;
         const url = new URL(_window.location.href);
         const websocket = new WebSocket(`${url.protocol === 'https:' ? 'wss' : 'ws'}://${url.host}/ext/admin/terminal`);
         const terminalConnectedStatus = _document.getElementById('terminalConnectedStatus');
+        const terminalContainer = _document.getElementById('terminal');
+        /** @type {import('@xterm/xterm').Terminal} */
+        const terminal = new Terminal({ cols: Math.floor(terminalContainer.clientWidth / 9) });
 
-        terminal.open(_document.getElementById('terminal'));
+        terminal.loadAddon(new WebLinksAddon.WebLinksAddon());
+        terminal.open(terminalContainer);
         terminal.onData((data) => websocket.send(data));
 
         websocket.addEventListener('message', (event) => terminal.write(event.data));

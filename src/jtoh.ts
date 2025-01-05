@@ -12,15 +12,15 @@ import {
     skillPointsDB,
     getTotalInLeaderboard
 } from './db';
-import * as roblox from './roblox';
 import images from './images';
+import { parseRobloxAccount } from './loginauth';
 
 export default function jtoh(app: Hono) {
     app.get('/:user', async (context) => {
         updateRequestCount().catch(() => undefined);
 
         const providedUser: string = context.req.param('user').slice(0, 20);
-        const data = await roblox.parseRobloxAccount(context);
+        const data = await parseRobloxAccount(context);
         const formatter = new Intl.NumberFormat('en-US');
 
         const canvas = createCanvas(700, 300);
@@ -448,7 +448,7 @@ export default function jtoh(app: Hono) {
 
     app.get('/embed/:user', async (context) => {
         const providedUser: string = context.req.param('user').slice(0, 20);
-        const data = await roblox.parseRobloxAccount(context);
+        const data = await parseRobloxAccount(context);
 
         if (data === undefined) {
             return context.redirect(`/${providedUser}`);

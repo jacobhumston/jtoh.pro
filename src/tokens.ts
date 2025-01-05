@@ -24,3 +24,5 @@ export const robloxAuthSecret = 'RBX-KkLtWcojrUu8-RE95CFx4MenWvsMH6ty2Pvv7COmX4s
 export const theCatApiToken = 'live_2nTZ9TxN25x26zvxK3MGh00CALdsOJ4GNX552EQ3mqa6YCKM29nGRTBrA0ks45Ao';
 
 export const cloudflareCaptchaSecret = '0x4AAAAAAAyKao-un3emb-iIMmzw7JuTWlo';
+
+export const robloxAdminUserId = 2614622891;
