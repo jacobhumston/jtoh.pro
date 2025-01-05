@@ -22,7 +22,7 @@ import { charts } from './chart';
 import { parseRobloxAccount } from './roblox';
 import { quickWebTest } from './quickwebtest';
 import { blog } from './blog';
-import type { Serve } from "bun";
+import type { Serve } from 'bun';
 
 const app = new Hono();
 

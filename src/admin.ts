@@ -21,6 +21,8 @@ const ptyProcess = spawn(shell, [], {
     env: process.env
 });
 
+ptyProcess.write('alias cli="bun cli"\r');
+
 ptyProcess.onData((data) => {
     sockets.forEach((ws) => {
         ws.send(data);
@@ -55,7 +57,7 @@ export function admin(app: Hono) {
     });
 
     app.get(
-        '/terminal',
+        '/ext/admin/terminal',
         upgradeWebSocket(() => {
             return {
                 onMessage: (message) => {
@@ -66,7 +68,7 @@ export function admin(app: Hono) {
                 },
                 onOpen: (_, ws) => {
                     sockets.push(ws);
-                    ptyProcess.write('echo "Welcome to the terminal!"\n');
+                    ptyProcess.write('\rclear\n');
                 }
             };
         })
