@@ -82,7 +82,34 @@ async function setup() {
         const html = renderMarkdown(content.replace(dataString, ''));
         const final = renderTemplate(
             title + ' - Blog Post',
-            `<h1>Blog Post</h1><p>Click <a href="/app/blog">here</a> to view all blog posts.</p><p id="blogAuthor"><img alt="Blog Post Author Profile Picture" src="${thumbnail}" onerror="this.src='/app/assets/default-roblox-profile.png'"> <span id="blogAuthorDetails">This post was authored by <a href="https://www.roblox.com/users/${user.id}/profile" target="_blank">${user.displayName}</a>.</span><br><span id="blogDetails" data-json="${encodeURIComponent(JSON.stringify(postData))}"></span></p><div id="blogContainer">${html}</div>`
+            `<h1>Blog Post</h1>
+            <p>
+                Click 
+                <a href="/app/blog">here</a> 
+                to view all blog posts.
+            </p>
+            <p id="blogAuthor">
+                <img alt="Blog Post Author Profile Picture" src="${thumbnail}" onerror="this.src='/app/assets/default-roblox-profile.png'">
+                <span id="blogAuthorDetails">
+                    This post was authored by 
+                    <a href="https://www.roblox.com/users/${user.id}/profile" target="_blank">${user.displayName}</a>.
+                </span>
+                <br>
+                <span id="blogDetails" data-json="${encodeURIComponent(JSON.stringify(postData))}"></span>
+            </p>
+            <div id="blogContainer">${html}</div>`,
+            `<meta
+                name="description"
+                content="Easily share your Juke's Towers of Hell stats on Discord or other social medias with a single link. Includes support for other 'obby tower' related games on Roblox."
+            />
+            <meta property="og:title" content="jtoh.pro - Blog post by ${user.displayName}." />
+            <meta
+                property="og:description"
+                content="${summary}"
+            />
+            <meta property="og:image" content="https://jtoh.pro/app/assets/media-card.png" />
+            <meta property="twitter:card" content="summary_large_image" />
+            `
         );
 
         fs.writeFileSync(`src/web/app/blog/${file.name.replace('.md', '.html')}`, final);

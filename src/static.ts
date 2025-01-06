@@ -7,6 +7,19 @@ import minifyHTML from 'html-minifier';
 import { minify as minifyJS } from 'terser';
 import { isDev } from './dev';
 
+function replaceTemplates(content: string, templateDir: string, stop: boolean = false): string {
+    const files = fs.readdirSync(templateDir);
+    for (const file of files) {
+        if (file.endsWith('.html')) {
+            const name = file.slice(0, -5);
+            const thisContent = fs.readFileSync(join(templateDir, file)).toString();
+            const replacedContent = stop ? thisContent : replaceTemplates(thisContent, templateDir, true);
+            content = content.replaceAll(`<template data-name="${name}"></template>`, replacedContent);
+        }
+    }
+    return content;
+}
+
 export default async function serveStatic(app: Hono) {
     app.use('/*', async (context, next) => {
         let path = context.req.path;
@@ -80,13 +93,8 @@ export default async function serveStatic(app: Hono) {
             );
         } else if (fileExt === '.html') {
             let content = file.toString();
-            for (const file of fs.readdirSync(join(__dirname, 'web', 'app', 'templates'))) {
-                if (file.endsWith('.html')) {
-                    const name = file.slice(0, -5);
-                    const thisContent = fs.readFileSync(join(__dirname, 'web', 'app', 'templates', file)).toString();
-                    content = content.replaceAll(`<template data-name="${name}"></template>`, thisContent);
-                }
-            }
+            const templateDir = join(__dirname, 'web', 'app', 'templates');
+            content = replaceTemplates(content, templateDir);
             file = Buffer.from(
                 minifyHTML.minify(content, {
                     quoteCharacter: "'",
