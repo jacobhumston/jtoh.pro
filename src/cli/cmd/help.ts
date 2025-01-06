@@ -13,10 +13,10 @@ export default {
         commands.forEach((cmd) => {
             logger.info(`\t${cmd.name}`);
             logger.info(`\t| ${cmd.description}`);
+            logger.info('\t| Arguments:');
             cmd.args.forEach((arg, index) => {
-                logger.info('\t| Arguments:');
                 logger.info(`\t|    [${index}] ${arg.name} (${arg.type}) [${arg.required ? 'Required' : 'Optional'}]`);
-                logger.info(`\t|    -- ${arg.description}`);
+                logger.info(`\t|    -${'-'.repeat(`${index}`.length)}- ${arg.description}`);
             });
             logger.info('');
         });

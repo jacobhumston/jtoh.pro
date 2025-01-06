@@ -1,3 +1,5 @@
+import { donationsRobloxCloudToken } from './tokens';
+
 const baseUrls = {
     users: function (path: string): string {
         return `https://users.roblox.com${path}`;
@@ -111,4 +113,14 @@ export async function getRobloxAvatar3dAssets(userId: number) {
         obj: getRobloxCDNFromHash(result2.obj),
         textures: result2.textures.map((texture: string) => getRobloxCDNFromHash(texture))
     };
+}
+
+export async function listRobloxDatastores() {
+    const response = await fetch(`https://apis.roblox.com/cloud/v2/universes/4728993116/data-stores`, {
+        method: 'GET',
+        headers: {
+            'x-api-key': donationsRobloxCloudToken
+        }
+    });
+    return await response.json();
 }

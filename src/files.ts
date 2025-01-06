@@ -7,3 +7,11 @@ export function createLeadboardBlacklistFile() {
     }
     return name;
 }
+
+export function createModListFile() {
+    const name = 'db/mod-list.json';
+    if (!fs.existsSync(name)) {
+        fs.writeFileSync(name, '[]');
+    }
+    return name;
+}
