@@ -316,7 +316,27 @@ export default function jtoh(app: Hono) {
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#bdbdbd';
                 ctx.font = 'bold 15px Poppins, Twemoji';
-                ctx.fillText(`${formatter.format(towerStats.skill_points)}`, 340, 155);
+                const skillPointsString = formatter.format(towerStats.skill_points);
+                const skillPointsString1 = skillPointsString.split('.')[0];
+                const skillPointsString2 = skillPointsString.split('.')[1];
+
+                if (!skillPointsString2 || skillPointsString2.length <= 0) {
+                    ctx.fillText(`${skillPointsString}`, 340, 155);
+                } else {
+                    colorText(
+                        ctx,
+                        `${skillPointsString1}.${skillPointsString2}`,
+                        [
+                            {
+                                string: `.${skillPointsString2}`,
+                                color: Color('#bdbdbd').darken(0.4).hex(),
+                            }
+                        ],
+                        340,
+                        155,
+                        '#bdbdbd'
+                    );
+                }
 
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#f8f8f8';

@@ -81,6 +81,13 @@ export function colorText(
     pastColor: string
 ) {
     const words = str.split(' ');
+    words.forEach((word, index) => {
+        if (word.includes('.')) {
+            const split = word.split('.');
+            words[index] = split[0];
+            words.splice(index + 1, 0, '.' + split[1]);
+        }
+    });
     let currentX = x;
     for (let word of words) {
         const thisColor = color.find((c) => c.string === word);
@@ -91,6 +98,9 @@ export function colorText(
         word = word.replaceAll('_', ' ');
         if (thisColor?.beforeCallback) {
             thisColor.beforeCallback(prevX, word, thisColor.color);
+        }
+        if (word.startsWith('.')) {
+            currentX -= ctx.measureText(' ').width;
         }
         ctx.fillText(word, currentX, y);
         ctx.fillStyle = pastColor;
