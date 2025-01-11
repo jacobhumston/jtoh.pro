@@ -5,7 +5,7 @@ export default {
     name: 'name',
     description: 'description',
     args: [],
-    execute: (args: string[]) => {
+    execute: async (args: string[]) => {
         logger.info('Hello, world!', args);
     }
 } as Command;

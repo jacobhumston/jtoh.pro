@@ -24,8 +24,7 @@
         "format": "npx prettier ./ --write --cache",
         "start": "bun src/index.ts --dev",
         "start-prod": "pm2 start \"bunx bun run src/index.ts\"",
-        "start-beta": "bun src/index.ts --beta",
-        "start-beta-prod": "pm2 start \"bunx bun run src/index.ts --beta\"",
+        "start-beta": "pm2 start \"bunx bun run src/index.ts --beta\"",
         "tools-group-members": "bun run tools/group-members.ts",
         "tools-populate": "bun run tools/populate.ts",
         "cli": "bun run src/cli/index.ts"

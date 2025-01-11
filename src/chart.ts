@@ -6,6 +6,7 @@ import { getURLHost } from './dev';
 import { clamp, drawRoundedRect } from './util';
 
 Chart.register(...registerables);
+Chart.defaults.font.family = 'Poppins';
 
 export function charts(app: Hono) {
     app.get('/ext/charts/card-requests', async (context) => {

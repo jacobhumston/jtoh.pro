@@ -7,5 +7,5 @@ export type Command = {
         required: boolean;
         type: string;
     }[];
-    execute: (args: string[]) => void;
+    execute: (args: string[], cookie: string | null) => Promise<void>;
 };

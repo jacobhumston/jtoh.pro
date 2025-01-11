@@ -22,7 +22,7 @@ export default {
             type: 'string'
         }
     ],
-    execute: (args: string[]) => {
+    execute: async (args: string[]) => {
         const users: number[] = JSON.parse(fs.readFileSync(createModListFile(), 'utf-8'));
         const action = args[0];
         const username = args[1];
@@ -37,7 +37,7 @@ export default {
                     if (user.id === adminId) return logger.error('You are already a mod silly.');
                     users.push(user.id);
                     fs.writeFileSync(createModListFile(), JSON.stringify(users));
-                    logger.info(`Blacklisted user ${user.name} (${user.id}).`);
+                    logger.info(`Added mod ${user.name} (${user.id}).`);
                 })
                 .catch((err) => {
                     logger.error(err.toString());

@@ -6,6 +6,8 @@ import { spawn } from './libs/pty';
 import os from 'os';
 import type { WSContext } from 'hono/ws';
 import process from 'node:process';
+import { getArgsAsString } from './dev';
+import { getCookie } from 'hono/cookie';
 
 const { upgradeWebSocket, websocket } = createBunWebSocket<ServerWebSocket>();
 
@@ -24,8 +26,8 @@ const ptyProcess = spawn(shell, [], {
 
 // https://stackoverflow.com/a/28938235
 
-ptyProcess.write('alias cli="bun cli"\r');
-ptyProcess.write('PS1="$ \\w\n$ -> jtoh.pro$ "\r');
+ptyProcess.write(` alias cli="bun cli ${getArgsAsString()}"\r`);
+ptyProcess.write(' PS1="$ \\w\n$ -> jtoh.pro$ "\r');
 
 ptyProcess.onData((data) => {
     sockets.forEach((ws) => {
@@ -36,6 +38,9 @@ ptyProcess.onData((data) => {
 export function admin(app: Hono) {
     app.use('/app/admin/*', async (context, next) => {
         if (await isSignedInAdmin(context)) {
+            ptyProcess.write(
+                ` alias cli="bun cli --cookie=${getCookie(context, 'auth-token')} ${getArgsAsString()}"\r`
+            );
             await next();
         } else {
             return context.json({ error: 'Unauthorized.' }, 401);
