@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 import { isSignedInAdmin } from './loginauth';
 import { createBunWebSocket } from 'hono/bun';
 import type { ServerWebSocket } from 'bun';
-import { spawn } from './libs/pty';
+import { spawn } from './pty';
 import os from 'os';
 import type { WSContext } from 'hono/ws';
 import process from 'node:process';
