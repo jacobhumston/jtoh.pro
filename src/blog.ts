@@ -24,6 +24,16 @@ async function setup() {
     }));
 
     const filesJSON = await files.json();
+    if (!Array.isArray(filesJSON)) {
+        setTimeout(
+            () => {
+                setup();
+            },
+            convertTo({ minutes: 10 }, 'milliseconds')
+        );
+        return;
+    }
+
     for (const file of filesJSON) {
         const content = await fetch(file.download_url, { cache: 'no-store' })
             .then((res) => res.text())

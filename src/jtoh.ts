@@ -445,15 +445,40 @@ export default function jtoh(app: Hono) {
             );
             */
 
-            ctx.fillStyle = '#986cba';
             ctx.font = '13px Poppins';
-            drawRoundedRect(
+            ctx.fillStyle = Color('#986cba').darken(0.2).hex();
+            drawRoundedRectv2(
+                ctx,
+                700 - (ctx.measureText(`Stats by TowerStats.com`).width + 60),
+                0,
+                ctx.measureText(`Stats by TowerStats.com`).width + 18,
+                47,
+                { bottomLeft: 10, bottomRight: 10, topLeft: 0, topRight: 0 }
+            );
+
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'left';
+            colorText(
+                ctx,
+                `Stats by TowerStats.com`,
+                [
+                    { string: 'TowerStats', color: '#ffd54c' },
+                    { string: '.com', color: '#ffd54c' }
+                ],
+                700 - (ctx.measureText(`Stats by TowerStats.com`).width + 60) + 9,
+                40,
+                '#ffffff'
+            );
+
+            ctx.font = '13px Poppins';
+            ctx.fillStyle = '#986cba';
+            drawRoundedRectv2(
                 ctx,
                 700 - (ctx.measureText(`jtoh.pro/${data.name}`).width + 60),
                 -10,
                 ctx.measureText(`jtoh.pro/${data.name}`).width + 18,
                 35,
-                10
+                { bottomLeft: 10, bottomRight: 0, topLeft: 0, topRight: 0 }
             );
 
             ctx.fillStyle = '#ffffff';
