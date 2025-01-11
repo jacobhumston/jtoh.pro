@@ -2,12 +2,13 @@
     const _window = window;
     _window.addEventListener('load', () => {
         const _document = document;
+        const _ResizeObserver = ResizeObserver;
         const url = new URL(_window.location.href);
         const websocket = new WebSocket(`${url.protocol === 'https:' ? 'wss' : 'ws'}://${url.host}/ext/admin/terminal`);
         const terminalConnectedStatus = _document.getElementById('terminalConnectedStatus');
         const terminalContainer = _document.getElementById('terminal');
         /** @type {import('@xterm/xterm').Terminal} */
-        const terminal = new Terminal({ cols: Math.floor(terminalContainer.clientWidth / 9) });
+        const terminal = new Terminal();
 
         terminal.loadAddon(new WebLinksAddon.WebLinksAddon());
         terminal.open(terminalContainer);
@@ -28,5 +29,15 @@
         });
 
         terminalConnectedStatus.innerText = 'Terminal is currently connecting...';
+
+        function fit() {
+            terminal.resize(
+                Math.floor(terminalContainer.clientWidth / 9),
+                Math.floor(terminalContainer.clientHeight / 20)
+            );
+        }
+
+        new ResizeObserver(() => fit).observe(terminalContainer);
+        fit();
     });
 })();

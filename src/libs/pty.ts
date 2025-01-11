@@ -53,6 +53,7 @@ export function spawn(
         kill: () => {
             subprocess.stdin.end();
             subprocess.kill();
-        }
+        },
+        subprocess
     };
 }

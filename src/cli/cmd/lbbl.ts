@@ -22,7 +22,7 @@ export default {
             type: 'string'
         }
     ],
-    execute: (args: string[]) => {
+    execute: async (args: string[]) => {
         const users: number[] = JSON.parse(fs.readFileSync(createLeadboardBlacklistFile(), 'utf-8'));
         const action = args[0];
         const username = args[1];

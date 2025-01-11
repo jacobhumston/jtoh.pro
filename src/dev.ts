@@ -1,5 +1,6 @@
 import { parseArgs } from 'util';
 import process from 'node:process';
+import { argv } from 'bun';
 
 const { values } = parseArgs({
     args: Bun.argv,
@@ -15,6 +16,9 @@ const { values } = parseArgs({
         },
         url: {
             type: 'string'
+        },
+        cookie: {
+            type: 'string'
         }
     },
     strict: true,
@@ -27,6 +31,10 @@ export const port = parseInt(values.port ?? '80') ?? 80;
 
 if (isDev) process.env.NODE_ENV = 'development';
 else process.env.NODE_ENV = 'production';
+
+export function getProvidedURL(): string | null {
+    return values.url ?? null;
+}
 
 export function getURL() {
     if (values.url) return values.url;
@@ -41,4 +49,8 @@ export function getURLWithSlash() {
 
 export function getURLHost() {
     return new URL(getURL()).host;
+}
+
+export function getArgsAsString() {
+    return argv.toSpliced(0, 2).join(' ');
 }
