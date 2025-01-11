@@ -12,10 +12,10 @@ function setupDir() {
 
 const posts: any[] = [];
 
+const tempDir = fs.mkdtempSync(`blog`);
+
 async function setup() {
     posts.length = 0;
-
-    setupDir();
 
     const files = await fetch('https://api.github.com/repos/jacobhumston/data.jtoh.pro/contents/blog', {
         cache: 'no-store'
@@ -112,10 +112,16 @@ async function setup() {
             `
         );
 
-        fs.writeFileSync(`src/web/app/blog/${file.name.replace('.md', '.html')}`, final);
+        fs.writeFileSync(`${tempDir}/${file.name.replace('.md', '.html')}`, final);
 
         posts.push(postData);
     }
+
+    setupDir();
+    for (const file of fs.readdirSync(tempDir)) {
+        fs.copyFileSync(`${tempDir}/${file}`, `src/web/app/blog/${file}`);
+    }
+    fs.rmSync(tempDir, { recursive: true, force: true });
 
     setTimeout(
         () => {
