@@ -29,6 +29,9 @@ async function setup() {
             .then((res) => res.text())
             .catch(() => '');
         const split = content.split('\n');
+
+        if (!content.includes('<!--') || !content.includes('-->')) continue;
+
         const data: { [key: string]: string } = {};
         let dataString = '<!--\n';
         for (const line of split) {
