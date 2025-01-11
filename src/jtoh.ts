@@ -329,7 +329,7 @@ export default function jtoh(app: Hono) {
                         [
                             {
                                 string: `.${skillPointsString2}`,
-                                color: Color('#bdbdbd').darken(0.4).hex(),
+                                color: Color('#bdbdbd').darken(0.4).hex()
                             }
                         ],
                         340,
