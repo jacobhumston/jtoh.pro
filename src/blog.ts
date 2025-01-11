@@ -12,9 +12,10 @@ function setupDir() {
 
 const posts: any[] = [];
 
-const tempDir = fs.mkdtempSync(`blog`);
-
 async function setup() {
+    const tempDir = `temp/blog-${Date.now()}`;
+    fs.mkdirSync(tempDir, { recursive: true });
+
     posts.length = 0;
 
     const files = await fetch('https://api.github.com/repos/jacobhumston/data.jtoh.pro/contents/blog', {
@@ -25,6 +26,7 @@ async function setup() {
 
     const filesJSON = await files.json();
     if (!Array.isArray(filesJSON)) {
+        fs.rmSync(tempDir, { recursive: true, force: true });
         setTimeout(
             () => {
                 setup();

@@ -14,6 +14,7 @@ import {
 } from './db';
 import images from './images';
 import { parseRobloxAccount } from './loginauth';
+import { towerStatsToken } from './tokens';
 
 export default function jtoh(app: Hono) {
     app.get('/:user', async (context) => {
@@ -99,7 +100,7 @@ export default function jtoh(app: Hono) {
             //});
 
             let towerStats: TowerData | undefined = await fetch(
-                `https://api.towerstats.com/?id=${data.id}&apiKey=2f8a7a78-9b03-4e95-ace9-1cd06334a16b-d2444398-630c-445a-b5b1-486b92d5d4fe`
+                `https://api.towerstats.com/?id=${data.id}&apiKey=${towerStatsToken}`
             )
                 .then((res) => {
                     if (res.ok) return res.json();
@@ -449,7 +450,7 @@ export default function jtoh(app: Hono) {
             ctx.fillStyle = Color('#986cba').darken(0.2).hex();
             drawRoundedRectv2(
                 ctx,
-                700 - (ctx.measureText(`Stats by TowerStats.com`).width + 60),
+                700 - (ctx.measureText(`Stats by TowerStats.com`).width + 55),
                 0,
                 ctx.measureText(`Stats by TowerStats.com`).width + 18,
                 47,
@@ -465,7 +466,7 @@ export default function jtoh(app: Hono) {
                     { string: 'TowerStats', color: '#ffd54c' },
                     { string: '.com', color: '#ffd54c' }
                 ],
-                700 - (ctx.measureText(`Stats by TowerStats.com`).width + 60) + 9,
+                700 - (ctx.measureText(`Stats by TowerStats.com`).width + 55) + 9,
                 40,
                 '#ffffff'
             );
@@ -474,7 +475,7 @@ export default function jtoh(app: Hono) {
             ctx.fillStyle = '#986cba';
             drawRoundedRectv2(
                 ctx,
-                700 - (ctx.measureText(`jtoh.pro/${data.name}`).width + 60),
+                700 - (ctx.measureText(`jtoh.pro/${data.name}`).width + 55),
                 -10,
                 ctx.measureText(`jtoh.pro/${data.name}`).width + 18,
                 35,
@@ -483,7 +484,7 @@ export default function jtoh(app: Hono) {
 
             ctx.fillStyle = '#ffffff';
             ctx.textAlign = 'left';
-            ctx.fillText(`jtoh.pro/${data.name}`, 700 - (ctx.measureText(`jtoh.pro/${data.name}`).width + 60) + 10, 15);
+            ctx.fillText(`jtoh.pro/${data.name}`, 700 - (ctx.measureText(`jtoh.pro/${data.name}`).width + 55) + 10, 15);
 
             const image = canvas.toBuffer('image/png');
             context.header('Content-Type', 'image/png');

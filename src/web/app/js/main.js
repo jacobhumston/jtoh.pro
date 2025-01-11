@@ -4,6 +4,8 @@
     const _MutationObserver = MutationObserver;
     const _URL = URL;
 
+    _window._URL = new _URL(_window.location.href);
+
     if (!_window.func) _window.func = {};
     const publicFunctions = _window.func;
 
@@ -78,6 +80,7 @@
         if (!username || username.length === 0) username = 'LoveliestJacob';
         getElementById('exampleImageOutput').src = '';
         getElementById('exampleImageOutput').src = `/${username}?nocache=${genUUID().substring(0, 6)}`;
+        return username;
     }
     publicFunctions.updateExampleOutput = updateExampleOutput;
 
@@ -130,7 +133,7 @@
         )
             return;
 
-        updateExampleOutput();
+        const username = updateExampleOutput();
 
         const url = getElementById('exampleImageOutput').src;
         let ogText = button.innerHTML;
