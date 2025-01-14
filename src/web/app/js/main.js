@@ -4,10 +4,10 @@
     const _MutationObserver = MutationObserver;
     const _URL = URL;
 
-    _window._URL = new _URL(_window.location.href);
-
     if (!_window.func) _window.func = {};
     const publicFunctions = _window.func;
+
+    publicFunctions.getURL = () => new _URL(_window.location.href);
 
     {
         const root = _document.documentElement;

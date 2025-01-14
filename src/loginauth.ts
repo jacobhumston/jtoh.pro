@@ -116,6 +116,7 @@ export default function setupLoginAuth(app: Hono) {
         const token = getCookie(context, 'auth-token') as string;
         await loginAuthDB.delete(token);
         setCookie(context, 'auth-token', '', { expires: new Date(0) });
+        if (context.req.query('switch') && context.req.query('switch') === 'true') return context.redirect('/login');
         return context.redirect('/');
     });
 }
