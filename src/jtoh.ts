@@ -99,10 +99,13 @@ export default function jtoh(app: Hono) {
             //    return images.defaultRobloxProfile;
             //});
 
+            let loadTime = Date.now();
             let towerStats: TowerData | undefined = await fetch(
                 `https://api.towerstats.com/?id=${data.id}&apiKey=${towerStatsToken}`
             )
                 .then((res) => {
+                    loadTime = (Date.now() - loadTime) / 1000;
+                    loadTime = parseFloat(loadTime.toFixed(2));
                     if (res.ok) return res.json();
                     return undefined;
                 })
@@ -485,6 +488,15 @@ export default function jtoh(app: Hono) {
             ctx.fillStyle = '#ffffff';
             ctx.textAlign = 'left';
             ctx.fillText(`jtoh.pro/${data.name}`, 700 - (ctx.measureText(`jtoh.pro/${data.name}`).width + 55) + 10, 15);
+
+            ctx.fillStyle = '#a8a8a8';
+            ctx.font = 'italic 10px Poppins';
+            ctx.textAlign = 'left';
+            ctx.fillText(
+                `Took ${loadTime}s to load.`,
+                700 - (ctx.measureText(`Took ${loadTime}s to load.`).width + 55),
+                60
+            );
 
             const image = canvas.toBuffer('image/png');
             context.header('Content-Type', 'image/png');
