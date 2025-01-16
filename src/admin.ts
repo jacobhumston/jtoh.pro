@@ -1,17 +1,12 @@
 import { Hono } from 'hono';
 import { isSignedInAdmin } from './loginauth';
-import { createBunWebSocket } from 'hono/bun';
-import type { ServerWebSocket } from 'bun';
 import { spawn } from './pty';
 import os from 'os';
 import type { WSContext } from 'hono/ws';
 import process from 'node:process';
 import { getArgsAsString } from './dev';
 import { getCookie } from 'hono/cookie';
-
-const { upgradeWebSocket, websocket } = createBunWebSocket<ServerWebSocket>();
-
-export const socket = websocket;
+import { addSocketManager, closeSocket } from './socket';
 
 const shell = os.platform() === 'win32' ? 'powershell.exe' : 'bash';
 const sockets: Array<WSContext> = [];
@@ -65,21 +60,19 @@ export function admin(app: Hono) {
         });
     });
 
-    app.get(
-        '/ext/admin/terminal',
-        upgradeWebSocket(() => {
-            return {
-                onMessage: (message) => {
-                    ptyProcess.write(message.data.toString());
-                },
-                onClose: (_, ws) => {
-                    sockets.splice(sockets.indexOf(ws), 1);
-                },
-                onOpen: (_, ws) => {
-                    sockets.push(ws);
-                    ptyProcess.write('\rclear\n');
-                }
-            };
-        })
-    );
+    addSocketManager('terminal', async (context) => {
+        if (!(await isSignedInAdmin(context))) return closeSocket();
+        return {
+            onMessage: (message) => {
+                ptyProcess.write(message.data.toString());
+            },
+            onClose: (_, ws) => {
+                sockets.splice(sockets.indexOf(ws), 1);
+            },
+            onOpen: (_, ws) => {
+                sockets.push(ws);
+                ptyProcess.write('\rclear\n');
+            }
+        };
+    });
 }

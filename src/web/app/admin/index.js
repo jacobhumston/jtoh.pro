@@ -4,7 +4,9 @@
         const _document = document;
         const _ResizeObserver = ResizeObserver;
         const url = new URL(_window.location.href);
-        const websocket = new WebSocket(`${url.protocol === 'https:' ? 'wss' : 'ws'}://${url.host}/ext/admin/terminal`);
+        const websocket = new WebSocket(
+            `${url.protocol === 'https:' ? 'wss' : 'ws'}://${url.host}/ext/socket?type=terminal`
+        );
         const terminalConnectedStatus = _document.getElementById('terminalConnectedStatus');
         const terminalContainer = _document.getElementById('terminal');
         /** @type {import('@xterm/xterm').Terminal} */
