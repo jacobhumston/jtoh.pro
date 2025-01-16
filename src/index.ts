@@ -16,13 +16,14 @@ import setupLoginAuth from './loginauth';
 import { rateLimiter } from 'hono-rate-limiter';
 import { getTempToken } from './temptokens';
 import { convert as timeConvert } from '@jacobhumston/tc.js';
-import { admin, socket } from './admin';
+import { admin } from './admin';
 import { captchaManager } from './captcha';
 import { charts } from './chart';
 import { parseRobloxAccount } from './loginauth';
 import { quickWebTest } from './quickwebtest';
 import { blog } from './blog';
 import type { Serve } from 'bun';
+import { socket, socketListen } from './socket';
 
 const app = new Hono();
 
@@ -81,6 +82,7 @@ redirects(app);
 jtoh(app);
 charts(app);
 blog(app);
+socketListen(app);
 
 app.get('/', async (context) => {
     const searchParams = new URL(context.req.url).searchParams;
