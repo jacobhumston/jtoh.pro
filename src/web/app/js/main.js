@@ -171,6 +171,9 @@
     publicFunctions.copyURL = copyURL;
 
     _window.addEventListener('DOMContentLoaded', () => {
+        const copyrightYear = getElementById('copyrightYear');
+        if (copyrightYear) copyrightYear.innerText = new Date().getFullYear();
+
         const week = getElementById('requestStatsWeek');
         const month = getElementById('requestStatsMonth');
         const year = getElementById('requestStatsYear');
@@ -330,13 +333,13 @@ _window.addEventListener('DOMContentLoaded', () => {
             {
                 name: 'Card Requests',
                 type: 'card-requests',
-                other: ['JToH', 'CSCD', 'AToS', 'TEA', 'JToH XL', 'JToH XXL'],
+                other: ['JToH'],
                 description: 'Leaderboard for the most amount of cards requested for a specific user.'
             },
             {
                 name: 'Skill Points',
                 type: 'skill-points',
-                other: ['JToH', 'CSCD', 'AToS', 'TEA', 'JToH XL', 'JToH XXL'],
+                other: ['JToH'],
                 description: `Leaderboard of the user's with the most amount of skill points. \n${getGoogleIconHTML('info')} Skill points are calculated via completed towers amoungst other factors.`
             }
         ];

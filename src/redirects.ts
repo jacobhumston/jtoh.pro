@@ -2,11 +2,6 @@ import { Hono } from 'hono';
 
 export default function redirects(app: Hono) {
     const redirectRoutes = [
-        { path: '/jtohxl/', target: '/app/fangame/jtohxl/' },
-        { path: '/cscd/', target: '/app/fangame/cscd/' },
-        { path: '/atos/', target: '/app/fangame/atos/' },
-        { path: '/eta/', target: '/app/fangame/eta/' },
-        { path: '/jtohxxl/', target: '/app/fangame/jtohxxl/' },
         { path: '/app', target: '/app/' },
         { path: '/uptime', target: 'https://uptime.jtoh.pro' },
         { path: '/terms', target: '/app/terms' },

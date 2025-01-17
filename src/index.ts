@@ -143,7 +143,8 @@ app.get('/towerstats/:game/:user', async (context) => {
 });
 
 app.notFound((context) => {
-    return context.json({ error: 'Not found.' }, 404);
+    if (context.req.path.startsWith('/app/')) return context.redirect('/app/404');
+    else return context.json({ error: 'Not found.' }, 404);
 });
 
 app.onError((error, context) => {
