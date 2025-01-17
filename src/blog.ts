@@ -11,10 +11,30 @@ function setupDir() {
 }
 
 const posts: any[] = [];
+let lastCommitHash = '';
 
 async function setup() {
     const tempDir = `temp/blog-${Date.now()}`;
     fs.mkdirSync(tempDir, { recursive: true });
+
+    const allCommits: any[] = await (
+        await fetch(`https://api.github.com/repos/jacobhumston/data.jtoh.pro/commits?path=blog&per_page=100`, {
+            cache: 'no-store'
+        }).catch(() => ({ json: async () => [] }))
+    ).json();
+
+    if (lastCommitHash === allCommits[0].sha) {
+        fs.rmSync(tempDir, { recursive: true, force: true });
+        setTimeout(
+            () => {
+                setup();
+            },
+            convertTo({ minutes: 10 }, 'milliseconds')
+        );
+        return;
+    } else {
+        lastCommitHash = allCommits[0].sha;
+    }
 
     posts.length = 0;
 
