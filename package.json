@@ -2,24 +2,6 @@
     "name": "jtoh.pro",
     "module": "src/index.ts",
     "type": "module",
-    "devDependencies": {
-        "@types/bun": "latest",
-        "@types/clean-css": "^4.2.11",
-        "@types/color": "^3.0.6",
-        "@types/html-minifier": "^4.0.5",
-        "@types/markdown-it": "^14.1.2",
-        "@types/mime-types": "^2.1.4",
-        "@types/terminal-kit": "^2.5.7",
-        "@types/uuid": "^10.0.0",
-        "@xterm/xterm": "^5.5.0",
-        "bun": "^1.1.45",
-        "depcheck": "^1.4.7",
-        "pm2": "^5.4.3",
-        "prettier": "^3.4.2"
-    },
-    "peerDependencies": {
-        "typescript": "^5.7.2"
-    },
     "scripts": {
         "format": "npx prettier ./ --write --cache",
         "start": "bun src/index.ts --dev",
@@ -54,5 +36,21 @@
         "uuid": "^10.0.0",
         "winston": "^3.17.0",
         "zod": "^3.24.1"
+    },
+    "devDependencies": {
+        "@types/bun": "latest",
+        "@types/clean-css": "^4.2.11",
+        "@types/color": "^3.0.6",
+        "@types/html-minifier": "^4.0.5",
+        "@types/markdown-it": "^14.1.2",
+        "@types/mime-types": "^2.1.4",
+        "@types/terminal-kit": "^2.5.7",
+        "@types/uuid": "^10.0.0",
+        "@xterm/xterm": "^5.5.0",
+        "bun": "^1.1.45",
+        "depcheck": "^1.4.7",
+        "pm2": "^5.4.3",
+        "prettier": "^3.4.2",
+        "typescript": "^5.7.3"
     }
 }
