@@ -17,17 +17,14 @@ const logFolderName = `logs/current/${date.toISOString().replaceAll(':', '_').re
 fs.mkdirSync(logFolderName);
 fs.writeFileSync(`${logFolderName}created.txt`, `${date.toDateString()} ${date.toTimeString()}`);
 
-setInterval(
-    () => {
-        for (const folder of fs.readdirSync('logs/old/')) {
-            const age = new Date(folder.split('_').join(':').split('__').join('.')).getTime();
-            if (Date.now() - age > convertTo({ days: 1 }, 'milliseconds')) {
-                fs.rmSync(`logs/old/${folder}`, { recursive: true, force: true });
-            }
-        }
-    },
-    convertTo({ minutes: 5 }, 'milliseconds')
-);
+let removedLogFolders = 0;
+for (const folder of fs.readdirSync('logs/old/')) {
+    const age = new Date(folder.replaceAll('__', '.').replaceAll('_', ':')).getTime();
+    if (Date.now() - age > convertTo({ days: 1 }, 'milliseconds')) {
+        fs.rmSync(`logs/old/${folder}`, { recursive: true, force: true });
+        removedLogFolders++;
+    }
+}
 
 const logger = winston.createLogger({
     level: 'info',
@@ -45,5 +42,7 @@ if (isDev) {
         })
     );
 }
+
+logger.info(`Logger initialized. (${removedLogFolders} removed outdated log folders.)`);
 
 export default logger;
