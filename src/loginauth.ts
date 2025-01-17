@@ -5,7 +5,6 @@ import type { Context } from 'hono';
 import type { LoggedInUser } from './type';
 import { robloxAdminUserId, robloxAuthClientId, robloxAuthSecret } from './tokens';
 import { getURL } from './dev';
-import { v4 } from 'uuid';
 import { isDev } from './dev';
 import { verifyCaptcha } from './captcha';
 import { getTempToken } from './temptokens';
@@ -68,10 +67,10 @@ export default function setupLoginAuth(app: Hono) {
                         // @ts-ignore-next-line
                         for await (const [key, value] of loginAuthDB.iterator()) {
                             if (value.id == parseInt(userResponseJSON.sub)) {
-                                await loginAuthDB.delete(key);
+                               await loginAuthDB.delete(key);
                             }
                         }
-                        const token = `${v4()}-${v4()}-${v4()}-${v4()}-${v4()}-${v4()}-${v4()}-${v4()}`;
+                        const token = crypto.randomBytes(256).toString('hex');
                         await loginAuthDB.set(
                             token,
                             {
@@ -124,16 +123,16 @@ export default function setupLoginAuth(app: Hono) {
 export async function getSignedInRobloxUser(context: Context) {
     const token = getCookie(context, 'auth-token');
     if (!token) return null;
-    const uuidRegex = /^[0-9a-fA-F-]+$/;
-    if (!uuidRegex.test(token)) return null;
+    //const uuidRegex = /^[0-9a-fA-F-]+$/;
+    //if (!uuidRegex.test(token)) return null;
     return (await loginAuthDB.get<LoggedInUser>(token)) ?? null;
 }
 
 export async function getSignedInRobloxUserAuthToken(context: Context) {
     const token = getCookie(context, 'auth-token');
     if (!token) return null;
-    const uuidRegex = /^[0-9a-fA-F-]+$/;
-    if (!uuidRegex.test(token)) return null;
+    //const uuidRegex = /^[0-9a-fA-F-]+$/;
+    //if (!uuidRegex.test(token)) return null;
     return ((await loginAuthDB.get<LoggedInUser>(token)) ?? null) ? token : null;
 }
 
