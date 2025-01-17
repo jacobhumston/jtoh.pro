@@ -67,7 +67,7 @@ export default function setupLoginAuth(app: Hono) {
                         // @ts-ignore-next-line
                         for await (const [key, value] of loginAuthDB.iterator()) {
                             if (value.id == parseInt(userResponseJSON.sub)) {
-                               await loginAuthDB.delete(key);
+                                await loginAuthDB.delete(key);
                             }
                         }
                         const token = crypto.randomBytes(256).toString('hex');
