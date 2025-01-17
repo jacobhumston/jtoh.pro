@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+    <head data-page="Juke's Towers of Hell">
+        <template data-name="head"></template>
+        <template data-name="meta"></template>
+    </head>
+    <body>
+        <template data-name="headerLinks"></template>
+        <div id="container">
+            <h1>jtoh.pro</h1>
+            <p>
+                Easily share your Juke's Towers of Hell stats/progress on Discord or other social medias with a single
+                link. Statistics are provided by
+                <a href="https://towerstats.com" target="_blank">towerstats.com</a>
+            </p>
+            <h2>Try it out!</h2>
+            <p>
+                Input a Roblox username below to try it out!
+                <i>You can also input a user ID by starting the input with an exclamation mark.</i>
+            </p>
+            <div class="interactionFlex">
+                <input type="text" id="exampleInputUsername" placeholder="Roblox Username" />
+                <button type="button" onclick="window.func.updateExampleOutput()">
+                    <span class="materialSymbolsRounded">refresh</span>
+                    Get Image
+                </button>
+            </div>
+            <div class="interactionFlex">
+                <button type="button" onclick="window.func.copyExampleOutputImage(this)">
+                    <span class="materialSymbolsRounded">file_copy</span>
+                    Copy Image
+                </button>
+                <button type="button" onclick="window.func.copyExampleOutputURL(this)">
+                    <span class="materialSymbolsRounded">content_copy</span>
+                    Copy URL
+                </button>
+                <button type="button" onclick="window.func.downloadExampleOutputImage(this)">
+                    <span class="materialSymbolsRounded">download</span>
+                    Download Image
+                </button>
+            </div>
+            <div class="extraPadding"></div>
+            <img
+                id="exampleImageOutput"
+                src="/loveliestjacob"
+                alt="Example Image Output"
+                width="700px"
+                height="300px"
+            />
+            <div class="extraPadding"></div>
+            <div class="split"></div>
+            <h2>Available Links</h2>
+            Note that
+            <code>{USER}</code>
+            can either be a username or a Roblox user ID. The user ID must start with an exclamation mark, such as
+            <code>!12345</code>
+
+            <div class="extraPadding"></div>
+
+            <div class="copyLinkSection">
+                <button
+                    class="smallCopyButton"
+                    type="button"
+                    onclick="window.func.copyURL(`${window.func.getURL().origin}/roblox`, this)"
+                >
+                    <span class="materialSymbolsRounded">content_copy</span>
+                    Copy
+                </button>
+                <a href="/roblox" target="_blank">/{USER}</a>
+                <span class="materialSymbolsRounded linkSectionCornerIcon">description</span>
+                <div class="copyLinkSectionDescription">
+                    <span class="materialSymbolsRounded">info</span>
+                    Get an image of a user's tower stats.
+                </div>
+            </div>
+
+            <div class="extraPadding"></div>
+            <div class="copyLinkSection">
+                <button
+                    class="smallCopyButton"
+                    type="button"
+                    onclick="window.func.copyURL(`${window.func.getURL().origin}/embed/roblox`, this)"
+                >
+                    <span class="materialSymbolsRounded">content_copy</span>
+                    Copy
+                </button>
+                <a href="/embed/roblox" target="_blank">/embed/{USER}</a>
+                <span class="materialSymbolsRounded linkSectionCornerIcon">description</span>
+                <div class="copyLinkSectionDescription">
+                    <span class="materialSymbolsRounded">info</span>
+                    Get an image of a user's tower stats as a Discord embed.
+                    <br />
+                    The link will redirect to the user's
+                    <span class="towerstatsUrl">towerstats.com</span>
+                    profile when opened.
+                </div>
+            </div>
+
+            <h2>Short Links</h2>
+            Short links are links that redirect to "bigger" links. They are useful for sharing links in a more compact
+            way.
+
+            <div class="extraPadding"></div>
+
+            <div class="copyLinkSection">
+                <button
+                    class="smallCopyButton"
+                    type="button"
+                    onclick="window.func.copyURL(`${window.func.getURL().origin}/e/roblox`, this)"
+                >
+                    <span class="materialSymbolsRounded">content_copy</span>
+                    Copy
+                </button>
+                <a href="/e/roblox" target="_blank">/e/{USER}</a>
+                <span class="materialSymbolsRounded linkSectionCornerIcon">description</span>
+                <div class="copyLinkSectionDescription">
+                    <span class="materialSymbolsRounded">info</span>
+                    Short link for
+                    <code>/embed/${USER}</code>
+                </div>
+            </div>
+
+            <br />
+            <br />
+            <div class="split"></div>
+
+            <template data-name="card-info"></template>
+            <template data-name="footer"></template>
+        </div>
+    </body>
+</html>
