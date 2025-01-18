@@ -14,7 +14,7 @@ export default {
         const current = fs.readdirSync('logs/current/')[0];
         const files = fs.readdirSync('logs/old/').concat(fs.readdirSync('logs/current/')).sort(sortFiles).splice(0, 10);
 
-        logger.info(`Showing 10 most recent ${files.length} log folders.`);
+        logger.info(`Showing 10 most recent log folders.`);
         if (files.length === 0) return;
 
         const choice = await terminal.singleColumnMenu(
