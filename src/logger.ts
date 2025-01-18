@@ -46,6 +46,9 @@ if (isDev) {
 
 logger.info(`Logger initialized. (${removedLogFolders} removed outdated log folders.)`);
 
-proccess.on('uncaughtException', logger.error);
+proccess.on('uncaughtException', (error) => {
+    logger.error(error);
+    proccess.exit(1);
+});
 
 export default logger;

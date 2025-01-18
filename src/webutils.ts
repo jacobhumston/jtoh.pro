@@ -1,8 +1,16 @@
 import { Hono } from 'hono';
 import { v4 } from 'uuid';
-import { userIdToThumbnail, userIdToThumbnailFull, userIdToThumbnailBust, getRobloxAvatar3dAssets } from './roblox';
+import {
+    userIdToThumbnail,
+    userIdToThumbnailFull,
+    userIdToThumbnailBust,
+    getRobloxAvatar3dAssets,
+    userIdToUser
+} from './roblox';
 import { getLicenseReport } from './licensereport';
 import { isDev } from './dev';
+import gameBadges from '../etc/badges.json';
+import { checkOwnedBadgesLarge } from './roblox-badges';
 
 export default function webUtils(app: Hono) {
     app.get('/ext/util/ping', async (context) => {
@@ -59,5 +67,39 @@ export default function webUtils(app: Hono) {
         } else {
             return context.json({ error: 'This resource is unavalible.' }, 403);
         }
+    });
+
+    app.get('/ext/util/roblox-badges/:userId', async (context) => {
+        const userId = parseInt(context.req.param('userId'));
+        if (isNaN(userId)) return context.json({ error: 'Invalid userId.' }, 400);
+
+        const user = await userIdToUser(userId);
+        if (!user) return context.json({ error: 'User not found.' }, 404);
+
+        const badges = (context.req.query('badges') ?? gameBadges.badges.map((badge) => badge.id).join(',')).split(',');
+        for (const badge of badges) {
+            if (isNaN(parseInt(badge))) return context.json({ error: 'Invalid badge provided.' }, 400);
+        }
+
+        if (badges.length > 5000)
+            return context.json({ error: 'Only up to 5000 badges per request allowed.' }, 400) as any;
+
+        const timestamp = Date.now();
+        const result = await checkOwnedBadgesLarge(userId, badges);
+
+        return context.json({
+            userId,
+            badges: result,
+            count: {
+                owned: result.filter((badge) => badge.owned).length,
+                notOwned: result.filter((badge) => !badge.owned).length,
+                total: result.length
+            },
+            time: (Date.now() - timestamp) / 1000
+        });
+    });
+
+    app.get('/ext/util/default-roblox-badges', async (context) => {
+        return context.json(gameBadges);
     });
 }
