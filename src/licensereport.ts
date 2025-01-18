@@ -13,7 +13,17 @@ export function getLicenseReport() {
                     reject(error);
                     return;
                 }
-                report = { updated: new Date(), packages: JSON.parse(stdout) };
+                report = {
+                    updated: new Date(),
+                    packages: JSON.parse(stdout).map((obj: any) => ({
+                        ...obj,
+                        link: obj.link.startsWith('git+')
+                            ? obj.link.split('git+')[1]
+                            : obj.link.startsWith('git://')
+                              ? `https://${obj.link.split('git://')[1]}`
+                              : obj.link
+                    }))
+                };
                 resolve(report);
             }
         );
