@@ -905,3 +905,18 @@ a {
     padding-left: 15px;
     padding-right: 15px;
 }
+
+#cardsUrlRefrence {
+    background-color: var(--color-background-even-more-darker);
+    padding: 5px;
+    display: inline-block;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 15px;
+    margin-top: -20px;
+    margin-bottom: 10px;
+}
+
+#cardsUrlRefrence .materialSymbolsRounded {
+    vertical-align: top;
+}

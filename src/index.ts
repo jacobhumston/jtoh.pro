@@ -24,12 +24,22 @@ import { quickWebTest } from './quickwebtest';
 import { blog } from './blog';
 import type { Serve } from 'bun';
 import { socket, socketListen } from './socket';
+import { compress } from 'hono-compress';
+import { cors } from 'hono/cors';
+import { serveSitemap } from './sitemap';
 
 const app = new Hono();
 
 GlobalFonts.registerFromPath('src/web/app/assets/Poppins-Regular.ttf', 'Poppins');
 GlobalFonts.registerFromPath('src/web/app/assets/Twemoji-15.1.0.ttf', 'Twemoji');
 GlobalFonts.registerFromPath('src/web/app/assets/MaterialSymbolsRounded.woff2', 'MaterialSymbolsRounded');
+
+app.use(
+    cors({
+        origin: getURL()
+    })
+);
+app.use(compress());
 
 app.use(async (context, next) => {
     const host = context.req.header('host');
@@ -79,10 +89,11 @@ webUtils(app);
 serveLeaderboards(app);
 serveStatic(app);
 redirects(app);
-jtoh(app);
 charts(app);
 blog(app);
 socketListen(app);
+serveSitemap(app);
+jtoh(app);
 
 app.get('/', async (context) => {
     const searchParams = new URL(context.req.url).searchParams;
