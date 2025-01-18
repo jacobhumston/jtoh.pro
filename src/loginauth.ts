@@ -13,6 +13,8 @@ import crypto from 'node:crypto';
 import type { BasicRobloxUserResult, RobloxUserResult } from './roblox';
 import { userIdToUser, userIdToThumbnail, usernameToUser } from './roblox';
 import jtohGroupMembers from '../etc/group-members/jtoh.json';
+import rvsGroupMembers from '../etc/group-members/rvs.json';
+import cscdGroupMembers from '../etc/group-members/cscd.json';
 
 const hashingTokenForCodes = crypto
     .createHash('sha256')
@@ -159,6 +161,16 @@ export async function parseRobloxAccount(context: Context): Promise<RobloxUserRe
         user = await userIdToUser(
             // @ts-ignore-next-line
             jtohGroupMembers.members[Math.floor(Math.random() * jtohGroupMembers.members.length)].id
+        ).catch(() => undefined);
+    } else if (providedUser === '$random:rsv') {
+        user = await userIdToUser(
+            // @ts-ignore-next-line
+            rvsGroupMembers.members[Math.floor(Math.random() * rvsGroupMembers.members.length)].id
+        ).catch(() => undefined);
+    } else if (providedUser === '$random:cscd') {
+        user = await userIdToUser(
+            // @ts-ignore-next-line
+            cscdGroupMembers.members[Math.floor(Math.random() * cscdGroupMembers.members.length)].id
         ).catch(() => undefined);
     } else {
         user = await usernameToUser(providedUser).catch(() => undefined);

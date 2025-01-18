@@ -34,3 +34,5 @@ export const towerStatsToken = '2f8a7a78-9b03-4e95-ace9-1cd06334a16b-d2444398-63
 
 export const imgurClientId = 'bc5ef54d15d3437';
 export const imgurClientToken = '5347e284f8e14c91f3cf2451b8b8a5d9900372a1';
+
+export const proxyUrl = 'https://19a352f1b734f2ea69e8:21444d83b8f619ed@gw.dataimpulse.com:823';

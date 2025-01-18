@@ -63,16 +63,10 @@ export default function jtoh(app: Hono) {
             ctx.fillStyle = '#a8a8a8';
             ctx.font = 'bold italic 20px Poppins';
             ctx.textAlign = 'left';
-            colorText(
-                ctx,
-                'Provided by jtoh.pro with stats from towerstats.com',
-                [
-                    { string: 'jtoh.pro', color: '#986cba' },
-                    { string: 'towerstats.com', color: '#dfd474' }
-                ],
-                centerText(canvas, ctx, 'Provided by jtoh.pro with stats from towerstats.com.'),
-                canvas.height / 2 + 100,
-                '#a8a8a8'
+            ctx.fillText(
+                'Provided by jtoh.pro with stats by TowerStats.com',
+                centerText(canvas, ctx, 'Provided by jtoh.pro with stats by TowerStats.com'),
+                canvas.height / 2 + 100
             );
 
             ctx.textAlign = 'center';
