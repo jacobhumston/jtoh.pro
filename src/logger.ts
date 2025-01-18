@@ -2,6 +2,7 @@ import winston from 'winston';
 import fs from 'node:fs';
 import { isDev } from './dev';
 import { convertTo } from '@jacobhumston/tc.js';
+import proccess from 'node:process';
 
 if (!fs.existsSync('logs/')) fs.mkdirSync('logs/');
 if (!fs.existsSync('logs/current/')) fs.mkdirSync('logs/current/');
@@ -44,5 +45,7 @@ if (isDev) {
 }
 
 logger.info(`Logger initialized. (${removedLogFolders} removed outdated log folders.)`);
+
+proccess.on('uncaughtException', logger.error);
 
 export default logger;
