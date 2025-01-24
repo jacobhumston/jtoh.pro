@@ -4,10 +4,18 @@ import { renderTemplate } from './blanktemplate';
 import { renderMarkdown } from './markdown';
 import { userIdToThumbnail, usernameToUser } from './roblox';
 import { convertTo } from '@jacobhumston/tc.js';
+import { generateBlogPostImage } from './images';
 
 function setupDir() {
-    if (fs.existsSync('src/web/app/blog/')) fs.rmSync('src/web/app/blog/', { recursive: true, force: true });
+    // Clean up and recreate blog directory
+    if (fs.existsSync('src/web/app/blog/')) {
+        fs.rmSync('src/web/app/blog/', { recursive: true, force: true });
+    }
     fs.mkdirSync('src/web/app/blog/');
+    
+    // Ensure images directory exists
+    const imagesDir = 'src/web/app/blog/images';
+    fs.mkdirSync(imagesDir, { recursive: true });
 }
 
 const posts: any[] = [];
@@ -142,7 +150,14 @@ async function setup() {
                 property="og:description"
                 content="${summary}"
             />
-            <meta property="og:image" content="https://jtoh.pro/app/assets/media-card.png" />
+            <meta property="og:image" content="https://jtoh.pro${await generateBlogPostImage({
+                title,
+                author: {
+                    displayName: user.displayName,
+                    thumbnail
+                },
+                summary
+            })}" />
             <meta property="twitter:card" content="summary_large_image" />
             `
         );
