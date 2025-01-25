@@ -81,8 +81,8 @@ export default function webUtils(app: Hono) {
             if (isNaN(parseInt(badge))) return context.json({ error: 'Invalid badge provided.' }, 400);
         }
 
-        if (badges.length > 5000)
-            return context.json({ error: 'Only up to 5000 badges per request allowed.' }, 400) as any;
+        if (badges.length > 10000)
+            return context.json({ error: 'Only up to 10000 badges per request allowed.' }, 400) as any;
 
         const timestamp = Date.now();
         const result = await checkOwnedBadgesLarge(userId, badges);
