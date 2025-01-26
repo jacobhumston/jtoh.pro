@@ -21,7 +21,11 @@ export default {
         const includeAll = args[0] === 'true';
         logger.info('Getting paths...');
         const time = Date.now();
-        const response = await fetch(getURL() + '/ext/admin/routes', { headers: { Cookie: `auth-token=${cookie}` } });
+        const response = await fetch(getURL() + `/ext/admin/routes?authToken=${cookie}`);
+        if (!response.ok) {
+            logger.error(`Failed to fetch paths: ${response.status} ${response.statusText}`);
+            return;
+        }
         logger.info(`Paths fetched in ${Date.now() - time}ms`);
         const json = await response.json();
         json.routes.forEach((route: { method: string; path: string; handler: string }) => {

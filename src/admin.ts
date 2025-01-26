@@ -5,8 +5,9 @@ import os from 'os';
 import type { WSContext } from 'hono/ws';
 import process from 'node:process';
 import { getArgsAsString } from './dev';
-import { getCookie } from 'hono/cookie';
+import { getSignedCookie } from 'hono/cookie';
 import { addSocketManager, closeSocket } from './socket';
+import { cookieSecret } from './cookies';
 
 const shell = os.platform() === 'win32' ? 'powershell.exe' : 'bash';
 const sockets: Array<WSContext> = [];
@@ -34,7 +35,7 @@ export function admin(app: Hono) {
     app.use('/app/admin/*', async (context, next) => {
         if (await isSignedInAdmin(context)) {
             ptyProcess.write(
-                ` alias cli="bun cli --cookie=${getCookie(context, 'auth-token')} ${getArgsAsString()}"\r`
+                ` alias cli="bun cli --cookie=${await getSignedCookie(context, cookieSecret, 'auth-token')} ${getArgsAsString()}"\r`
             );
             await next();
         } else {

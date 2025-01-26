@@ -1,3 +1,4 @@
+// @ts-expect-error
 import { parseArgs } from 'util';
 import process from 'node:process';
 import { argv } from 'bun';
@@ -36,7 +37,7 @@ export function getProvidedURL(): string | null {
     return values.url ?? null;
 }
 
-export function getURL() {
+export function getURL(): string {
     if (values.url) return values.url;
     if (isBeta) return 'https://beta.jtoh.pro';
     if (isDev) return `http://localhost:${port}`;

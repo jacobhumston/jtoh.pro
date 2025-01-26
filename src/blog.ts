@@ -10,8 +10,11 @@ function setupDir() {
     fs.mkdirSync('src/web/app/blog/');
 }
 
+if (!fs.existsSync('cache/')) fs.mkdirSync('cache/');
+if (!fs.existsSync('cache/blog-sha')) fs.writeFileSync('cache/blog-sha', '');
+
 const posts: any[] = [];
-let lastCommitHash = '';
+let lastCommitHash = fs.readFileSync('cache/blog-sha', 'utf-8');
 
 async function setup() {
     const tempDir = `temp/blog-${Date.now()}`;
@@ -34,6 +37,7 @@ async function setup() {
         return;
     } else {
         lastCommitHash = allCommits[0].sha;
+        fs.writeFileSync('cache/blog-sha', lastCommitHash);
     }
 
     posts.length = 0;

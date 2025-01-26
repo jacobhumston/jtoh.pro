@@ -1,11 +1,10 @@
-import { getCookie, setCookie } from 'hono/cookie';
+import { deleteCookie, getSignedCookie, setSignedCookie } from 'hono/cookie';
 import { loginAuthDB } from './db';
 import { Hono } from 'hono';
 import type { Context } from 'hono';
 import type { LoggedInUser } from './type';
 import { robloxAdminUserId, robloxAuthClientId, robloxAuthSecret } from './tokens';
-import { getURL } from './dev';
-import { isDev } from './dev';
+import { getURL, getURLHost } from './dev';
 import { verifyCaptcha } from './captcha';
 import { getTempToken } from './temptokens';
 import { encryptCode, decryptCode } from './util';
@@ -15,10 +14,18 @@ import { userIdToUser, userIdToThumbnail, usernameToUser } from './roblox';
 import jtohGroupMembers from '../etc/group-members/jtoh.json';
 import rvsGroupMembers from '../etc/group-members/rvs.json';
 import cscdGroupMembers from '../etc/group-members/cscd.json';
+import { cookieSecret } from './cookies';
+import { UAParser } from 'ua-parser-js';
 
 const hashingTokenForCodes = crypto
     .createHash('sha256')
-    .update(String(getTempToken('hashingTokenForCodes')))
+    .update(getTempToken('hashingTokenForCodes'))
+    .digest('base64')
+    .substr(0, 32);
+
+const hashingTokenForUA = crypto
+    .createHash('sha256')
+    .update(getTempToken('hashingTokenForUserAgents'))
     .digest('base64')
     .substr(0, 32);
 
@@ -72,7 +79,12 @@ export default function setupLoginAuth(app: Hono) {
                                 await loginAuthDB.delete(key);
                             }
                         }
-                        const token = crypto.randomBytes(256).toString('hex');
+                        const parsedUserAgent = new UAParser(context.req.header('User-Agent')).getBrowser();
+                        if (!parsedUserAgent.name) return context.redirect(getAuthLoginURL());
+                        const token =
+                            crypto.randomBytes(256).toString('hex') +
+                            '::' +
+                            encryptCode(encodeURIComponent(context.req.header('User-Agent') ?? ''), hashingTokenForUA);
                         await loginAuthDB.set(
                             token,
                             {
@@ -83,11 +95,13 @@ export default function setupLoginAuth(app: Hono) {
                             },
                             3 * 24 * 60 * 60 * 1000
                         );
-                        setCookie(context, 'auth-token', token, {
+                        await setSignedCookie(context, 'auth-token', token, cookieSecret, {
                             httpOnly: true,
                             sameSite: 'Strict',
-                            secure: isDev ? false : true,
-                            expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
+                            secure: true,
+                            expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+                            domain: getURLHost(),
+                            signingSecret: cookieSecret
                         });
                         failed = false;
                     })
@@ -114,28 +128,37 @@ export default function setupLoginAuth(app: Hono) {
     app.get('/ext/auth/logout', async (context) => {
         const user = await getSignedInRobloxUser(context);
         if (!user) return context.json({ error: 'Not signed in.' }, 401);
-        const token = getCookie(context, 'auth-token') as string;
+        const token = (await getSignedCookie(context, cookieSecret, 'auth-token')) as string;
         await loginAuthDB.delete(token);
-        setCookie(context, 'auth-token', '', { expires: new Date(0) });
+        deleteCookie(context, 'auth-token');
         if (context.req.query('switch') && context.req.query('switch') === 'true') return context.redirect('/login');
         return context.redirect('/');
     });
 }
 
 export async function getSignedInRobloxUser(context: Context) {
-    const token = getCookie(context, 'auth-token');
-    if (!token) return null;
-    //const uuidRegex = /^[0-9a-fA-F-]+$/;
-    //if (!uuidRegex.test(token)) return null;
-    return (await loginAuthDB.get<LoggedInUser>(token)) ?? null;
-}
+    let token = await getSignedCookie(context, cookieSecret, 'auth-token');
+    if (!token) {
+        if (context.req.query('authToken') && context.req.path.startsWith('/ext/admin/')) {
+            token = context.req.query('authToken') ?? '';
+        } else {
+            return null;
+        }
+    }
 
-export async function getSignedInRobloxUserAuthToken(context: Context) {
-    const token = getCookie(context, 'auth-token');
-    if (!token) return null;
-    //const uuidRegex = /^[0-9a-fA-F-]+$/;
-    //if (!uuidRegex.test(token)) return null;
-    return ((await loginAuthDB.get<LoggedInUser>(token)) ?? null) ? token : null;
+    const ua = token.split('::')[1];
+    if (!ua) return null;
+    let uaSuccess = false;
+    try {
+        if (decryptCode(ua, hashingTokenForUA) == encodeURIComponent(context.req.header('User-Agent') ?? ''))
+            uaSuccess = true;
+    } catch {
+        uaSuccess = false;
+    }
+
+    if (!uaSuccess) return null;
+
+    return (await loginAuthDB.get<LoggedInUser>(token)) ?? null;
 }
 
 export function getAuthLoginURL() {
