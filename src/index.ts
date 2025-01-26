@@ -30,6 +30,7 @@ import { serveSitemap } from './sitemap';
 import { getConnInfo } from 'hono/bun';
 import { csrf } from 'hono/csrf';
 import { secureHeaders } from 'hono/secure-headers';
+import { badgesEndpoints } from './roblox-badges';
 
 const app = new Hono();
 
@@ -115,6 +116,7 @@ blog(app);
 socketListen(app);
 serveSitemap(app);
 jtoh(app);
+badgesEndpoints(app);
 
 app.get('/', async (context) => {
     const searchParams = new URL(context.req.url).searchParams;
@@ -128,7 +130,7 @@ app.get('/wiki/*', async (context) => {
     return context.redirect(`https://jtoh.fandom.com/wiki/${path}`);
 });
 
-app.get('/ext/request-count', async (context) => {
+app.get('/api/request-count', async (context) => {
     const now = new UTCDate();
     const startOfCurrentMonth = startOfMonth(now);
     const startOfCurrentWeek = startOfWeek(now);
@@ -194,19 +196,3 @@ export default {
 quickWebTest();
 
 logger.info(`Server started. ${getURL()}`);
-
-/*
-new Promise(async () => {
-    const badges: any = [];
-    const universeIds = (await getRobloxGamesUniverseIds()).universeIds;
-    console.log(universeIds);
-    await Promise.all(universeIds.map((universeId) => getBadges(badges, universeId)));
-    console.log(badges.map((value: any) => value.id));
-    const result = await checkOwnedBadgesLarge(
-        '1',
-        badges.map((value: any) => value.id),
-        console.log
-    );
-    console.log(result);
-});
-*/

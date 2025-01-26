@@ -44,12 +44,12 @@ const hashingTokenForAuthTokens = crypto
     .substr(0, 32);
 
 export default function setupLoginAuth(app: Hono) {
-    app.get('/ext/auth/@me', async (context) => {
+    app.get('/api/auth/@me', async (context) => {
         const user = await getSignedInRobloxUser(context);
         return context.json({ user: user, admin: await isSignedInAdmin(context) });
     });
 
-    app.get('/ext/auth', async (context) => {
+    app.get('/api/auth', async (context) => {
         const user = await getSignedInRobloxUser(context);
         if (user) return context.redirect('/app/');
         let code = context.req.query('code');
@@ -145,7 +145,7 @@ export default function setupLoginAuth(app: Hono) {
         return context.redirect('/app/');
     });
 
-    app.get('/ext/auth/logout', async (context) => {
+    app.get('/api/auth/logout', async (context) => {
         const user = await getSignedInRobloxUser(context);
         if (!user) return context.json({ error: 'Not signed in.' }, 401);
         const token = (await getSignedCookie(context, cookieSecret, 'auth-token')) as string;
@@ -159,7 +159,7 @@ export default function setupLoginAuth(app: Hono) {
 export async function getSignedInRobloxUser(context: Context) {
     let token = await getSignedCookie(context, cookieSecret, 'auth-token');
     if (!token) {
-        if (context.req.query('authToken') && context.req.path.startsWith('/ext/admin/')) {
+        if (context.req.query('authToken') && context.req.path.startsWith('/api/admin/')) {
             token = context.req.query('authToken') ?? '';
         } else {
             return null;
@@ -174,7 +174,7 @@ export async function getSignedInRobloxUser(context: Context) {
 
     if (!token) return null;
 
-    if (!context.req.path.startsWith('/ext/admin/')) {
+    if (!context.req.path.startsWith('/api/admin/')) {
         const ua = token.split('::')[1];
         if (!ua) return null;
         let uaSuccess = false;
@@ -192,7 +192,7 @@ export async function getSignedInRobloxUser(context: Context) {
 }
 
 export function getAuthLoginURL() {
-    return `https://apis.roblox.com/oauth/v1/authorize?client_id=${robloxAuthClientId}&redirect_uri=${getURL()}/ext/auth&scope=openid%20profile&response_type=code`;
+    return `https://apis.roblox.com/oauth/v1/authorize?client_id=${robloxAuthClientId}&redirect_uri=${getURL()}/api/auth&scope=openid%20profile&response_type=code`;
 }
 
 export async function isSignedInAdmin(context: Context) {

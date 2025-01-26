@@ -52,6 +52,10 @@ export function getURLHost() {
     return new URL(getURL()).host;
 }
 
+export function getURLObj() {
+    return new URL(getURL());
+}
+
 export function getArgsAsString() {
     return argv.toSpliced(0, 2).join(' ');
 }

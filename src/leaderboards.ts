@@ -6,7 +6,7 @@ import { verifyContext } from './captcha';
 import { getSignedInRobloxUser } from './loginauth';
 
 export default function serveLeaderboards(app: Hono) {
-    app.get('/ext/leaderboards/:type/:game', async (context) => {
+    app.get('/api/leaderboards/:type/:game', async (context) => {
         const includeJacob = context.req.query('includeJacob') === 'true';
         const game = context.req.param('game') as gameNames;
 

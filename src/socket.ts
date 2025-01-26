@@ -17,7 +17,7 @@ export function addSocketManager(type: string, manager: (context: Context) => We
 
 export function socketListen(app: Hono) {
     app.get(
-        '/ext/socket',
+        '/api/socket',
         upgradeWebSocket((context) => {
             const type = context.req.query('type');
             const manager = socketManagers.get(type ?? '');

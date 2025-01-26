@@ -1,4 +1,7 @@
 import jsonc from 'jsonc-parser';
+import { gameBadgesDB } from './db';
+import { convertTo } from '@jacobhumston/tc.js';
+import { wait } from './util';
 
 interface BadgeIcon {
     id: number;
@@ -80,5 +83,31 @@ export async function getRobloxGamesUniverseIds(): Promise<{ universeIds: number
         .then((data) => {
             const json = jsonc.parse(data);
             return { universeIds: json.universeIds };
+        })
+        .catch(async () => {
+            await wait({ seconds: 5 });
+            return getRobloxGamesUniverseIds();
         });
 }
+
+async function update(force: boolean = false): Promise<void> {
+    const universeIds = (await getRobloxGamesUniverseIds()).universeIds;
+    for (const id of universeIds) {
+        const exists = await gameBadgesDB.has('_' + id.toString());
+        if (exists && !force) continue;
+        const badges: any = [];
+        await getBadges(badges, id);
+        await gameBadgesDB.set('_' + id.toString(), badges);
+    }
+
+    // @ts-expect-error
+    for await (const [key, _] of gameBadgesDB.iterator()) {
+        const id = parseInt(key.slice(1));
+        if (!universeIds.includes(id)) {
+            await gameBadgesDB.delete(key);
+        }
+    }
+}
+
+update();
+setInterval(() => update(true), convertTo({ days: 0.25 }, 'milliseconds'));

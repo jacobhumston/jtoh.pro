@@ -41,7 +41,7 @@ export function admin(app: Hono) {
         } else {
             return context.json({ error: 'Unauthorized.' }, 401);
         }
-    }).use('/ext/admin/*', async (context, next) => {
+    }).use('/api/admin/*', async (context, next) => {
         if (await isSignedInAdmin(context)) {
             await next();
         } else {
@@ -49,7 +49,7 @@ export function admin(app: Hono) {
         }
     });
 
-    app.get('/ext/admin/routes', async (context) => {
+    app.get('/api/admin/routes', async (context) => {
         return context.json({
             routes: app.routes.map((route) => {
                 return {
