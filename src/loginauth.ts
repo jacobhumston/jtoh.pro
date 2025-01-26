@@ -16,6 +16,9 @@ import rvsGroupMembers from '../etc/group-members/rvs.json';
 import cscdGroupMembers from '../etc/group-members/cscd.json';
 import { cookieSecret } from './cookies';
 import { UAParser } from 'ua-parser-js';
+import fs from 'node:fs';
+
+if (!fs.existsSync('cache')) fs.mkdirSync('cache');
 
 const hashingTokenForCodes = crypto
     .createHash('sha256')
@@ -23,9 +26,20 @@ const hashingTokenForCodes = crypto
     .digest('base64')
     .substr(0, 32);
 
+if (!fs.existsSync('cache/ua-hash')) fs.writeFileSync('cache/ua-hash', getTempToken('hashingTokenForUserAgents'));
+
 const hashingTokenForUA = crypto
     .createHash('sha256')
-    .update(getTempToken('hashingTokenForUserAgents'))
+    .update(fs.readFileSync('cache/ua-hash', 'utf-8'))
+    .digest('base64')
+    .substr(0, 32);
+
+if (!fs.existsSync('cache/authtokens-hash'))
+    fs.writeFileSync('cache/authtokens-hash', getTempToken('hashingTokenForAuthTokens'));
+
+const hashingTokenForAuthTokens = crypto
+    .createHash('sha256')
+    .update(fs.readFileSync('cache/authtokens-hash', 'utf-8'))
     .digest('base64')
     .substr(0, 32);
 
@@ -95,14 +109,20 @@ export default function setupLoginAuth(app: Hono) {
                             },
                             3 * 24 * 60 * 60 * 1000
                         );
-                        await setSignedCookie(context, 'auth-token', token, cookieSecret, {
-                            httpOnly: true,
-                            sameSite: 'Strict',
-                            secure: true,
-                            expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-                            domain: getURLHost(),
-                            signingSecret: cookieSecret
-                        });
+                        await setSignedCookie(
+                            context,
+                            'auth-token',
+                            encryptCode(token, hashingTokenForAuthTokens),
+                            cookieSecret,
+                            {
+                                httpOnly: true,
+                                sameSite: 'Strict',
+                                secure: true,
+                                expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+                                domain: getURLHost(),
+                                signingSecret: cookieSecret
+                            }
+                        );
                         failed = false;
                     })
                     .catch(() => {
@@ -146,17 +166,27 @@ export async function getSignedInRobloxUser(context: Context) {
         }
     }
 
-    const ua = token.split('::')[1];
-    if (!ua) return null;
-    let uaSuccess = false;
     try {
-        if (decryptCode(ua, hashingTokenForUA) == encodeURIComponent(context.req.header('User-Agent') ?? ''))
-            uaSuccess = true;
+        token = decryptCode(token, hashingTokenForAuthTokens);
     } catch {
-        uaSuccess = false;
+        token = undefined;
     }
 
-    if (!uaSuccess) return null;
+    if (!token) return null;
+
+    if (!context.req.path.startsWith('/ext/admin/')) {
+        const ua = token.split('::')[1];
+        if (!ua) return null;
+        let uaSuccess = false;
+        try {
+            if (decryptCode(ua, hashingTokenForUA) == encodeURIComponent(context.req.header('User-Agent') ?? ''))
+                uaSuccess = true;
+        } catch {
+            uaSuccess = false;
+        }
+
+        if (!uaSuccess) return null;
+    }
 
     return (await loginAuthDB.get<LoggedInUser>(token)) ?? null;
 }
