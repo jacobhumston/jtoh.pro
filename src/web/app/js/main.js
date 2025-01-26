@@ -180,7 +180,7 @@
         const total = getElementById('requestStatsTotal');
         if (!week || !month || !year || !total) return;
         const formatter = new Intl.NumberFormat();
-        fetch('/ext/request-count')
+        fetch('/api/request-count')
             .then((response) => response.json())
             .then((data) => {
                 week.innerText = formatter.format(data.week);
@@ -270,7 +270,7 @@ _window.addEventListener('DOMContentLoaded', () => {
             });
         if (await isLoggedIn()) {
             const token = sessionStorage.getItem('captchaGateway');
-            const verified = await fetch(`/ext/captcha/verify?token=${token}`).catch(() => ({
+            const verified = await fetch(`/api/captcha/verify?token=${token}`).catch(() => ({
                 json: () => ({
                     success: false
                 })
@@ -280,7 +280,7 @@ _window.addEventListener('DOMContentLoaded', () => {
                 return token;
             } else {
                 const newToken = await getTurnstileToken();
-                const newVerified = await fetch(`/ext/captcha/gateway?token=${newToken}`).catch(() => undefined);
+                const newVerified = await fetch(`/api/captcha/gateway?token=${newToken}`).catch(() => undefined);
                 if (!newVerified) return await getTurnstileToken();
                 const data = await newVerified.json();
                 if (data.error) return await getTurnstileToken();
@@ -405,7 +405,7 @@ _window.addEventListener('DOMContentLoaded', () => {
         async function loadLeaderboard(div, type, other) {
             const token = await sec();
             div.innerHTML = 'Loading... Please wait.';
-            fetch(`/ext/leaderboards/${type}/${other}?includeJacob=${includeJacob}&page=${page}&captcha=${token}`)
+            fetch(`/api/leaderboards/${type}/${other}?includeJacob=${includeJacob}&page=${page}&captcha=${token}`)
                 .then((response) => response.json())
                 .then((response) => {
                     if (response.error) {
@@ -504,7 +504,7 @@ _window.addEventListener('DOMContentLoaded', () => {
                             } else {
                                 if (data.rank < 4) {
                                     icon.src = user.thumbnail;
-                                    fetch(`/ext/util/user-roblox-thumbnails/${user.id}`)
+                                    fetch(`/api/util/user-roblox-thumbnails/${user.id}`)
                                         .then(async (response) => {
                                             icon.src = (await response.json()).bust;
                                         })
@@ -610,7 +610,7 @@ _window.addEventListener('DOMContentLoaded', () => {
         const loggedInDetails = getElementById('loggedInDetails');
         const menuBar = getElementById('menuBar');
         if (loggedInDetails && menuBar) {
-            fetch('/ext/auth/@me').then(async (response) => {
+            fetch('/api/auth/@me').then(async (response) => {
                 const data = await response.json();
                 const user = data.user;
                 if (!user) {
@@ -687,7 +687,7 @@ _window.addEventListener('DOMContentLoaded', () => {
                         console.error(e);
                     }
                     const token = await sec();
-                    _document.location.href = `/ext/auth?captcha=${token}&code=${params.get('code')}`;
+                    _document.location.href = `/api/auth?captcha=${token}&code=${params.get('code')}`;
                 } else {
                     _document.location.href = '/';
                 }
@@ -752,7 +752,7 @@ _window.addEventListener('DOMContentLoaded', () => {
             sort = params.get('sort');
         }
 
-        const list = await fetch('/ext/blog-posts?sort=' + sort).catch(() => null);
+        const list = await fetch('/api/blog-posts?sort=' + sort).catch(() => null);
 
         if (!list) {
             blogPostsList.innerHTML = '<p>Failed to fetch data.</p>';

@@ -77,7 +77,7 @@ export async function publishDiscordCommands() {
 }
 
 export default function discordInteractions(app: Hono) {
-    app.post('/ext/discord-interactions', async (context) => {
+    app.post('/api/discord-interactions', async (context) => {
         const signature = context.req.header('X-Signature-Ed25519') ?? '';
         const timestamp = context.req.header('X-Signature-Timestamp') ?? '';
         let body = await context.req.text();

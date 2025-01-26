@@ -104,15 +104,25 @@ export async function getTotalInLeaderboard(db: typeof skillPointsDB | typeof ca
 const loginAuthDBSqlite = new KeyvSqlite('sqlite://db/authLogin.sqlite');
 const loginAuthDB = new Keyv({ store: loginAuthDBSqlite });
 
-export { statsDB, cardsRequestedDB, loginAuthDB, skillPointsDB, captchaBypassDB };
+const gameBadgesDBSqlite = new KeyvSqlite('sqlite://db/gameBadges.sqlite');
+const gameBadgesDB = new Keyv({ store: gameBadgesDBSqlite });
+
+export { statsDB, cardsRequestedDB, loginAuthDB, skillPointsDB, captchaBypassDB, gameBadgesDB };
 
 export function getDBName(
-    db: typeof statsDB | typeof cardsRequestedDB | typeof skillPointsDB | typeof loginAuthDB | typeof captchaBypassDB
+    db:
+        | typeof statsDB
+        | typeof cardsRequestedDB
+        | typeof skillPointsDB
+        | typeof loginAuthDB
+        | typeof captchaBypassDB
+        | typeof gameBadgesDB
 ) {
     if (db === statsDB) return 'stats';
     if (db === cardsRequestedDB) return 'cardsRequested';
     if (db === skillPointsDB) return 'skillPoints';
     if (db === loginAuthDB) return 'authLogin';
     if (db === captchaBypassDB) return 'captchaBypass';
+    if (db === gameBadgesDB) return 'gameBadges';
     throw new Error('Invalid DB.');
 }

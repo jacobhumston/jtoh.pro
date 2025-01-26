@@ -5,7 +5,7 @@ import { getLicenseReport } from './licensereport';
 import { isDev } from './dev';
 
 export default function webUtils(app: Hono) {
-    app.get('/ext/util/ping', async (context) => {
+    app.get('/api/util/ping', async (context) => {
         let sanity = null;
         const providedSanity = context.req.query('sanity');
         if (providedSanity) {
@@ -27,11 +27,11 @@ export default function webUtils(app: Hono) {
         });
     });
 
-    app.get('/ext/util/uuid', async (context) => {
+    app.get('/api/util/uuid', async (context) => {
         return context.json({ uuid: v4() });
     });
 
-    app.get('/ext/util/user-roblox-thumbnails/:userId', async (context) => {
+    app.get('/api/util/user-roblox-thumbnails/:userId', async (context) => {
         const userId = parseInt(context.req.param('userId'));
         if (isNaN(userId)) return context.json({ error: 'Invalid userId.' }, 400);
         return context.json({
@@ -42,18 +42,18 @@ export default function webUtils(app: Hono) {
         });
     });
 
-    app.get('/ext/util/user-roblox-avatar-3d/:userId', async (context) => {
+    app.get('/api/util/user-roblox-avatar-3d/:userId', async (context) => {
         const userId = parseInt(context.req.param('userId'));
         if (isNaN(userId)) return context.json({ error: 'Invalid userId.' }, 400);
         return context.json(Object.assign({ userId }, await getRobloxAvatar3dAssets(userId).catch(() => null)));
     });
 
-    app.get('/ext/util/license-report', async (context) => {
+    app.get('/api/admin/license-report', async (context) => {
         // @ts-ignore-next-line
         return context.json(await getLicenseReport());
     });
 
-    app.get('/ext/util/routes', async (context) => {
+    app.get('/api/util/routes', async (context) => {
         if (isDev) {
             return context.json(app.routes);
         } else {
@@ -62,7 +62,7 @@ export default function webUtils(app: Hono) {
     });
 
     /*
-    app.get('/ext/util/roblox-badges/:userId', async (context) => {
+    app.get('/api/util/roblox-badges/:userId', async (context) => {
         const userId = parseInt(context.req.param('userId'));
         if (isNaN(userId)) return context.json({ error: 'Invalid userId.' }, 400);
 

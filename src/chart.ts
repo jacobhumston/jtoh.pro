@@ -9,7 +9,7 @@ Chart.register(...registerables);
 Chart.defaults.font.family = 'Poppins';
 
 export function charts(app: Hono) {
-    app.get('/ext/charts/card-requests', async (context) => {
+    app.get('/api/charts/card-requests', async (context) => {
         const data: Array<{ date: string; requests: number }> = [];
         // @ts-ignore-next-line
         for await (const [key, value] of statsDB.iterator()) {

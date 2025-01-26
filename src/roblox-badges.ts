@@ -1,5 +1,8 @@
 import axios from 'axios';
 import { proxyAgent } from './proxy';
+import type { Hono } from 'hono';
+import { getRobloxGamesUniverseIds } from './game-badges';
+import { gameBadgesDB } from './db';
 
 const url = 'https://badges.roblox.com/v1/users/{userId}/badges/awarded-dates?badgeIds={badgeIds}';
 
@@ -100,4 +103,40 @@ export async function checkOwnedBadgesLarge(
     }
 
     return ownedBadges;
+}
+
+export function badgesEndpoints(app: Hono) {
+    app.get('/api/badges/all', async (context) => {
+        const universes = (await getRobloxGamesUniverseIds()).universeIds;
+        let total = 0;
+        let result: any = {};
+        let badgeIds: any = [];
+        for (const game of universes) {
+            const badges = await gameBadgesDB.get('_' + game.toString());
+            if (badges) {
+                result[game.toString()] = badges;
+                total += badges.length;
+                badgeIds.push(...badges.map((badge: any) => badge.id));
+            }
+        }
+        result = {
+            total: {
+                badges: total,
+                games: universes.length
+            },
+            games: result,
+            badges: badgeIds
+        };
+        return context.json(result);
+    });
+
+    app.get('/api/badges/:universeId', async (context) => {
+        const universeId = context.req.param('universeId');
+        const badges = await gameBadgesDB.get('_' + universeId);
+        if (badges) {
+            return context.json({ universeId: universeId, total: badges.length, badges: badges });
+        } else {
+            return context.json({ error: 'No badges found for this universe.' });
+        }
+    });
 }

@@ -172,7 +172,7 @@ async function setup() {
 
 export function blog(app: Hono) {
     setup();
-    app.get('/ext/blog-posts', async (context) => {
+    app.get('/api/blog-posts', async (context) => {
         const sort = context.req.query('sort') || 'created';
         if (sort === 'created') {
             return context.json({

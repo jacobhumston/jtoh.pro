@@ -31,7 +31,7 @@ export async function verifyCaptchaBypass(userId: number, token: string) {
 }
 
 export function captchaManager(app: Hono) {
-    app.get('/ext/captcha/gateway', async (context) => {
+    app.get('/api/captcha/gateway', async (context) => {
         const user = await getSignedInRobloxUser(context);
         if (!user) return context.json({ error: 'Not signed in.' }, 401) as any;
 
@@ -46,7 +46,7 @@ export function captchaManager(app: Hono) {
         return context.json({ token: gatewayToken });
     });
 
-    app.get('/ext/captcha/verify', async (context) => {
+    app.get('/api/captcha/verify', async (context) => {
         const user = await getSignedInRobloxUser(context);
         if (!user) return context.json({ error: 'Not signed in.' }, 401) as any;
 
