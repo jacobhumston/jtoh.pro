@@ -9,7 +9,6 @@
         "start-beta": "pm2 start \"bunx bun run src/index.ts --beta\"",
         "tools-group-members": "bun run tools/group-members.ts",
         "tools-populate": "bun run tools/populate.ts",
-        "tools-badges": "bun run tools/game-badges.ts",
         "cli": "bun run src/cli/index.ts"
     },
     "dependencies": {
@@ -29,6 +28,7 @@
         "html-minifier": "^4.0.0",
         "https-proxy-agent": "^7.0.6",
         "imgur": "^2.4.2",
+        "jsonc-parser": "^3.3.1",
         "keyv": "^5.2.3",
         "license-report": "^6.7.1",
         "markdown-it": "^14.1.0",

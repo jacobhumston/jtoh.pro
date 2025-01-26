@@ -26,7 +26,8 @@ export async function checkOwnedBadges(userId: string | number, badges: Array<st
         httpsAgent: proxyAgent
     }).catch((err) => ({ status: 500, data: err.toString() }));
     if (response.status !== 200) {
-        await new Promise((resolve) => setTimeout(resolve, 5000));
+        // console.log('Failed to check owned badges, trying again in 1 second...');
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         return await checkOwnedBadges(userId, badges);
     } else {
         const result = response.data;
@@ -59,20 +60,44 @@ export async function checkOwnedBadges(userId: string | number, badges: Array<st
  */
 export async function checkOwnedBadgesLarge(
     userId: string | number,
-    badges: Array<string | number>
+    badges: Array<string | number>,
+    progressFunction?: (progress: number, completed: number, total: number) => void
 ): Promise<Array<Badge>> {
     let ownedBadges: Array<Badge> = [];
     const badgesToCheck: Array<Array<string | number>> = [];
     for (let i = 0; i < badges.length; i += 100) {
         badgesToCheck.push(badges.slice(i, i + 100));
     }
-    const requests = [];
+
+    const requestsToMake: Array<{ userId: number | string; badges: Array<number | string> }> = [];
     for (const badgeChunk of badgesToCheck) {
-        requests.push(checkOwnedBadges(userId, badgeChunk));
+        requestsToMake.push({ userId: userId, badges: badgeChunk });
     }
-    const responses = await Promise.all(requests);
+
+    const requests = [];
+    for (let i = 0; i < requestsToMake.length; i += 50) {
+        requests.push(requestsToMake.slice(i, i + 50));
+    }
+
+    let completed = 0;
+
+    const responses: any = [];
+    for (const requestChunk of requests) {
+        const promises = requestChunk.map((request) =>
+            checkOwnedBadges(request.userId, request.badges).then((result) => {
+                completed = completed + request.badges.length;
+                if (progressFunction) {
+                    progressFunction((completed / badges.length) * 100, completed, badges.length);
+                }
+                return result;
+            })
+        );
+        responses.push(...(await Promise.all(promises)));
+    }
+
     for (const response of responses) {
         ownedBadges = ownedBadges.concat(response);
     }
+
     return ownedBadges;
 }

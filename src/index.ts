@@ -194,3 +194,19 @@ export default {
 quickWebTest();
 
 logger.info(`Server started. ${getURL()}`);
+
+/*
+new Promise(async () => {
+    const badges: any = [];
+    const universeIds = (await getRobloxGamesUniverseIds()).universeIds;
+    console.log(universeIds);
+    await Promise.all(universeIds.map((universeId) => getBadges(badges, universeId)));
+    console.log(badges.map((value: any) => value.id));
+    const result = await checkOwnedBadgesLarge(
+        '1',
+        badges.map((value: any) => value.id),
+        console.log
+    );
+    console.log(result);
+});
+*/
