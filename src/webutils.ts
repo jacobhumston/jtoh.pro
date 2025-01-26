@@ -1,16 +1,8 @@
 import { Hono } from 'hono';
 import { v4 } from 'uuid';
-import {
-    userIdToThumbnail,
-    userIdToThumbnailFull,
-    userIdToThumbnailBust,
-    getRobloxAvatar3dAssets,
-    userIdToUser
-} from './roblox';
+import { userIdToThumbnail, userIdToThumbnailFull, userIdToThumbnailBust, getRobloxAvatar3dAssets } from './roblox';
 import { getLicenseReport } from './licensereport';
 import { isDev } from './dev';
-import gameBadges from '../etc/badges.json';
-import { checkOwnedBadgesLarge } from './roblox-badges';
 
 export default function webUtils(app: Hono) {
     app.get('/ext/util/ping', async (context) => {
@@ -69,6 +61,7 @@ export default function webUtils(app: Hono) {
         }
     });
 
+    /*
     app.get('/ext/util/roblox-badges/:userId', async (context) => {
         const userId = parseInt(context.req.param('userId'));
         if (isNaN(userId)) return context.json({ error: 'Invalid userId.' }, 400);
@@ -98,8 +91,5 @@ export default function webUtils(app: Hono) {
             time: (Date.now() - timestamp) / 1000
         });
     });
-
-    app.get('/ext/util/default-roblox-badges', async (context) => {
-        return context.json(gameBadges);
-    });
+    */
 }
