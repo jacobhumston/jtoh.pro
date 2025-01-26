@@ -11,7 +11,7 @@ import logger from './logger';
 import fs from 'node:fs';
 import webUtils from './webutils';
 import serveLeaderboards from './leaderboards';
-import { isDev, getURL, port } from './dev';
+import { isDev, getURL, port, getURLHost } from './dev';
 import setupLoginAuth from './loginauth';
 import { rateLimiter } from 'hono-rate-limiter';
 import { getTempToken } from './temptokens';
@@ -27,6 +27,9 @@ import { socket, socketListen } from './socket';
 import { compress } from 'hono-compress';
 import { cors } from 'hono/cors';
 import { serveSitemap } from './sitemap';
+import { getConnInfo } from 'hono/bun';
+import { csrf } from 'hono/csrf';
+import { secureHeaders } from 'hono/secure-headers';
 
 const app = new Hono();
 
@@ -36,16 +39,32 @@ GlobalFonts.registerFromPath('src/web/app/assets/MaterialSymbolsRounded.woff2', 
 
 app.use(
     cors({
-        origin: getURL()
+        origin: getURL(),
+        credentials: false,
+        allowMethods: ['GET', 'POST']
     })
 );
+
+app.use(
+    csrf({
+        origin: getURLHost()
+    })
+);
+
+app.use(secureHeaders());
+
 app.use(compress());
 
 app.use(async (context, next) => {
     const host = context.req.header('host');
     if (host) {
         const parts = host.split('.');
-        const link = new URL(context.req.url);
+        let link: URL;
+        try {
+            link = new URL(context.req.url);
+        } catch {
+            return context.json({ error: 'Invalid host.' }, 400);
+        }
         if (parts.length > 1) {
             if (parts[0] === 'beta' && getURL() === 'https://beta.jtoh.pro') return await next();
             return context.redirect(getURL() + link.pathname + link.search);
@@ -59,21 +78,23 @@ app.use(async (context, next) => {
 app.use(
     rateLimiter({
         windowMs: timeConvert({ minutes: 1 }).milliseconds,
-        limit: 10,
+        limit: 120,
         standardHeaders: 'draft-6',
         keyGenerator: (context) => {
-            return context.req.path;
+            return `${isDev ? getConnInfo(context).remote.address : context.req.header('CF-Connecting-IP')}::${context.req.path}`;
         },
         handler: async (context) => {
             return context.json({ error: 'Rate limit exceeded. Please wait and try again.' }, 429) as any;
         },
         skip: async (context) => {
-            return (
-                (context.req.query('rlb-token') ?? '') === getTempToken('rlb-token') ||
-                context.req.path.startsWith('/app/') ||
-                context.req.path.startsWith('/ext/') ||
-                isDev
-            );
+            return (context.req.query('rlb-token') ?? '') === getTempToken('rlb-token');
+        },
+        skipSuccessfulRequests: true,
+        requestWasSuccessful: async (context) => {
+            context.res.headers.forEach((value, key) => {
+                if (key.startsWith('ratelimit')) context.res.headers.set(`x-${key}`, value);
+            });
+            return false;
         }
     })
 );
