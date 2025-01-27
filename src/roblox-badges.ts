@@ -3,6 +3,12 @@ import { proxyAgent } from './proxy';
 import type { Hono } from 'hono';
 import { getRobloxGamesUniverseIds } from './game-badges';
 import { gameBadgesDB } from './db';
+import { verifyContext } from './captcha';
+import events from 'node:events';
+import { addSocketManager } from './socket';
+import { usernameToUser } from './roblox';
+import { convertTo } from '@jacobhumston/tc.js';
+import { v4 } from 'uuid';
 
 const url = 'https://badges.roblox.com/v1/users/{userId}/badges/awarded-dates?badgeIds={badgeIds}';
 
@@ -30,7 +36,7 @@ export async function checkOwnedBadges(userId: string | number, badges: Array<st
     }).catch((err) => ({ status: 500, data: err.toString() }));
     if (response.status !== 200) {
         // console.log('Failed to check owned badges, trying again in 1 second...');
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 5000));
         return await checkOwnedBadges(userId, badges);
     } else {
         const result = response.data;
@@ -78,8 +84,8 @@ export async function checkOwnedBadgesLarge(
     }
 
     const requests = [];
-    for (let i = 0; i < requestsToMake.length; i += 50) {
-        requests.push(requestsToMake.slice(i, i + 50));
+    for (let i = 0; i < requestsToMake.length; i += 20) {
+        requests.push(requestsToMake.slice(i, i + 20));
     }
 
     let completed = 0;
@@ -105,32 +111,176 @@ export async function checkOwnedBadgesLarge(
     return ownedBadges;
 }
 
+export async function getAllBadges(): Promise<{
+    total: { badges: number; games: number };
+    games: any;
+    badges: number[];
+}> {
+    const universes = (await getRobloxGamesUniverseIds()).universeIds;
+    let total = 0;
+    let result: any = {};
+    let badgeIds: any = [];
+    for (const game of universes) {
+        const badges = await gameBadgesDB.get('_' + game.toString());
+        if (badges) {
+            result[game.toString()] = badges;
+            total += badges.length;
+            badgeIds.push(...badges.map((badge: any) => badge.id));
+        }
+    }
+    result = {
+        total: {
+            badges: total,
+            games: universes.length
+        },
+        games: result,
+        badges: badgeIds
+    };
+    return result;
+}
+
 export function badgesEndpoints(app: Hono) {
     app.get('/api/badges/all', async (context) => {
-        const universes = (await getRobloxGamesUniverseIds()).universeIds;
-        let total = 0;
-        let result: any = {};
-        let badgeIds: any = [];
-        for (const game of universes) {
-            const badges = await gameBadgesDB.get('_' + game.toString());
-            if (badges) {
-                result[game.toString()] = badges;
-                total += badges.length;
-                badgeIds.push(...badges.map((badge: any) => badge.id));
-            }
-        }
-        result = {
-            total: {
-                badges: total,
-                games: universes.length
-            },
-            games: result,
-            badges: badgeIds
-        };
-        return context.json(result);
+        const captchaResult = await verifyContext(context);
+        if (captchaResult) return captchaResult;
+
+        return context.json(await getAllBadges());
     });
 
+    const websocketPublisher = new events.EventEmitter();
+    const badgeRequests = new Map<
+        string,
+        { userId: string | number; result: any; expires: number; completed: boolean; progress: any }
+    >();
+
+    app.get('/api/badges/check', async (context) => {
+        const captchaResult = await verifyContext(context);
+        if (captchaResult) return captchaResult;
+
+        const user = await usernameToUser(context.req.query('username') ?? '').catch(() => null);
+        if (!user) return context.json({ error: 'Invalid username.' }, 400);
+
+        let foundRequest = undefined;
+        badgeRequests.forEach((value, key) => {
+            if (value.userId === user.id) {
+                foundRequest = key;
+            }
+        });
+        if (foundRequest) return context.json({ resultId: foundRequest });
+
+        const badges = (await getAllBadges()).badges;
+        const resultId = v4();
+
+        new Promise(async (resolve) => {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
+            const result = await checkOwnedBadgesLarge(user.id, badges, (progress, completed, total) => {
+                const progess = {
+                    requestId: resultId,
+                    progress: progress,
+                    completed: completed,
+                    total: total
+                };
+
+                websocketPublisher.emit(resultId, progess);
+
+                const current = badgeRequests.get(resultId) as any;
+                badgeRequests.set(resultId, {
+                    userId: current.userId,
+                    completed: current.completed,
+                    result: current.result,
+                    expires: current.expires,
+                    progress: progess
+                });
+            });
+
+            const current = badgeRequests.get(resultId) as any;
+            badgeRequests.set(resultId, {
+                userId: user.id,
+                completed: true,
+                result: result,
+                expires: Date.now() + convertTo({ minutes: 1 }, 'milliseconds'),
+                progress: current.progress
+            });
+
+            websocketPublisher.emit(resultId, current.progress);
+
+            resolve(undefined);
+        });
+
+        badgeRequests.set(resultId, {
+            userId: user.id,
+            completed: false,
+            result: [],
+            expires: Date.now() + convertTo({ minutes: 30 }, 'milliseconds'),
+            progress: {}
+        });
+
+        return context.json({ resultId: resultId });
+    });
+
+    app.get('/api/badges/check/:resultId', async (context) => {
+        const resultId = context.req.param('resultId');
+        const request = badgeRequests.get(resultId);
+        if (!request) return context.json({ error: 'Invalid result ID.' }, 400);
+
+        if (!request.completed) return context.json({ error: 'Request is still in progress.' }, 400);
+
+        setTimeout(() => {
+            badgeRequests.delete(resultId);
+        }, 1000);
+
+        return context.json(request.result);
+    });
+
+    addSocketManager('badge-check-progress', (context) => {
+        return {
+            onOpen(_, ws) {
+                const resultId = context.req.query('resultId') ?? '';
+                const request = badgeRequests.get(resultId);
+                if (!request) return ws.close();
+
+                ws.send(JSON.stringify(request.progress));
+
+                const listener = (data: any) => {
+                    ws.send(JSON.stringify(data));
+                    if (badgeRequests.get(resultId)?.completed === true) {
+                        setTimeout(() => {
+                            ws.close();
+                        }, 1000);
+                        websocketPublisher.off(resultId, listener);
+                    }
+                };
+
+                websocketPublisher.on(resultId, listener);
+
+                setTimeout(() => {
+                    if (request.completed) {
+                        ws.close();
+                        websocketPublisher.off(resultId, listener);
+                    }
+                }, 1000);
+            },
+            onMessage() {},
+            onClose() {}
+        };
+    });
+
+    setInterval(
+        () => {
+            badgeRequests.forEach((value, key) => {
+                if (value.expires < Date.now()) {
+                    badgeRequests.delete(key);
+                }
+            });
+        },
+        convertTo({ seconds: 10 }, 'milliseconds')
+    );
+
     app.get('/api/badges/:universeId', async (context) => {
+        const captchaResult = await verifyContext(context);
+        if (captchaResult) return captchaResult;
+
         const universeId = context.req.param('universeId');
         const badges = await gameBadgesDB.get('_' + universeId);
         if (badges) {
