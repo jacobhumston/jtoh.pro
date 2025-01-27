@@ -3,11 +3,13 @@
     const _document = document;
     const _MutationObserver = MutationObserver;
     const _URL = URL;
+    const _WebSocket = WebSocket;
 
     if (!_window.func) _window.func = {};
     const publicFunctions = _window.func;
 
     publicFunctions.getURL = () => new _URL(_window.location.href);
+    const websocketProtocal = `${publicFunctions.getURL().protocol === 'https:' ? 'wss' : 'ws'}://`;
 
     {
         const root = _document.documentElement;
@@ -245,6 +247,15 @@ _window.addEventListener('DOMContentLoaded', () => {
     }
 
     async function sec() {
+        if (!_document.getElementById('captchaContainer')) {
+            const element = createElement('div');
+            element.id = 'captchaContainer';
+            if (getElementById('container')) {
+                appendChild(getElementById('container'), element);
+            } else {
+                appendChild(_document.body, element);
+            }
+        }
         const getTurnstileToken = () =>
             new Promise((resolve) => {
                 getElementById('captchaContainer').innerHTML = '';
@@ -255,7 +266,7 @@ _window.addEventListener('DOMContentLoaded', () => {
                         getElementById('captchaContainer').innerHTML = '';
                         resolve(token);
                     },
-                    'error-callback': function (error) {
+                    'error-callback': async function (error) {
                         console.error(error);
                         resolve(undefined);
                     },
@@ -855,5 +866,167 @@ _window.addEventListener('DOMContentLoaded', () => {
             blogSearch.value = '';
             update();
         });
+    });
+
+    _window.addEventListener('DOMContentLoaded', () => {
+        const loadBadges = getElementById('loadBadges');
+        if (!loadBadges) return;
+
+        const loadBadgesUsername = getElementById('loadBadgesUsername');
+        const badgeContainer = getElementById('badgesContainer');
+
+        loadBadges.onclick = async () => {
+            const timeStarted = Date.now();
+
+            loadBadges.disabled = true;
+            badgeContainer.style.display = 'none';
+
+            const resultId = await fetch(
+                `/api/badges/check?username=${loadBadgesUsername.value}&captcha=${await sec()}`
+            )
+                .then((response) => response.json())
+                .then((data) => data.resultId)
+                .catch((err) => {
+                    console.error(err);
+                    return null;
+                });
+
+            if (!resultId) {
+                alert('Failed to fetch data.');
+                return;
+            }
+
+            loadBadges.disabled = true;
+            loadBadgesUsername.value = '';
+
+            const progressBar = getElementById('progressBar');
+            const progressBarFill = getElementById('progressBarFill');
+
+            progressBar.style.display = 'block';
+            progressBarFill.style.width = '0%';
+            progressBarFill.innerHTML = '0% <img>';
+
+            const socket = new _WebSocket(
+                `${websocketProtocal}${publicFunctions.getURL().host}/api/socket?type=badge-check-progress&resultId=${resultId}`
+            );
+
+            socket.addEventListener('message', (data) => {
+                //console.log('MESSAGE', data.data);
+                const parsed = JSON.parse(data.data);
+                if (!parsed.progress) return;
+                progressBarFill.style.width = `${parsed.progress}%`;
+                progressBarFill.innerHTML = `${Math.floor(parsed.progress)}% <img>`;
+            });
+
+            socket.addEventListener('close', async () => {
+                progressBarFill.innerText = 'Badges loaded! Fetching result from the server...';
+
+                //console.log('CLOSE');
+                const result = await fetch(`/api/badges/check/${resultId}`)
+                    .then((response) => response.json())
+                    .catch(() => null);
+                //console.log('RESULT', result);
+                if (!result) {
+                    alert('Websocket closed before the badge data was ready. Please refresh the page and try again.');
+                    return;
+                }
+
+                progressBarFill.innerText = 'Badges loaded! Loading badge details...';
+                const result2 = await fetch(`/api/badges/all?captcha=${await sec()}`).then((response) =>
+                    response.json()
+                );
+
+                if (result2.error) {
+                    alert('Failed to fetch badge data.');
+                    return;
+                }
+
+                badgeContainer.style.display = 'block';
+                for (const [id, badges] of Object.entries(result2.games)) {
+                    const game = badges[0].awardingUniverse;
+                    const gameId = game.id;
+                    const gameName = game.name;
+
+                    const gameContainer = createElement('div');
+                    classListAdd(gameContainer, 'badgeGameContainer');
+
+                    const gameTitle = createElement('h2');
+                    gameTitle.innerText = gameName;
+                    appendChild(gameContainer, gameTitle);
+
+                    const gameBadges = createElement('div');
+                    classListAdd(gameBadges, 'badgeGameBadges');
+                    appendChild(gameContainer, gameBadges);
+
+                    const viewBadgesButton = createElement('button');
+                    viewBadgesButton.innerText = 'View Badges';
+                    viewBadgesButton.type = 'button';
+                    viewBadgesButton.onclick = () => {
+                        viewBadgesButton.remove();
+
+                        for (const badge of badges) {
+                            const badgeOwnershipDetails = result.find((x) => x.id === badge.id);
+
+                            const badgeElement = createElement('div');
+                            classListAdd(badgeElement, 'badgeElement');
+
+                            const name = createElement('span');
+                            name.innerText = badge.name;
+                            classListAdd(name, 'badgeName');
+
+                            const description = createElement('span');
+                            description.innerText = (badge.description ?? 'No description available.')
+                                .split('\n')
+                                .join(' ');
+                            classListAdd(description, 'badgeDescription');
+                            if (badge.description === null) classListAdd(description, 'badgeNoDescription');
+
+                            const awardedOn = createElement('span');
+                            if (badgeOwnershipDetails.owned) {
+                                awardedOn.innerText = `Awarded on ${new Date(badgeOwnershipDetails.awarded).toLocaleString()}`;
+                                classListAdd(badgeElement, 'badgeOwned');
+                            } else {
+                                awardedOn.innerText = 'Not awarded.';
+                                classListAdd(badgeElement, 'badgeNotOwned');
+                            }
+                            classListAdd(awardedOn, 'badgeAwardedOn');
+
+                            const image = createElement('img');
+                            image.alt = badge.name;
+                            classListAdd(image, 'badgeImage');
+
+                            new IntersectionObserver(
+                                (entries, observer) => {
+                                    entries.forEach((entry) => {
+                                        if (entry.isIntersecting) {
+                                            image.src = badge.imageUrl;
+                                            observer.unobserve(image);
+                                        }
+                                    });
+                                },
+                                { threshold: 1 }
+                            ).observe(image);
+
+                            const badgeDetails = createElement('div');
+                            classListAdd(badgeDetails, 'badgeDetails');
+                            appendChild(badgeElement, image);
+                            appendChild(badgeDetails, name);
+                            appendChild(badgeDetails, description);
+                            appendChild(badgeDetails, awardedOn);
+                            appendChild(badgeElement, badgeDetails);
+                            appendChild(gameBadges, badgeElement);
+                        }
+                    };
+
+                    appendChild(gameBadges, viewBadgesButton);
+                    appendChild(badgeContainer, gameContainer);
+                }
+
+                // progressBarFill.innerText = `Done! Loaded in ${((Date.now() - timeStarted) / 1000).toFixed(2)}s`;
+
+                progressBar.style.display = 'none';
+                loadBadges.disabled = false;
+            });
+        };
     });
 })();

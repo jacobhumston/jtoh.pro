@@ -34,6 +34,7 @@
     --color-background-even-more-darker: #1d1d1d;
     --color-text-highlight: #ffd54cd3;
     --color-success: #58a35a;
+    --color-error: #ff5a5a;
     --leaderboard-row-background: rgba(255, 251, 255, 0);
     --leaderboard-row-background-part2: rgba(18, 18, 18, 1);
     --leaderboard-first: #5aa6b8;
@@ -55,6 +56,7 @@
     --color-background-even-more-darker: #c7c7c7;
     --color-text-highlight: #c51a1ad3;
     --color-success: #58a35a;
+    --color-error: #ff5a5a;
     --leaderboard-row-background: rgba(255, 251, 255, 0);
     --leaderboard-row-background-part2: rgba(18, 18, 18, 1);
     --leaderboard-first: #5aa6b8;
@@ -109,7 +111,8 @@ b {
     color: var(--color-text-bold);
 }
 
-#container {
+#container,
+.backupContainer {
     max-width: 700px;
     border-radius: 25px;
     margin-left: auto;
@@ -919,4 +922,117 @@ a {
 
 #cardsUrlRefrence .materialSymbolsRounded {
     vertical-align: top;
+}
+
+#progressBar {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: none;
+    padding: 0px;
+    background-color: var(--color-background-even-more-darker);
+    border-radius: 15px;
+}
+
+#progressBarFill {
+    background-color: var(--color-text-header);
+    border-radius: 15px;
+    padding: 5px;
+    width: 0%;
+    text-align: center;
+    font-size: medium;
+    max-width: calc(100% - 10px);
+    min-width: fit-content;
+    transition-property: width;
+    transition-duration: 0.5s;
+}
+
+#progressBarFill img {
+    height: 30px;
+    width: 30px;
+    vertical-align: middle;
+    content: var(--loading-svg);
+    float: left;
+    margin-top: -2px;
+}
+
+#badgesContainer {
+    display: none;
+    background-color: var(--color-background-even-more-darker);
+    padding: 10px;
+    margin: 20px;
+    margin-top: 0px;
+    border-radius: 15px;
+}
+
+.badgeGameBadges {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.badgeElement {
+    background-color: var(--color-background-darker);
+    padding: 10px;
+    border-radius: 15px;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: flex-start;
+    flex-grow: 1;
+    width: calc(33.333% - 20px);
+    width: 530px;
+    min-width: 400px;
+    box-sizing: border-box;
+    justify-self: center;
+}
+
+.badgeImage {
+    width: 100px;
+    display: inline-block;
+}
+
+.badgeDetails {
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+    max-width: calc(100% - 120px);
+    flex-shrink: 0;
+}
+
+.badgeName,
+.badgeDescription,
+.badgeAwardedOn {
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.badgeOwned {
+    border-color: var(--color-success);
+    border-width: 2px;
+    border-style: dashed;
+}
+
+.badgeNotOwned {
+    border-color: var(--color-error);
+    border-width: 2px;
+    border-style: dashed;
+}
+
+.badgeName {
+    font-size: large;
+    color: var(--color-text-header);
+}
+
+.badgeAwardedOn {
+    font-size: small;
+    color: var(--color-text-darker);
+    margin-top: 20px;
+}
+
+.badgeNoDescription {
+    color: var(--color-text-darker);
 }

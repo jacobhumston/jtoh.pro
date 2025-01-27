@@ -12,8 +12,9 @@ function setupDir() {
 
 if (!fs.existsSync('cache/')) fs.mkdirSync('cache/');
 if (!fs.existsSync('cache/blog-sha')) fs.writeFileSync('cache/blog-sha', '');
+if (!fs.existsSync('cache/blog-data')) fs.writeFileSync('cache/blog-data', '[]');
 
-const posts: any[] = [];
+const posts: any[] = JSON.parse(fs.readFileSync('cache/blog-data', 'utf-8'));
 let lastCommitHash = fs.readFileSync('cache/blog-sha', 'utf-8');
 
 async function setup() {
@@ -155,6 +156,8 @@ async function setup() {
 
         posts.push(postData);
     }
+
+    fs.writeFileSync('cache/blog-data', JSON.stringify(posts));
 
     setupDir();
     for (const file of fs.readdirSync(tempDir)) {

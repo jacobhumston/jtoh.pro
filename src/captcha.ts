@@ -5,7 +5,7 @@ import { Hono, type Context } from 'hono';
 import { v4 } from 'uuid';
 import { captchaBypassDB } from './db';
 
-export async function verifyCaptcha(token: string) {
+export async function verifyCaptcha(token: string): Promise<boolean> {
     const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
         method: 'POST',
         headers: {
