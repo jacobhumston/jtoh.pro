@@ -943,6 +943,8 @@ _window.addEventListener('DOMContentLoaded', () => {
 
                 badgeContainer.style.display = 'block';
                 for (const [id, badges] of Object.entries(result2.games)) {
+                    if (badges.length === 0) continue;
+
                     const game = badges[0].awardingUniverse;
                     const gameId = game.id;
                     const gameName = game.name;
@@ -971,13 +973,15 @@ _window.addEventListener('DOMContentLoaded', () => {
                             classListAdd(badgeElement, 'badgeElement');
 
                             const name = createElement('span');
-                            name.innerText = badge.name;
+                            name.innerText = (badge.name ?? 'No name available.')
+                                .replaceAll('\r', '')
+                                .replaceAll('\n', ' ');
                             classListAdd(name, 'badgeName');
 
                             const description = createElement('span');
                             description.innerText = (badge.description ?? 'No description available.')
-                                .split('\n')
-                                .join(' ');
+                                .replaceAll('\r', '')
+                                .replaceAll('\n', ' ');
                             classListAdd(description, 'badgeDescription');
                             if (badge.description === null) classListAdd(description, 'badgeNoDescription');
 
@@ -990,6 +994,8 @@ _window.addEventListener('DOMContentLoaded', () => {
                                 classListAdd(badgeElement, 'badgeNotOwned');
                             }
                             classListAdd(awardedOn, 'badgeAwardedOn');
+
+                            awardedOn.innerHTML = `${awardedOn.innerText}<br><a target="_blank" href="https://www.roblox.com/badges/${badge.id}">View on Roblox</a>`;
 
                             const image = createElement('img');
                             image.alt = badge.name;
@@ -1004,7 +1010,7 @@ _window.addEventListener('DOMContentLoaded', () => {
                                         }
                                     });
                                 },
-                                { threshold: 1 }
+                                { threshold: 0.1 }
                             ).observe(image);
 
                             const badgeDetails = createElement('div');

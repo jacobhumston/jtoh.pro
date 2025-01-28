@@ -1030,7 +1030,7 @@ a {
 .badgeAwardedOn {
     font-size: small;
     color: var(--color-text-darker);
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .badgeNoDescription {

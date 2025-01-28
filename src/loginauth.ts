@@ -150,7 +150,13 @@ export default function setupLoginAuth(app: Hono) {
         if (!user) return context.json({ error: 'Not signed in.' }, 401);
         const token = (await getSignedCookie(context, cookieSecret, 'auth-token')) as string;
         await loginAuthDB.delete(token);
-        deleteCookie(context, 'auth-token');
+        deleteCookie(context, 'auth-token', {
+            httpOnly: true,
+            sameSite: 'Strict',
+            secure: true,
+            domain: getURLHost(),
+            signingSecret: cookieSecret
+        });
         if (context.req.query('switch') && context.req.query('switch') === 'true') return context.redirect('/login');
         return context.redirect('/');
     });
