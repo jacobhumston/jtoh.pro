@@ -36,7 +36,7 @@ export async function checkOwnedBadges(userId: string | number, badges: Array<st
     }).catch((err) => ({ status: 500, data: err.toString() }));
     if (response.status !== 200) {
         // console.log('Failed to check owned badges, trying again in 1 second...');
-        await new Promise((resolve) => setTimeout(resolve, 5000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         return await checkOwnedBadges(userId, badges);
     } else {
         const result = response.data;
@@ -84,8 +84,8 @@ export async function checkOwnedBadgesLarge(
     }
 
     const requests = [];
-    for (let i = 0; i < requestsToMake.length; i += 20) {
-        requests.push(requestsToMake.slice(i, i + 20));
+    for (let i = 0; i < requestsToMake.length; i += 100) {
+        requests.push(requestsToMake.slice(i, i + 100));
     }
 
     let completed = 0;

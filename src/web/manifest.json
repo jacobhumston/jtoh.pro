@@ -1,6 +1,6 @@
 {
     "short_name": "jtoh.pro",
-    "name": "jtoh.pro",
+    "name": "JToH Pro",
     "icons": [
         {
             "src": "/app/assets/roblox-icon.png",
@@ -10,6 +10,6 @@
     ],
     "start_url": "/app/",
     "display": "standalone",
-    "theme_color": "#000000",
-    "background_color": "#ffffff"
+    "theme_color": "#b58dffde",
+    "background_color": "#222222"
 }
