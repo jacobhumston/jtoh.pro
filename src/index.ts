@@ -89,7 +89,8 @@ app.use(
         },
         skip: async (context) => {
             return (context.req.query('rlb-token') ?? '') === getTempToken('rlb-token');
-        },
+        }
+        /*
         skipSuccessfulRequests: true,
         requestWasSuccessful: async (context) => {
             context.res.headers.forEach((value, key) => {
@@ -97,6 +98,7 @@ app.use(
             });
             return false;
         }
+        */
     })
 );
 
