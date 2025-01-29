@@ -1013,6 +1013,12 @@ _window.addEventListener('DOMContentLoaded', () => {
                                 { threshold: 0.1 }
                             ).observe(image);
 
+                            image.onerror = () => {
+                                if (image.src !== '/app/assets/unknown-badge.png') {
+                                    image.src = '/app/assets/unknown-badge.png';
+                                }
+                            };
+
                             const badgeDetails = createElement('div');
                             classListAdd(badgeDetails, 'badgeDetails');
                             appendChild(badgeElement, image);

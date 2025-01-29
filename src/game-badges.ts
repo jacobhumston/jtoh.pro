@@ -11,6 +11,9 @@ interface BadgeIcon {
 interface Badge {
     id: number;
     imageUrl?: string | null;
+    statistics: {
+        awardedCount: number;
+    };
 }
 
 /**
@@ -54,7 +57,9 @@ export async function getBadges(badges: Array<any>, universeId: number, cursor?:
     }
 
     const json = await response.json();
-    const data: Badge[] = json.data;
+    let data: Badge[] = json.data;
+
+    data = data.filter((badge) => badge.statistics.awardedCount > 0);
 
     if (data.length === 0) {
         //console.log('Skipping... (0 badges returned)');
