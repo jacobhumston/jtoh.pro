@@ -22,50 +22,6 @@
     --font: 'Poppins', Arial, sans-serif;
 }
 
-.themesDark {
-    --color-text: #e9e9e9c4;
-    --color-text-darker: rgba(185, 185, 185, 0.521);
-    --color-background: #222222;
-    --color-background-lighter: rgba(75, 75, 75, 0.973);
-    --color-text-link: #70b5ffda;
-    --color-text-header: #9a71f8c9;
-    --color-text-bold: #b58dffde;
-    --color-background-darker: #2b2a2ade;
-    --color-background-even-more-darker: #1d1d1d;
-    --color-text-highlight: #ffd54cd3;
-    --color-success: #58a35a;
-    --color-error: #ff5a5a;
-    --leaderboard-row-background: rgba(255, 251, 255, 0);
-    --leaderboard-row-background-part2: rgba(18, 18, 18, 1);
-    --leaderboard-first: #5aa6b8;
-    --leaderboard-second: #f4ff79;
-    --leaderboard-third: #815a5a;
-    --transparent: #00000000;
-    --loading-svg: url('/app/assets/loading-dark.svg');
-}
-
-.themesLight {
-    --color-text: #2c2c2c;
-    --color-text-darker: rgb(22, 22, 22);
-    --color-background: #d1d1d1;
-    --color-background-lighter: rgba(255, 255, 255, 0.973);
-    --color-text-link: #133c68;
-    --color-text-header: #8e83a8;
-    --color-text-bold: #6c33d6de;
-    --color-background-darker: #dfdedede;
-    --color-background-even-more-darker: #c7c7c7;
-    --color-text-highlight: #c51a1ad3;
-    --color-success: #58a35a;
-    --color-error: #ff5a5a;
-    --leaderboard-row-background: rgba(255, 251, 255, 0);
-    --leaderboard-row-background-part2: rgba(18, 18, 18, 1);
-    --leaderboard-first: #5aa6b8;
-    --leaderboard-second: #f4ff79;
-    --leaderboard-third: #815a5a;
-    --transparent: #00000000;
-    --loading-svg: url('/app/assets/loading-light.svg');
-}
-
 html,
 body {
     background-color: var(--color-background);
