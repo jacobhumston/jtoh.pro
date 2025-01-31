@@ -29,16 +29,22 @@ interface BadgeData {
  * @param {Array<string | number>} badges
  * @returns {Promise<Array<Badge>>}
  */
-export async function checkOwnedBadges(userId: string | number, badges: Array<string | number>): Promise<Array<Badge>> {
+export async function checkOwnedBadges(
+    userId: string | number,
+    badges: Array<string | number>,
+    actionCallback?: (type: 'retry' | 'success') => void
+): Promise<Array<Badge>> {
     const ownedBadges: Array<Badge> = badges.map((id) => ({ owned: false, id: id, awarded: null }));
     const response = await axios(url.replace('{userId}', `${userId}`).replace('{badgeIds}', badges.join(',')), {
         httpsAgent: proxyAgent
     }).catch((err) => ({ status: 500, data: err.toString() }));
     if (response.status !== 200) {
         // console.log('Failed to check owned badges, trying again in 1 second...');
+        if (actionCallback) actionCallback('retry');
         await new Promise((resolve) => setTimeout(resolve, 1000));
         return await checkOwnedBadges(userId, badges);
     } else {
+        if (actionCallback) actionCallback('success');
         const result = response.data;
         const data: Array<BadgeData> = result.data;
         ownedBadges.forEach((badge, index) => {
@@ -70,7 +76,12 @@ export async function checkOwnedBadges(userId: string | number, badges: Array<st
 export async function checkOwnedBadgesLarge(
     userId: string | number,
     badges: Array<string | number>,
-    progressFunction?: (progress: number, completed: number, total: number) => void
+    progressFunction?: (
+        progress: number,
+        completed: number,
+        total: number,
+        reqs: { success: number; retry: number }
+    ) => void
 ): Promise<Array<Badge>> {
     let ownedBadges: Array<Badge> = [];
     const badgesToCheck: Array<Array<string | number>> = [];
@@ -89,14 +100,23 @@ export async function checkOwnedBadgesLarge(
     }
 
     let completed = 0;
+    let reqs = {
+        success: 0,
+        retry: 0
+    };
 
     const responses: any = [];
     for (const requestChunk of requests) {
         const promises = requestChunk.map((request) =>
-            checkOwnedBadges(request.userId, request.badges).then((result) => {
+            checkOwnedBadges(request.userId, request.badges, (action) => {
+                reqs[action]++;
+                if (progressFunction) {
+                    progressFunction((completed / badges.length) * 100, completed, badges.length, reqs);
+                }
+            }).then((result) => {
                 completed = completed + request.badges.length;
                 if (progressFunction) {
-                    progressFunction((completed / badges.length) * 100, completed, badges.length);
+                    progressFunction((completed / badges.length) * 100, completed, badges.length, reqs);
                 }
                 return result;
             })
@@ -172,14 +192,13 @@ export function badgesEndpoints(app: Hono) {
         const resultId = v4();
 
         new Promise(async (resolve) => {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-
-            const result = await checkOwnedBadgesLarge(user.id, badges, (progress, completed, total) => {
+            const result = await checkOwnedBadgesLarge(user.id, badges, (progress, completed, total, reqs) => {
                 const progess = {
-                    requestId: resultId,
+                    // requestId: resultId,
                     progress: progress,
                     completed: completed,
-                    total: total
+                    total: total,
+                    requests: reqs
                 };
 
                 websocketPublisher.emit(resultId, progess);
@@ -212,7 +231,7 @@ export function badgesEndpoints(app: Hono) {
             userId: user.id,
             completed: false,
             result: [],
-            expires: Date.now() + convertTo({ minutes: 30 }, 'milliseconds'),
+            expires: Date.now() + convertTo({ minutes: 10 }, 'milliseconds'),
             progress: {}
         });
 
@@ -228,7 +247,7 @@ export function badgesEndpoints(app: Hono) {
 
         setTimeout(() => {
             badgeRequests.delete(resultId);
-        }, 1000);
+        }, 5000);
 
         return context.json(request.result);
     });
