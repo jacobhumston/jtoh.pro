@@ -874,6 +874,7 @@ _window.addEventListener('DOMContentLoaded', () => {
 
         const loadBadgesUsername = getElementById('loadBadgesUsername');
         const badgeContainer = getElementById('badgesContainer');
+        const badgeStatBar = getElementById('badgeStatBar');
 
         loadBadges.onclick = async () => {
             const timeStarted = Date.now();
@@ -916,6 +917,11 @@ _window.addEventListener('DOMContentLoaded', () => {
                 if (!parsed.progress) return;
                 progressBarFill.style.width = `${parsed.progress}%`;
                 progressBarFill.innerHTML = `${Math.floor(parsed.progress)}% <img>`;
+
+                let timePassed = ((Date.now() - timeStarted) / 1000).toFixed(2);
+
+                badgeStatBar.style.display = 'block';
+                badgeStatBar.innerHTML = `${getGoogleIconHTML('award_star')} <b>${parsed.completed}</b>/<b>${parsed.total}</b> — ${getGoogleIconHTML('wifi')} <b>${parsed.requests.success}</b>/<b>${parsed.requests.retry}</b> — ${getGoogleIconHTML('timer')} <b>${timePassed}s</b>`;
             });
 
             socket.addEventListener('close', async () => {
@@ -1038,6 +1044,7 @@ _window.addEventListener('DOMContentLoaded', () => {
 
                 progressBar.style.display = 'none';
                 loadBadges.disabled = false;
+                //badgeStatBar.style.display = 'none';
             });
         };
     });

@@ -997,3 +997,17 @@ a {
 .badgeNoDescription {
     color: var(--color-text-darker);
 }
+
+#badgeStatBar {
+    display: none;
+    padding: 10px;
+    border-radius: 15px;
+    background-color: var(--color-background-even-more-darker);
+    margin-top: 5px;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+#badgeStatBar .materialSymbolsRounded {
+    vertical-align: top;
+}
