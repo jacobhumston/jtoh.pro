@@ -31,6 +31,7 @@ import { getConnInfo } from 'hono/bun';
 import { csrf } from 'hono/csrf';
 import { secureHeaders } from 'hono/secure-headers';
 import { badgesEndpoints } from './roblox-badges';
+import credits from './credits';
 
 const app = new Hono();
 
@@ -119,6 +120,7 @@ socketListen(app);
 serveSitemap(app);
 jtoh(app);
 badgesEndpoints(app);
+credits(app);
 
 app.get('/', async (context) => {
     const searchParams = new URL(context.req.url).searchParams;
