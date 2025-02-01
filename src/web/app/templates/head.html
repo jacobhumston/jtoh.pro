@@ -5,9 +5,23 @@
 
 <link rel="manifest" href="/manifest.json" />
 
-<link rel="preload" href="/app/js/main.js" as="script" />
+<link rel="modulepreload" href="/app/js/main.ts" />
+<link rel="modulepreload" href="/app/js/libs/auth.ts" />
+<link rel="modulepreload" href="/app/js/libs/security.ts" />
+<link rel="modulepreload" href="/app/js/libs/theme.ts" />
+<link rel="modulepreload" href="/app/js/libs/util.ts" />
+
+<link rel="modulepreload" href="/app/js/components/card-info.ts" />
+
+<link rel="modulepreload" href="/app/js/core/jtoh.ts" />
+<link rel="modulepreload" href="/app/js/core/badges.ts" />
+<link rel="modulepreload" href="/app/js/core/leaderboards.ts" />
+<link rel="modulepreload" href="/app/js/core/credits.ts" />
+<link rel="modulepreload" href="/app/js/core/blog.ts" />
+
 <link rel="preload" href="/app/css/themes.css" as="style" />
 <link rel="preload" href="/app/css/main.css" as="style" />
+
 <link rel="preload" href="/app/assets/Poppins-Regular.ttf" as="font" type="font/ttf" crossorigin />
 <link rel="preload" href="/app/assets/JetBrainsMono-Regular.ttf" as="font" type="font/ttf" crossorigin />
 <link rel="preload" href="/app/assets/MaterialSymbolsRounded.woff2" as="font" type="font/woff2" crossorigin />
@@ -17,5 +31,5 @@
 <link rel="stylesheet" href="/app/css/themes.css" />
 <link rel="stylesheet" href="/app/css/main.css" />
 
-<script src="/app/js/main.js" fetchpriority="high"></script>
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
+<script src="/app/js/main.ts" fetchpriority="high" type="module" async="false"></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async="false"></script>

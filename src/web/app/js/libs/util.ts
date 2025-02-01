@@ -153,3 +153,13 @@ export async function waitForElementByIdExpected<K extends keyof HTMLElementTagN
 export function wait(ms: number): Promise<undefined> {
     return new Promise((resolve) => setTimeout(() => resolve(undefined), ms));
 }
+
+/**
+ * Get the file name of the current page.
+ * @returns The file name of the current page.
+ */
+export function getPageFileName(): string {
+    const href = new URL(document.location.href);
+    const path = href.pathname.split('/');
+    return path[path.length - 1].split('.')[0];
+}
