@@ -68,6 +68,7 @@ export default async function serveStatic(app: Hono) {
                 (
                     await minifyJS(ogCode, {
                         mangle: true,
+                        module: fileExt === '.ts',
                         compress: {
                             ecma: 2020,
                             hoist_funs: true,
