@@ -6,6 +6,8 @@ import cleanCSS from 'clean-css';
 import minifyHTML from 'html-minifier';
 import { minify as minifyJS } from 'terser';
 import { isDev } from './dev';
+import { Transpiler } from 'bun';
+import logger from './logger';
 
 function replaceTemplates(content: string, templateDir: string, stop: boolean = false): string {
     const files = fs.readdirSync(templateDir);
@@ -19,6 +21,8 @@ function replaceTemplates(content: string, templateDir: string, stop: boolean = 
     }
     return content;
 }
+
+const transpiler = new Transpiler({ target: 'browser', loader: 'ts' });
 
 export default async function serveStatic(app: Hono) {
     app.use('/*', async (context, next) => {
@@ -49,10 +53,20 @@ export default async function serveStatic(app: Hono) {
 
         let file = fs.readFileSync(filePath);
 
-        if (fileExt === '.js') {
+        if (fileExt === '.js' || fileExt === '.ts') {
+            let ogCode = file.toString();
+            if (fileExt === '.ts') {
+                try {
+                    ogCode = transpiler.transformSync(ogCode);
+                } catch (error) {
+                    logger.error(error);
+                    ogCode = '';
+                }
+            }
+            console;
             let code =
                 (
-                    await minifyJS(file.toString(), {
+                    await minifyJS(ogCode, {
                         mangle: true,
                         compress: {
                             ecma: 2020,
@@ -76,11 +90,14 @@ export default async function serveStatic(app: Hono) {
                         output: {
                             comments: false
                         }
+                    }).catch((error) => {
+                        logger.error(error);
+                        return { code: '' };
                     })
                 ).code ?? '';
 
             /*
-                if (filePath.endsWith('me.js')) {
+                if (filePath.endn{nu code: '' }ll;sWith('me.js')) {
                 code = `// SOURCE: https://github.com/damianobarbati/get-browser-fingerprint/blob/05aaa43791a89eba75d4f708324622f4f864dea6/src/index.js \n${code}`;
             }*/ // meh
 
@@ -104,6 +121,8 @@ export default async function serveStatic(app: Hono) {
                 })
             );
         }
+
+        if (fileExt === '.ts') fileExt = '.js';
 
         context.header('Content-Type', mime.lookup(fileExt) || 'application/octet-stream');
         return context.body(file.buffer.slice(file.byteOffset, file.byteOffset + file.byteLength) as any);
