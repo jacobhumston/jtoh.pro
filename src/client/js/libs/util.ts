@@ -183,3 +183,12 @@ export function genUUID(): string {
     }
     return uuid;
 }
+
+/**
+ * Get a web icon's HTML.
+ * @param name The name of the web icon.
+ * @returns Icon HTML.
+ */
+export function getWebIconHTML(name: string): string {
+    return `<span class="materialSymbolsRounded">${name}</span>`;
+}
