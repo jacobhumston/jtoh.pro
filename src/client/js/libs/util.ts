@@ -163,3 +163,23 @@ export function getPageFileName(): string {
     const path = href.pathname.split('/');
     return path[path.length - 1].split('.')[0];
 }
+
+/**
+ * Generate a UUID.
+ * @returns The generated UUID.
+ */
+export function genUUID(): string {
+    let uuid = '';
+    try {
+        uuid = window.crypto.randomUUID();
+    } catch (e) {
+        console.error(e);
+        // https://www.grepper.com/answers/653315/js+uuid+generator?ucard=1
+        uuid = String('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx').replace(/[xy]/g, (character) => {
+            const random = (Math.random() * 16) | 0;
+            const value = character === 'x' ? random : (random & 0x3) | 0x8;
+            return value.toString(16);
+        });
+    }
+    return uuid;
+}
