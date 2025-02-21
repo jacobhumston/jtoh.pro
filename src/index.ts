@@ -32,6 +32,15 @@ import { csrf } from 'hono/csrf';
 import { secureHeaders } from 'hono/secure-headers';
 import { badgesEndpoints } from './roblox-badges';
 import credits from './credits';
+import { serveJS } from './js';
+
+for (const file of fs.readdirSync('./temp')) {
+    try {
+        fs.rmSync(`./temp/${file}`);
+    } catch {
+        logger.warn(`Failed to delete temp file: ${file}`);
+    }
+}
 
 const app = new Hono();
 
@@ -121,6 +130,7 @@ serveSitemap(app);
 jtoh(app);
 badgesEndpoints(app);
 credits(app);
+serveJS(app);
 
 app.get('/', async (context) => {
     const searchParams = new URL(context.req.url).searchParams;

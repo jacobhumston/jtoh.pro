@@ -8,6 +8,7 @@ import { minify as minifyJS } from 'terser';
 import { isDev } from './dev';
 import { Transpiler } from 'bun';
 import logger from './logger';
+import { v4 as uuid } from 'uuid';
 
 function replaceTemplates(content: string, templateDir: string, stop: boolean = false): string {
     const files = fs.readdirSync(templateDir);
@@ -23,6 +24,7 @@ function replaceTemplates(content: string, templateDir: string, stop: boolean = 
 }
 
 const transpiler = new Transpiler({ target: 'browser', loader: 'ts' });
+const pageIds: { [key: string]: string } = {};
 
 export default async function serveStatic(app: Hono) {
     app.use('/*', async (context, next) => {
@@ -110,16 +112,22 @@ export default async function serveStatic(app: Hono) {
                 }).minify(file.toString()).styles
             );
         } else if (fileExt === '.html') {
+            const pageName = path.split('/').pop() ?? '';
+            const pageId = pageIds[pageName] || uuid();
+            pageIds[pageName] = pageId;
+
             let content = file.toString();
             const templateDir = join(__dirname, 'web', 'app', 'templates');
             content = replaceTemplates(content, templateDir);
             file = Buffer.from(
-                minifyHTML.minify(content, {
-                    quoteCharacter: "'",
-                    collapseWhitespace: true,
-                    removeComments: true,
-                    removeAttributeQuotes: true
-                })
+                minifyHTML
+                    .minify(content, {
+                        quoteCharacter: "'",
+                        collapseWhitespace: true,
+                        removeComments: true,
+                        removeAttributeQuotes: true
+                    })
+                    .replaceAll('{{pageId}}', pageId)
             );
         }
 
@@ -128,4 +136,11 @@ export default async function serveStatic(app: Hono) {
         context.header('Content-Type', mime.lookup(fileExt) || 'application/octet-stream');
         return context.body(file.buffer.slice(file.byteOffset, file.byteOffset + file.byteLength) as any);
     });
+}
+
+export function getPageFromId(id: string) {
+    for (const [page, pageId] of Object.entries(pageIds)) {
+        if (pageId === id) return page;
+    }
+    return null;
 }
