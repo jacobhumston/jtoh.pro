@@ -94,6 +94,8 @@ export function serveJS(app: Hono) {
                 .replace(`"${file}"(){return import("${file}")}`, '');
         }
 
+        code = code.replace('{{pageName}}', pageName.split('.')[0]);
+
         return context.body(code);
     });
 }

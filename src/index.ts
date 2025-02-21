@@ -11,7 +11,7 @@ import logger from './logger';
 import fs from 'node:fs';
 import webUtils from './webutils';
 import serveLeaderboards from './leaderboards';
-import { isDev, getURL, port, getURLHost } from './dev';
+import { isDev, getURL, port, getURLHost, isBeta } from './dev';
 import setupLoginAuth from './loginauth';
 import { rateLimiter } from 'hono-rate-limiter';
 import { getTempToken } from './temptokens';
@@ -188,6 +188,24 @@ app.get('/towerstats/:game/:user', async (context) => {
     const account = await parseRobloxAccount(context);
     if (!account) return context.json({ error: 'Invalid user.' }, 400);
     return context.redirect(`https://towerstats.com/${context.req.param().game}?username=${account.name}`);
+});
+
+app.get('/api/app.webmanifest', async (context) => {
+    return context.json({
+        short_name: getURLHost(),
+        name: 'JToH Pro' + (isDev ? ' (Dev)' : isBeta ? ' (Beta)' : ''),
+        icons: [
+            {
+                src: '/app/assets/roblox-icon.png',
+                sizes: '512x512',
+                type: 'image/png'
+            }
+        ],
+        start_url: '/app/',
+        display: 'standalone',
+        theme_color: '#b58dffde',
+        background_color: '#222222'
+    });
 });
 
 app.notFound((context) => {
