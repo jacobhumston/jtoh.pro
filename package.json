@@ -65,6 +65,7 @@
     "trustedDependencies": [
         "@mongodb-js/zstd",
         "bun",
+        "esbuild",
         "sqlite3"
     ]
 }
