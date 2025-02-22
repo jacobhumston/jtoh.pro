@@ -18,7 +18,7 @@
         "@keyv/sqlite": "^4.0.1",
         "@napi-rs/canvas": "^0.1.67",
         "axios": "^1.7.9",
-        "bun": "^1.2.2",
+        "bun": "^1.2.3",
         "chart.js": "^4.4.8",
         "clean-css": "^5.3.3",
         "color": "^4.2.3",
@@ -59,7 +59,7 @@
         "@xterm/xterm": "^5.5.0",
         "depcheck": "^1.4.7",
         "pm2": "^5.4.3",
-        "prettier": "^3.5.1",
+        "prettier": "^3.5.2",
         "typescript": "^5.7.3"
     },
     "trustedDependencies": [
