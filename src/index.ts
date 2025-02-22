@@ -34,6 +34,7 @@ import { badgesEndpoints } from './roblox-badges';
 import credits from './credits';
 import { serveJS } from './js';
 
+if (!fs.existsSync('./temp')) fs.mkdirSync('./temp');
 for (const file of fs.readdirSync('./temp')) {
     try {
         fs.rmSync(`./temp/${file}`);
