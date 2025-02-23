@@ -1,8 +1,14 @@
-import { applyTheme, listenForThemSelection } from './libs/theme.ts';
-import { getPageFileName } from './libs/util.ts';
+import { listenForImages } from './components/imageLoader';
+import { updateMenuBar } from './components/menuBar';
+import { addAuthUI } from './libs/auth';
+import { applyTheme, listenForThemSelection } from './libs/theme';
+import { getPageFileName } from './libs/util';
 
 applyTheme();
+listenForImages();
 listenForThemSelection();
+addAuthUI();
+updateMenuBar();
 
 try {
     const core = (await import(`./core/${getPageFileName()}.ts`)) as { default: () => void } | null;

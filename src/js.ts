@@ -3,16 +3,19 @@ import * as esbuild from 'esbuild';
 import fs from 'node:fs';
 import { minify as minifyJS } from 'terser';
 import logger from './logger';
-import { isDev } from './dev';
+import { getURLHost, isDev } from './dev';
 import { getPageFromId } from './static';
+
+const formatter = new Intl.NumberFormat('en-US');
+const byteSize = (str: string) => new Blob([str]).size;
 
 export function serveJS(app: Hono) {
     app.get('/api/js', async (context) => {
         const id = context.req.query('v');
-        if (!id) return context.json({ error: 'No version specified' }, 400);
+        if (!id) return context.json({ error: 'No version specified.' }, 400) as any;
 
         const pageName = getPageFromId(id) as string;
-        if (pageName === null) return context.json({ error: 'Invalid version' }, 400);
+        if (pageName === null) return context.json({ error: 'Invalid version.' }, 400) as any;
 
         const files: string[] = [];
         function addFile(dir: string) {
@@ -48,8 +51,6 @@ export function serveJS(app: Hono) {
             external: filesToExclude,
             platform: 'browser'
         });
-
-        context.header('Content-Type', 'application/javascript');
 
         let code =
             // @ts-ignore
@@ -94,7 +95,15 @@ export function serveJS(app: Hono) {
                 .replace(`"${file}"(){return import("${file}")}`, '');
         }
 
+        code = `// Copyright of ${getURLHost()} (c) ${new Date().getFullYear()}
+// V: ${id} - ${new Date().toDateString()}
+// Bundle Size: ${formatter.format(byteSize(code))} bytes
+\n${code}`;
+
         code = code.replace('{{pageName}}', pageName.split('.')[0]);
+
+        context.header('Content-Type', 'application/javascript');
+        context.header('Cache-Control', 'public, max-age=31536000');
 
         return context.body(code);
     });

@@ -1011,3 +1011,29 @@ a {
 #badgeStatBar .materialSymbolsRounded {
     vertical-align: top;
 }
+
+.errorPopup {
+    padding: 10px;
+    position: relative;
+    background-color: var(--color-error);
+    color: var(--color-background);
+    display: block;
+    text-align: center;
+}
+
+.errorPopupText {
+    display: inline-block;
+    margin-left: 10px;
+    padding: 0px;
+    margin: 0px;
+    vertical-align: middle;
+}
+
+.errorPopupClose {
+    padding: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    float: right;
+    vertical-align: middle;
+    margin-top: -4px;
+}

@@ -1,0 +1,33 @@
+import { addChild, createElement, getBody, insertChild } from './util';
+
+/**
+ * Create an error popup with the specified error message.
+ * @param error The error message.
+ * @param autoClose The time in milliseconds to auto-close the popup, or false to disable auto-close.
+ * @returns
+ */
+export async function createErrorPopup(error: string, autoClose: number | false): Promise<HTMLDivElement> {
+    const errorPopup = createElement('div', { className: 'errorPopup' });
+    const errorPopupText = createElement('p', { className: 'errorPopupText', innerText: error });
+    const errorPopupClose = createElement('button', { className: 'errorPopupClose', innerText: 'Close' });
+
+    addChild(errorPopup, [errorPopupText, errorPopupClose]);
+
+    let closed = false;
+    if (autoClose) {
+        setTimeout(() => {
+            if (closed === false) {
+                errorPopup.remove();
+            }
+        }, autoClose);
+    }
+
+    errorPopupClose.addEventListener('click', () => {
+        errorPopup.remove();
+        closed = true;
+    });
+
+    insertChild(await getBody(), 'afterbegin', errorPopup);
+
+    return errorPopup;
+}
