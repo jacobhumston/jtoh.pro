@@ -99,11 +99,6 @@ export default async function serveStatic(app: Hono) {
                     })
                 ).code ?? '';
 
-            /*
-                if (filePath.endn{nu code: '' }ll;sWith('me.js')) {
-                code = `// SOURCE: https://github.com/damianobarbati/get-browser-fingerprint/blob/05aaa43791a89eba75d4f708324622f4f864dea6/src/index.js \n${code}`;
-            }*/ // meh
-
             file = Buffer.from(code);
         } else if (fileExt === '.css') {
             file = Buffer.from(
@@ -113,7 +108,7 @@ export default async function serveStatic(app: Hono) {
             );
         } else if (fileExt === '.html') {
             const pageName = path.split('/').pop() ?? '';
-            const pageId = pageIds[pageName] || uuid();
+            const pageId = pageIds[pageName] || uuid().split('-')[0];
             pageIds[pageName] = pageId;
 
             let content = file.toString();

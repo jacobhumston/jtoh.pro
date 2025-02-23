@@ -1,4 +1,5 @@
-import { waitForElementById } from '../libs/util.ts';
+import { numberFormatter } from '../libs/formatters';
+import { waitForElementById } from '../libs/util';
 
 export async function updateRequestStats() {
     const week = await waitForElementById('requestStatsWeek', { timeout: 10000 }),
@@ -8,10 +9,10 @@ export async function updateRequestStats() {
 
     if (week && month && year && total) {
         const response = await fetch('/api/request-count').then((res) => res.json());
-        week.textContent = response.week;
-        month.textContent = response.month;
-        year.textContent = response.year;
-        total.textContent = response.total;
+        week.textContent = numberFormatter.format(response.week);
+        month.textContent = numberFormatter.format(response.month);
+        year.textContent = numberFormatter.format(response.year);
+        total.textContent = numberFormatter.format(response.total);
     } else {
         console.error('Failed to update request stats, element was missing.');
     }

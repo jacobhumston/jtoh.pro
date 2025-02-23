@@ -192,3 +192,91 @@ export function genUUID(): string {
 export function getWebIconHTML(name: string): string {
     return `<span class="materialSymbolsRounded">${name}</span>`;
 }
+
+/**
+ * Wait for the page to load.
+ */
+export function waitForPageLoad(): Promise<void> {
+    return new Promise((resolve) => {
+        if (document.readyState === 'complete') {
+            resolve();
+        } else {
+            window.addEventListener('load', () => resolve());
+        }
+    });
+}
+
+/**
+ * Insert a child element to a parent element.
+ * @param parent A parent element.
+ * @param where The position to insert the child element.
+ * @param child A child element or an array of child elements.
+ */
+export function insertChild(parent: HTMLElement, where: InsertPosition, children: HTMLElement | HTMLElement[]): void {
+    if (Array.isArray(children)) {
+        for (const child of children) {
+            parent.insertAdjacentElement(where, child);
+        }
+    } else {
+        parent.insertAdjacentElement(where, children);
+    }
+    return;
+}
+
+/**
+ * Util function to get the document's body.
+ * @returns The document's body.
+ */
+export async function getBody(): Promise<HTMLElement> {
+    await waitForPageLoad();
+    return document.body;
+}
+
+/**
+ * Util function to get the document's head.
+ * @returns The document's head.
+ */
+export async function getHead(): Promise<HTMLElement> {
+    await waitForPageLoad();
+    return document.head;
+}
+
+/**
+ * Copy text to the clipboard.
+ * @param text The text to copy to the clipboard.
+ * @returns Whether the text was successfully copied to the clipboard.
+ */
+export async function copyTextToClipboard(text: string): Promise<boolean> {
+    let success = true;
+    await navigator.clipboard.writeText(text).catch(() => {
+        success = false;
+    });
+    return success;
+}
+
+/**DataTransfer
+ * Copy data to the clipboard. Make sure to handle errors!
+ * @param data The data to copy to the clipboard.
+ */
+export async function copyDataToClipboard(data: ClipboardItem[]): Promise<boolean> {
+    let success = true;
+    await navigator.clipboard.write(data).catch(() => {
+        success = false;
+    });
+    return success;
+}
+
+/**
+ * Temporarily set an element's text.
+ * @param element The element to set the text of.
+ * @param text The text to set.
+ * @returns A function to reset the element's text.
+ */
+export function temporarilySetElementText(element: HTMLElement, text: string): () => void {
+    const originalText = element.innerHTML;
+    element.innerHTML = text;
+    return () => {
+        element.innerHTML = originalText;
+        return;
+    };
+}

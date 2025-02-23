@@ -1,4 +1,4 @@
-import { addClass, removeClass, getWebIconHTML, getElementById, waitForElementById } from './util.ts';
+import { addClass, removeClass, getWebIconHTML, getElementById, waitForElementById } from './util';
 
 /**
  * Apply the theme based on the user's preference or the saved theme.

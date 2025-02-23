@@ -48,6 +48,7 @@
         "@types/mime-types": "^2.1.4",
         "@types/terminal-kit": "^2.5.7",
         "@types/uuid": "^10.0.0",
+        "@xterm/addon-web-links": "^0.11.0",
         "@xterm/xterm": "^5.5.0",
         "depcheck": "^1.4.7",
         "pm2": "^5.4.3",
@@ -316,6 +317,8 @@
     "@vue/compiler-ssr": ["@vue/compiler-ssr@3.5.13", "", { "dependencies": { "@vue/compiler-dom": "3.5.13", "@vue/shared": "3.5.13" } }, "sha512-wMH6vrYHxQl/IybKJagqbquvxpWCuVYpoUJfCqFZwa/JY1GdATAQ+TgVtgrwwMZ0D07QhA99rs/EAAWfvG6KpA=="],
 
     "@vue/shared": ["@vue/shared@3.5.13", "", {}, "sha512-/hnE/qP5ZoGpol0a5mDi45bOd7t3tjYJBjsgCsivow7D48cJeV5l05RD82lPqi7gRiphZM37rnhW1l6ZoCNNnQ=="],
+
+    "@xterm/addon-web-links": ["@xterm/addon-web-links@0.11.0", "", { "peerDependencies": { "@xterm/xterm": "^5.0.0" } }, "sha512-nIHQ38pQI+a5kXnRaTgwqSHnX7KE6+4SVoceompgHL26unAxdfP6IPqUTSYPQgSwM56hsElfoNrrW5V7BUED/Q=="],
 
     "@xterm/xterm": ["@xterm/xterm@5.5.0", "", {}, "sha512-hqJHYaQb5OptNunnyAnkHyM8aCjZ1MEIDTQu1iIbbTD/xops91NB5yq1ZK/dC2JDbVWtF23zUtl9JE2NqwT87A=="],
 
