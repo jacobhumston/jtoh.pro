@@ -1,6 +1,6 @@
 import { createCanvas, loadImage } from '@napi-rs/canvas';
-import { centerText, colorText, drawIconWithText, drawRoundedRect, drawRoundedRectv2, roundedRect } from './util';
-import type { TowerData } from './type';
+import { centerText, colorText, drawIconWithText, drawRoundedRect, drawRoundedRectv2, roundedRect } from '../util';
+import type { TowerData } from '../type';
 import { v4 } from 'uuid';
 import Color from 'color';
 import { Hono } from 'hono';
@@ -11,15 +11,13 @@ import {
     getPlaceInLeaderboard,
     skillPointsDB,
     getTotalInLeaderboard
-} from './db';
-import images from './images';
-import { parseRobloxAccount } from './loginauth';
-import { towerStatsToken } from './tokens';
+} from '../db';
+import images from '../images';
+import { parseRobloxAccount } from '../loginauth';
+import { towerStatsToken } from '../tokens';
 
 export default function jtoh(app: Hono) {
     app.get('/:user', async (context) => {
-        updateRequestCount().catch(() => undefined);
-
         const providedUser: string = context.req.param('user').slice(0, 20);
         const data = await parseRobloxAccount(context);
         const formatter = new Intl.NumberFormat('en-US');
@@ -134,8 +132,8 @@ export default function jtoh(app: Hono) {
             ctx.restore();
 
             if (towerStats !== undefined) {
-                updateCardRequestCount('jtoh', data).catch(() => undefined);
-                await updateSkillPoints('jtoh', data, towerStats.skill_points).catch(() => undefined);
+                updateCardRequestCount('etoh', data).catch(() => undefined);
+                await updateSkillPoints('etoh', data, towerStats.skill_points).catch(() => undefined);
 
                 ctx.textAlign = 'left';
                 ctx.fillStyle = 'white';
@@ -355,9 +353,9 @@ export default function jtoh(app: Hono) {
                 const spRank = ((value: number | null) => {
                     if (value === null) return 'N/A';
                     return `#${formatter.format(value)}`;
-                })(await getPlaceInLeaderboard(skillPointsDB, 'jtoh', data).catch(() => undefined));
+                })(await getPlaceInLeaderboard(skillPointsDB, 'etoh', data).catch(() => undefined));
                 const spTotal =
-                    `out of ${formatter.format(await getTotalInLeaderboard(skillPointsDB, 'jtoh'))}`.replaceAll(
+                    `out of ${formatter.format(await getTotalInLeaderboard(skillPointsDB, 'etoh'))}`.replaceAll(
                         ' ',
                         '_'
                     );
@@ -398,6 +396,8 @@ export default function jtoh(app: Hono) {
                 } else {
                     ctx.fillText('This user has not completed any areas.', 20, 205);
                 }
+
+                updateRequestCount().catch(() => undefined);
             } else {
                 ctx.textAlign = 'left';
                 ctx.fillStyle = 'white';
@@ -506,7 +506,7 @@ export default function jtoh(app: Hono) {
             return context.redirect(`/${providedUser}`);
         } else {
             return context.html(
-                `<html><head> <!-- ${new Date().toISOString()} --!> <meta property="og:title" content="Stats for ${data.displayName}"><meta property="og:description" content="Viewing @${data.name}'s Juke's Towers of Hell stats. Click the link above to view more stats."><meta property="og:image" content="${new URL(context.req.url).origin}/${data.name}?nocache=${v4()}"><meta property="og:type" content="image"><meta property="og:url" content="https://towerstats.com/jtoh?username=${data.name}"><meta property="twitter:card" content="summary_large_image"><meta http-equiv="refresh" content="0; url=https://towerstats.com/jtoh?username=${data.name}" /><style>body,html{background-color:#000000;}</style></head></html>`
+                `<html><head> <!-- ${new Date().toISOString()} --!> <meta property="og:title" content="Stats for ${data.displayName}"><meta property="og:description" content="Viewing @${data.name}'s Eternal Towers of Hell stats. Click the link above to view more stats."><meta property="og:image" content="${new URL(context.req.url).origin}/${data.name}?nocache=${v4()}"><meta property="og:type" content="image"><meta property="og:url" content="https://towerstats.com/jtoh?username=${data.name}"><meta property="twitter:card" content="summary_large_image"><meta http-equiv="refresh" content="0; url=https://towerstats.com/jtoh?username=${data.name}" /><style>body,html{background-color:#000000;}</style></head></html>`
             );
         }
     });

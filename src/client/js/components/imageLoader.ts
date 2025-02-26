@@ -1,5 +1,8 @@
 import { addClass, getBody, removeClass } from '../libs/util';
 
+/**
+ * Handle image loading.
+ */
 export async function listenForImages() {
     function addImageEventListeners(img: HTMLImageElement) {
         img.addEventListener('load', (event) => {

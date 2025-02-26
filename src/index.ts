@@ -3,7 +3,7 @@ import { GlobalFonts } from '@napi-rs/canvas';
 import { statsDB } from './db';
 import { startOfMonth, startOfWeek, startOfYear, parse, isAfter, isToday } from 'date-fns';
 import { UTCDate } from '@date-fns/utc';
-import jtoh from './jtoh';
+import jtoh from './gens/etoh';
 import discordInteractions, { publishDiscordCommands } from './discord';
 import redirects from './redirects';
 import serveStatic from './static';

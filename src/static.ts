@@ -123,12 +123,15 @@ export default async function serveStatic(app: Hono) {
                         removeAttributeQuotes: true
                     })
                     .replaceAll('{{pageId}}', pageId)
+                    .replaceAll('{{currentYear}}', new Date().getFullYear().toString())
             );
         }
 
         if (fileExt === '.ts') fileExt = '.js';
 
         context.header('Content-Type', mime.lookup(fileExt) || 'application/octet-stream');
+        context.header('Cache-Control', 'public, max-age=31536000');
+
         return context.body(file.buffer.slice(file.byteOffset, file.byteOffset + file.byteLength) as any);
     });
 }

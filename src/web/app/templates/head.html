@@ -3,10 +3,6 @@
 
 <title>jtoh.pro</title>
 
-<link rel="manifest" href="/api/app.webmanifest" />
-
-<template data-name="js"></template>
-
 <link rel="preload" href="/app/css/themes.css" as="style" />
 <link rel="preload" href="/app/css/main.css" as="style" />
 
@@ -16,5 +12,17 @@
 <link rel="preload" href="/app/assets/loading-dark.svg" as="image" type="image/svg+xml" />
 <link rel="preload" href="/app/assets/loading-light.svg" as="image" type="image/svg+xml" />
 
+<!--
+<link rel="modulepreload" href="/api/js?v={{pageId}}" />
+<script src="/api/js?v={{pageId}}" fetchpriority="high" type="module"></script>
+-->
+
+<link rel="preload" href="/api/js?v={{pageId}}" as="script" />
+
+<script src="/api/js?v={{pageId}}"></script>
+
 <link rel="stylesheet" href="/app/css/themes.css" />
 <link rel="stylesheet" href="/app/css/main.css" />
+
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js"></script>
+<link rel="manifest" href="/api/app.webmanifest" />

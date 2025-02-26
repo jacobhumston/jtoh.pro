@@ -140,7 +140,7 @@ async function setup() {
             <div id="blogContainer">${html}</div>`,
             `<meta
                 name="description"
-                content="Easily share your Juke's Towers of Hell stats on Discord or other social medias with a single link. Includes support for other 'obby tower' related games on Roblox."
+                content="Easily share your Eternal Towers of Hell stats on Discord or other social medias with a single link. Includes support for other 'obby tower' related games on Roblox."
             />
             <meta property="og:title" content="jtoh.pro - Blog post by ${user.displayName}." />
             <meta

@@ -4,6 +4,7 @@ import {
     addClass,
     copyDataToClipboard,
     copyTextToClipboard,
+    createElement,
     genUUID,
     getElementById,
     getWebIconHTML,
@@ -38,8 +39,8 @@ export async function handleImageExampleControls(path: string) {
      * Get the path for the image.
      * @returns The path for the image.
      */
-    function getPath(): string {
-        return path.replace('$username', inputBox.value);
+    function getPath(override?: string): string {
+        return path.replace('$username', override ?? inputBox.value);
     }
 
     /**
@@ -47,7 +48,10 @@ export async function handleImageExampleControls(path: string) {
      */
     function updateOutput() {
         image.src = '';
-        image.src = getPath() + '?nocache=' + genUUID().split('-')[0];
+        image.src =
+            getPath(inputBox.value.trim() === '' ? 'loveliestjacob' : undefined) +
+            '?nocache=' +
+            genUUID().split('-')[0];
     }
 
     inputBox.addEventListener('keypress', (event) => {
@@ -136,6 +140,7 @@ export async function handleImageExampleControls(path: string) {
         const response = await fetch(url)
             .then((res) => res.blob())
             .catch(() => null);
+
         if (!response) {
             resetPending();
             const reset = temporarilySetElementText(downloadButton, getWebIconHTML('error') + ' Failed!');
@@ -146,9 +151,10 @@ export async function handleImageExampleControls(path: string) {
         }
 
         const blobURL = URL.createObjectURL(response);
-        const link = document.createElement('a');
-        link.href = blobURL;
-        link.download = `${new URL(image.src).pathname.split('/').pop()}.png`;
+        const link = createElement('a', {
+            href: blobURL,
+            download: `${new URL(image.src).pathname.split('/').pop()}.png`
+        });
         link.click();
         URL.revokeObjectURL(blobURL);
 
