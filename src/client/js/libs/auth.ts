@@ -71,28 +71,34 @@ export async function addAuthUI() {
         const menuBar = getElementById('menuBar');
         if (!menuBar) return;
 
-        const icon = createElement('img');
+        const icon = createElement('img', {
+            src: user.user.thumbnail,
+            alt: 'User Icon',
+            id: 'loggedInIcon'
+        });
+
         icon.onerror = () => {
             if (icon.src !== '/app/assets/default-roblox-profile.png') {
                 icon.src = '/app/assets/default-roblox-profile.png';
             }
         };
-        icon.src = user.user.thumbnail;
-        icon.alt = 'User Icon';
-        icon.id = 'loggedInIcon';
+
         addChild(loggedInDetails, icon);
 
-        const name = createElement('span');
-        name.innerText = user.user.name;
-        name.id = 'loggedInName';
+        const name = createElement('span', {
+            innerText: user.user.name,
+            id: 'loggedInName'
+        });
+
         addChild(loggedInDetails, name);
 
         addClass(loggedInDetails, 'loggedIn');
 
         if (user.admin === true) {
-            const link = createElement('a');
-            link.href = '/app/admin/admin-panel';
-            link.innerText = 'Admin Panel';
+            const link = createElement('a', {
+                href: '/app/admin/admin-panel',
+                innerText: 'Admin Panel'
+            });
             addChild(menuBar, link);
         }
     } else {

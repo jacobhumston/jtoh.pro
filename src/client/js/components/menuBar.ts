@@ -1,5 +1,8 @@
 import { addClass, waitForElementById } from '../libs/util';
 
+/**
+ * Apply menu bar modifications.
+ */
 export async function updateMenuBar() {
     const menuBar = await waitForElementById('menuBar', { timeout: 5000 });
     if (!menuBar) return;

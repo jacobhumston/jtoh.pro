@@ -115,7 +115,10 @@ export type WaitForElementOptions = {
  */
 export function waitForElementById(id: string, options: WaitForElementOptions): Promise<HTMLElement | null> {
     return new Promise((resolve) => {
-        const interval = setInterval(() => {
+        let timer: Timer;
+        let interval: Timer;
+
+        interval = setInterval(() => {
             const element = getElementById(id);
             if (element) {
                 clearInterval(interval);
@@ -124,7 +127,7 @@ export function waitForElementById(id: string, options: WaitForElementOptions): 
             }
         }, options.interval ?? 100);
 
-        const timer = setTimeout(() => {
+        timer = setTimeout(() => {
             clearInterval(interval);
             resolve(null);
         }, options.timeout ?? 5000);
@@ -169,6 +172,7 @@ export function getPageFileName(): string {
  * @returns The generated UUID.
  */
 export function genUUID(): string {
+    /**
     let uuid = '';
     try {
         uuid = window.crypto.randomUUID();
@@ -182,6 +186,8 @@ export function genUUID(): string {
         });
     }
     return uuid;
+    */
+    return window.crypto.randomUUID();
 }
 
 /**
@@ -194,14 +200,14 @@ export function getWebIconHTML(name: string): string {
 }
 
 /**
- * Wait for the page to load.
+ * Wait for the page's DOM to load.
  */
 export function waitForPageLoad(): Promise<void> {
     return new Promise((resolve) => {
         if (document.readyState === 'complete') {
             resolve();
         } else {
-            window.addEventListener('load', () => resolve());
+            window.addEventListener('DOMContentLoaded', () => resolve());
         }
     });
 }

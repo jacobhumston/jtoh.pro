@@ -1,2 +1,2 @@
-export type gameNames = 'jtoh';
-export const gameNamesArray: gameNames[] = ['jtoh'];
+export type gameNames = 'etoh';
+export const gameNamesArray: gameNames[] = ['etoh'];

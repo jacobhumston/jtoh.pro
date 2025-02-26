@@ -3,8 +3,9 @@ import * as esbuild from 'esbuild';
 import fs from 'node:fs';
 import { minify as minifyJS } from 'terser';
 import logger from './logger';
-import { getURLHost, isDev } from './dev';
+import { getURL, getURLHost, isDev } from './dev';
 import { getPageFromId } from './static';
+import prettier from 'prettier';
 
 const formatter = new Intl.NumberFormat('en-US');
 const byteSize = (str: string) => new Blob([str]).size;
@@ -16,6 +17,8 @@ export function serveJS(app: Hono) {
 
         const pageName = getPageFromId(id) as string;
         if (pageName === null) return context.json({ error: 'Invalid version.' }, 400) as any;
+
+        const time = Date.now();
 
         const files: string[] = [];
         function addFile(dir: string) {
@@ -52,10 +55,15 @@ export function serveJS(app: Hono) {
             platform: 'browser'
         });
 
-        let code =
+        let code = result.outputFiles[0].text;
+        const originalSize = byteSize(code);
+
+        code = `(async()=>{${code}})();`;
+
+        code =
             // @ts-ignore
             (
-                await minifyJS(result.outputFiles[0].text, {
+                await minifyJS(code, {
                     mangle: true,
                     module: true,
                     toplevel: true,
@@ -95,12 +103,27 @@ export function serveJS(app: Hono) {
                 .replace(`"${file}"(){return import("${file}")}`, '');
         }
 
-        code = `// Copyright of ${getURLHost()} (c) ${new Date().getFullYear()}
-// V: ${id} - ${new Date().toDateString()}
-// Bundle Size: ${formatter.format(byteSize(code))} bytes
-\n${code}`;
-
         code = code.replace('{{pageName}}', pageName.split('.')[0]);
+
+        const size = byteSize(code);
+        let pretty = false;
+        let prettyCodeSize = 0;
+
+        if (context.req.query('pretty') === 'true') {
+            code = await prettier.format(code, { parser: 'babel' });
+            pretty = true;
+            prettyCodeSize = byteSize(code);
+        }
+
+        code = `// | Copyright   : Copyright of ${getURLHost()} (c) ${new Date().getFullYear()}. All rights reserved.
+// | Date        : ${new Date().toDateString()}
+// | Version     : ${id}
+// | Bundle Size : ${formatter.format(size)} bytes 
+// | Minified    : ${formatter.format(originalSize - size)} bytes saved
+// | Pretty      : ${pretty ? 'Yes' : 'No'} ${pretty ? `(${formatter.format(prettyCodeSize - size)} bytes increased with a total of ${formatter.format(prettyCodeSize)} bytes)` : ''}
+// | Build Time  : ${formatter.format(Date.now() - time)}ms
+// | Request URL : ${getURL()}/api/js?v=${id}
+\n${code}`;
 
         context.header('Content-Type', 'application/javascript');
         context.header('Cache-Control', 'public, max-age=31536000');

@@ -10,12 +10,12 @@ import { getTempToken } from './temptokens';
 export const discordAPIURL = 'https://discord.com/api/v10';
 export const commands = [
     {
-        name: 'jtoh',
-        description: "Juke's Towers of Hell related commands.",
+        name: 'etoh',
+        description: 'Eternal Towers of Hell related commands.',
         options: [
             {
                 name: 'card',
-                description: 'Get a JToH card.',
+                description: 'Get a EToH card.',
                 type: 1,
                 options: [
                     {
@@ -30,7 +30,7 @@ export const commands = [
             },
             {
                 name: 'embed',
-                description: 'Get a JToH embed.',
+                description: 'Get a EToH embed.',
                 type: 1,
                 options: [
                     {
@@ -101,7 +101,7 @@ export default function discordInteractions(app: Hono) {
         if (data.type === 1) {
             return context.json({ type: 1 });
         } else if (data.type === 2) {
-            if (data.data.name === 'jtoh') {
+            if (data.data.name === 'etoh') {
                 const command = data.data.options[0];
                 let url = getURLWithSlash();
                 let username = command.options[0].value;

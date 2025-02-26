@@ -11,8 +11,7 @@ export async function getWebToken(): Promise<string | undefined> {
     let captchaContainer = getElementById('captchaContainer') as HTMLElement;
 
     if (!captchaContainer) {
-        captchaContainer = createElement('div');
-        captchaContainer.id = 'captchaContainer';
+        captchaContainer = createElement('div', { id: 'captchaContainer' });
 
         const container = getElementById('container');
         if (container) {
