@@ -16,6 +16,7 @@ export function handleRequestCount(app: Hono) {
         const startOfCurrentWeek = startOfWeek(now);
         const startOfCurrentYear = startOfYear(now);
 
+        let todayCount = 0;
         let monthCount = 0;
         let weekCount = 0;
         let yearCount = 0;
@@ -24,19 +25,20 @@ export function handleRequestCount(app: Hono) {
         // @ts-ignore-next-line
         for await (const [key, value] of statsDB[game].iterator()) {
             const date = parse(key, 'MM-dd-yyyy', new UTCDate());
-            if (isAfter(date, startOfCurrentMonth) || isToday(date)) {
-                monthCount += value;
-            }
-            if (isAfter(date, startOfCurrentWeek) || isToday(date)) {
-                weekCount += value;
-            }
-            if (isAfter(date, startOfCurrentYear) || isToday(date)) {
-                yearCount += value;
-            }
+
+            if (isToday(date)) todayCount += value;
+
+            if (isAfter(date, startOfCurrentMonth) || isToday(date)) monthCount += value;
+
+            if (isAfter(date, startOfCurrentWeek) || isToday(date)) weekCount += value;
+
+            if (isAfter(date, startOfCurrentYear) || isToday(date)) yearCount += value;
+
             totalCount += value;
         }
 
         return context.json({
+            today: todayCount,
             month: monthCount,
             week: weekCount,
             year: yearCount,

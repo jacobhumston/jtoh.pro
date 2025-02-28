@@ -8,21 +8,24 @@ import { waitForElementById } from '../libs/util';
  * @param game The game to update the request counts for.
  */
 export async function updateRequestStats(game: gameNames) {
-    const week = await waitForElementById('requestStatsWeek', { timeout: 10000 }),
+    const today = await waitForElementById('requestStatsToday', { timeout: 10000 }),
+        week = await waitForElementById('requestStatsWeek', { timeout: 10000 }),
         month = await waitForElementById('requestStatsMonth', { timeout: 10000 }),
         year = await waitForElementById('requestStatsYear', { timeout: 10000 }),
         total = await waitForElementById('requestStatsTotal', { timeout: 10000 });
 
-    if (week && month && year && total) {
+    if (today && week && month && year && total) {
         const response = await fetch(`/api/request-count/${game}`)
             .then((res) => res.json())
             .catch(() => ({
+                today: 0,
                 week: 0,
                 month: 0,
                 year: 0,
                 total: 0
             }));
 
+        today.textContent = numberFormatter.format(response.today);
         week.textContent = numberFormatter.format(response.week);
         month.textContent = numberFormatter.format(response.month);
         year.textContent = numberFormatter.format(response.year);

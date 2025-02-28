@@ -304,3 +304,13 @@ export async function waitForWindowLoad(): Promise<void> {
     if (!head.classList.contains('__loaded')) return await waitForWindowLoad();
     return;
 }
+
+/**
+ * Get the URL of the websocket.
+ * @param type The type of the websocket.
+ * @returns The URL of the websocket.
+ */
+export function getWebsocketURL(type: string): string {
+    const url = new URL(window.location.href);
+    return `${url.protocol === 'https:' ? 'wss' : 'ws'}://${url.host}/api/socket?type=${type}`;
+}
