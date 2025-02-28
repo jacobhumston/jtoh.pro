@@ -142,7 +142,7 @@ export default function setupLoginAuth(app: Hono) {
         );
 
         if (failed == true) return context.redirect(getAuthLoginURL());
-        return context.redirect('/app/');
+        return context.redirect('/app/?loginRedirect=true');
     });
 
     app.get('/api/auth/logout', async (context) => {
