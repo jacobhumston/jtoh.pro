@@ -1,14 +1,11 @@
 import { Terminal } from '@xterm/xterm';
 import { WebLinksAddon } from '@xterm/addon-web-links';
-import { waitForPageLoad, getElementById } from '../libs/util';
+import { waitForPageLoad, getElementById, getWebsocketURL } from '../libs/util';
 
 export default async function () {
     await waitForPageLoad();
 
-    const url = new URL(window.location.href);
-    const websocket = new WebSocket(
-        `${url.protocol === 'https:' ? 'wss' : 'ws'}://${url.host}/api/socket?type=terminal`
-    );
+    const websocket = new WebSocket(getWebsocketURL('terminal'));
     const terminalConnectedStatus = getElementById('terminalConnectedStatus') as HTMLDivElement;
     const terminalContainer = getElementById('terminal') as HTMLDivElement;
 

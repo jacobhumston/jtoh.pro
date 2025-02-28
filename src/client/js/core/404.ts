@@ -6,11 +6,11 @@ export default async function () {
     const goBack = getElementById('goBack') as HTMLButtonElement;
     const goHome = getElementById('goHome') as HTMLButtonElement;
 
-    goBack.onclick = () => {
+    goBack.addEventListener('click', () => {
         window.history.back();
-    };
+    });
 
-    goHome.onclick = () => {
+    goHome.addEventListener('click', () => {
         window.location.href = '/';
-    };
+    });
 }
