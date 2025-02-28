@@ -65,7 +65,7 @@ export function serveJS(app: Hono) {
             (
                 await minifyJS(code, {
                     mangle: true,
-                    module: true,
+                    module: false,
                     toplevel: true,
                     compress: {
                         ecma: 2020,

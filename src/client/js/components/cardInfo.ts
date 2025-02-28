@@ -1,18 +1,20 @@
+import type { gameNames } from '../../../shared/gamelist';
 import { numberFormatter } from '../libs/formatters';
 import { createErrorPopup } from '../libs/quickElements';
 import { waitForElementById } from '../libs/util';
 
 /**
  * Update the card request counts.
+ * @param game The game to update the request counts for.
  */
-export async function updateRequestStats() {
+export async function updateRequestStats(game: gameNames) {
     const week = await waitForElementById('requestStatsWeek', { timeout: 10000 }),
         month = await waitForElementById('requestStatsMonth', { timeout: 10000 }),
         year = await waitForElementById('requestStatsYear', { timeout: 10000 }),
         total = await waitForElementById('requestStatsTotal', { timeout: 10000 });
 
     if (week && month && year && total) {
-        const response = await fetch('/api/request-count')
+        const response = await fetch(`/api/request-count/${game}`)
             .then((res) => res.json())
             .catch(() => ({
                 week: 0,
@@ -28,5 +30,19 @@ export async function updateRequestStats() {
     } else {
         createErrorPopup('Failed to update request stats, element was missing.', 4000);
         console.error('Failed to update request stats, element was missing.');
+    }
+}
+
+/**
+ * Update the card request chart image.
+ */
+export async function updateRequestChart(game: gameNames) {
+    const chart = (await waitForElementById('cardRequestChartImage', { timeout: 10000 })) as HTMLImageElement;
+
+    if (chart) {
+        chart.src = `/api/charts/card-requests/${game}?width=500&height=250`;
+    } else {
+        createErrorPopup('Failed to update request chart, element was missing.', 4000);
+        console.error('Failed to update request chart, element was missing.');
     }
 }

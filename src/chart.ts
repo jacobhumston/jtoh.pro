@@ -4,15 +4,21 @@ import { statsDB } from './db';
 import type { Hono } from 'hono';
 import { getURLHost } from './dev';
 import { clamp, drawRoundedRect } from './util';
+import { gameNamesArray, type gameNames } from './shared/gamelist';
 
 Chart.register(...registerables);
 Chart.defaults.font.family = 'Poppins';
 
 export function charts(app: Hono) {
-    app.get('/api/charts/card-requests', async (context) => {
+    app.get('/api/charts/card-requests/:game', async (context) => {
+        if (!gameNamesArray.includes(context.req.param('game') as any))
+            return context.json({ error: 'Invalid game.' }, 400);
+
+        const game = context.req.param('game') as gameNames;
+
         const data: Array<{ date: string; requests: number }> = [];
         // @ts-ignore-next-line
-        for await (const [key, value] of statsDB.iterator()) {
+        for await (const [key, value] of statsDB[game].iterator()) {
             data.push({ date: key, requests: value });
         }
 
