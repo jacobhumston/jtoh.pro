@@ -102,7 +102,37 @@ export async function addAuthUI() {
             addChild(menuBar, link);
         }
     } else {
-        loggedInDetails.innerHTML = '<a id="loginButton" href="/login">Login</a>';
+        const button = createElement('button', { id: 'loginButton', innerText: 'Login' });
+        button.addEventListener('click', () => {
+            sessionStorage.setItem('LoginRedirect', window.location.href);
+            window.location.href = '/login';
+        });
+
+        addChild(loggedInDetails, button);
+
         if (getPageFileName() === 'captcha') loggedInDetails.innerHTML = '';
+    }
+}
+
+/**
+ * Handle a login redirect if needed.
+ */
+export function handleLoginRedirect() {
+    const url = new URL(window.location.href);
+    const redirect = url.searchParams.get('loginRedirect');
+    if (redirect === 'true') {
+        const loginRedirect = sessionStorage.getItem('LoginRedirect') as string;
+        try {
+            const newURL = new URL(loginRedirect);
+            if (url.hostname === newURL.hostname) {
+                window.location.href = newURL.href;
+            }
+            sessionStorage.removeItem('LoginRedirect');
+        } catch (error) {
+            console.error(error);
+            const url = new URL(window.location.href);
+            url.searchParams.delete('loginRedirect');
+            window.history.replaceState({}, '', url.href);
+        }
     }
 }

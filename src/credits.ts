@@ -5,7 +5,7 @@ export default async function credits(app: Hono) {
     const credits: any = {
         credits: [
             {
-                info: 'Created jtoh.pro and coralted services.',
+                info: 'Created jtoh.pro and related services.',
                 userId: 2614622891
             },
             {
