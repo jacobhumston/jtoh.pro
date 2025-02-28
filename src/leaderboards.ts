@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { getOrderedDB, cardsRequestedDB, skillPointsDB } from './db';
-import type { gameNames } from './gamelist';
-import { gameNamesArray } from './gamelist';
+import type { gameNames } from './shared/gamelist';
+import { gameNamesArray } from './shared/gamelist';
 import { verifyContext } from './captcha';
 import { getSignedInRobloxUser } from './loginauth';
 

@@ -3,13 +3,17 @@ import KeyvSqlite from '@keyv/sqlite';
 import fs from 'node:fs';
 import { UTCDate } from '@date-fns/utc';
 import type { RobloxUserResult } from './roblox';
-import type { gameNames } from './gamelist';
+import { gameNamesArray, type gameNames } from './shared/gamelist';
 import { createLeadboardBlacklistFile } from './files';
 
 if (!fs.existsSync('db/')) fs.mkdirSync('db/');
 
-const statsDBSqlite = new KeyvSqlite('sqlite://db/stats.sqlite');
-const statsDB = new Keyv({ store: statsDBSqlite });
+const statsDB: Record<gameNames, Keyv> = {} as Record<gameNames, Keyv>;
+
+gameNamesArray.forEach((game) => {
+    const statsDBSqlite = new KeyvSqlite('sqlite://db/stats.sqlite');
+    statsDB[game] = new Keyv({ store: statsDBSqlite, namespace: game });
+});
 
 const cardsRequestedDBSqlite = new KeyvSqlite('sqlite://db/cardsRequested.sqlite');
 const cardsRequestedDB = new Keyv({ store: cardsRequestedDBSqlite });
@@ -20,9 +24,9 @@ const skillPointsDB = new Keyv({ store: skillPointsDBSqlite });
 const captchaBypassDBSqlite = new KeyvSqlite('sqlite://db/captchaBypass.sqlite');
 const captchaBypassDB = new Keyv({ store: captchaBypassDBSqlite });
 
-export async function updateRequestCount() {
+export async function updateRequestCount(game: gameNames) {
     const today = new UTCDate().toLocaleString('en-US').split(',')[0].replaceAll('/', '-');
-    statsDB.set(today, ((await statsDB.get<number>(today)) ?? 0) + 1);
+    statsDB[game].set(today, ((await statsDB[game].get<number>(today)) ?? 0) + 1);
 }
 
 export async function updateCardRequestCount(game: gameNames, user: RobloxUserResult) {

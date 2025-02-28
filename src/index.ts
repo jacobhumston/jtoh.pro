@@ -1,8 +1,5 @@
 import { Hono } from 'hono';
 import { GlobalFonts } from '@napi-rs/canvas';
-import { statsDB } from './db';
-import { startOfMonth, startOfWeek, startOfYear, parse, isAfter, isToday } from 'date-fns';
-import { UTCDate } from '@date-fns/utc';
 import jtoh from './gens/etoh';
 import discordInteractions, { publishDiscordCommands } from './discord';
 import redirects from './redirects';
@@ -33,6 +30,7 @@ import { secureHeaders } from 'hono/secure-headers';
 import { badgesEndpoints } from './roblox-badges';
 import credits from './credits';
 import { serveJS } from './js';
+import { handleRequestCount } from './requestcount';
 
 if (!fs.existsSync('./temp')) fs.mkdirSync('./temp');
 for (const file of fs.readdirSync('./temp')) {
@@ -132,6 +130,7 @@ jtoh(app);
 badgesEndpoints(app);
 credits(app);
 serveJS(app);
+handleRequestCount(app);
 
 app.get('/', async (context) => {
     const searchParams = new URL(context.req.url).searchParams;
@@ -143,40 +142,6 @@ app.get('/wiki/*', async (context) => {
     const path = context.req.path.slice(6);
     if (path === '' || path === '/') return context.redirect('/app/wiki');
     return context.redirect(`https://jtoh.fandom.com/wiki/${path}`);
-});
-
-app.get('/api/request-count', async (context) => {
-    const now = new UTCDate();
-    const startOfCurrentMonth = startOfMonth(now);
-    const startOfCurrentWeek = startOfWeek(now);
-    const startOfCurrentYear = startOfYear(now);
-
-    let monthCount = 0;
-    let weekCount = 0;
-    let yearCount = 0;
-    let totalCount = 0;
-
-    // @ts-ignore-next-line
-    for await (const [key, value] of statsDB.iterator()) {
-        const date = parse(key, 'MM-dd-yyyy', new UTCDate());
-        if (isAfter(date, startOfCurrentMonth) || isToday(date)) {
-            monthCount += value;
-        }
-        if (isAfter(date, startOfCurrentWeek) || isToday(date)) {
-            weekCount += value;
-        }
-        if (isAfter(date, startOfCurrentYear) || isToday(date)) {
-            yearCount += value;
-        }
-        totalCount += value;
-    }
-
-    return context.json({
-        month: monthCount,
-        week: weekCount,
-        year: yearCount,
-        total: totalCount
-    });
 });
 
 discordInteractions(app);

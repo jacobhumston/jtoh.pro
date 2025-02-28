@@ -43,6 +43,7 @@ export function createElement<K extends keyof HTMLElementTagNameMap>(
 
 /**
  * Add a child element to a parent element.
+ * This can be used in place of `parent.appendChild(child)`.
  * @param parent A parent element.
  * @param child A child element or an array of child elements.
  */
@@ -199,15 +200,22 @@ export function getWebIconHTML(name: string): string {
     return `<span class="materialSymbolsRounded">${name}</span>`;
 }
 
+let loaded = false;
+
 /**
  * Wait for the page's DOM to load.
  */
-export function waitForPageLoad(): Promise<void> {
+export async function waitForPageLoad(): Promise<void> {
+    if (loaded) return Promise.resolve();
     return new Promise((resolve) => {
         if (document.readyState === 'complete') {
+            loaded = true;
             resolve();
         } else {
-            window.addEventListener('DOMContentLoaded', () => resolve());
+            window.addEventListener('DOMContentLoaded', () => {
+                loaded = true;
+                resolve();
+            });
         }
     });
 }
@@ -285,4 +293,14 @@ export function temporarilySetElementText(element: HTMLElement, text: string): (
         element.innerHTML = originalText;
         return;
     };
+}
+
+/**
+ * Wait for the window to load.
+ */
+export async function waitForWindowLoad(): Promise<void> {
+    await wait(200);
+    const head = await getHead();
+    if (!head.classList.contains('__loaded')) return await waitForWindowLoad();
+    return;
 }

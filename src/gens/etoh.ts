@@ -397,7 +397,7 @@ export default function jtoh(app: Hono) {
                     ctx.fillText('This user has not completed any areas.', 20, 205);
                 }
 
-                updateRequestCount().catch(() => undefined);
+                updateRequestCount('etoh').catch(() => undefined);
             } else {
                 ctx.textAlign = 'left';
                 ctx.fillStyle = 'white';

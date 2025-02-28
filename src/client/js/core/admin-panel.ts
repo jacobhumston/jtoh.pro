@@ -1,5 +1,5 @@
-import type { Terminal } from '@xterm/xterm';
-import type { WebLinksAddon } from '@xterm/addon-web-links';
+import { Terminal } from '@xterm/xterm';
+import { WebLinksAddon } from '@xterm/addon-web-links';
 import { waitForPageLoad, getElementById } from '../libs/util';
 
 export default async function () {
@@ -12,11 +12,9 @@ export default async function () {
     const terminalConnectedStatus = getElementById('terminalConnectedStatus') as HTMLDivElement;
     const terminalContainer = getElementById('terminal') as HTMLDivElement;
 
-    // @ts-expect-error
     const terminal = new Terminal();
 
-    // @ts-expect-error
-    terminal.loadAddon(new WebLinksAddon.WebLinksAddon());
+    terminal.loadAddon(new WebLinksAddon());
     terminal.open(terminalContainer);
     terminal.onData((data) => websocket.send(data));
 
