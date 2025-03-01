@@ -19,11 +19,13 @@ export default async function credits(app: Hono) {
         ]
     };
 
-    for (const credit of credits.credits) {
-        credit.user = await userIdToUser(credit.userId);
-        credit.userId = undefined;
-        credit.user.profile = `https://www.roblox.com/users/${credit.user.id}/profile`;
-    }
+    (async () => {
+        for (const credit of credits.credits) {
+            credit.user = await userIdToUser(credit.userId);
+            credit.userId = undefined;
+            credit.user.profile = `https://www.roblox.com/users/${credit.user.id}/profile`;
+        }
+    })();
 
     app.get('/api/credits', (context) => {
         return context.json(credits);

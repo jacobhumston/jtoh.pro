@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { GlobalFonts } from '@napi-rs/canvas';
-import jtoh from './gens/etoh';
+import etohGen from './gens/etoh';
 import discordInteractions, { publishDiscordCommands } from './discord';
 import redirects from './redirects';
 import serveStatic from './static';
@@ -31,6 +31,7 @@ import { badgesEndpoints } from './roblox-badges';
 import credits from './credits';
 import { serveJS } from './js';
 import { handleRequestCount } from './requestcount';
+import cscdGen from './gens/cscd';
 
 if (!fs.existsSync('./temp')) fs.mkdirSync('./temp');
 for (const file of fs.readdirSync('./temp')) {
@@ -126,11 +127,13 @@ charts(app);
 blog(app);
 socketListen(app);
 serveSitemap(app);
-jtoh(app);
 badgesEndpoints(app);
 credits(app);
 serveJS(app);
 handleRequestCount(app);
+
+etohGen(app);
+cscdGen(app);
 
 app.get('/', async (context) => {
     const searchParams = new URL(context.req.url).searchParams;

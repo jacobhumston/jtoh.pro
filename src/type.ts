@@ -1,4 +1,4 @@
-export interface TowerData {
+export interface TowerDataEToH {
     completed_areas: string[];
     completed_towers: number;
     completed_types: {
@@ -43,4 +43,66 @@ export type LoggedInUser = {
     username: string;
     name: string;
     thumbnail: string;
+};
+
+export type TowerDataCSCD = {
+    completed_areas: string[];
+    completed_towers: {
+        aj: number;
+        legit: number;
+    };
+    completed_types: {
+        aj: {
+            tower?: number;
+            steeple?: number;
+            citadel?: number;
+        };
+        legit: {
+            tower?: number;
+            steeple?: number;
+            citadel?: number;
+        };
+    };
+    difficulties: {
+        [key: string]: string;
+    };
+    difficulty_colors: {
+        [key: string]: string;
+    };
+    difficulty_progress: {
+        aj: {
+            [key: string]: [number, number];
+        };
+        legit: {
+            [key: string]: [number, number];
+        };
+    };
+    donated_amount: number;
+    hardest_abbreviation: {
+        aj: string | null;
+        legit: string | null;
+    };
+    hardest_raw_difficulty: {
+        aj: number;
+        legit: number;
+    };
+    hardest_tower: {
+        aj: string | null;
+        legit: string | null;
+    };
+    has_sc_completion: {
+        aj: boolean;
+        legit: boolean;
+    };
+    id: string;
+    skill_points: {
+        aj: number;
+        legit: number;
+    };
+    sub_difficulties: {
+        [key: string]: string;
+    };
+    total_towers: number;
+    username: string;
+    error: string | undefined;
 };
