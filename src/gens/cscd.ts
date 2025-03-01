@@ -1,23 +1,23 @@
 import { createCanvas, loadImage } from '@napi-rs/canvas';
 import { centerText, colorText, drawIconWithText, drawRoundedRect, drawRoundedRectv2, roundedRect } from '../util';
-import type { TowerDataEToH } from '../type';
+import type { TowerDataCSCD } from '../type';
 import { v4 } from 'uuid';
 import Color from 'color';
 import { Hono } from 'hono';
 import {
     updateRequestCount,
     updateCardRequestCount,
-    updateSkillPoints,
     getPlaceInLeaderboard,
     skillPointsDB,
-    getTotalInLeaderboard
+    getTotalInLeaderboard,
+    updateSkillPoints
 } from '../db';
 import images from '../images';
 import { parseRobloxAccount } from '../loginauth';
 import { towerStatsToken } from '../tokens';
 
-export default function etohGen(app: Hono) {
-    app.get('/:user', async (context) => {
+export default function cscdGen(app: Hono) {
+    app.get('/cscd/:user', async (context) => {
         const providedUser: string = context.req.param('user').slice(0, 20);
         const data = await parseRobloxAccount(context);
         const formatter = new Intl.NumberFormat('en-US');
@@ -92,8 +92,8 @@ export default function etohGen(app: Hono) {
             //});
 
             let loadTime = Date.now();
-            let towerStats: TowerDataEToH | undefined = await fetch(
-                `https://api.towerstats.com/?id=${data.id}&apiKey=${towerStatsToken}`
+            let towerStats: TowerDataCSCD | undefined = await fetch(
+                `https://api.towerstats.com/?id=${data.id}&apiKey=${towerStatsToken}&game=cscd`
             )
                 .then((res) => {
                     loadTime = (Date.now() - loadTime) / 1000;
@@ -132,8 +132,8 @@ export default function etohGen(app: Hono) {
             ctx.restore();
 
             if (towerStats !== undefined) {
-                updateCardRequestCount('etoh', data).catch(() => undefined);
-                await updateSkillPoints('etoh', data, towerStats.skill_points).catch(() => undefined);
+                updateCardRequestCount('cscd', data).catch(() => undefined);
+                await updateSkillPoints('cscd', data, towerStats.skill_points.legit).catch(() => undefined);
 
                 ctx.textAlign = 'left';
                 ctx.fillStyle = 'white';
@@ -167,8 +167,8 @@ export default function etohGen(app: Hono) {
                     towerStats.hardest_raw_difficulty !== undefined &&
                     towerStats.hardest_raw_difficulty !== null
                 ) {
-                    let text = towerStats.hardest_tower.replaceAll(' ', '_');
-                    if (text.length > 35) text = towerStats.hardest_abbreviation;
+                    let text = (towerStats.hardest_tower.legit ?? '').replaceAll(' ', '_');
+                    if (text.length > 35) text = towerStats.hardest_abbreviation.legit ?? '';
                     const raw = towerStats.hardest_raw_difficulty.toString();
                     colorText(
                         ctx,
@@ -224,16 +224,21 @@ export default function etohGen(app: Hono) {
                     const startY = 245;
                     ctx.fillStyle = '#5a5a5a';
                     ctx.fillRect(20, startY, 660, 5);
-                    const difficultyOrder = [];
+
+                    let difficultyOrder = [];
                     for (const [key, string] of Object.entries(towerStats.difficulties)) {
-                        if (parseInt(key) > 11) continue;
+                        //if (parseInt(key) > 11) continue;
+                        if (towerStats.difficulty_progress.legit[string] === undefined) continue;
                         difficultyOrder[parseInt(key) - 1] = string;
                     }
+                    difficultyOrder = difficultyOrder.filter((e) => e !== undefined && e !== null);
+
                     let totalCompleted = 0;
                     let totalTotal = 0;
                     difficultyOrder.forEach((difficulty, index) => {
                         const difficultyColor = towerStats.difficulty_colors[difficulty];
-                        const difficultyAmount = towerStats.difficulty_progress[difficulty];
+                        const difficultyAmount = towerStats.difficulty_progress.legit[difficulty];
+
                         // 700 by 300
                         const completed = difficultyAmount[0];
                         const total = difficultyAmount[1];
@@ -282,7 +287,7 @@ export default function etohGen(app: Hono) {
                     ctx.fillText(`${towerStats.total_towers} Total`, 640, startY + 48);
                     ctx.textAlign = 'center';
                     ctx.fillText(
-                        `${Math.floor((towerStats.completed_towers / towerStats.total_towers) * 100)}% Progress`,
+                        `${Math.floor((towerStats.completed_towers.legit / towerStats.total_towers) * 100)}% Progress`,
                         680 / 2,
                         startY + 48
                     );
@@ -298,7 +303,7 @@ export default function etohGen(app: Hono) {
                 ctx.fillStyle = '#bdbdbd';
                 ctx.font = 'bold 15px Poppins, Twemoji';
                 ctx.fillText(
-                    `${towerStats.completed_types.steeple ?? 0} Steeples, ${towerStats.completed_types.tower ?? 0} Towers, ${towerStats.completed_types.citadel ?? 0} Citadels`,
+                    `${towerStats.completed_types.legit.steeple ?? 0} Steeples, ${towerStats.completed_types.legit.tower ?? 0} Towers, ${towerStats.completed_types.legit.citadel ?? 0} Citadels`,
                     20,
                     155
                 );
@@ -312,7 +317,8 @@ export default function etohGen(app: Hono) {
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#bdbdbd';
                 ctx.font = 'bold 15px Poppins, Twemoji';
-                const skillPointsString = formatter.format(towerStats.skill_points);
+
+                const skillPointsString = formatter.format(towerStats.skill_points.legit);
                 const skillPointsString1 = skillPointsString.split('.')[0];
                 const skillPointsString2 = skillPointsString.split('.')[1];
 
@@ -353,9 +359,9 @@ export default function etohGen(app: Hono) {
                 const spRank = ((value: number | null) => {
                     if (value === null) return 'N/A';
                     return `#${formatter.format(value)}`;
-                })(await getPlaceInLeaderboard(skillPointsDB, 'etoh', data).catch(() => undefined));
+                })(await getPlaceInLeaderboard(skillPointsDB, 'cscd', data).catch(() => undefined));
                 const spTotal =
-                    `out of ${formatter.format(await getTotalInLeaderboard(skillPointsDB, 'etoh'))}`.replaceAll(
+                    `out of ${formatter.format(await getTotalInLeaderboard(skillPointsDB, 'cscd'))}`.replaceAll(
                         ' ',
                         '_'
                     );
@@ -397,7 +403,7 @@ export default function etohGen(app: Hono) {
                     ctx.fillText('This user has not completed any areas.', 20, 205);
                 }
 
-                updateRequestCount('etoh').catch(() => undefined);
+                updateRequestCount('cscd').catch(() => undefined);
             } else {
                 ctx.textAlign = 'left';
                 ctx.fillStyle = 'white';
@@ -498,7 +504,7 @@ export default function etohGen(app: Hono) {
         }
     });
 
-    app.get('/embed/:user', async (context) => {
+    app.get('/cscd/embed/:user', async (context) => {
         const providedUser: string = context.req.param('user').slice(0, 20);
         const data = await parseRobloxAccount(context);
 
@@ -509,11 +515,11 @@ export default function etohGen(app: Hono) {
                 `<html>
                     <head> <!-- ${new Date().toISOString()} --!> 
                         <meta property="og:title" content="Stats for ${data.displayName}">
-                        <meta property="og:description" content="Viewing @${data.name}'s Eternal Towers of Hell stats. Click the link above to view more stats.">
-                        <meta property="og:image" content="${new URL(context.req.url).origin}/${data.name}?nocache=${v4()}">
-                        <meta property="og:type" content="image"><meta property="og:url" content="https://towerstats.com/etoh?username=${data.name}">
+                        <meta property="og:description" content="Viewing @${data.name}'s Caleb's Soul Crushing Domain stats. Click the link above to view more stats.">
+                        <meta property="og:image" content="${new URL(context.req.url).origin}/cscd/${data.name}?nocache=${v4()}">
+                        <meta property="og:type" content="image"><meta property="og:url" content="https://towerstats.com/cscd?username=${data.name}">
                         <meta property="twitter:card" content="summary_large_image">
-                        <meta http-equiv="refresh" content="0; url=https://towerstats.com/etoh?username=${data.name}" />
+                        <meta http-equiv="refresh" content="0; url=https://towerstats.com/cscd?username=${data.name}" />
                         <style>
                             body,html{background-color:#000000;}
                         </style>
@@ -523,7 +529,7 @@ export default function etohGen(app: Hono) {
         }
     });
 
-    app.get('/e/:user', async (context) => {
-        return context.redirect('/embed/' + context.req.param('user'));
+    app.get('/cscd/e/:user', async (context) => {
+        return context.redirect('/cscd/embed/' + context.req.param('user'));
     });
 }

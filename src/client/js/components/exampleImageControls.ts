@@ -68,11 +68,13 @@ export async function handleImageExampleControls(path: string) {
         updateOutput();
     }
 
+    /** Doesn't work?
     image.addEventListener('error', () => {
         if (image.src !== '' && image.src !== '/loveliestjacob') {
             image.src = '/loveliestjacob';
         }
     });
+    */
 
     copyImageURLButton.addEventListener('click', async () => {
         if (isDebounceActive('copyImageURL')) return;
