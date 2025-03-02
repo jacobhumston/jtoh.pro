@@ -135,6 +135,9 @@ export default function cscdGen(app: Hono) {
                 updateCardRequestCount('cscd', data).catch(() => undefined);
                 await updateSkillPoints('cscd', data, towerStats.skill_points.legit).catch(() => undefined);
 
+                towerStats.difficulty_colors['Nil'] = towerStats.difficulty_colors['nil'];
+                towerStats.difficulty_colors_outlines['Nil'] = towerStats.difficulty_colors_outlines['nil'];
+
                 ctx.textAlign = 'left';
                 ctx.fillStyle = 'white';
                 ctx.font = 'bold 25px Poppins, Twemoji';
@@ -159,17 +162,25 @@ export default function cscdGen(app: Hono) {
                 ctx.font = '18px Poppins';
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#bdbdbd';
-                if (
-                    towerStats.hardest_abbreviation !== null &&
-                    towerStats.hardest_tower !== null &&
-                    towerStats.hardest_abbreviation !== undefined &&
-                    towerStats.hardest_tower !== undefined &&
-                    towerStats.hardest_raw_difficulty !== undefined &&
-                    towerStats.hardest_raw_difficulty !== null
-                ) {
-                    let text = (towerStats.hardest_tower.legit ?? '').replaceAll(' ', '_');
-                    if (text.length > 35) text = towerStats.hardest_abbreviation.legit ?? '';
-                    const raw = towerStats.hardest_raw_difficulty.toString();
+
+                const usingAJ = towerStats.hardest_tower.legit ? false : towerStats.hardest_tower.aj ? true : false;
+                const valueWord = usingAJ ? 'aj' : 'legit';
+
+                if (towerStats.hardest_tower.aj || towerStats.hardest_tower.legit) {
+                    if (usingAJ) {
+                        ctx.fillStyle = Color('#bdbdbd').darken(0.7).hex();
+                        drawRoundedRect(ctx, 10, 10, 95, 30, 15);
+
+                        ctx.fillStyle = '#78d663';
+                        ctx.fillText('Using AJ', 18, 30);
+                    }
+
+                    ctx.fillStyle = '#bdbdbd';
+
+                    const hardestTowerString = towerStats.hardest_tower[valueWord] ?? '';
+                    let text = hardestTowerString.replaceAll(' ', '_');
+                    if (text.length > 35) text = towerStats.hardest_abbreviation[valueWord] ?? '';
+                    const raw = towerStats.hardest_raw_difficulty[valueWord].toString();
                     colorText(
                         ctx,
                         `Hardest tower is ${text} (${raw})`,
@@ -183,7 +194,11 @@ export default function cscdGen(app: Hono) {
                                 ],
                                 beforeCallback: (x, w, c) => {
                                     ctx.font = 'bold 18px Poppins';
-                                    const color = Color(c);
+                                    const color = Color(
+                                        towerStats.difficulty_colors_outlines[
+                                            towerStats.difficulties[raw.split('.')[0]]
+                                        ] ?? c
+                                    );
                                     ctx.strokeStyle = color.darken(0.5).hex();
                                     ctx.globalAlpha = 0.5;
                                     ctx.lineWidth = 3;
@@ -228,7 +243,7 @@ export default function cscdGen(app: Hono) {
                     let difficultyOrder = [];
                     for (const [key, string] of Object.entries(towerStats.difficulties)) {
                         //if (parseInt(key) > 11) continue;
-                        if (towerStats.difficulty_progress.legit[string] === undefined) continue;
+                        if (towerStats.difficulty_progress[valueWord][string] === undefined) continue;
                         difficultyOrder[parseInt(key) - 1] = string;
                     }
                     difficultyOrder = difficultyOrder.filter((e) => e !== undefined && e !== null);
@@ -237,7 +252,8 @@ export default function cscdGen(app: Hono) {
                     let totalTotal = 0;
                     difficultyOrder.forEach((difficulty, index) => {
                         const difficultyColor = towerStats.difficulty_colors[difficulty];
-                        const difficultyAmount = towerStats.difficulty_progress.legit[difficulty];
+                        const outLineColor = towerStats.difficulty_colors_outlines[difficulty];
+                        const difficultyAmount = towerStats.difficulty_progress[valueWord][difficulty];
 
                         // 700 by 300
                         const completed = difficultyAmount[0];
@@ -246,14 +262,16 @@ export default function cscdGen(app: Hono) {
                         totalTotal += total;
                         const width = (completed / total) * (length / difficultyOrder.length);
                         const startX = (700 - length) / 2 + index * (length / difficultyOrder.length);
-                        ctx.fillStyle = Color(difficultyColor).darken(0.75).hex();
+                        ctx.fillStyle = Color(outLineColor ?? difficultyColor)
+                            .darken(0.75)
+                            .hex();
                         ctx.fillRect(startX, startY, length / difficultyOrder.length, 5);
                         ctx.fillStyle = difficultyColor;
                         ctx.fillRect(startX, startY, width, 5);
                         ctx.textAlign = 'left';
                         ctx.font = 'bold 16px Poppins';
                         {
-                            const color = Color(difficultyColor);
+                            const color = Color(outLineColor ?? difficultyColor);
                             ctx.strokeStyle = color.darken(0.5).hex();
                             ctx.globalAlpha = 0.5;
                             ctx.lineWidth = 3;
@@ -262,6 +280,7 @@ export default function cscdGen(app: Hono) {
                             ctx.strokeText(`${Math.floor((completed / total) * 100)}%`, startX, startY - 6, 98);
                             ctx.globalAlpha = 1;
                         }
+                        ctx.fillStyle = difficultyColor;
                         ctx.fillText(`${Math.floor((completed / total) * 100)}%`, startX, startY - 6);
                         ctx.fillStyle = new Color('#bdbdbd').darken(0.5).hex();
                         ctx.font = 'bold 15px Poppins';
@@ -282,12 +301,12 @@ export default function cscdGen(app: Hono) {
                     ctx.textAlign = 'left';
                     ctx.fillStyle = '#e3e3e3';
                     ctx.font = 'bold 15px Poppins';
-                    ctx.fillText(`${towerStats.completed_towers} Completed`, 60, startY + 48);
+                    ctx.fillText(`${towerStats.completed_towers[valueWord]} Completed`, 60, startY + 48);
                     ctx.textAlign = 'right';
                     ctx.fillText(`${towerStats.total_towers} Total`, 640, startY + 48);
                     ctx.textAlign = 'center';
                     ctx.fillText(
-                        `${Math.floor((towerStats.completed_towers.legit / towerStats.total_towers) * 100)}% Progress`,
+                        `${Math.floor((towerStats.completed_towers[valueWord] / towerStats.total_towers) * 100)}% Progress`,
                         680 / 2,
                         startY + 48
                     );
@@ -303,7 +322,7 @@ export default function cscdGen(app: Hono) {
                 ctx.fillStyle = '#bdbdbd';
                 ctx.font = 'bold 15px Poppins, Twemoji';
                 ctx.fillText(
-                    `${towerStats.completed_types.legit.steeple ?? 0} Steeples, ${towerStats.completed_types.legit.tower ?? 0} Towers, ${towerStats.completed_types.legit.citadel ?? 0} Citadels`,
+                    `${towerStats.completed_types[valueWord].steeple ?? 0} Steeples, ${towerStats.completed_types[valueWord].tower ?? 0} Towers, ${towerStats.completed_types[valueWord].citadel ?? 0} Citadels`,
                     20,
                     155
                 );
@@ -318,7 +337,7 @@ export default function cscdGen(app: Hono) {
                 ctx.fillStyle = '#bdbdbd';
                 ctx.font = 'bold 15px Poppins, Twemoji';
 
-                const skillPointsString = formatter.format(towerStats.skill_points.legit);
+                const skillPointsString = formatter.format(towerStats.skill_points[valueWord]);
                 const skillPointsString1 = skillPointsString.split('.')[0];
                 const skillPointsString2 = skillPointsString.split('.')[1];
 
@@ -356,28 +375,32 @@ export default function cscdGen(app: Hono) {
                     155
                 );
                 */
-                const spRank = ((value: number | null) => {
-                    if (value === null) return 'N/A';
-                    return `#${formatter.format(value)}`;
-                })(await getPlaceInLeaderboard(skillPointsDB, 'cscd', data).catch(() => undefined));
-                const spTotal =
-                    `out of ${formatter.format(await getTotalInLeaderboard(skillPointsDB, 'cscd'))}`.replaceAll(
-                        ' ',
-                        '_'
+                if (!usingAJ) {
+                    const spRank = ((value: number | null) => {
+                        if (value === null) return 'N/A';
+                        return `#${formatter.format(value)}`;
+                    })(await getPlaceInLeaderboard(skillPointsDB, 'cscd', data).catch(() => undefined));
+                    const spTotal =
+                        `out of ${formatter.format(await getTotalInLeaderboard(skillPointsDB, 'cscd'))}`.replaceAll(
+                            ' ',
+                            '_'
+                        );
+                    colorText(
+                        ctx,
+                        `${spRank} ${spTotal}`,
+                        [
+                            {
+                                string: spTotal,
+                                color: '#7c7c7c'
+                            }
+                        ],
+                        475,
+                        155,
+                        '#bdbdbd'
                     );
-                colorText(
-                    ctx,
-                    `${spRank} ${spTotal}`,
-                    [
-                        {
-                            string: spTotal,
-                            color: '#7c7c7c'
-                        }
-                    ],
-                    475,
-                    155,
-                    '#bdbdbd'
-                );
+                } else {
+                    ctx.fillText('Ineligible', 475, 155);
+                }
 
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#f8f8f8';
