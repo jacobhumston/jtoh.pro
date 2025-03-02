@@ -171,7 +171,7 @@ export default function cscdGen(app: Hono) {
 
                 const valueWord = usingAJ ? 'aj' : 'legit';
 
-                if (towerStats.hardest_tower.aj || towerStats.hardest_tower.legit) {
+                if (towerStats.hardest_tower[valueWord]) {
                     if (usingAJ) {
                         ctx.fillStyle = Color('#bdbdbd').darken(0.7).hex();
                         drawRoundedRect(ctx, 10, 10, 95, 30, 15);
@@ -579,5 +579,13 @@ export default function cscdGen(app: Hono) {
         if (mode === 'aj') query = '?mode=aj';
         if (mode === 'legit') query = '?mode=legit';
         return context.redirect('/cscd/embed/' + context.req.param('user') + query);
+    });
+
+    app.get('/c/*', async (context) => {
+        const mode = context.req.query('mode') ?? '';
+        let query = '';
+        if (mode === 'aj') query = '?mode=aj';
+        if (mode === 'legit') query = '?mode=legit';
+        return context.redirect(context.req.path.replace('/c/', '/cscd/') + query);
     });
 }
