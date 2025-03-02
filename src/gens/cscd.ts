@@ -163,7 +163,12 @@ export default function cscdGen(app: Hono) {
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#bdbdbd';
 
-                const usingAJ = towerStats.hardest_tower.legit ? false : towerStats.hardest_tower.aj ? true : false;
+                let usingAJ = towerStats.hardest_tower.legit ? false : towerStats.hardest_tower.aj ? true : false;
+
+                const modeQuery = context.req.query('mode') ?? '';
+                if (modeQuery === 'aj') usingAJ = true;
+                if (modeQuery === 'legit') usingAJ = false;
+
                 const valueWord = usingAJ ? 'aj' : 'legit';
 
                 if (towerStats.hardest_tower.aj || towerStats.hardest_tower.legit) {
@@ -501,16 +506,20 @@ export default function cscdGen(app: Hono) {
             ctx.fillStyle = '#986cba';
             drawRoundedRectv2(
                 ctx,
-                700 - (ctx.measureText(`jtoh.pro/${data.name}`).width + 55),
+                700 - (ctx.measureText(`jtoh.pro/cscd/${data.name}`).width + 55),
                 -10,
-                ctx.measureText(`jtoh.pro/${data.name}`).width + 18,
+                ctx.measureText(`jtoh.pro/cscd/${data.name}`).width + 18,
                 35,
                 { bottomLeft: 10, bottomRight: 0, topLeft: 0, topRight: 0 }
             );
 
             ctx.fillStyle = '#ffffff';
             ctx.textAlign = 'left';
-            ctx.fillText(`jtoh.pro/${data.name}`, 700 - (ctx.measureText(`jtoh.pro/${data.name}`).width + 55) + 10, 15);
+            ctx.fillText(
+                `jtoh.pro/cscd/${data.name}`,
+                700 - (ctx.measureText(`jtoh.pro/cscd/${data.name}`).width + 55) + 10,
+                15
+            );
 
             ctx.fillStyle = '#a8a8a8';
             ctx.font = 'italic 10px Poppins';
@@ -531,15 +540,27 @@ export default function cscdGen(app: Hono) {
         const providedUser: string = context.req.param('user').slice(0, 20);
         const data = await parseRobloxAccount(context);
 
+        const mode = context.req.query('mode') ?? '';
+        let query = '';
+        let query2 = '';
+        if (mode === 'aj') {
+            query = '?mode=aj';
+            query2 = '&mode=aj';
+        }
+        if (mode === 'legit') {
+            query = '?mode=legit';
+            query2 = '&mode=legit';
+        }
+
         if (data === undefined) {
-            return context.redirect(`/${providedUser}`);
+            return context.redirect(`/cscd/${providedUser}${query}`);
         } else {
             return context.html(
                 `<html>
                     <head> <!-- ${new Date().toISOString()} --!> 
                         <meta property="og:title" content="Stats for ${data.displayName}">
                         <meta property="og:description" content="Viewing @${data.name}'s Caleb's Soul Crushing Domain stats. Click the link above to view more stats.">
-                        <meta property="og:image" content="${new URL(context.req.url).origin}/cscd/${data.name}?nocache=${v4()}">
+                        <meta property="og:image" content="${new URL(context.req.url).origin}/cscd/${data.name}?nocache=${v4()}${query2}">
                         <meta property="og:type" content="image"><meta property="og:url" content="https://towerstats.com/cscd?username=${data.name}">
                         <meta property="twitter:card" content="summary_large_image">
                         <meta http-equiv="refresh" content="0; url=https://towerstats.com/cscd?username=${data.name}" />
@@ -553,6 +574,10 @@ export default function cscdGen(app: Hono) {
     });
 
     app.get('/cscd/e/:user', async (context) => {
-        return context.redirect('/cscd/embed/' + context.req.param('user'));
+        const mode = context.req.query('mode') ?? '';
+        let query = '';
+        if (mode === 'aj') query = '?mode=aj';
+        if (mode === 'legit') query = '?mode=legit';
+        return context.redirect('/cscd/embed/' + context.req.param('user') + query);
     });
 }

@@ -63,6 +63,23 @@ export const commands = [
                         required: true,
                         min_length: 3,
                         max_length: 20
+                    },
+                    {
+                        name: 'mode',
+                        description:
+                            'Change the mode, the default will be AJ unless you have beaten a tower legitimately.',
+                        type: 3,
+                        required: false,
+                        choices: [
+                            {
+                                name: 'All Jumps',
+                                value: 'aj'
+                            },
+                            {
+                                name: 'Legit',
+                                value: 'legit'
+                            }
+                        ]
                     }
                 ]
             },
@@ -78,6 +95,23 @@ export const commands = [
                         required: true,
                         min_length: 3,
                         max_length: 20
+                    },
+                    {
+                        name: 'mode',
+                        description:
+                            'Change the mode, the default will be AJ unless you have beaten a tower legitimately.',
+                        type: 3,
+                        required: false,
+                        choices: [
+                            {
+                                name: 'All Jumps',
+                                value: 'aj'
+                            },
+                            {
+                                name: 'Legit',
+                                value: 'legit'
+                            }
+                        ]
                     }
                 ]
             }
@@ -143,6 +177,7 @@ export default function discordInteractions(app: Hono) {
                 const command = data.data.options[0];
                 let url = getURLWithSlash();
                 let username = command.options[0].value;
+
                 if (command.name === 'card') {
                     url += username;
                 } else if (command.name === 'embed') {
@@ -233,10 +268,14 @@ export default function discordInteractions(app: Hono) {
                 const command = data.data.options[0];
                 let url = getURLWithSlash();
                 let username = command.options[0].value;
+                let mode = command.options[1].value ?? undefined;
+
+                const query = mode ? `&mode=${mode}` : '';
+
                 if (command.name === 'card') {
-                    url += 'cscd/' + username;
+                    url += 'cscd/' + username + query;
                 } else if (command.name === 'embed') {
-                    url += `cscd/embed/${username}`;
+                    url += `cscd/embed/${username}` + query;
                 }
 
                 username = encodeURIComponent(username);

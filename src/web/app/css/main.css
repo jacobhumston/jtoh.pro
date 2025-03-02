@@ -263,7 +263,8 @@ code {
 }
 
 .interactionFlex button,
-.interactionFlex input {
+.interactionFlex input,
+.interactionFlex select {
     flex-grow: 1;
     display: inline-block;
     max-width: 100%;
