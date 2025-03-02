@@ -268,9 +268,9 @@ export default function discordInteractions(app: Hono) {
                 const command = data.data.options[0];
                 let url = getURLWithSlash();
                 let username = command.options[0].value;
-                let mode = command.options[1].value ?? undefined;
+                let mode = (command.options[1] ?? { value: undefined }).value ?? undefined;
 
-                const query = mode ? `&mode=${mode}` : '';
+                const query = mode ? `?mode=${mode}` : '';
 
                 if (command.name === 'card') {
                     url += 'cscd/' + username + query;
