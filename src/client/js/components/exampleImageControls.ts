@@ -7,6 +7,7 @@ import {
     createElement,
     genUUID,
     getElementById,
+    getElementByIdExpected,
     getWebIconHTML,
     removeClass,
     temporarilySetElementText,
@@ -28,6 +29,17 @@ export async function handleImageExampleControls(path: string) {
     const copyImageURLButton = getElementById('exampleInputCopyURL') as HTMLButtonElement;
     const downloadButton = getElementById('exampleInputDownload') as HTMLButtonElement;
     const image = getElementById('exampleImageOutput') as HTMLImageElement;
+
+    const cscdModeSelection = getElementByIdExpected('cscdModeSelection', 'select');
+    let cscdMode: undefined | string = undefined;
+
+    if (cscdModeSelection) {
+        cscdMode = cscdModeSelection.value;
+        cscdModeSelection.addEventListener('change', () => {
+            cscdMode = cscdModeSelection?.value;
+            updateOutput();
+        });
+    }
 
     if (!inputBox || !refreshButton || !copyImageButton || !copyImageURLButton || !downloadButton || !image) {
         await createErrorPopup('Failed to load example controls!', 5000);
@@ -51,7 +63,8 @@ export async function handleImageExampleControls(path: string) {
         image.src =
             getPath(inputBox.value.trim() === '' ? 'loveliestjacob' : undefined) +
             '?nocache=' +
-            genUUID().split('-')[0];
+            genUUID().split('-')[0] +
+            (cscdMode ? `&mode=${cscdMode}` : '');
     }
 
     inputBox.addEventListener('keypress', (event) => {
