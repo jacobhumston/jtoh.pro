@@ -69,6 +69,9 @@ export type TowerDataCSCD = {
     difficulty_colors: {
         [key: string]: string;
     };
+    difficulty_colors_outlines: {
+        [key: string]: string | null;
+    };
     difficulty_progress: {
         aj: {
             [key: string]: [number, number];

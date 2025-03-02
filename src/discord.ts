@@ -46,6 +46,44 @@ export const commands = [
         ],
         contexts: [0, 1, 2],
         integration_types: [0, 1]
+    },
+    {
+        name: 'cscd',
+        description: "Caleb's Soul Crushing Domain related commands.",
+        options: [
+            {
+                name: 'card',
+                description: 'Get a CSCD card.',
+                type: 1,
+                options: [
+                    {
+                        name: 'username',
+                        description: 'The Roblox username of the player.',
+                        type: 3,
+                        required: true,
+                        min_length: 3,
+                        max_length: 20
+                    }
+                ]
+            },
+            {
+                name: 'embed',
+                description: 'Get a CSCD embed.',
+                type: 1,
+                options: [
+                    {
+                        name: 'username',
+                        description: 'The Roblox username of the player.',
+                        type: 3,
+                        required: true,
+                        min_length: 3,
+                        max_length: 20
+                    }
+                ]
+            }
+        ],
+        contexts: [0, 1, 2],
+        integration_types: [0, 1]
     }
 ];
 
@@ -144,7 +182,97 @@ export default function discordInteractions(app: Hono) {
                                 type: 2,
                                 style: 5,
                                 label: 'View towerstats.com Profile',
-                                url: `${getURL()}/towerstats/jtoh/${username}`
+                                url: `${getURL()}/towerstats/etoh/${username}`
+                            }
+                        ]
+                    }
+                ];
+
+                if (command.name === 'embed') {
+                    return context.json({
+                        type: 4,
+                        data: {
+                            content: url,
+                            components: buttons
+                        }
+                    });
+                } else {
+                    new Promise(async () => {
+                        const image = await fetch(url + `&rlb-token=${getTempToken('rlb-token')}`);
+                        const file = new File([await image.blob()], 'card.png', { type: 'image/png' });
+                        const formData = new FormData();
+                        formData.append(
+                            'payload_json',
+                            JSON.stringify({
+                                components: buttons,
+                                attachments: [
+                                    {
+                                        id: 0,
+                                        filename: 'card.png'
+                                    }
+                                ]
+                            })
+                        );
+                        formData.append('files[0]', file, 'card.png');
+                        await fetch(
+                            `${discordAPIURL}/webhooks/${discordInteractionsApplicationId}/${data.token}/messages/@original`,
+                            {
+                                body: formData,
+                                headers: {
+                                    Authorization: `Bot ${discordInteractionsToken}`
+                                },
+                                method: 'PATCH'
+                            }
+                        ).catch(logger.error);
+                    });
+                    return context.json({
+                        type: 5
+                    });
+                }
+            } else if (data.data.name === 'cscd') {
+                const command = data.data.options[0];
+                let url = getURLWithSlash();
+                let username = command.options[0].value;
+                if (command.name === 'card') {
+                    url += 'cscd/' + username;
+                } else if (command.name === 'embed') {
+                    url += `cscd/embed/${username}`;
+                }
+
+                username = encodeURIComponent(username);
+
+                if (!url.includes('?')) {
+                    url += `?nocache=${v4().split('-')[0]}`;
+                } else {
+                    url += `&nocache=${v4().split('-')[0]}`;
+                }
+
+                const buttons = [
+                    {
+                        type: 1,
+                        components: [
+                            {
+                                type: 2,
+                                style: 5,
+                                label: 'Open in Browser',
+                                url: url
+                            },
+                            {
+                                type: 2,
+                                style: 5,
+                                label: getURLHost(),
+                                url: getURL()
+                            }
+                        ]
+                    },
+                    {
+                        type: 1,
+                        components: [
+                            {
+                                type: 2,
+                                style: 5,
+                                label: 'View towerstats.com Profile',
+                                url: `${getURL()}/towerstats/cscd/${username}`
                             }
                         ]
                     }
