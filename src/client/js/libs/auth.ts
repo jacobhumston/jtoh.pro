@@ -1,5 +1,13 @@
 import { createErrorPopup } from './quickElements';
-import { getElementById, getPageFileName, waitForElementById, createElement, addChild, addClass } from './util';
+import {
+    getElementById,
+    getPageFileName,
+    waitForElementById,
+    createElement,
+    addChild,
+    addClass,
+    getWebIconHTML
+} from './util';
 
 /**
  * Represents a user.
@@ -71,6 +79,24 @@ export async function addAuthUI() {
         const menuBar = getElementById('menuBar');
         if (!menuBar) return;
 
+        const themeContainer = getElementById('themeContainer');
+        if (!themeContainer) return;
+
+        const loggedInDetails = getElementById('loggedInDetails');
+        if (!loggedInDetails) return;
+
+        const settingsButton = createElement('button', {
+            id: 'settingsOpener',
+            innerHTML: getWebIconHTML('settings'),
+            type: 'button'
+        });
+
+        settingsButton.addEventListener('click', () => {
+            window.location.href = '/app/account/settings';
+        });
+
+        themeContainer.insertBefore(settingsButton, loggedInDetails);
+
         const icon = createElement('img', {
             src: user.user.thumbnail,
             alt: 'User Icon',
@@ -83,14 +109,12 @@ export async function addAuthUI() {
             }
         };
 
-        addChild(loggedInDetails, icon);
-
         const name = createElement('span', {
             innerText: user.user.name,
             id: 'loggedInName'
         });
 
-        addChild(loggedInDetails, name);
+        addChild(loggedInDetails, [icon, name]);
 
         addClass(loggedInDetails, 'loggedIn');
 
