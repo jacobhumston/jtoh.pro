@@ -1046,3 +1046,12 @@ a {
 #settingsOpener {
     margin-left: 10px;
 }
+
+.accountSettingsHeader {
+    margin-bottom: 5px;
+    color: var(--color-text);
+}
+
+.accountSettingsSplit {
+    margin-bottom: 25px;
+}

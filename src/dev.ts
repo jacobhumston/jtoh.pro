@@ -1,4 +1,3 @@
-// @ts-expect-error
 import { parseArgs } from 'util';
 import process from 'node:process';
 import { argv } from 'bun';

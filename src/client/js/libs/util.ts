@@ -29,15 +29,21 @@ export function removeClass(element: HTMLElement, className: string | string[]):
 /**
  * Create an element with the specified tag and properties.
  * @param tag The tag of the element to create.
- * @param properties The properties to assign to the element.
+ * @param properties The properties to assign to the element, if any.
+ * @param classes The classes to add to the element, if any.
+ * @param children The children to add to the element, if any.
  * @returns The created element.
  */
 export function createElement<K extends keyof HTMLElementTagNameMap>(
     tag: K,
-    properties?: Partial<HTMLElementTagNameMap[K]>
+    properties?: Partial<HTMLElementTagNameMap[K]>,
+    classes?: string | string[],
+    children?: HTMLElement | HTMLElement[]
 ): HTMLElementTagNameMap[K] {
     const element = document.createElement(tag) as HTMLElementTagNameMap[K];
     if (properties) Object.assign(element, properties);
+    if (classes) addClass(element, classes);
+    if (children) addChild(element, children);
     return element;
 }
 

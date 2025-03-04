@@ -130,7 +130,12 @@ export default async function serveStatic(app: Hono) {
         if (fileExt === '.ts') fileExt = '.js';
 
         context.header('Content-Type', mime.lookup(fileExt) || 'application/octet-stream');
-        context.header('Cache-Control', 'public, max-age=31536000');
+
+        if (!isDev) {
+            context.header('Cache-Control', 'public, max-age=31536000');
+        } else {
+            context.header('Cache-Control', 'no-store');
+        }
 
         return context.body(file.buffer.slice(file.byteOffset, file.byteOffset + file.byteLength) as any);
     });
