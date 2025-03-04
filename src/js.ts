@@ -9,6 +9,7 @@ import prettier from 'prettier';
 
 const formatter = new Intl.NumberFormat('en-US');
 const byteSize = (str: string) => new Blob([str]).size;
+const cache: { [key: string]: string } = {};
 
 export function serveJS(app: Hono) {
     app.get('/api/js', async (context) => {
@@ -17,6 +18,14 @@ export function serveJS(app: Hono) {
 
         const pageName = getPageFromId(id) as string;
         if (pageName === null) return context.json({ error: 'Invalid version.' }, 400) as any;
+
+        const cacheId = `${context.req.query('pretty') === 'true' ? 'pretty' : 'normal'}-${id}`;
+
+        if (cache[cacheId] && !isDev) {
+            context.header('Content-Type', 'application/javascript');
+            context.header('Cache-Control', 'public, max-age=31536000');
+            return context.body(cache[cacheId]);
+        }
 
         const time = Date.now();
 
@@ -118,6 +127,7 @@ export function serveJS(app: Hono) {
         code = `// | Copyright   : Copyright of ${getURLHost()} (c) ${new Date().getFullYear()}. All rights reserved.
 // | Date        : ${new Date().toDateString()}
 // | Version     : ${id}
+// | Cache ID    : ${cacheId} ${isDev ? '(Not cached in development mode)' : ''}
 // | Bundle Size : ${formatter.format(size)} bytes 
 // | Minified    : ${formatter.format(originalSize - size)} bytes saved
 // | Pretty      : ${pretty ? 'Yes' : 'No'} ${pretty ? `(${formatter.format(prettyCodeSize - size)} bytes increased with a total of ${formatter.format(prettyCodeSize)} bytes)` : ''}
@@ -125,8 +135,15 @@ export function serveJS(app: Hono) {
 // | Request URL : ${getURL()}/api/js?v=${id}
 \n${code}`;
 
+        cache[cacheId] = code;
+
         context.header('Content-Type', 'application/javascript');
-        context.header('Cache-Control', 'public, max-age=31536000');
+
+        if (!isDev) {
+            context.header('Cache-Control', 'public, max-age=31536000');
+        } else {
+            context.header('Cache-Control', 'no-store');
+        }
 
         return context.body(code);
     });
