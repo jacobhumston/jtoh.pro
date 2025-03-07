@@ -72,10 +72,10 @@ export function addChild(parent: HTMLElement, children: HTMLElement | HTMLElemen
 export function removeChild(parent: HTMLElement, children: HTMLElement | HTMLElement[]): void {
     if (Array.isArray(children)) {
         for (const child of children) {
-            parent.appendChild(child);
+            parent.removeChild(child);
         }
     } else {
-        parent.appendChild(children);
+        parent.removeChild(children);
     }
     return;
 }
