@@ -85,17 +85,21 @@ export async function addAuthUI() {
         const loggedInDetails = getElementById('loggedInDetails');
         if (!loggedInDetails) return;
 
-        const settingsButton = createElement('button', {
-            id: 'settingsOpener',
-            innerHTML: getWebIconHTML('settings'),
-            type: 'button'
-        });
+        const url = new URL(document.location.href);
 
-        settingsButton.addEventListener('click', () => {
-            window.location.href = '/app/account/settings';
-        });
+        if (url.pathname !== '/app/account/settings') {
+            const settingsButton = createElement('button', {
+                id: 'settingsOpener',
+                innerHTML: getWebIconHTML('settings'),
+                type: 'button'
+            });
 
-        themeContainer.insertBefore(settingsButton, loggedInDetails);
+            settingsButton.addEventListener('click', () => {
+                window.location.href = '/app/account/settings';
+            });
+
+            themeContainer.insertBefore(settingsButton, loggedInDetails);
+        }
 
         const icon = createElement('img', {
             src: user.user.thumbnail,
