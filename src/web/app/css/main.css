@@ -1060,3 +1060,49 @@ a {
 .accountSettingsSplit {
     margin-bottom: 25px;
 }
+
+#cardImagesContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 25px;
+}
+
+.cardImageContainer {
+    display: inline-block;
+    padding: 15px;
+    background-color: var(--color-background-darker);
+    border-radius: 25px;
+    flex-grow: 1;
+    width: min-content;
+    text-align: center;
+    max-width: 350px;
+}
+
+.cardImageContainer img {
+    max-width: 100%;
+    height: auto;
+    align-self: center;
+    border-radius: 5px;
+}
+
+.cardImageContainer button {
+    width: 350px;
+    max-width: 100%;
+    align-self: center;
+    margin: 0px;
+}
+
+@media screen and (max-width: 450px) {
+    .cardImageContainer {
+        width: 100%;
+    }
+
+    .cardImageContainer button {
+        width: 100%;
+    }
+}

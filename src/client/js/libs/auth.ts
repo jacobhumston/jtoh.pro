@@ -87,7 +87,7 @@ export async function addAuthUI() {
 
         const url = new URL(document.location.href);
 
-        if (url.pathname !== '/app/account/settings') {
+        if (!url.pathname.startsWith('/app/account/')) {
             const settingsButton = createElement('button', {
                 id: 'settingsOpener',
                 innerHTML: getWebIconHTML('settings'),
