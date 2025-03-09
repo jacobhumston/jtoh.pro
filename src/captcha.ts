@@ -1,5 +1,5 @@
 import { getURLHost } from './dev';
-import { getSignedInRobloxUser } from './loginauth';
+import { getSignedInRobloxUser } from './login-auth';
 import { cloudflareCaptchaSecret } from './tokens';
 import { Hono, type Context } from 'hono';
 import { v4 } from 'uuid';

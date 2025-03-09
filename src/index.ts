@@ -6,18 +6,18 @@ import redirects from './redirects';
 import serveStatic from './static';
 import logger from './logger';
 import fs from 'node:fs';
-import webUtils from './webutils';
+import webUtils from './web-utils';
 import serveLeaderboards from './leaderboards';
 import { isDev, getURL, port, getURLHost, isBeta } from './dev';
-import setupLoginAuth from './loginauth';
+import setupLoginAuth from './login-auth';
 import { rateLimiter } from 'hono-rate-limiter';
-import { getTempToken } from './temptokens';
+import { getTempToken } from './temp-tokens';
 import { convert as timeConvert } from '@jacobhumston/tc.js';
 import { admin } from './admin';
 import { captchaManager } from './captcha';
 import { charts } from './chart';
-import { parseRobloxAccount } from './loginauth';
-import { quickWebTest } from './quickwebtest';
+import { parseRobloxAccount } from './login-auth';
+import { quickWebTest } from './quick-web-test';
 import { blog } from './blog';
 import type { Serve } from 'bun';
 import { socket, socketListen } from './socket';
@@ -30,8 +30,9 @@ import { secureHeaders } from 'hono/secure-headers';
 import { badgesEndpoints } from './roblox-badges';
 import credits from './credits';
 import { serveJS } from './js';
-import { handleRequestCount } from './requestcount';
+import { handleRequestCount } from './request-count';
 import cscdGen from './gens/cscd';
+import { cardImageCheck } from './card-images';
 
 if (!fs.existsSync('./temp')) fs.mkdirSync('./temp');
 for (const file of fs.readdirSync('./temp')) {
@@ -41,6 +42,8 @@ for (const file of fs.readdirSync('./temp')) {
         logger.warn(`Failed to delete temp file: ${file}`);
     }
 }
+
+cardImageCheck();
 
 const app = new Hono();
 

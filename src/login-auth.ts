@@ -6,7 +6,7 @@ import type { LoggedInUser } from './type';
 import { robloxAdminUserId, robloxAuthClientId, robloxAuthSecret } from './tokens';
 import { getURL, getURLHost } from './dev';
 import { verifyCaptcha } from './captcha';
-import { getTempToken } from './temptokens';
+import { getTempToken } from './temp-tokens';
 import { encryptCode, decryptCode } from './util';
 import crypto from 'node:crypto';
 import type { BasicRobloxUserResult, RobloxUserResult } from './roblox';

@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import { Hono } from 'hono';
-import { renderTemplate } from './blanktemplate';
+import { renderTemplate } from './blank-template';
 import { renderMarkdown } from './markdown';
 import { userIdToThumbnail, usernameToUser } from './roblox';
 import { convertTo } from '@jacobhumston/tc.js';

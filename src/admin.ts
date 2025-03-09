@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { isSignedInAdmin } from './loginauth';
+import { isSignedInAdmin } from './login-auth';
 import { spawn } from './pty';
 import os from 'os';
 import type { WSContext } from 'hono/ws';

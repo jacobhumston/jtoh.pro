@@ -13,7 +13,7 @@ import {
     getTotalInLeaderboard
 } from '../db';
 import images from '../images';
-import { parseRobloxAccount } from '../loginauth';
+import { parseRobloxAccount } from '../login-auth';
 import { towerStatsToken } from '../tokens';
 
 export default function etohGen(app: Hono) {
