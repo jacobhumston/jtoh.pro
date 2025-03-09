@@ -15,6 +15,7 @@ import {
 import images from '../images';
 import { parseRobloxAccount } from '../login-auth';
 import { towerStatsToken } from '../tokens';
+import { getAccountCardPhotoBackground } from '../accountSettings';
 
 export default function cscdGen(app: Hono) {
     app.get('/cscd/:user', async (context) => {
@@ -27,6 +28,21 @@ export default function cscdGen(app: Hono) {
         ctx.fillStyle = '#2e2e2e';
 
         drawRoundedRect(ctx, 0, 0, 700, 300, 30);
+
+        if (data !== undefined) {
+            const cardBackground = await getAccountCardPhotoBackground(data);
+            if (cardBackground !== null) {
+                const image = await loadImage('src/web' + cardBackground.webPath).catch(() => null);
+                if (image) {
+                    ctx.save();
+                    ctx.globalAlpha = 0.3;
+                    roundedRect(ctx, 0, 0, 700, 300, 30);
+                    ctx.clip();
+                    ctx.drawImage(image, 0, 0, 700, 300);
+                    ctx.restore();
+                }
+            }
+        }
 
         if (data === undefined) {
             context.header('Content-Disposition', 'inline; filename="unknown.png"');
@@ -287,7 +303,7 @@ export default function cscdGen(app: Hono) {
                         }
                         ctx.fillStyle = difficultyColor;
                         ctx.fillText(`${Math.floor((completed / total) * 100)}%`, startX, startY - 6);
-                        ctx.fillStyle = new Color('#bdbdbd').darken(0.5).hex();
+                        ctx.fillStyle = new Color('#bdbdbd').darken(0.2).hex();
                         ctx.font = 'bold 15px Poppins';
                         ctx.fillText(`${total - completed}`, startX, startY + 20);
                     });
@@ -355,7 +371,7 @@ export default function cscdGen(app: Hono) {
                         [
                             {
                                 string: `.${skillPointsString2}`,
-                                color: Color('#bdbdbd').darken(0.4).hex()
+                                color: Color('#bdbdbd').darken(0.2).hex()
                             }
                         ],
                         340,
@@ -396,7 +412,7 @@ export default function cscdGen(app: Hono) {
                         [
                             {
                                 string: spTotal,
-                                color: '#7c7c7c'
+                                color: new Color('#bdbdbd').darken(0.2).hex()
                             }
                         ],
                         475,
