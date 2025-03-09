@@ -12,17 +12,20 @@
             <div id="blogControls">
                 <div id="blogSearchContainer">
                     <input type="text" id="blogSearch" placeholder="Search blog posts..." />
+                    <select id="blogSort">
+                        <option value="created">Sort by: Created</option>
+                        <option value="edited">Sort by: Edited</option>
+                        <option value="title">Sort by: Title</option>
+                    </select>
                     <button id="blogSearchButton">
                         <span class="materialSymbolsRounded">search</span>
                         Search
                     </button>
-                    <button id="blogClearSearchButton"><span class="materialSymbolsRounded">refresh</span></button>
+                    <button id="blogClearSearchButton">
+                        <span class="materialSymbolsRounded">refresh</span>
+                        Reset
+                    </button>
                 </div>
-                <select id="blogSort">
-                    <option value="created">Sort by: Created</option>
-                    <option value="edited">Sort by: Edited</option>
-                    <option value="title">Sort by: Title</option>
-                </select>
             </div>
             <div id="blogPostsList">Loading...</div>
             <template data-name="footer"></template>
