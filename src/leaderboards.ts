@@ -3,7 +3,7 @@ import { getOrderedDB, cardsRequestedDB, skillPointsDB } from './db';
 import type { gameNames } from './shared/gamelist';
 import { gameNamesArray } from './shared/gamelist';
 import { verifyContext } from './captcha';
-import { getSignedInRobloxUser } from './loginauth';
+import { getSignedInRobloxUser } from './login-auth';
 
 export default function serveLeaderboards(app: Hono) {
     app.get('/api/leaderboards/:type/:game', async (context) => {

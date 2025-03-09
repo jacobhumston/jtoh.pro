@@ -5,7 +5,7 @@ import { v4 } from 'uuid';
 import fs from 'node:fs';
 import logger from './logger';
 import { getURL, getURLHost, getURLWithSlash } from './dev';
-import { getTempToken } from './temptokens';
+import { getTempToken } from './temp-tokens';
 
 export const discordAPIURL = 'https://discord.com/api/v10';
 export const commands = [

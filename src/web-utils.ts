@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { v4 } from 'uuid';
 import { userIdToThumbnail, userIdToThumbnailFull, userIdToThumbnailBust, getRobloxAvatar3dAssets } from './roblox';
-import { getLicenseReport } from './licensereport';
+import { getLicenseReport } from './license-report';
 import { isDev } from './dev';
 
 export default function webUtils(app: Hono) {
