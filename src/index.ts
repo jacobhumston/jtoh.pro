@@ -33,6 +33,7 @@ import { serveJS } from './js';
 import { handleRequestCount } from './request-count';
 import cscdGen from './gens/cscd';
 import { cardImageCheck } from './card-images';
+import { setupAccountEndpoints } from './accountSettings';
 
 if (!fs.existsSync('./temp')) fs.mkdirSync('./temp');
 for (const file of fs.readdirSync('./temp')) {
@@ -134,6 +135,7 @@ badgesEndpoints(app);
 credits(app);
 serveJS(app);
 handleRequestCount(app);
+setupAccountEndpoints(app);
 
 etohGen(app);
 cscdGen(app);

@@ -9,7 +9,11 @@ import { addChild, createElement, getBody, insertChild } from './util';
 export async function createErrorPopup(error: string, autoClose: number | false): Promise<HTMLDivElement> {
     const errorPopup = createElement('div', { className: 'errorPopup' });
     const errorPopupText = createElement('p', { className: 'errorPopupText', innerText: error });
-    const errorPopupClose = createElement('button', { className: 'errorPopupClose', innerText: 'Close' });
+    const errorPopupClose = createElement('button', {
+        className: 'errorPopupClose',
+        innerText: 'Close',
+        type: 'button'
+    });
 
     addChild(errorPopup, [errorPopupText, errorPopupClose]);
 
