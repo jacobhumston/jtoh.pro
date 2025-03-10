@@ -63,6 +63,26 @@ export default async function () {
     });
     addChild(cardImagesParentContainer, [cardImagesContainer]);
 
+    const toggleCardDarkness = createElement('button', { type: 'button' });
+    let darknessActive = false;
+    function updateDarkness() {
+        toggleCardDarkness.innerHTML = darknessActive
+            ? getWebIconHTML('toggle_on') + ' Darkened Preview Enabled'
+            : getWebIconHTML('toggle_off') + ' Darkened Preview Disabled';
+        for (const child of cardImagesContainer.children) {
+            const image = child.children[0];
+            if (!image) continue;
+            // @ts-expect-error
+            darknessActive ? addClass(image, 'darkened-card-photo') : removeClass(image, 'darkened-card-photo');
+        }
+    }
+    updateDarkness();
+    toggleCardDarkness.addEventListener('click', () => {
+        darknessActive = !darknessActive;
+        updateDarkness();
+    });
+    addChild(container, toggleCardDarkness);
+
     const list: { result: Array<{ name: string; extension: string; webPath: string }> } | null = await fetch(
         '/api/account/card-background/list'
     )

@@ -1075,7 +1075,7 @@ a {
 .cardImageContainer {
     display: inline-block;
     padding: 15px;
-    background-color: var(--color-background-darker);
+    background-color: var(--color-background-even-more-darker);
     border-radius: 25px;
     flex-grow: 1;
     width: min-content;
@@ -1087,7 +1087,9 @@ a {
     max-width: 100%;
     height: auto;
     align-self: center;
-    border-radius: 5px;
+    border-radius: 0px;
+    border-top-right-radius: 15px;
+    border-top-left-radius: 15px;
 }
 
 .cardImageContainer button {
@@ -1095,6 +1097,14 @@ a {
     max-width: 100%;
     align-self: center;
     margin: 0px;
+    margin-top: -7px;
+    border-radius: 0px;
+    border-bottom-right-radius: 15px;
+    border-bottom-left-radius: 15px;
+}
+
+.cardImageContainer .darkened-card-photo {
+    opacity: 0.3;
 }
 
 @media screen and (max-width: 450px) {
@@ -1105,4 +1115,9 @@ a {
     .cardImageContainer button {
         width: 100%;
     }
+}
+
+#currentCardImage {
+    max-width: 100%;
+    border-radius: 15px;
 }
