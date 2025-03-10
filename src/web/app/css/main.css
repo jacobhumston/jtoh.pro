@@ -1081,6 +1081,24 @@ a {
     width: min-content;
     text-align: center;
     max-width: 350px;
+    position: relative;
+}
+
+.cardImageContainerBigger {
+    max-width: 700px !important;
+    width: max-content !important;
+}
+
+.cardImageContainerBigger button {
+    width: 100% !important;
+}
+
+.cardImageContainer .previewCardButton {
+    width: 130px !important;
+}
+
+.cardImageContainerBigger img {
+    width: 100% !important;
 }
 
 .cardImageContainer img {
@@ -1105,6 +1123,21 @@ a {
 
 .cardImageContainer .darkened-card-photo {
     opacity: 0.3;
+}
+
+.cardImageContainer .darkened-override {
+    opacity: 1 !important;
+}
+
+.previewCardButton {
+    float: left;
+    position: absolute;
+    width: 130px !important;
+    margin-left: 10px !important;
+    margin-top: -15px !important;
+    font-size: small !important;
+    padding: 5px !important;
+    z-index: 2;
 }
 
 @media screen and (max-width: 450px) {
