@@ -1154,3 +1154,13 @@ a {
     max-width: 100%;
     border-radius: 15px;
 }
+
+@media screen and (max-width: 700px) {
+    .cardImagesContainerBigger {
+        padding: 0px !important;
+    }
+
+    .cardImageContainerBigger {
+        border-radius: 0px !important;
+    }
+}
