@@ -70,7 +70,7 @@ export default async function () {
             ? getWebIconHTML('toggle_on') + ' Darkened Preview Enabled'
             : getWebIconHTML('toggle_off') + ' Darkened Preview Disabled';
         for (const child of cardImagesContainer.children) {
-            const image = child.children[0];
+            const image = child.children[1];
             if (!image) continue;
             // @ts-expect-error
             darknessActive ? addClass(image, 'darkened-card-photo') : removeClass(image, 'darkened-card-photo');
@@ -82,6 +82,26 @@ export default async function () {
         updateDarkness();
     });
     addChild(container, toggleCardDarkness);
+
+    const toggleBiggerCards = createElement('button', {
+        type: 'button',
+        innerHTML: getWebIconHTML('toggle_off') + ' Big Previews Disabled'
+    });
+    let biggerPreviewsEnabled = false;
+    toggleBiggerCards.addEventListener('click', function () {
+        biggerPreviewsEnabled = !biggerPreviewsEnabled;
+        toggleBiggerCards.innerHTML = biggerPreviewsEnabled
+            ? getWebIconHTML('toggle_on') + ' Big Previews Enabled'
+            : getWebIconHTML('toggle_off') + ' Big Previews Disabled';
+        for (const child of cardImagesContainer.children) {
+            biggerPreviewsEnabled
+                ? // @ts-expect-error
+                  addClass(child, 'cardImageContainerBigger')
+                : // @ts-expect-error
+                  removeClass(child, 'cardImageContainerBigger');
+        }
+    });
+    addChild(container, toggleBiggerCards);
 
     const list: { result: Array<{ name: string; extension: string; webPath: string }> } | null = await fetch(
         '/api/account/card-background/list'
@@ -101,6 +121,30 @@ export default async function () {
             type: 'button'
         });
 
+        cardImage.style = `background-image: url('${card.webPath}') !important;`;
+
+        const previewCardButton = createElement('button', { type: 'button' }, 'previewCardButton');
+        let previewEnabled = false;
+        function updatePreview() {
+            previewCardButton.innerHTML = previewEnabled
+                ? getWebIconHTML('visibility') + ' Preview'
+                : getWebIconHTML('visibility_off') + ' Preview';
+
+            if (previewEnabled) {
+                // @ts-expect-error
+                cardImage.src = `/preview/${account.user.username}?cardBackgroundOverride=${card.name}`;
+                addClass(cardImage, ['darkened-override']);
+            } else {
+                cardImage.src = card.webPath;
+                removeClass(cardImage, ['darkened-override']);
+            }
+        }
+        updatePreview();
+        previewCardButton.addEventListener('click', () => {
+            previewEnabled = !previewEnabled;
+            updatePreview();
+        });
+
         cardImage.width = 350;
         cardImage.height = 150;
 
@@ -117,7 +161,7 @@ export default async function () {
             setDebounceInactive('setCardButton');
         });
 
-        addChild(cardContainer, [cardImage, setCardButton]);
+        addChild(cardContainer, [previewCardButton, cardImage, setCardButton]);
         addChild(cardImagesContainer, [cardContainer]);
     }
 }

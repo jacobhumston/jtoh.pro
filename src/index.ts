@@ -34,6 +34,7 @@ import { handleRequestCount } from './request-count';
 import cscdGen from './gens/cscd';
 import { cardImageCheck } from './card-images';
 import { setupAccountEndpoints } from './accountSettings';
+import previewGen from './gens/preview';
 
 if (!fs.existsSync('./temp')) fs.mkdirSync('./temp');
 for (const file of fs.readdirSync('./temp')) {
@@ -139,6 +140,7 @@ setupAccountEndpoints(app);
 
 etohGen(app);
 cscdGen(app);
+previewGen(app);
 
 app.get('/', async (context) => {
     const searchParams = new URL(context.req.url).searchParams;
