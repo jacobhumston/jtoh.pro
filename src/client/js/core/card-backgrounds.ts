@@ -90,9 +90,15 @@ export default async function () {
     let biggerPreviewsEnabled = false;
     toggleBiggerCards.addEventListener('click', function () {
         biggerPreviewsEnabled = !biggerPreviewsEnabled;
+
         toggleBiggerCards.innerHTML = biggerPreviewsEnabled
             ? getWebIconHTML('toggle_on') + ' Big Previews Enabled'
             : getWebIconHTML('toggle_off') + ' Big Previews Disabled';
+
+        biggerPreviewsEnabled
+            ? addClass(cardImagesContainer, 'cardImagesContainerBigger')
+            : removeClass(cardImagesContainer, 'cardImagesContainerBigger');
+
         for (const child of cardImagesContainer.children) {
             biggerPreviewsEnabled
                 ? // @ts-expect-error
