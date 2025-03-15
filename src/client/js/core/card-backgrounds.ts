@@ -42,7 +42,10 @@ export default async function () {
     removeBackgroundButton.addEventListener('click', async () => {
         if (isDebounceActive('removeBackgroundButton')) return;
         setDebounceActive('removeBackgroundButton');
-        const response = await fetch('/api/account/card-background/remove');
+        const response = await fetch('/api/account/card-background/remove', {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain' }
+        });
         if (!response.ok) return createErrorPopup('Failed to remove card background.', false);
         addClass(removeBackgroundButton, 'successButton');
         const reset = temporarilySetElementText(removeBackgroundButton, getWebIconHTML('check') + ' Removed!');
@@ -157,7 +160,10 @@ export default async function () {
         setCardButton.addEventListener('click', async () => {
             if (isDebounceActive('setCardButton')) return;
             setDebounceActive('setCardButton');
-            const response = await fetch(`/api/account/card-background/set/${card.name}`);
+            const response = await fetch(`/api/account/card-background/set/${card.name}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain' }
+            });
             if (!response.ok) return createErrorPopup('Failed to set card background.', false);
             addClass(setCardButton, 'successButton');
             const reset = temporarilySetElementText(setCardButton, getWebIconHTML('check') + ' Set!');

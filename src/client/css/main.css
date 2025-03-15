@@ -864,17 +864,6 @@ a {
     color: var(--color-text) !important;
 }
 
-#copyright {
-    background-color: var(--color-background-even-more-darker);
-    padding: 10px;
-    border-radius: 15px;
-    margin-top: 15px;
-    position: relative;
-    display: inline-block;
-    padding-left: 15px;
-    padding-right: 15px;
-}
-
 #cardsUrlRefrence {
     background-color: var(--color-background-even-more-darker);
     padding: 5px;
@@ -1163,4 +1152,22 @@ a {
     .cardImageContainerBigger {
         border-radius: 0px !important;
     }
+}
+
+#footerContainer {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: var(--color-background-even-more-darker);
+    border-radius: 10px;
+}
+
+#copyright {
+    background-color: var(--color-background);
+    padding: 10px;
+    border-radius: 15px;
+    margin-top: 15px;
+    position: relative;
+    display: inline-block;
+    padding-left: 15px;
+    padding-right: 15px;
 }

@@ -2,7 +2,6 @@ import { Hono } from 'hono';
 import { v4 } from 'uuid';
 import { userIdToThumbnail, userIdToThumbnailFull, userIdToThumbnailBust, getRobloxAvatar3dAssets } from './roblox';
 import { getLicenseReport } from './license-report';
-import { isDev } from './dev';
 
 export default function webUtils(app: Hono) {
     app.get('/api/util/ping', async (context) => {
@@ -51,14 +50,6 @@ export default function webUtils(app: Hono) {
     app.get('/api/admin/license-report', async (context) => {
         // @ts-ignore-next-line
         return context.json(await getLicenseReport());
-    });
-
-    app.get('/api/util/routes', async (context) => {
-        if (isDev) {
-            return context.json(app.routes);
-        } else {
-            return context.json({ error: 'This resource is unavalible.' }, 403);
-        }
     });
 
     /*
