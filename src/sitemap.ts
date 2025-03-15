@@ -13,7 +13,9 @@ function getLinks() {
             if (fs.statSync(path).isDirectory()) {
                 readDir(`${dir}/${file}`, appendPath);
             } else {
-                links.push({ url: `${dir}/${file}`, changefreq: 'daily', priority: 0.8 });
+                let fileName = file;
+                if (fileName.endsWith('.html')) fileName = fileName.slice(0, -5);
+                links.push({ url: `${dir}/${fileName}`, changefreq: 'daily', priority: 0.8 });
             }
         }
     }
