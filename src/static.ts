@@ -10,6 +10,21 @@ import { Transpiler } from 'bun';
 import logger from './logger';
 import { v4 as uuid } from 'uuid';
 
+let cssCache: null | string = null;
+
+function getCSS() {
+    if (cssCache) return cssCache;
+    const styles: string[] = [];
+    for (const file of fs.readdirSync('src/client/css/')) {
+        if (file.endsWith('.css')) {
+            styles.push(fs.readFileSync(`src/client/css/${file}`).toString());
+        }
+    }
+    const result = new cleanCSS({ level: 2 }).minify(styles.join('\n')).styles;
+    if (!isDev) cssCache = result;
+    return result;
+}
+
 function replaceTemplates(content: string, templateDir: string, stop: boolean = false): string {
     const files = fs.readdirSync(templateDir);
     for (const file of files) {
@@ -124,6 +139,7 @@ export default async function serveStatic(app: Hono) {
                     })
                     .replaceAll('{{pageId}}', pageId)
                     .replaceAll('{{currentYear}}', new Date().getFullYear().toString())
+                    .replace('<style template=styles></style>', `<style>${getCSS()}</style>`)
             );
         }
 

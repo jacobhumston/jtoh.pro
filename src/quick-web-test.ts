@@ -17,5 +17,5 @@ export async function quickWebTest(replaceLogger: typeof logger = logger) {
             failed = true;
         }
     }
-    if (failed === false) replaceLogger.info('Quick web test was succesful.');
+    if (failed === false) replaceLogger.info('Quick web test was successful.');
 }

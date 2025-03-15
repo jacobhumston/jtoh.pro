@@ -8,7 +8,7 @@ import logger from './logger';
 import fs from 'node:fs';
 import webUtils from './web-utils';
 import serveLeaderboards from './leaderboards';
-import { isDev, getURL, port, getURLHost, isBeta } from './dev';
+import { isDev, getURL, port, getURLHost, isBeta, getURLObj } from './dev';
 import setupLoginAuth from './login-auth';
 import { rateLimiter } from 'hono-rate-limiter';
 import { getTempToken } from './temp-tokens';
@@ -35,6 +35,7 @@ import cscdGen from './gens/cscd';
 import { cardImageCheck } from './card-images';
 import { setupAccountEndpoints } from './accountSettings';
 import previewGen from './gens/preview';
+import listenForPackageLists from './packages';
 
 if (!fs.existsSync('./temp')) fs.mkdirSync('./temp');
 for (const file of fs.readdirSync('./temp')) {
@@ -63,7 +64,10 @@ app.use(
 
 app.use(
     csrf({
-        origin: getURLHost()
+        origin: (origin) => {
+            const url = new URL(origin);
+            return url.origin === getURLObj().origin;
+        }
     })
 );
 
@@ -137,6 +141,7 @@ credits(app);
 serveJS(app);
 handleRequestCount(app);
 setupAccountEndpoints(app);
+listenForPackageLists(app);
 
 etohGen(app);
 cscdGen(app);
@@ -191,6 +196,10 @@ app.notFound((context) => {
 
 app.onError((error, context) => {
     logger.error(error);
+
+    // logger.error SUCKS at logging http errors... smh
+    if (isDev) console.log(error);
+
     return context.json({ error: 'Internal server error.' }, 500);
 });
 

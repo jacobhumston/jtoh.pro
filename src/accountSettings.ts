@@ -34,7 +34,7 @@ export function setupAccountEndpoints(app: Hono) {
         return context.json({ result: Object.values(getCardImages()) });
     });
 
-    app.get('/api/account/card-background/remove', async (context) => {
+    app.post('/api/account/card-background/remove', async (context) => {
         const user = await getSignedInRobloxUser(context);
         if (!user) return context.json({ error: 'Not logged in.' }, 401);
 
@@ -45,7 +45,7 @@ export function setupAccountEndpoints(app: Hono) {
         return context.json({ result: true });
     });
 
-    app.get('/api/account/card-background/set/:name', async (context) => {
+    app.post('/api/account/card-background/set/:name', async (context) => {
         const user = await getSignedInRobloxUser(context);
         if (!user) return context.json({ error: 'Not logged in.' }, 401);
 
