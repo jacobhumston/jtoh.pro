@@ -67,7 +67,8 @@
         "db": true,
         "logs": true,
         "node_modules": true,
-        "temp": true
+        "temp": true,
+        "src/web/app/blog": true
     },
-    "hide-files.files": ["cache", "db", "logs", "node_modules", "temp"]
+    "hide-files.files": ["cache", "db", "logs", "node_modules", "temp", "src/web/app/blog"]
 }
