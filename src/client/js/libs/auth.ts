@@ -9,6 +9,9 @@ import {
     getWebIconHTML
 } from './util';
 
+/** Original URL. */
+const originalLocation = document.location.href;
+
 /**
  * Represents a user.
  */
@@ -55,7 +58,8 @@ export async function checkAuth() {
                 const data: LoggedInUser = await response.json();
                 if (!data.user || data.user.id !== user?.user?.id) {
                     localStorage.removeItem('cache_LoggedInUser');
-                    document.location.reload();
+                    if (document.location.href === originalLocation) document.location.reload();
+                    else document.location.href = originalLocation;
                 }
             } else {
                 createErrorPopup('Failed to verify that you are a logged in user.', 4000);
