@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import logger from './logger';
 
 export function createLeadboardBlacklistFile() {
     const name = 'db/leaderboards-blacklist.json';
@@ -14,4 +15,17 @@ export function createModListFile() {
         fs.writeFileSync(name, '[]');
     }
     return name;
+}
+
+export function cleanUpTemp() {
+    if (!fs.existsSync('./temp')) fs.mkdirSync('./temp');
+    const failed: string[] = [];
+    for (const file of fs.readdirSync('./temp')) {
+        try {
+            fs.rmSync(`./temp/${file}`);
+        } catch {
+            failed.push(file);
+        }
+    }
+    if (failed.length > 0) logger.warn(`Failed to delete temp files. (${failed.length}): ${failed.join(', ')}`);
 }

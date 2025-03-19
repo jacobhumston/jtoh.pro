@@ -1,9 +1,14 @@
 import { getCardImages } from './card-images';
-import { accountConfigDB } from './db';
+import { accountConfigDB, loginAuthDB } from './db';
 import { getSignedInRobloxUser } from './login-auth';
 import type { BasicRobloxUserResult, RobloxUserResult } from './roblox';
 import type { Hono } from 'hono';
 import type { LoggedInUser } from './type';
+import archiver from 'archiver';
+import { verifyContext } from './captcha';
+import mime from 'mime-types';
+import fs from 'fs';
+import { randomUUIDv7 } from 'bun';
 
 function getKeyName(account: LoggedInUser | BasicRobloxUserResult | RobloxUserResult) {
     return `_${account.id}`;
@@ -63,5 +68,61 @@ export function setupAccountEndpoints(app: Hono) {
                 card
             }
         });
+    });
+
+    app.get('/api/account/download-data', async (context) => {
+        const user = await getSignedInRobloxUser(context);
+        if (!user) return context.json({ error: 'Not logged in.' }, 401);
+
+        const captchaError = await verifyContext(context);
+        if (captchaError) return captchaError;
+
+        context.header('Content-Type', mime.lookup('.zip') || 'application/octet-stream');
+        context.header('Content-Disposition', `inline; filename="account-data.zip"`);
+
+        const fileName = `temp/archive-${randomUUIDv7()}.zip`;
+        fs.writeFileSync(fileName, '');
+
+        let finished = false;
+        const writable = fs.createWriteStream(fileName);
+        writable.on('close', () => {
+            finished = true;
+        });
+
+        const archive = archiver('zip');
+        archive.pipe(writable);
+
+        archive.append(JSON.stringify((await accountConfigDB.get(getKeyName(user))) ?? {}), {
+            name: 'account-settings.json'
+        });
+
+        const sessions: any = {};
+
+        // @ts-expect-error
+        for await (const [key, value] of loginAuthDB.iterator()) {
+            if (value.id == user.id) {
+                sessions[key] = value;
+            }
+        }
+
+        archive.append(JSON.stringify(sessions), { name: 'account-sessions.json' });
+
+        archive.finalize();
+
+        await new Promise((resolve) => {
+            const interval = setInterval(() => {
+                if (finished) {
+                    clearInterval(interval);
+                    resolve(void 0);
+                }
+            }, 100);
+        });
+
+        const file = fs.readFileSync(fileName);
+        const data = file.buffer.slice(file.byteOffset, file.byteOffset + file.byteLength) as any;
+
+        fs.rmSync(fileName);
+
+        return context.body(data);
     });
 }

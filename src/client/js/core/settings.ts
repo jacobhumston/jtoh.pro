@@ -25,7 +25,11 @@ export default async function () {
         type: 'button'
     });
 
-    addChild(container, [logoutButton, switchAccountsButton]);
+    const generalControlsDescription = createElement('p', {
+        innerHTML: `Logging out will log you out of all other sessions as well. To logout only on this session, please ${createElement('a', { innerHTML: 'click here', href: '/logout?single=true' }).outerHTML}.`
+    });
+
+    addChild(container, [logoutButton, switchAccountsButton, generalControlsDescription]);
 
     logoutButton.addEventListener('click', async () => {
         window.location.href = '/logout';

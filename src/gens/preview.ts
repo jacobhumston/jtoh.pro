@@ -4,7 +4,7 @@ import Color from 'color';
 import { Hono } from 'hono';
 import images from '../images';
 import { parseRobloxAccount } from '../login-auth';
-import { getAccountCardPhotoBackground } from '../accountSettings';
+import { getAccountCardPhotoBackground } from '../account-settings';
 import { getCardImages } from '../card-images';
 
 export default function previewGen(app: Hono) {

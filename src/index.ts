@@ -8,7 +8,7 @@ import logger from './logger';
 import fs from 'node:fs';
 import webUtils from './web-utils';
 import serveLeaderboards from './leaderboards';
-import { isDev, getURL, port, getURLHost, isBeta, getURLObj } from './dev';
+import { isDev, getURL, port, getURLHost, isBeta, getURLObj, cdnPath } from './dev';
 import setupLoginAuth from './login-auth';
 import { rateLimiter } from 'hono-rate-limiter';
 import { getTempToken } from './temp-tokens';
@@ -24,7 +24,6 @@ import { socket, socketListen } from './socket';
 import { compress } from 'hono-compress';
 import { cors } from 'hono/cors';
 import { serveSitemap } from './sitemap';
-import { getConnInfo } from 'hono/bun';
 import { csrf } from 'hono/csrf';
 import { secureHeaders } from 'hono/secure-headers';
 import { badgesEndpoints } from './roblox-badges';
@@ -33,20 +32,18 @@ import { serveJS } from './js';
 import { handleRequestCount } from './request-count';
 import cscdGen from './gens/cscd';
 import { cardImageCheck } from './card-images';
-import { setupAccountEndpoints } from './accountSettings';
+import { setupAccountEndpoints } from './account-settings';
 import previewGen from './gens/preview';
 import listenForPackageLists from './packages';
+import { cleanUpTemp } from './files';
+import { getIP } from './ip';
 
-if (!fs.existsSync('./temp')) fs.mkdirSync('./temp');
-for (const file of fs.readdirSync('./temp')) {
-    try {
-        fs.rmSync(`./temp/${file}`);
-    } catch {
-        logger.warn(`Failed to delete temp file: ${file}`);
-    }
-}
-
+cleanUpTemp();
 cardImageCheck();
+
+logger.info(`CDN PATH: ${cdnPath}`);
+if (!isDev && !isBeta && cdnPath === 'cdn') logger.warn('CDN path is default in prod, might need fixed!');
+if (!fs.existsSync(cdnPath)) fs.mkdirSync(cdnPath);
 
 const app = new Hono();
 
@@ -101,7 +98,7 @@ app.use(
         limit: 120,
         standardHeaders: 'draft-6',
         keyGenerator: (context) => {
-            return `${isDev ? getConnInfo(context).remote.address : context.req.header('CF-Connecting-IP')}::${context.req.path}`;
+            return `${getIP(context)}::${context.req.path}`;
         },
         handler: async (context) => {
             return context.json({ error: 'Rate limit exceeded. Please wait and try again.' }, 429) as any;

@@ -121,6 +121,9 @@ export type WaitForElementOptions = {
  * @returns A promise that resolves to the element with the specified id, or null if it doesn't exist after the set timeout.
  */
 export function waitForElementById(id: string, options: WaitForElementOptions): Promise<HTMLElement | null> {
+    const alreadyFound = getElementById(id);
+    if (alreadyFound) return new Promise((resolve) => resolve(alreadyFound));
+
     return new Promise((resolve) => {
         let timer: Timer;
         let interval: Timer;
