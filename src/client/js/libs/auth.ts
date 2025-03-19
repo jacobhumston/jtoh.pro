@@ -30,17 +30,46 @@ export type LoggedInUser = {
 let user: null | LoggedInUser = null;
 
 /**
+ * Get user via auth API.
+ */
+export async function requestAuthMe() {
+    return await fetch('/api/auth/@me').catch(() => ({
+        json: () => ({ user: null, admin: false }),
+        status: 200
+    }));
+}
+
+/**
  * Checks if a user is logged in and updates internal state.
  */
 export async function checkAuth() {
     if (user) return user;
-    const response = await fetch('/api/auth/@me').catch(() => ({
-        json: () => ({ user: null, admin: false }),
-        status: 200
-    }));
+
+    const localStorage = window.localStorage;
+    const cachedUser = localStorage.getItem('cache_LoggedInUser');
+    if (cachedUser) {
+        user = JSON.parse(cachedUser);
+        new Promise(async (resolve) => {
+            const response = await requestAuthMe();
+            if (response.status === 200) {
+                const data: LoggedInUser = await response.json();
+                if (!data.user || data.user.id !== user?.user?.id) {
+                    localStorage.removeItem('cache_LoggedInUser');
+                    document.location.reload();
+                }
+            } else {
+                createErrorPopup('Failed to verify that you are a logged in user.', 4000);
+            }
+            resolve(void 0);
+        });
+    }
+
+    if (user) return user;
+    const response = await requestAuthMe();
     if (response.status === 200) {
         const data: LoggedInUser = await response.json();
         user = data;
+        if (user.user) localStorage.setItem('cache_LoggedInUser', JSON.stringify(data));
     } else {
         createErrorPopup('Failed to check for a logged in user.', 4000);
         user = { user: null, admin: false };
@@ -71,7 +100,7 @@ export async function isLoggedIn() {
  * Add auth UI elements to the page.
  */
 export async function addAuthUI() {
-    const loggedInDetails = await waitForElementById('loggedInDetails', { timeout: 2000 });
+    const loggedInDetails = await waitForElementById('loggedInDetails', { timeout: 2000, interval: 1 });
     if (!loggedInDetails) return;
 
     const user = await getLoggedInUser();

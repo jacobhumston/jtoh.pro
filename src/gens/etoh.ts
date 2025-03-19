@@ -15,7 +15,7 @@ import {
 import images from '../images';
 import { parseRobloxAccount } from '../login-auth';
 import { towerStatsToken } from '../tokens';
-import { getAccountCardPhotoBackground } from '../accountSettings';
+import { getAccountCardPhotoBackground } from '../account-settings';
 
 export default function etohGen(app: Hono) {
     app.get('/:user', async (context) => {

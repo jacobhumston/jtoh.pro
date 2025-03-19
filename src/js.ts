@@ -124,7 +124,8 @@ export function serveJS(app: Hono) {
             prettyCodeSize = byteSize(code);
         }
 
-        code = `// | Copyright   : Copyright of ${getURLHost()} (c) ${new Date().getFullYear()}. All rights reserved.
+        if (isDev) {
+            code = `// | Copyright   : Copyright of ${getURLHost()} (c) ${new Date().getFullYear()}. All rights reserved.
 // | Date        : ${new Date().toDateString()}
 // | Version     : ${id}
 // | Cache ID    : ${cacheId} ${isDev ? '(Not cached in development mode)' : ''}
@@ -134,6 +135,9 @@ export function serveJS(app: Hono) {
 // | Build Time  : ${formatter.format(Date.now() - time)}ms
 // | Request URL : ${getURL()}/api/js?v=${id}
 \n${code}`;
+        } else {
+            code = `// Copyright of ${getURLHost()} (c) ${new Date().getFullYear()}. All rights reserved.\n${code}`;
+        }
 
         cache[cacheId] = code;
 

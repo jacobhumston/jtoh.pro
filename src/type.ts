@@ -45,6 +45,22 @@ export type LoggedInUser = {
     thumbnail: string;
 };
 
+export interface LoggedInUserWho extends LoggedInUser {
+    who: {
+        ip: string;
+        browser: string;
+        device: {
+            type: string;
+            vendor: string;
+            model: string;
+            os: {
+                name: string;
+                version: string;
+            };
+        };
+    };
+}
+
 export type TowerDataCSCD = {
     completed_areas: string[];
     completed_towers: {

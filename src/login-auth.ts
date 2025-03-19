@@ -2,7 +2,7 @@ import { deleteCookie, getSignedCookie, setSignedCookie } from 'hono/cookie';
 import { loginAuthDB } from './db';
 import { Hono } from 'hono';
 import type { Context } from 'hono';
-import type { LoggedInUser } from './type';
+import type { LoggedInUser, LoggedInUserWho } from './type';
 import { robloxAdminUserId, robloxAuthClientId, robloxAuthSecret } from './tokens';
 import { getURL, getURLHost } from './dev';
 import { verifyCaptcha } from './captcha';
@@ -17,6 +17,8 @@ import cscdGroupMembers from '../etc/group-members/cscd.json';
 import { cookieSecret } from './cookies';
 import { UAParser } from 'ua-parser-js';
 import fs from 'node:fs';
+import { convertTo } from '@jacobhumston/tc.js';
+import { getIP } from './ip';
 
 if (!fs.existsSync('cache')) fs.mkdirSync('cache');
 
@@ -88,13 +90,13 @@ export default function setupLoginAuth(app: Hono) {
                             return;
                         }
                         // @ts-ignore-next-line
-                        for await (const [key, value] of loginAuthDB.iterator()) {
-                            if (value.id == parseInt(userResponseJSON.sub)) {
-                                await loginAuthDB.delete(key);
-                            }
-                        }
-                        const parsedUserAgent = new UAParser(context.req.header('User-Agent')).getBrowser();
-                        if (!parsedUserAgent.name) return context.redirect(getAuthLoginURL());
+                        //for await (const [key, value] of loginAuthDB.iterator()) {
+                        //    if (value.id == parseInt(userResponseJSON.sub)) {
+                        //        await loginAuthDB.delete(key);
+                        //    }
+                        //}
+                        const parsedUserAgent = new UAParser(context.req.header('User-Agent')).getResult();
+                        if (!parsedUserAgent.browser.name) return context.redirect(getAuthLoginURL());
                         const token =
                             crypto.randomBytes(256).toString('hex') +
                             '::' +
@@ -105,9 +107,22 @@ export default function setupLoginAuth(app: Hono) {
                                 id: parseInt(userResponseJSON.sub),
                                 username: userResponseJSON.preferred_username,
                                 name: userResponseJSON.name,
-                                thumbnail: userResponseJSON.picture ?? ''
+                                thumbnail: userResponseJSON.picture ?? '',
+                                who: {
+                                    ip: getIP(context),
+                                    browser: parsedUserAgent.browser.name ?? 'Unknown',
+                                    device: {
+                                        type: parsedUserAgent.device.type ?? 'Unknown',
+                                        vendor: parsedUserAgent.device.vendor ?? 'Unknown',
+                                        model: parsedUserAgent.device.model ?? 'Unknown',
+                                        os: {
+                                            name: parsedUserAgent.os.name ?? 'Unknown',
+                                            version: parsedUserAgent.os.version ?? 'Unknown'
+                                        }
+                                    }
+                                }
                             },
-                            3 * 24 * 60 * 60 * 1000
+                            convertTo({ weeks: 3 }, 'milliseconds')
                         );
                         await setSignedCookie(
                             context,
@@ -118,7 +133,7 @@ export default function setupLoginAuth(app: Hono) {
                                 httpOnly: true,
                                 sameSite: 'Strict',
                                 secure: true,
-                                expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+                                expires: new Date(Date.now() + convertTo({ weeks: 3 }, 'milliseconds')),
                                 domain: getURLHost(),
                                 signingSecret: cookieSecret
                             }
@@ -148,8 +163,12 @@ export default function setupLoginAuth(app: Hono) {
     app.get('/api/auth/logout', async (context) => {
         const user = await getSignedInRobloxUser(context);
         if (!user) return context.json({ error: 'Not signed in.' }, 401);
-        const token = (await getSignedCookie(context, cookieSecret, 'auth-token')) as string;
+        const token = decryptCode(
+            (await getSignedCookie(context, cookieSecret, 'auth-token')) as string,
+            hashingTokenForAuthTokens
+        );
         await loginAuthDB.delete(token);
+
         deleteCookie(context, 'auth-token', {
             httpOnly: true,
             sameSite: 'Strict',
@@ -157,12 +176,21 @@ export default function setupLoginAuth(app: Hono) {
             domain: getURLHost(),
             signingSecret: cookieSecret
         });
+
+        if (context.req.query('single') !== 'true') {
+            // @ts-ignore-next-line
+            for await (const [key, value] of loginAuthDB.iterator()) {
+                if (value.id == user.id) {
+                    await loginAuthDB.delete(key);
+                }
+            }
+        }
         if (context.req.query('switch') && context.req.query('switch') === 'true') return context.redirect('/login');
         return context.redirect('/');
     });
 }
 
-export async function getSignedInRobloxUser(context: Context) {
+export async function getSignedInRobloxUser(context: Context): Promise<LoggedInUser | null> {
     let token = await getSignedCookie(context, cookieSecret, 'auth-token');
     if (!token) {
         if (context.req.query('authToken') && context.req.path.startsWith('/api/admin/')) {
@@ -194,7 +222,11 @@ export async function getSignedInRobloxUser(context: Context) {
         if (!uaSuccess) return null;
     }
 
-    return (await loginAuthDB.get<LoggedInUser>(token)) ?? null;
+    const data = (await loginAuthDB.get<LoggedInUserWho>(token)) ?? null;
+    if (!data) return data;
+    // @ts-expect-error
+    data.who = undefined;
+    return data;
 }
 
 export function getAuthLoginURL() {
