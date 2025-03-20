@@ -19,6 +19,7 @@ import { UAParser } from 'ua-parser-js';
 import fs from 'node:fs';
 import { convertTo } from '@jacobhumston/tc.js';
 import { getIP } from './ip';
+import { v4 } from 'uuid';
 
 if (!fs.existsSync('cache')) fs.mkdirSync('cache');
 
@@ -101,7 +102,7 @@ export default function setupLoginAuth(app: Hono) {
                             crypto.randomBytes(256).toString('hex') +
                             '::' +
                             encryptCode(encodeURIComponent(context.req.header('User-Agent') ?? ''), hashingTokenForUA);
-                        await loginAuthDB.set(
+                        await loginAuthDB.set<LoggedInUserWho>(
                             token,
                             {
                                 id: parseInt(userResponseJSON.sub),
@@ -114,13 +115,13 @@ export default function setupLoginAuth(app: Hono) {
                                     device: {
                                         type: parsedUserAgent.device.type ?? 'Unknown',
                                         vendor: parsedUserAgent.device.vendor ?? 'Unknown',
-                                        model: parsedUserAgent.device.model ?? 'Unknown',
                                         os: {
                                             name: parsedUserAgent.os.name ?? 'Unknown',
                                             version: parsedUserAgent.os.version ?? 'Unknown'
                                         }
                                     }
-                                }
+                                },
+                                sessionId: `${v4()}-${v4()}`
                             },
                             convertTo({ weeks: 3 }, 'milliseconds')
                         );
@@ -185,7 +186,7 @@ export default function setupLoginAuth(app: Hono) {
                 }
             }
         }
-        if (context.req.query('switch') && context.req.query('switch') === 'true') return context.redirect('/login');
+        if (context.req.query('switch') === 'true') return context.redirect('/login');
         return context.redirect('/');
     });
 }
@@ -226,6 +227,8 @@ export async function getSignedInRobloxUser(context: Context): Promise<LoggedInU
     if (!data) return data;
     // @ts-expect-error
     data.who = undefined;
+    // @ts-expect-error
+    data.sessionId = undefined;
     return data;
 }
 
