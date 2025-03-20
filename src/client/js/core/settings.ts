@@ -1,6 +1,16 @@
 import { getLoggedInUser } from '../libs/auth';
+import { isDebounceActive, setDebounceActive, setDebounceInactive } from '../libs/debounce';
 import { createErrorPopup } from '../libs/quickElements';
-import { addChild, createElement, getElementByIdExpected, getWebIconHTML, waitForPageLoad } from '../libs/util';
+import { getWebToken } from '../libs/security';
+import {
+    addChild,
+    createElement,
+    getElementByIdExpected,
+    getWebIconHTML,
+    temporarilySetElementText,
+    wait,
+    waitForPageLoad
+} from '../libs/util';
 
 export default async function () {
     await waitForPageLoad();
@@ -37,7 +47,7 @@ export default async function () {
 
     switchAccountsButton.addEventListener('click', async () => {
         sessionStorage.setItem('LoginRedirect', window.location.href);
-        window.location.href = '/logout?switch=true';
+        window.location.href = '/logout?switch=true&single=true';
     });
 
     addChild(container, [
@@ -86,4 +96,59 @@ export default async function () {
             ]);
         }
     })();
+
+    addChild(container, [
+        createElement('h2', { innerText: 'Account Data', className: 'accountSettingsHeader' }),
+        createElement('div', {}, ['split', 'accountSettingsSplit'])
+    ]);
+
+    const downloadDataButton = createElement('button', {
+        type: 'button',
+        innerHTML: `${getWebIconHTML('folder_zip')} Download Account Data`
+    });
+
+    downloadDataButton.addEventListener('click', async () => {
+        if (isDebounceActive('downloadData')) return;
+        setDebounceActive('downloadData');
+        const reset1 = temporarilySetElementText(
+            downloadDataButton,
+            getWebIconHTML('hourglass_empty') + 'Downloading...'
+        );
+
+        const token = await getWebToken();
+        if (!token) document.location.reload();
+
+        const link = createElement('a', {
+            download: 'account-data.zip',
+            href: `/api/account/download-data?captcha=${token}`
+        });
+        link.click();
+
+        reset1();
+        const reset2 = temporarilySetElementText(downloadDataButton, getWebIconHTML('check') + 'Done!');
+        await wait(2000);
+        reset2();
+        setDebounceInactive('downloadData');
+        link.remove();
+    });
+
+    addChild(container, [
+        downloadDataButton,
+        createElement(
+            'p',
+            { innerText: 'Use the button above to download your account data.' },
+            [],
+            [
+                createElement(
+                    'span',
+                    {
+                        innerHTML:
+                            getWebIconHTML('warning') +
+                            'The information found in your account data should NOT be shared with anyone.'
+                    },
+                    ['dangerInfoBox']
+                )
+            ]
+        )
+    ]);
 }

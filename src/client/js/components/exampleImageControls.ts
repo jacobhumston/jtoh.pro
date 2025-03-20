@@ -52,7 +52,10 @@ export async function handleImageExampleControls(path: string) {
      * @returns The path for the image.
      */
     function getPath(override?: string): string {
-        return path.replace('$username', override ?? inputBox.value);
+        return path.replace(
+            '$username',
+            override ?? inputBox.value.replaceAll('/', '').replaceAll('&', '').replaceAll('?', '')
+        );
     }
 
     /**

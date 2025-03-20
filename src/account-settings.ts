@@ -9,6 +9,7 @@ import { verifyContext } from './captcha';
 import mime from 'mime-types';
 import fs from 'fs';
 import { randomUUIDv7 } from 'bun';
+import { getURLHost } from './dev';
 
 function getKeyName(account: LoggedInUser | BasicRobloxUserResult | RobloxUserResult) {
     return `_${account.id}`;
@@ -106,6 +107,23 @@ export function setupAccountEndpoints(app: Hono) {
         }
 
         archive.append(JSON.stringify(sessions), { name: 'account-sessions.json' });
+
+        archive.append(
+            `>> ACCOUNT DATA REQUEST @ ${getURLHost()}
+Account data request for @${user.username} (${user.id}).
+Requested and delivered on ${new Date().toUTCString()}.
+The contents delivered should NOT be shared with anyone.
+
+>> FILE INFORMATION
+"account-settings.json" - Your account configurations, such as card customization.
+"account-sessions.json" - Sessions logged into your account. Contains session identifiers and general security information.
+
+>> HAVE QUESTIONS?
+Join our support server at https://discord.jtoh.pro
+Create a "General Website Support Ticket" in #get-support
+            `,
+            { name: 'READ-ME.txt' }
+        );
 
         archive.finalize();
 

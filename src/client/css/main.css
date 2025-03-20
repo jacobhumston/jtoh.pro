@@ -1171,3 +1171,20 @@ a {
     padding-left: 15px;
     padding-right: 15px;
 }
+
+.dangerInfoBox {
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: var(--color-error);
+    color: var(--color-background-even-more-darker);
+    font-weight: bold;
+    border-radius: 10px;
+}
+
+.dangerInfoBox .materialSymbolsRounded {
+    vertical-align: text-bottom;
+}

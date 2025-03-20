@@ -52,13 +52,13 @@ export interface LoggedInUserWho extends LoggedInUser {
         device: {
             type: string;
             vendor: string;
-            model: string;
             os: {
                 name: string;
                 version: string;
             };
         };
     };
+    sessionId: string;
 }
 
 export type TowerDataCSCD = {
