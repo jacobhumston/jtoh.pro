@@ -14,7 +14,7 @@
         "@xterm/addon-web-links": "^0.11.0",
         "@xterm/xterm": "^5.5.0",
         "archiver": "^7.0.1",
-        "axios": "^1.8.3",
+        "axios": "^1.8.4",
         "bun": "^1.2.5",
         "chart.js": "^4.4.8",
         "clean-css": "^5.3.3",
@@ -23,7 +23,7 @@
         "date-fns": "^4.1.0",
         "discord.js": "^14.18.0",
         "esbuild": "^0.25.1",
-        "hono": "^4.7.4",
+        "hono": "^4.7.5",
         "hono-compress": "^0.7.0",
         "hono-rate-limiter": "^0.4.2",
         "html-minifier": "^4.0.0",
@@ -390,7 +390,7 @@
 
     "asynckit": ["asynckit@0.4.0", "", {}, "sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q=="],
 
-    "axios": ["axios@1.8.3", "", { "dependencies": { "follow-redirects": "^1.15.6", "form-data": "^4.0.0", "proxy-from-env": "^1.1.0" } }, "sha512-iP4DebzoNlP/YN2dpwCgb8zoCmhtkajzS48JvwmkSkXvPI3DHc7m+XYL5tGnSlJtR6nImXZmdCuN5aP8dh1d8A=="],
+    "axios": ["axios@1.8.4", "", { "dependencies": { "follow-redirects": "^1.15.6", "form-data": "^4.0.0", "proxy-from-env": "^1.1.0" } }, "sha512-eBSYY4Y68NNlHbHBMdeDmKNtDgXWhQsJcGqzO3iLUM0GraQFSS9cVgPX5I9b3lbdFKyYoAEGAZF1DwhTaljNAw=="],
 
     "b4a": ["b4a@1.6.7", "", {}, "sha512-OnAYlL5b7LEkALw87fUVafQw5rVR9RjwGd4KUwNQ6DrrNmaVaUCgLipfVlzrPQ4tWOR9P0IXGNOx50jYCCdSJg=="],
 
@@ -684,7 +684,7 @@
 
     "homedir-polyfill": ["homedir-polyfill@1.0.3", "", { "dependencies": { "parse-passwd": "^1.0.0" } }, "sha512-eSmmWE5bZTK2Nou4g0AI3zZ9rswp7GRKoKXS1BLUkvPviOqs4YTN1djQIqrXy9k5gEtdLPy86JjRwsNM9tnDcA=="],
 
-    "hono": ["hono@4.7.4", "", {}, "sha512-Pst8FuGqz3L7tFF+u9Pu70eI0xa5S3LPUmrNd5Jm8nTHze9FxLTK9Kaj5g/k4UcwuJSXTP65SyHOPLrffpcAJg=="],
+    "hono": ["hono@4.7.5", "", {}, "sha512-fDOK5W2C1vZACsgLONigdZTRZxuBqFtcKh7bUQ5cVSbwI2RWjloJDcgFOVzbQrlI6pCmhlTsVYZ7zpLj4m4qMQ=="],
 
     "hono-compress": ["hono-compress@0.7.0", "", { "dependencies": { "@mongodb-js/zstd": "^2.0.0", "brotli-wasm": "^3.0.1" }, "optionalDependencies": { "@rollup/rollup-linux-x64-gnu": "^4.28.1" }, "peerDependencies": { "hono": "^4.6.13" } }, "sha512-sJup+6Mp8ZIcGok140acl689dx7WOJPXF86NX5YzPifeeM6mp1jsvwtke0cMiNoyrPvhNEaMAS9Cx497TVv4PQ=="],
 
