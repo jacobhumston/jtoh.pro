@@ -30,9 +30,6 @@ body {
     margin: 0px;
     padding: 0px;
     box-sizing: border-box;
-}
-
-body {
     overflow-x: hidden;
 }
 
@@ -1187,4 +1184,135 @@ a {
 
 .dangerInfoBox .materialSymbolsRounded {
     vertical-align: text-bottom;
+}
+
+#packagesContainer {
+    background-color: var(--color-background-even-more-darker);
+    padding: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 15px;
+    position: relative;
+}
+
+.packageElement {
+    display: inline-block;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 5px;
+    background-color: var(--color-background-darker);
+    margin: 5px;
+    position: relative;
+}
+
+.packageElement:hover {
+    padding-bottom: 3px;
+}
+
+.packageVersionElement {
+    color: var(--color-success);
+    font-size: small;
+    margin-left: 4px;
+    vertical-align: text-top;
+    border-bottom: var(--color-background-lighter) 2px solid;
+}
+
+.packageStarElement {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    float: left;
+    color: var(--color-text-highlight);
+}
+
+#packageCount {
+    color: var(--color-text);
+    margin: 10px;
+}
+
+@media screen and (max-width: 500px) {
+    .packageElement {
+        word-wrap: break-word;
+        display: block;
+    }
+}
+
+#creditsContainer {
+    display: flex;
+    position: relative;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: start;
+}
+
+.creditsElement {
+    background-color: var(--color-background-even-more-darker);
+    max-width: min-content;
+    padding: 10px;
+    border-radius: 15px;
+}
+
+.creditsPictureElement {
+    display: inline-block;
+}
+
+.creditsPictureElement img {
+    width: 200px;
+    height: auto;
+}
+
+.creditsNameElement {
+    display: inline-block;
+    color: var(--color-text-bold);
+    font-size: large;
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
+
+.creditsUsernameElement {
+    display: block;
+    color: var(--color-text);
+    font-size: medium;
+}
+
+.creditsInfoElement {
+    display: inline-block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.creditsViewProfileElement {
+    display: block;
+    background-color: var(--color-text-header);
+    color: var(--color-text);
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 10px;
+}
+
+.creditsViewProfileElement:hover {
+    border-bottom: none;
+    background-color: var(--color-text);
+    color: var(--color-background);
+}
+
+@media screen and (max-width: 250px) {
+    .creditsElement {
+        width: 100%;
+    }
+
+    .creditsPictureElement img {
+        width: 100%;
+    }
+
+    .creditsNameElement,
+    .creditsUsernameElement {
+        word-wrap: break-word;
+    }
 }

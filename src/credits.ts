@@ -13,7 +13,7 @@ export default async function credits(app: Hono) {
                 userId: 257770975
             },
             {
-                info: 'Original creator of JToH skill points.',
+                info: "Original creator of the EToH skill points concept and it's execution.",
                 userId: 381696232
             }
         ]
