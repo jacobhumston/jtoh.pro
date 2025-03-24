@@ -68,6 +68,14 @@ app.use(
     })
 );
 
+app.use((context, next) => {
+    const getHighEntropyValues =
+        'Sec-CH-UA-Full-Version-List, Sec-CH-UA-Mobile, Sec-CH-UA-Model, Sec-CH-UA-Platform, Sec-CH-UA-Platform-Version, Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Form-Factors';
+    context.res.headers.set('Accept-CH', getHighEntropyValues);
+    context.res.headers.set('Critical-CH', getHighEntropyValues);
+    return next();
+});
+
 app.use(secureHeaders());
 
 app.use(compress());

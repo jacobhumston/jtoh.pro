@@ -96,8 +96,11 @@ export default function setupLoginAuth(app: Hono) {
                         //        await loginAuthDB.delete(key);
                         //    }
                         //}
-                        const parsedUserAgent = new UAParser(context.req.header('User-Agent')).getResult();
-                        if (!parsedUserAgent.browser.name) return context.redirect(getAuthLoginURL());
+                        const parsedUserAgent = new UAParser(context.req.header('User-Agent'), context.req.raw.headers);
+                        const browser = await parsedUserAgent.getBrowser().withClientHints();
+                        const device = await parsedUserAgent.getDevice().withClientHints();
+                        const os = await parsedUserAgent.getOS().withClientHints();
+                        if (!browser.name) return context.redirect(getAuthLoginURL());
                         const token =
                             crypto.randomBytes(256).toString('hex') +
                             '::' +
@@ -111,13 +114,13 @@ export default function setupLoginAuth(app: Hono) {
                                 thumbnail: userResponseJSON.picture ?? '',
                                 who: {
                                     ip: getIP(context),
-                                    browser: parsedUserAgent.browser.name ?? 'Unknown',
+                                    browser: browser.name ?? 'Unknown',
                                     device: {
-                                        type: parsedUserAgent.device.type ?? 'Unknown',
-                                        vendor: parsedUserAgent.device.vendor ?? 'Unknown',
+                                        type: device.type ?? 'Unknown',
+                                        vendor: device.vendor ?? 'Unknown',
                                         os: {
-                                            name: parsedUserAgent.os.name ?? 'Unknown',
-                                            version: parsedUserAgent.os.version ?? 'Unknown'
+                                            name: os.name ?? 'Unknown',
+                                            version: os.version ?? 'Unknown'
                                         }
                                     }
                                 },
