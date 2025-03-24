@@ -221,12 +221,10 @@ export default function cscdGen(app: Hono) {
                                         ] ?? c
                                     );
                                     ctx.strokeStyle = color.darken(0.5).hex();
-                                    ctx.globalAlpha = 0.5;
-                                    ctx.lineWidth = 3;
+                                    ctx.lineWidth = 4;
                                     ctx.lineJoin = 'miter';
                                     ctx.miterLimit = 2;
                                     ctx.strokeText(w, x, 98);
-                                    ctx.globalAlpha = 1;
                                 },
                                 afterCallback: () => {
                                     ctx.font = '18px Poppins';
@@ -292,14 +290,31 @@ export default function cscdGen(app: Hono) {
                         ctx.textAlign = 'left';
                         ctx.font = 'bold 16px Poppins';
                         {
+                            const color = Color(difficultyColor);
+                            if (color.isDark()) {
+                                ctx.fillStyle = Color('#ffffff').hex();
+                                const textSize = ctx.measureText(`${Math.floor((completed / total) * 100)}%`);
+                                ctx.globalAlpha = 0.2;
+                                drawRoundedRect(
+                                    ctx,
+                                    startX - 4,
+                                    startY -
+                                        (6 + textSize.actualBoundingBoxAscent + textSize.actualBoundingBoxDescent) -
+                                        4,
+                                    textSize.width + 8,
+                                    textSize.actualBoundingBoxAscent + textSize.actualBoundingBoxDescent + 8,
+                                    5
+                                );
+                                ctx.globalAlpha = 1;
+                            }
+                        }
+                        {
                             const color = Color(outLineColor ?? difficultyColor);
                             ctx.strokeStyle = color.darken(0.5).hex();
-                            ctx.globalAlpha = 0.5;
                             ctx.lineWidth = 3;
                             ctx.lineJoin = 'miter';
                             ctx.miterLimit = 2;
                             ctx.strokeText(`${Math.floor((completed / total) * 100)}%`, startX, startY - 6, 98);
-                            ctx.globalAlpha = 1;
                         }
                         ctx.fillStyle = difficultyColor;
                         ctx.fillText(`${Math.floor((completed / total) * 100)}%`, startX, startY - 6);

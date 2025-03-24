@@ -186,27 +186,22 @@ export default function etohGen(app: Hono) {
                     let text = towerStats.hardest_tower.replaceAll(' ', '_');
                     if (text.length > 35) text = towerStats.hardest_abbreviation;
                     const raw = towerStats.hardest_raw_difficulty.toString();
+                    const difficultyColor = towerStats.difficulty_colors[towerStats.difficulties[raw.split('.')[0]]];
                     colorText(
                         ctx,
                         `Hardest tower is ${text} (${raw})`,
                         [
                             {
                                 string: text as string,
-                                // @ts-ignore-next-line
-                                color: towerStats.difficulty_colors[
-                                    // @ts-ignore-next-line
-                                    towerStats.difficulties[raw.split('.')[0]]
-                                ],
+                                color: difficultyColor,
                                 beforeCallback: (x, w, c) => {
                                     ctx.font = 'bold 18px Poppins';
                                     const color = Color(c);
                                     ctx.strokeStyle = color.darken(0.5).hex();
-                                    ctx.globalAlpha = 0.5;
-                                    ctx.lineWidth = 3;
+                                    ctx.lineWidth = 4;
                                     ctx.lineJoin = 'miter';
                                     ctx.miterLimit = 2;
                                     ctx.strokeText(w, x, 98);
-                                    ctx.globalAlpha = 1;
                                 },
                                 afterCallback: () => {
                                     ctx.font = '18px Poppins';
@@ -265,14 +260,32 @@ export default function etohGen(app: Hono) {
                         ctx.font = 'bold 16px Poppins';
                         {
                             const color = Color(difficultyColor);
+                            if (color.isDark()) {
+                                ctx.fillStyle = Color('#ffffff').hex();
+                                const textSize = ctx.measureText(`${Math.floor((completed / total) * 100)}%`);
+                                ctx.globalAlpha = 0.2;
+                                drawRoundedRect(
+                                    ctx,
+                                    startX - 4,
+                                    startY -
+                                        (6 + textSize.actualBoundingBoxAscent + textSize.actualBoundingBoxDescent) -
+                                        4,
+                                    textSize.width + 8,
+                                    textSize.actualBoundingBoxAscent + textSize.actualBoundingBoxDescent + 8,
+                                    5
+                                );
+                                ctx.globalAlpha = 1;
+                            }
+                        }
+                        {
+                            const color = Color(difficultyColor);
                             ctx.strokeStyle = color.darken(0.5).hex();
-                            ctx.globalAlpha = 0.5;
                             ctx.lineWidth = 3;
                             ctx.lineJoin = 'miter';
                             ctx.miterLimit = 2;
                             ctx.strokeText(`${Math.floor((completed / total) * 100)}%`, startX, startY - 6, 98);
-                            ctx.globalAlpha = 1;
                         }
+                        ctx.fillStyle = difficultyColor;
                         ctx.fillText(`${Math.floor((completed / total) * 100)}%`, startX, startY - 6);
                         ctx.fillStyle = new Color('#bdbdbd').darken(0.2).hex();
                         ctx.font = 'bold 15px Poppins';
