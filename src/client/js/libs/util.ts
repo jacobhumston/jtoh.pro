@@ -174,6 +174,8 @@ export function wait(ms: number): Promise<undefined> {
 export function getPageFileName(): string {
     const href = new URL(document.location.href);
     const path = href.pathname.split('/');
+    // Work around for index.html
+    if (path[path.length - 1] === '') return 'index';
     return path[path.length - 1].split('.')[0];
 }
 
