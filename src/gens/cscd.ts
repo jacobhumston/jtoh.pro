@@ -187,15 +187,19 @@ export default function cscdGen(app: Hono) {
 
                 const valueWord = usingAJ ? 'aj' : 'legit';
 
+                if (usingAJ) {
+                    ctx.fillStyle = Color('#bdbdbd').darken(0.7).hex();
+                    ctx.globalAlpha = 0.6;
+                    drawRoundedRect(ctx, 10, 10, 103, 30, 15);
+
+                    ctx.globalAlpha = 1;
+                    ctx.fillStyle = '#78d663';
+                    ctx.fillText('All Jumps', 18, 30);
+
+                    ctx.fillStyle = '#bdbdbd';
+                }
+
                 if (towerStats.hardest_tower[valueWord]) {
-                    if (usingAJ) {
-                        ctx.fillStyle = Color('#bdbdbd').darken(0.7).hex();
-                        drawRoundedRect(ctx, 10, 10, 95, 30, 15);
-
-                        ctx.fillStyle = '#78d663';
-                        ctx.fillText('Using AJ', 18, 30);
-                    }
-
                     ctx.fillStyle = '#bdbdbd';
 
                     const hardestTowerString = towerStats.hardest_tower[valueWord] ?? '';

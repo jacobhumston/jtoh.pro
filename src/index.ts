@@ -177,21 +177,24 @@ app.get('/towerstats/:game/:user', async (context) => {
 });
 
 app.get('/api/app.webmanifest', async (context) => {
-    return context.json({
-        short_name: getURLHost(),
-        name: 'JToH Pro' + (isDev ? ' (Dev)' : isBeta ? ' (Beta)' : ''),
-        icons: [
-            {
-                src: '/app/assets/roblox-icon.png',
-                sizes: '512x512',
-                type: 'image/png'
-            }
-        ],
-        start_url: '/app/',
-        display: 'standalone',
-        theme_color: '#b58dffde',
-        background_color: '#222222'
-    });
+    context.res.headers.set('Content-Type', 'application/manifest+json');
+    return context.body(
+        JSON.stringify({
+            short_name: getURLHost(),
+            name: 'JToH Pro' + (isDev ? ' (Dev)' : isBeta ? ' (Beta)' : ''),
+            icons: [
+                {
+                    src: '/app/assets/roblox-icon.png',
+                    sizes: '512x512',
+                    type: 'image/png'
+                }
+            ],
+            start_url: '/app/',
+            display: 'standalone',
+            theme_color: '#b58dffde',
+            background_color: '#222222'
+        })
+    );
 });
 
 app.notFound((context) => {

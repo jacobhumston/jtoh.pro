@@ -49,7 +49,7 @@ export default async function serveStatic(app: Hono) {
         const searchParamsString = searchParams.toString().length > 0 ? '?' + searchParams.toString() : '';
 
         if (path.endsWith('/')) {
-            path = `${path}index.html`;
+            path = `${path}index`;
         }
 
         path = normalize(path).replace(/^(\.\.(\/|\\|$))+/, '');

@@ -52,6 +52,23 @@ export default function webUtils(app: Hono) {
         return context.json(await getLicenseReport());
     });
 
+    app.get('/api/util/roblox-universe-thumbnail/:universeIds', async (context) => {
+        const result = await (
+            await fetch(
+                `https://thumbnails.roblox.com/v1/games/multiget/thumbnails?universeIds=${context.req.param('universeIds')}&defaults=true&size=768x432&format=Png&isCircular=false`
+            ).catch(() => ({ json: async () => ({}) }))
+        ).json();
+
+        if (!result.data) return context.json({ error: 'No data.' }, 400);
+
+        const images: any = {};
+        for (const image of result.data) {
+            images[image.universeId] = image.thumbnails[0].imageUrl;
+        }
+
+        return context.json({ result: images });
+    });
+
     /*
     app.get('/api/util/roblox-badges/:userId', async (context) => {
         const userId = parseInt(context.req.param('userId'));

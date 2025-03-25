@@ -1,3 +1,4 @@
+import { getLoggedInUser, isLoggedIn } from '../libs/auth';
 import { isDebounceActive, setDebounceActive, setDebounceInactive } from '../libs/debounce';
 import { createErrorPopup } from '../libs/quickElements';
 import {
@@ -186,4 +187,10 @@ export async function handleImageExampleControls(path: string) {
         setDebounceInactive('downloadImage');
         link.remove();
     });
+
+    if ((await isLoggedIn()) && inputBox.value === '') {
+        const user = await getLoggedInUser();
+        inputBox.value = user.user?.username ?? '';
+        updateOutput();
+    }
 }
