@@ -12,10 +12,10 @@ dir_modules="./node_modules/.bin/"
 dir_bun="${dir_modules}bun"
 
 declare -A commands
-    commands["format"]="${dir_modules}prettier ./ --write --cache"
+    commands["format"]="${dir_bunx} prettier ./ --write --cache"
     commands["start"]="${dir_bun} run src/index.ts --dev"
-    commands["start-prod"]="${dir_modules}pm2 start \"${dir_bun} run src/index.ts\" --name jtoh.pro"
-    commands["start-beta"]="${dir_modules}pm2 start \"${dir_bun} run src/index.ts --beta\" --name jtoh.pro-beta"
+    commands["start-prod"]="${dir_bunx} pm2 start \"${dir_bun} run src/index.ts\" --name jtoh.pro"
+    commands["start-beta"]="${dir_bunx} pm2 start \"${dir_bun} run src/index.ts --beta\" --name jtoh.pro-beta"
     commands["tools-group-members"]="${dir_bun} run tools/group-members.ts"
     commands["tools-populate"]="${dir_bun} run tools/populate.ts"
     commands["cli"]="${dir_bun} run src/cli/index.ts"
