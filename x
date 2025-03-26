@@ -1,51 +1,77 @@
 #!/bin/bash
 
-# Wrapper for bunx
+#### Wrapper for bunx
+#####################
 
+# Define colors.
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+NO_COLOR='\033[0m'
+
+# Handle the script being used in the wrong directory.
 script_dir="$(cd "$(dirname "$0")" && pwd)"
 if [ "$PWD" != "$script_dir" ]; then
-    echo "This script must be run from its directory: $script_dir"
+    echo -e "${RED}This script must be run from it's own directory.${NO_COLOR} ($script_dir)"
     exit 1
 fi
 
+# Define modules.
 dir_modules="./node_modules/.bin/"
 dir_bun="${dir_modules}bun"
 dir_bunx="${dir_modules}bunx"
 
+# Define commands.
 declare -A commands
-    commands["format"]="${dir_bunx} prettier ./ --write --cache"
+
+    # Commands executed by bun directly.
     commands["start"]="${dir_bun} run src/index.ts --dev"
-    commands["start-prod"]="${dir_bunx} pm2 start \"${dir_bun} run src/index.ts\" --name jtoh.pro"
-    commands["start-beta"]="${dir_bunx} pm2 start \"${dir_bun} run src/index.ts --beta\" --name jtoh.pro-beta"
     commands["tools-group-members"]="${dir_bun} run tools/group-members.ts"
     commands["tools-populate"]="${dir_bun} run tools/populate.ts"
     commands["cli"]="${dir_bun} run src/cli/index.ts"
     commands["version"]="${dir_bun} -v"
 
+    # Commands executed by bunx.
+    commands["format"]="${dir_bunx} prettier ./ --write --cache"
+    commands["start-prod"]="${dir_bunx} pm2 start \"${dir_bun} run src/index.ts\" --name jtoh.pro"
+    commands["start-beta"]="${dir_bunx} pm2 start \"${dir_bun} run src/index.ts --beta\" --name jtoh.pro-beta"
+
+    # Aliases.
+    commands["f"]=${commands["format"]}
+    commands["s"]=${commands["start"]}
+    commands["v"]=${commands["version"]}    
+
+# Help function.
 print_help() {
-    echo "Usage: $0 <command>"
-    echo "Available commands:"
+    echo -e "${GREEN}Usage:${NO_COLOR} $0 <command>"
+    echo -e "${GREEN}Available commands:${NO_COLOR}"
     for key in "${!commands[@]}"; do
         echo -n " $key"
     done
     echo ""
 }
 
+# The command to run.
 command_to_run="$1"
+shift
 
+# Handle no command specified.
 if [ -z "$command_to_run" ]; then
-    echo "No command specified."
+    echo -e "${RED}No command specified.${NO_COLOR}"
     print_help
     exit 1
 fi
 
+# Handle unknown command.
 if [ -z "${commands[$command_to_run]}" ]; then
-    echo "Command not found: $command_to_run"
+    echo -e "${RED}Command not found: ${YELLOW}$command_to_run${NO_COLOR}"
     print_help
     exit 1
 fi
 
-echo "Running command: $command_to_run"
-echo "> ${commands[${command_to_run}]}"
+# Print the command that is being ran.
+echo -e "${GREEN}Running command:${NO_COLOR} $command_to_run"
+echo -e "${GREEN}>${YELLOW} ${commands[${command_to_run}]} $@${NO_COLOR}"
 
-${commands[${command_to_run}]}
+# Run the command.
+eval "${commands[${command_to_run}]} $@"
