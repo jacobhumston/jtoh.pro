@@ -8,7 +8,7 @@ import logger from './logger';
 import fs from 'node:fs';
 import webUtils from './web-utils';
 import serveLeaderboards from './leaderboards';
-import { isDev, getURL, port, getURLHost, isBeta, getURLObj, cdnPath } from './dev';
+import { isDev, getURL, port, getURLHost, isBeta, getURLObj } from './dev';
 import setupLoginAuth from './login-auth';
 import { rateLimiter } from 'hono-rate-limiter';
 import { getTempToken } from './temp-tokens';
@@ -40,10 +40,6 @@ import { getIP } from './ip';
 
 cleanUpTemp();
 cardImageCheck();
-
-logger.info(`CDN PATH: ${cdnPath}`);
-if (!isDev && !isBeta && cdnPath === 'cdn') logger.warn('CDN path is default in prod, might need fixed!');
-if (!fs.existsSync(cdnPath)) fs.mkdirSync(cdnPath);
 
 const app = new Hono();
 
