@@ -14,7 +14,7 @@ dir_bun="${dir_modules}bun"
 declare -A commands
     commands["format"]="${dir_modules}prettier ./ --write --cache"
     commands["start"]="${dir_bun} run src/index.ts --dev"
-    commands["start-prod"]="${dir_modules}pm2 start \"${dir_bun} run src/index.ts --cdnPath /dev/disk/by-id/scsi-0Linode_Volume_extra_storage_v1\" --name jtoh.pro"
+    commands["start-prod"]="${dir_modules}pm2 start \"${dir_bun} run src/index.ts\" --name jtoh.pro"
     commands["start-beta"]="${dir_modules}pm2 start \"${dir_bun} run src/index.ts --beta\" --name jtoh.pro-beta"
     commands["tools-group-members"]="${dir_bun} run tools/group-members.ts"
     commands["tools-populate"]="${dir_bun} run tools/populate.ts"
