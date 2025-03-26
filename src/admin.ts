@@ -22,7 +22,7 @@ const ptyProcess = spawn(shell, [], {
 
 // https://stackoverflow.com/a/28938235
 
-ptyProcess.write(` alias cli="bun cli ${getArgsAsString()}"\r`);
+ptyProcess.write(` alias cli="./node_modules/.bin/bun run src/cli/index.ts ${getArgsAsString()}"\r`);
 ptyProcess.write(' PS1="$ \\w\n$ -> jtoh.pro$ "\r');
 
 ptyProcess.onData((data) => {
@@ -35,7 +35,7 @@ export function admin(app: Hono) {
     app.use('/app/admin/*', async (context, next) => {
         if (await isSignedInAdmin(context)) {
             ptyProcess.write(
-                ` alias cli="bun cli --cookie=${await getSignedCookie(context, cookieSecret, 'auth-token')} ${getArgsAsString()}"\r`
+                ` alias cli="./node_modules/.bin/bun run src/cli/index.ts --cookie=${await getSignedCookie(context, cookieSecret, 'auth-token')} ${getArgsAsString()}"\r`
             );
             await next();
         } else {

@@ -2,15 +2,7 @@
     "name": "jtoh.pro",
     "module": "src/index.ts",
     "type": "module",
-    "scripts": {
-        "format": "bun x prettier ./ --write --cache",
-        "start": "bun src/index.ts --dev",
-        "start-prod": "bun x pm2 start \"bunx bun run src/index.ts\"",
-        "start-beta": "bun x pm2 start \"bunx bun run src/index.ts --beta\"",
-        "tools-group-members": "bun run tools/group-members.ts",
-        "tools-populate": "bun run tools/populate.ts",
-        "cli": "bun run src/cli/index.ts"
-    },
+    "scripts": {},
     "dependencies": {
         "@date-fns/utc": "^2.1.0",
         "@hono/zod-validator": "^0.4.3",

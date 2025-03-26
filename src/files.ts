@@ -1,5 +1,6 @@
 import fs from 'node:fs';
-import logger from './logger';
+// Note to self: This is required by the CLI, so a double logger will be made...
+// (DON'T IMPORT THE MAIN LOGGER!)
 
 export function createLeadboardBlacklistFile() {
     const name = 'db/leaderboards-blacklist.json';
@@ -27,5 +28,5 @@ export function cleanUpTemp() {
             failed.push(file);
         }
     }
-    if (failed.length > 0) logger.warn(`Failed to delete temp files. (${failed.length}): ${failed.join(', ')}`);
+    //if (failed.length > 0) logger.warn(`Failed to delete temp files. (${failed.length}): ${failed.join(', ')}`);
 }
