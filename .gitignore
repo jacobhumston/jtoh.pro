@@ -185,3 +185,6 @@ temp/
 
 # CDN
 cdn
+
+# heaps
+src/web/app/admin/heaps/
