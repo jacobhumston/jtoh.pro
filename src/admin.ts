@@ -1,13 +1,26 @@
 import { Hono } from 'hono';
 import { isSignedInAdmin } from './login-auth';
 import { spawn } from './pty';
-import os from 'os';
+import os from 'node:os';
 import type { WSContext } from 'hono/ws';
 import process from 'node:process';
-import { getArgsAsString } from './dev';
+import { getArgsAsString, getURLObj } from './dev';
 import { getSignedCookie } from 'hono/cookie';
 import { addSocketManager, closeSocket } from './socket';
 import { cookieSecret } from './cookies';
+import { writeHeapSnapshot } from 'node:v8';
+import { v4 } from 'uuid';
+import fs from 'node:fs';
+
+if (fs.existsSync('src/web/app/admin/heaps')) {
+    for (const file of fs.readdirSync('src/web/app/admin/heaps')) {
+        try {
+            fs.rmSync(`src/web/app/admin/heaps/${file}`);
+        } catch {
+            console.error(`Failed to remove heap snapshot ${file}`);
+        }
+    }
+}
 
 const shell = os.platform() === 'win32' ? 'powershell.exe' : 'bash';
 const sockets: Array<WSContext> = [];
@@ -59,6 +72,14 @@ export function admin(app: Hono) {
                 };
             })
         });
+    });
+
+    app.get('/api/admin/create-heap-snapshot', async (context) => {
+        if (!fs.existsSync('src/web/app/admin/heaps')) fs.mkdirSync('src/web/app/admin/heaps');
+        const name = `${v4().split('-')[0]}.heapsnapshot`;
+        const path = `src/web/app/admin/heaps/${name}`;
+        writeHeapSnapshot(path);
+        return context.json({ url: `${getURLObj().href}app/admin/heaps/${name}` });
     });
 
     addSocketManager('terminal', async (context) => {
