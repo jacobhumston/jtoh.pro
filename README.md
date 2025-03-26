@@ -66,20 +66,6 @@ git clone https://github.com/jacobhumston/jtoh.pro.git .
 
 bun install
 
-# For production, use: bun start-prod
-# For beta, use: bun start-beta
-# Note that you may have to run any of the above commands twice for the PM2 demon to spawn.
-bun start
+# Get started with commands:
+./x
 ```
-
-## Extra Commands
-
-| Command                   | Description                                   |
-| ------------------------- | --------------------------------------------- |
-| `bun format`              | Format code in the repository.                |
-| `bun start`               | Start development server.                     |
-| `bun start-prod`          | Start production server.                      |
-| `bun start-beta`          | Start beta server.                            |
-| `bun tools-group-members` | Populate Roblox group member list data.       |
-| `bun tools-populate`      | Populate leaderboards via http requests.      |
-| `bun cli`                 | Run the cli used to interact with the server. |
