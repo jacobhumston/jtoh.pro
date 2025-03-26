@@ -79,17 +79,14 @@ app.use(compress());
 app.use(async (context, next) => {
     const host = context.req.header('host');
     if (host) {
-        const parts = host.split('.');
         let link: URL;
         try {
             link = new URL(context.req.url);
         } catch {
             return context.json({ error: 'Invalid host.' }, 400);
         }
-        if (parts.length > 1) {
-            if (parts[0] === 'beta' && getURL() === 'https://beta.jtoh.pro') return await next();
-            return context.redirect(getURL() + link.pathname + link.search);
-        }
+        if (link.host === getURLObj().host) return await next();
+        return context.redirect(getURL() + link.pathname + link.search);
     } else {
         return context.json({ error: 'Invalid host.' }, 400);
     }
