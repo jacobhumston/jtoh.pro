@@ -10,6 +10,7 @@ fi
 
 dir_modules="./node_modules/.bin/"
 dir_bun="${dir_modules}bun"
+dir_bunx="${dir_modules}bunx"
 
 declare -A commands
     commands["format"]="${dir_bunx} prettier ./ --write --cache"
