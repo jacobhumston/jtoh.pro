@@ -199,7 +199,7 @@ app.onError((error, context) => {
     logger.error(error);
 
     // logger.error SUCKS at logging http errors... smh
-    if (isDev) console.log(error);
+    console.log(error);
 
     return context.json({ error: 'Internal server error.' }, 500);
 });
