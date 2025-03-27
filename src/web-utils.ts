@@ -69,6 +69,28 @@ export default function webUtils(app: Hono) {
         return context.json({ result: images });
     });
 
+    app.get('/api/util/roblox-universe-thumbnail/multi/:universeId', async (context) => {
+        const universeId = context.req.param('universeId');
+        if (!universeId || isNaN(parseInt(universeId))) {
+            return context.json({ error: 'Invalid universeId.' }, 400);
+        }
+
+        const result = await (
+            await fetch(
+                `https://thumbnails.roblox.com/v1/games/multiget/thumbnails?universeIds=${universeId}&defaults=true&size=768x432&format=Png&isCircular=false&countPerUniverse=1000`
+            ).catch(() => ({ json: async () => ({}) }))
+        ).json();
+
+        if (!result.data) return context.json({ error: 'No data.' }, 400);
+
+        const thumbnails: any = {};
+        for (const image of result.data) {
+            thumbnails[image.universeId] = image.thumbnails.map((thumbnail: any) => thumbnail.imageUrl).reverse();
+        }
+
+        return context.json({ result: thumbnails });
+    });
+
     /*
     app.get('/api/util/roblox-badges/:userId', async (context) => {
         const userId = parseInt(context.req.param('userId'));

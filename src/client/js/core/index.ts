@@ -1,5 +1,6 @@
+import { convertTo } from '@jacobhumston/tc.js';
 import { createErrorPopup } from '../libs/quickElements';
-import { addChild, createElement, waitForElementByIdExpected } from '../libs/util';
+import { addChild, createElement, wait, waitForElementByIdExpected } from '../libs/util';
 
 export default async function () {
     const container = await waitForElementByIdExpected('homepageGameSelectionsContainer', 'div', {
@@ -24,7 +25,7 @@ export default async function () {
 
     const idList = games.map((game) => game.id).join(',');
     const images = await (
-        await fetch(`/api/util/roblox-universe-thumbnail/${idList}`).catch(() => {
+        await fetch(`/api/util/roblox-universe-thumbnail/multi/${idList}`).catch(() => {
             createErrorPopup('Failed to load game thumbnails.', false);
             return { json: async () => ({ error: 'Failed to fetch.' }) };
         })
@@ -38,7 +39,18 @@ export default async function () {
         const image = createElement('div');
         const open = createElement('a', { innerText: 'Get Card', href: `/app/${game.path}` });
 
-        image.style.backgroundImage = `url('${images.result[game.id]}')`;
+        //image.style.backgroundImage = `url(${images.result[game.id][0]})`;
+        image.style.backgroundImage = images.result[game.id].map((url: string) => `url(${url})`).join(', ');
+
+        let currentIndex = 0;
+        async function update() {
+            await wait(convertTo({ seconds: 8 }, 'milliseconds'));
+            currentIndex = (currentIndex + 1) % images.result[game.id].length;
+            image.style.backgroundImage = `url(${images.result[game.id][currentIndex]})`;
+            update();
+        }
+
+        update();
 
         addChild(image, [name, open]);
         addChild(gameContainer, [image]);

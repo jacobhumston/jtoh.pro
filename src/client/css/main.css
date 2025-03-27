@@ -1360,6 +1360,8 @@ a {
     height: 100%;
     position: relative;
     background-size: cover;
+    background-repeat: no-repeat;
+    transition: background-image 1s ease-in-out;
 }
 
 .homepageGameSingleSelectionContainer a {
