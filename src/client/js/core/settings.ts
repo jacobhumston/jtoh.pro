@@ -53,20 +53,14 @@ export default async function () {
     addChild(container, [
         createElement('h2', { innerText: 'Card Background Photo', className: 'accountSettingsHeader' }),
         createElement('div', {}, ['split', 'accountSettingsSplit']),
-        createElement(
-            'p',
-            {
-                innerHTML: 'This is the photo that will be used as the background of your card.'
-            },
-            [],
-            [
-                createElement('br'),
-                createElement('a', {
-                    innerText: "Click here to change your card's background photo.",
-                    href: '/app/account/card-backgrounds'
-                })
-            ]
-        )
+        createElement('a', {
+            innerText: "Click here to change your card's background photo.",
+            href: '/app/account/card-backgrounds',
+            id: 'clickHereToChangeCardBackground'
+        }),
+        createElement('p', {
+            innerHTML: 'This is the photo that will be used as the background of your card.'
+        })
     ]);
 
     const currentCardImageContainer = createElement('div', { innerHTML: '<p>Loading...</p>' });

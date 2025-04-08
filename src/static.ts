@@ -9,6 +9,8 @@ import { isDev } from './dev';
 import { Transpiler } from 'bun';
 import logger from './logger';
 import { v4 as uuid } from 'uuid';
+import { getJSForPage } from './js';
+//import { PurgeCSS } from 'purgecss';
 
 let cssCache: null | string = null;
 
@@ -129,6 +131,15 @@ export default async function serveStatic(app: Hono) {
             let content = file.toString();
             const templateDir = join(__dirname, 'web', 'app', 'templates');
             content = replaceTemplates(content, templateDir);
+
+            /*
+            const purgeCSSResult = await new PurgeCSS().purge({
+                content: [{ extension: 'html', raw: content }],
+                css: [{ name: 'css', raw: getCSS() }],
+                safelist: ['loggedInDetails', 'loggedIn', 'loggedInName', 'loggedInIcon', 'dangerInfoBox']
+            });
+            */
+
             file = Buffer.from(
                 minifyHTML
                     .minify(content, {
@@ -140,6 +151,7 @@ export default async function serveStatic(app: Hono) {
                     .replaceAll('{{pageId}}', pageId)
                     .replaceAll('{{currentYear}}', new Date().getFullYear().toString())
                     .replace('<style template=styles></style>', `<style>${getCSS()}</style>`)
+                    .replace('<script template=js></script>', `<script>${await getJSForPage(pageName)}</script>`)
             );
         }
 

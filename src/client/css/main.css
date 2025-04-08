@@ -18,8 +18,14 @@
     src: url('/app/assets/MaterialSymbolsRounded.woff2') format('woff2');
 }
 
+@font-face {
+    font-family: 'Twemoji';
+    src: url('/app/assets/Twemoji.ttf') format('truetype');
+    font-display: swap;
+}
+
 :root {
-    --font: 'Poppins', Arial, sans-serif;
+    --font: 'Poppins', 'Twemoji', Arial, sans-serif;
 }
 
 html,
@@ -1244,6 +1250,7 @@ a {
     flex-wrap: wrap;
     justify-content: space-around;
     align-items: start;
+    row-gap: 25px;
 }
 
 .creditsElement {
@@ -1381,6 +1388,25 @@ a {
 }
 
 .homepageGameSingleSelectionContainer a:hover {
+    background-color: var(--color-text);
+    color: var(--color-background);
+}
+
+#clickHereToChangeCardBackground {
+    background-color: var(--color-text-header);
+    color: var(--color-text);
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#clickHereToChangeCardBackground:hover {
     background-color: var(--color-text);
     color: var(--color-background);
 }

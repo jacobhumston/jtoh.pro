@@ -28,7 +28,6 @@ import { csrf } from 'hono/csrf';
 import { secureHeaders } from 'hono/secure-headers';
 import { badgesEndpoints } from './roblox-badges';
 import credits from './credits';
-import { serveJS } from './js';
 import { handleRequestCount } from './request-count';
 import cscdGen from './gens/cscd';
 import { cardImageCheck } from './card-images';
@@ -44,7 +43,7 @@ cardImageCheck();
 const app = new Hono();
 
 GlobalFonts.registerFromPath('src/web/app/assets/Poppins-Regular.ttf', 'Poppins');
-GlobalFonts.registerFromPath('src/web/app/assets/Twemoji-15.1.0.ttf', 'Twemoji');
+GlobalFonts.registerFromPath('src/web/app/assets/Twemoji.ttf', 'Twemoji');
 GlobalFonts.registerFromPath('src/web/app/assets/MaterialSymbolsRounded.woff2', 'MaterialSymbolsRounded');
 
 app.use(
@@ -136,7 +135,6 @@ socketListen(app);
 serveSitemap(app);
 badgesEndpoints(app);
 credits(app);
-serveJS(app);
 handleRequestCount(app);
 setupAccountEndpoints(app);
 listenForPackageLists(app);

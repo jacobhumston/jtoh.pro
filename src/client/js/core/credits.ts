@@ -54,19 +54,13 @@ export default async function () {
 
     new Promise(async () => {
         for (const person of credits.credits) {
-            const thumbnails = await (
-                await fetch(`/api/util/user-roblox-thumbnails/${person.user.id}`).catch(() => ({
-                    json: async () => ({ error: 'Failed to load.' })
-                }))
-            ).json();
-
             const creditsElement = createElement('div', {}, ['creditsElement']);
 
             const creditsPictureElement = createElement('div', {}, ['creditsPictureElement']);
             addChild(
                 creditsPictureElement,
                 createElement('img', {
-                    src: thumbnails.full ?? '/app/assets/default-roblox-profile.png',
+                    src: person.user.thumbnail ?? '/app/assets/default-roblox-profile.png',
                     alt: person.user.name
                 })
             );
