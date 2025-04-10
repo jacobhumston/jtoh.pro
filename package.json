@@ -24,6 +24,7 @@
         "discord.js": "^14.18.0",
         "emoji-picker-element": "^1.26.2",
         "esbuild": "^0.25.2",
+        "events": "^3.3.0",
         "hono": "^4.7.6",
         "hono-compress": "^0.7.0",
         "hono-rate-limiter": "^0.4.2",

@@ -1,4 +1,17 @@
 import { addClass, removeClass, getWebIconHTML, getElementById, waitForElementById } from './util';
+import { EventEmitter } from 'events';
+
+/** Theme types. */
+export type Themes = 'themesLight' | 'themesDark';
+
+/** Theme events. */
+export interface ThemeEvents {
+    /** Emitted when themes are applied. */
+    applied: [theme: Themes];
+}
+
+/** Theme events. */
+export const themeEvents: EventEmitter<ThemeEvents> = new EventEmitter();
 
 /**
  * Apply the theme based on the user's preference or the saved theme.
@@ -6,11 +19,13 @@ import { addClass, removeClass, getWebIconHTML, getElementById, waitForElementBy
 export function applyTheme() {
     const root = document.documentElement;
     const localStorage = window.localStorage;
-    const currentTheme = localStorage.getItem('theme');
+    const currentTheme = localStorage.getItem('theme') as Themes | null;
     if (!currentTheme) {
         addClass(root, 'themesDark');
+        themeEvents.emit('applied', 'themesDark');
     } else {
         addClass(root, currentTheme);
+        themeEvents.emit('applied', currentTheme);
     }
 }
 
@@ -18,14 +33,26 @@ export function applyTheme() {
  * Update the theme based on the user's selection.
  * @param theme The theme to update to.
  */
-export function updateTheme(theme: string) {
+export function updateTheme(theme: Themes) {
     const root = document.documentElement;
     const localStorage = window.localStorage;
     root.classList.forEach((value) => {
         if (value.startsWith('themes')) removeClass(root, value);
     });
-    addClass(root, theme);
     localStorage.setItem('theme', theme);
+    applyTheme();
+}
+
+/**
+ * Get the current theme.
+ * @returns The current theme.
+ */
+export function getTheme(): Themes {
+    const localStorage = window.localStorage;
+    if (localStorage.getItem('theme')) {
+        return localStorage.getItem('theme') as Themes;
+    }
+    return 'themesDark';
 }
 
 /**
@@ -45,7 +72,7 @@ export async function listenForThemSelection() {
         for (const theme of themes) {
             theme.dataset.enabled = enabled.toString();
             theme.addEventListener('click', () => {
-                updateTheme(theme.dataset.theme ?? '');
+                updateTheme((theme.dataset.theme ?? '') as Themes);
             });
         }
         if (enabled) {
