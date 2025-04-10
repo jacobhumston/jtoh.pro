@@ -1410,3 +1410,7 @@ a {
     background-color: var(--color-text);
     color: var(--color-background);
 }
+
+emoji-picker {
+    --emoji-font-family: 'Twemoji';
+}
