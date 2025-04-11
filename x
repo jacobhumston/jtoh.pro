@@ -16,6 +16,14 @@ if [ "$PWD" != "$script_dir" ]; then
     exit 1
 fi
 
+# Check if the script is running as root (sudo).
+if [ "$EUID" -ne 0 ]; then
+    echo -e "${RED}This script must be run as root or with sudo.${NO_COLOR}"
+    echo -e "${YELLOW}Attempting to prompt sudo...${NO_COLOR}"
+    sudo su
+    exit 1
+fi
+
 # Define modules.
 dir_modules="./node_modules/.bin/"
 dir_bun="${dir_modules}bun"
