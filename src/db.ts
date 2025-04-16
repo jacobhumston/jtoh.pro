@@ -74,7 +74,15 @@ export async function getOrderedDB(
     values = values.filter((value) => !blackListedUsers.includes(value.user.id));
     values = values.filter((value: { count: number }) => value.count > 0);
     values.sort((a: { count: number }, b: { count: number }) => b.count - a.count);
-    values.forEach((value: { count: number; rank: number }, index: number) => (value.rank = index + 1));
+    values.forEach((value: { count: number; rank: number }, index: number) => {
+        const prev = values[index - 1];
+        if (!prev) return (values[index].rank = 1);
+        if (prev.count === value.count) {
+            values[index].rank = prev.rank;
+        } else {
+            values[index].rank = prev.rank + 1;
+        }
+    });
     return values;
 }
 
