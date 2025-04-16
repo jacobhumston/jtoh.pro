@@ -199,6 +199,7 @@ export default async function () {
                         if (user.thumbnail === '') {
                             icon.src = '/app/assets/default-roblox-profile.png';
                         } else {
+                            /*
                             if (data.rank < 4) {
                                 icon.src = user.thumbnail;
                                 fetch(`/api/util/user-roblox-thumbnails/${user.id}`)
@@ -209,6 +210,8 @@ export default async function () {
                             } else {
                                 icon.src = user.thumbnail;
                             }
+                            */
+                            icon.src = user.thumbnail;
                         }
                     }
 

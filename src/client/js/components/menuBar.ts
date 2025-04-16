@@ -4,7 +4,7 @@ import { addClass, waitForElementById } from '../libs/util';
  * Apply menu bar modifications.
  */
 export async function updateMenuBar() {
-    const menuBar = await waitForElementById('menuBar', { timeout: 5000 });
+    const menuBar = await waitForElementById('menuBar', { timeout: 5000, interval: 0 });
     if (!menuBar) return;
     const menuBarLinks = menuBar.getElementsByTagName('a');
     for (const link of menuBarLinks) {
