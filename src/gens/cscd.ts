@@ -356,13 +356,14 @@ export default function cscdGen(app: Hono) {
                 ctx.fillStyle = '#f8f8f8';
                 ctx.font = 'bold 15px Poppins, Twemoji';
                 //ctx.fillText(`Completed Tower Types`, 20, 135);
-                drawIconWithText(ctx, 'inventory', '18px', 18, 'Completed Tower Types', '#f8f8f8', 20, 135);
+                drawIconWithText(ctx, 'inventory', '18px', 18, 'Completed Towers', '#f8f8f8', 20, 135);
 
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#bdbdbd';
                 ctx.font = 'bold 15px Poppins, Twemoji';
                 ctx.fillText(
-                    `${towerStats.completed_types[valueWord].steeple ?? 0} Steeples, ${towerStats.completed_types[valueWord].tower ?? 0} Towers, ${towerStats.completed_types[valueWord].citadel ?? 0} Citadels`,
+                    // ${towerStats.completed_types[valueWord].steeple ?? 0} Steeples,
+                    `${towerStats.completed_types[valueWord].tower ?? 0} Towers, ${towerStats.completed_types[valueWord].citadel ?? 0} Citadels`,
                     20,
                     155
                 );

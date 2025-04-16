@@ -321,7 +321,7 @@ export default function etohGen(app: Hono) {
                 ctx.fillStyle = '#f8f8f8';
                 ctx.font = 'bold 15px Poppins, Twemoji';
                 //ctx.fillText(`Completed Tower Types`, 20, 135);
-                drawIconWithText(ctx, 'inventory', '18px', 18, 'Completed Tower Types', '#f8f8f8', 20, 135);
+                drawIconWithText(ctx, 'inventory', '18px', 18, 'Completed Towers', '#f8f8f8', 20, 135);
 
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#bdbdbd';
