@@ -32,7 +32,14 @@ export async function getBadgeIcons(badgeIds: number[]): Promise<BadgeIcon[]> {
         return getBadgeIcons(badgeIds);
     }
 
-    const data: { targetId: number; imageUrl: string }[] = (await response.json()).data;
+    let data: { targetId: number; imageUrl: string }[] = await response.json();
+    if (typeof data !== 'object') {
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+        return getBadgeIcons(badgeIds);
+    }
+
+    // @ts-ignore
+    data = data.data;
 
     if (!Array.isArray(data)) {
         await new Promise((resolve) => setTimeout(resolve, 5000));
@@ -64,6 +71,10 @@ export async function getBadges(badges: Array<any>, universeId: number, cursor?:
     }
 
     const json = await response.json();
+    if (typeof json !== 'object') {
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+        return getBadges(badges, universeId, cursor);
+    }
     let data: Badge[] = json.data;
 
     if (!Array.isArray(data)) {
