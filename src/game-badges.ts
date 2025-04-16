@@ -2,6 +2,7 @@ import jsonc from 'jsonc-parser';
 import { gameBadgesDB } from './db';
 import { convertTo } from '@jacobhumston/tc.js';
 import { wait } from './util';
+import { isDev } from './dev';
 
 interface BadgeIcon {
     id: number;
@@ -32,6 +33,12 @@ export async function getBadgeIcons(badgeIds: number[]): Promise<BadgeIcon[]> {
     }
 
     const data: { targetId: number; imageUrl: string }[] = (await response.json()).data;
+
+    if (!Array.isArray(data)) {
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+        return getBadgeIcons(badgeIds);
+    }
+
     return badgeIds.map((id) => ({
         id,
         url: data.find((thumbnail) => thumbnail.targetId === id)?.imageUrl || null
@@ -58,6 +65,11 @@ export async function getBadges(badges: Array<any>, universeId: number, cursor?:
 
     const json = await response.json();
     let data: Badge[] = json.data;
+
+    if (!Array.isArray(data)) {
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+        return getBadges(badges, universeId, cursor);
+    }
 
     data = data.filter((badge) => badge.statistics.awardedCount > 0);
 
@@ -114,5 +126,5 @@ async function update(force: boolean = false): Promise<void> {
     }
 }
 
-update();
+update(isDev);
 setInterval(() => update(true), convertTo({ days: 0.25 }, 'milliseconds'));
