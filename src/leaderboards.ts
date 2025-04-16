@@ -4,6 +4,7 @@ import type { gameNames } from './shared/gamelist';
 import { gameNamesArray } from './shared/gamelist';
 import { verifyContext } from './captcha';
 import { getSignedInRobloxUser } from './login-auth';
+import { userIdToThumbnailBust } from './roblox';
 
 export default function serveLeaderboards(app: Hono) {
     app.get('/api/leaderboards/:type/:game', async (context) => {
@@ -24,23 +25,30 @@ export default function serveLeaderboards(app: Hono) {
 
         if (!gameNamesArray.includes(game)) return context.json({ error: 'Invalid game.' }, 400) as any;
 
-        const cardRequests = await getOrderedDB(db, game, includeJacob).catch(() => []);
+        const leaderboardData = await getOrderedDB(db, game, includeJacob).catch(() => []);
         const start = (page - 1) * 100;
 
+        for (const data of leaderboardData) {
+            if (data.rank < 4) {
+                const result = await userIdToThumbnailBust(data.user.id).catch(() => null);
+                if (result) data.user.thumbnail = result;
+            }
+        }
+
         const data: any = {
-            result: cardRequests.slice(start, start + 100),
+            result: leaderboardData.slice(start, start + 100),
             page: page,
             total: {
-                users: cardRequests.length,
-                pages: Math.max(1, Math.ceil(cardRequests.length / 100))
+                users: leaderboardData.length,
+                pages: Math.max(1, Math.ceil(leaderboardData.length / 100))
             }
         };
 
         const me = await getSignedInRobloxUser(context);
         if (me) {
-            const meIndex = cardRequests.findIndex((x) => x.user.id === me.id);
+            const meIndex = leaderboardData.findIndex((x) => x.user.id === me.id);
             if (meIndex !== -1) {
-                data['me'] = cardRequests[meIndex];
+                data['me'] = leaderboardData[meIndex];
             } else {
                 data['me'] = null;
             }
