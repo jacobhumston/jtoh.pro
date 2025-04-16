@@ -110,7 +110,7 @@ export async function getPlaceInLeaderboard(
 
 export async function getTotalInLeaderboard(db: typeof skillPointsDB | typeof cardsRequestedDB, game: gameNames) {
     const values = await getOrderedDB(db, game);
-    return values.length;
+    return values[values.length - 1].rank;
 }
 
 const loginAuthDBSqlite = new KeyvSqlite('sqlite://db/authLogin.sqlite');
