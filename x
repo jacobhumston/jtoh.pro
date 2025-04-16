@@ -44,10 +44,15 @@ declare -A commands
     commands["start-prod"]="${dir_bunx} pm2 start \"${dir_bun} run src/index.ts\" --name jtoh.pro"
     commands["start-beta"]="${dir_bunx} pm2 start \"${dir_bun} run src/index.ts --beta\" --name jtoh.pro-beta"
 
+    # Bun Commands
+    commands["bun-upgrade"]="bun upgrade"
+    commands["bun-update"]="bun update --latest && bun install"
+
     # Aliases.
     commands["f"]=${commands["format"]}
     commands["s"]=${commands["start"]}
-    commands["v"]=${commands["version"]}    
+    commands["v"]=${commands["version"]}   
+    commands["c"]="${commands["bun-upgrade"]} && ${commands["bun-update"]} && ${commands["format"]}" 
 
 # Help function.
 print_help() {
