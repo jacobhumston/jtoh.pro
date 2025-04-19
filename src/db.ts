@@ -122,7 +122,19 @@ const gameBadgesDB = new Keyv({ store: gameBadgesDBSqlite });
 const accountConfigDBSqlite = new KeyvSqlite('sqlite://db/accountConfig.sqlite');
 const accountConfigDB = new Keyv({ store: accountConfigDBSqlite });
 
-export { statsDB, cardsRequestedDB, loginAuthDB, skillPointsDB, captchaBypassDB, gameBadgesDB, accountConfigDB };
+const captchaTokensDBSqlite = new KeyvSqlite('sqlite://db/captchaTokens.sqlite');
+const captchaTokensDB = new Keyv({ store: captchaTokensDBSqlite });
+
+export {
+    statsDB,
+    cardsRequestedDB,
+    loginAuthDB,
+    skillPointsDB,
+    captchaBypassDB,
+    gameBadgesDB,
+    accountConfigDB,
+    captchaTokensDB
+};
 
 export function getDBName(
     db:
@@ -133,6 +145,7 @@ export function getDBName(
         | typeof captchaBypassDB
         | typeof gameBadgesDB
         | typeof accountConfigDB
+        | typeof captchaTokensDB
 ) {
     if (db === statsDB) return 'stats';
     if (db === cardsRequestedDB) return 'cardsRequested';
@@ -141,5 +154,6 @@ export function getDBName(
     if (db === captchaBypassDB) return 'captchaBypass';
     if (db === gameBadgesDB) return 'gameBadges';
     if (db === accountConfigDB) return 'accountConfig';
+    if (db === captchaTokensDB) return 'captchaTokens';
     throw new Error('Invalid DB.');
 }

@@ -26,6 +26,15 @@
 
 :root {
     --font: 'Poppins', 'Twemoji', Arial, sans-serif;
+    --altcha-border-width: 2px;
+    --altcha-border-radius: 15px;
+    --altcha-color-base: var(--color-background);
+    --altcha-color-border: var(--color-background-lighter);
+    --altcha-color-text: var(--color-text);
+    --altcha-color-border-focus: var(--color-text);
+    --altcha-color-error-text: var(--color-error);
+    --altcha-color-footer-bg: var(--color-background);
+    --altcha-max-width: 260px;
 }
 
 html,
