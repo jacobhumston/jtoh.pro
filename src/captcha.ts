@@ -1,26 +1,20 @@
-import { getURLHost } from './dev';
 import { getSignedInRobloxUser } from './login-auth';
-import { cloudflareCaptchaSecret } from './tokens';
 import { Hono, type Context } from 'hono';
 import { v4 } from 'uuid';
-import { captchaBypassDB } from './db';
+import { captchaBypassDB, captchaTokensDB } from './db';
+import { createChallenge, verifySolution } from 'altcha-lib';
+import crypto from 'node:crypto';
+
+const hmac = crypto.randomBytes(255).toString('utf8');
 
 export async function verifyCaptcha(token: string): Promise<boolean> {
-    const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            secret: cloudflareCaptchaSecret,
-            response: token
-        })
-    }).catch(() => {
-        return null;
-    });
-    if (!response) return false;
-    const data = await response.json();
-    return data.success && data.hostname === getURLHost();
+    const ok = await verifySolution(token, hmac);
+    const found = await captchaTokensDB.get(token);
+    if (found) return false;
+    if (ok) {
+        await captchaTokensDB.set(token, true);
+    }
+    return ok;
 }
 
 export async function verifyCaptchaBypass(userId: number, token: string) {
@@ -57,6 +51,14 @@ export function captchaManager(app: Hono) {
         if (!captchaPassed) return context.json<{ error: string }>({ error: 'Captcha failed, please try again.' }, 400);
 
         return context.json({ success: true });
+    });
+
+    app.get('/api/captcha/get', async (context) => {
+        const challenge = await createChallenge({
+            hmacKey: hmac
+        });
+
+        return context.json(challenge);
     });
 }
 

@@ -1,5 +1,6 @@
-import { getElementById, createElement, addChild, waitForPageLoad, getBody, wait } from './util';
+import { getElementById, createElement, addChild, waitForPageLoad, getBody, waitForElementById } from './util';
 import { isLoggedIn } from './auth';
+import 'altcha';
 
 /**
  * Get a web token for the captcha system.
@@ -21,36 +22,24 @@ export async function getWebToken(): Promise<string | undefined> {
         }
     }
 
-    if (!turnstile) {
-        await wait(1000);
-        return await getWebToken();
-    }
-
     /**
      * Get turnstile token.
      * @returns The turnstile token.
      */
     function getTurnstileToken(): Promise<string | undefined> {
-        return new Promise((resolve) => {
-            captchaContainer.innerHTML = '';
-            turnstile.render('#captchaContainer', {
-                sitekey: '0x4AAAAAAAyKalxef6nTkf7o',
-                callback: function (token) {
+        return new Promise(async (resolve) => {
+            captchaContainer.innerHTML =
+                '<altcha-widget challengeurl="/api/captcha/get" hidelogo hidefooter></altcha-widget>';
+            const clicker = await waitForElementById('altcha_checkbox', {});
+            document.querySelector('altcha-widget')?.addEventListener('statechange', (ev) => {
+                // @ts-expect-error
+                if (ev.detail.state === 'verified') {
                     captchaContainer.innerHTML = '';
-                    resolve(token);
-                },
-                'error-callback': async function (error) {
-                    console.error(error);
-                    resolve(undefined);
-                },
-                'unsupported-callback': function () {
-                    console.error('Unsupported browser');
-                    alert(
-                        'Your browser is not supported by our captcha system, please update your browser or try a different one.'
-                    );
-                    resolve(undefined);
+                    // @ts-expect-error
+                    resolve(ev.detail.payload);
                 }
             });
+            clicker?.click();
         });
     }
 
