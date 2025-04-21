@@ -4,6 +4,7 @@ import { v4 } from 'uuid';
 import { captchaBypassDB, captchaTokensDB } from './db';
 import { createChallenge, verifySolution } from 'altcha-lib';
 import crypto from 'node:crypto';
+import { convertTo } from '@jacobhumston/tc.js';
 
 const hmac = crypto.randomBytes(255).toString('utf8');
 
@@ -55,7 +56,8 @@ export function captchaManager(app: Hono) {
 
     app.get('/api/captcha/get', async (context) => {
         const challenge = await createChallenge({
-            hmacKey: hmac
+            hmacKey: hmac,
+            expires: new Date(Date.now() + convertTo({ minutes: 10 }, 'milliseconds'))
         });
 
         return context.json(challenge);
