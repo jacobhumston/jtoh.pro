@@ -43,6 +43,7 @@ declare -A commands
     commands["format"]="${dir_bunx} prettier ./ --write --cache"
     commands["start-prod"]="${dir_bunx} pm2 start \"${dir_bun} run src/index.ts\" --name jtoh.pro"
     commands["start-beta"]="${dir_bunx} pm2 start \"${dir_bun} run src/index.ts --beta\" --name jtoh.pro-beta"
+    commands["format-loop"]="${commands["format"]} && echo -e \"${YELLOW}Format loop enabled, press ENTER to format again. ${NO_COLOR}To exit, use ${GREEN}CTRL+C${NO_COLOR}\" && read && ./x format-loop"
 
     # Bun Commands
     commands["bun-upgrade"]="bun upgrade"
