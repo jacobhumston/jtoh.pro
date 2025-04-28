@@ -16,6 +16,7 @@ import images from '../images';
 import { parseRobloxAccount } from '../login-auth';
 import { towerStatsToken } from '../tokens';
 import { getAccountCardPhotoBackground } from '../account-settings';
+import { towerstatsCache } from '../cache';
 
 export default function etohGen(app: Hono) {
     app.get('/:user', async (context) => {
@@ -108,19 +109,24 @@ export default function etohGen(app: Hono) {
             //});
 
             let loadTime = Date.now();
-            let towerStats: TowerDataEToH | undefined = await fetch(
-                `https://api.towerstats.com/?id=${data.id}&apiKey=${towerStatsToken}`
-            )
-                .then((res) => {
-                    loadTime = (Date.now() - loadTime) / 1000;
-                    loadTime = parseFloat(loadTime.toFixed(2));
-                    if (res.ok) return res.json();
-                    return undefined;
-                })
-                .catch(() => undefined);
+            const cached = await towerstatsCache.get(`${data.id}-etoh`);
+            let towerStats: TowerDataEToH | undefined =
+                cached ??
+                (await fetch(`https://api.towerstats.com/?id=${data.id}&apiKey=${towerStatsToken}`)
+                    .then((res) => {
+                        loadTime = (Date.now() - loadTime) / 1000;
+                        loadTime = parseFloat(loadTime.toFixed(2));
+                        if (res.ok) return res.json();
+                        return undefined;
+                    })
+                    .catch(() => undefined));
 
             if (towerStats !== undefined && (towerStats.error as any) !== undefined) {
                 towerStats = undefined;
+            }
+
+            if (towerStats !== undefined && cached === null) {
+                await towerstatsCache.set(`${data.id}-etoh`, towerStats);
             }
 
             /*
@@ -515,11 +521,11 @@ export default function etohGen(app: Hono) {
             ctx.fillStyle = '#a8a8a8';
             ctx.font = 'italic 10px Poppins';
             ctx.textAlign = 'left';
-            ctx.fillText(
-                `Took ${loadTime}s to load.`,
-                700 - (ctx.measureText(`Took ${loadTime}s to load.`).width + 55),
-                60
-            );
+            const cacheTimeLeft = ((await towerstatsCache.ttl(`${data.id}-etoh`)) ?? 0) - Date.now();
+            const timeTakenText = cached
+                ? `Cached response. (${(cacheTimeLeft / 1000).toFixed(2)}s Left)`
+                : `Took ${loadTime}s to load.`;
+            ctx.fillText(timeTakenText, 700 - (ctx.measureText(timeTakenText).width + 55), 60);
 
             const image = canvas.toBuffer('image/png');
             context.header('Content-Type', 'image/png');
