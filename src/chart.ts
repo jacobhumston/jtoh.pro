@@ -41,7 +41,7 @@ export function charts(app: Hono) {
                     {
                         label: `Card Requests`,
                         data: data.map((x) => x.requests),
-                        fill: true,
+                        fill: false,
                         tension: 0.1,
                         color: '#ebebeb',
                         backgroundColor: '#ff4336',

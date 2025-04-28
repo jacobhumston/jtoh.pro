@@ -568,7 +568,7 @@ export default function cscdGen(app: Hono) {
             ctx.textAlign = 'left';
             const cacheTimeLeft = ((await towerstatsCache.ttl(`${data.id}-cscd`)) ?? 0) - Date.now();
             const timeTakenText = cached
-                ? `Cached response. (${(cacheTimeLeft / 1000).toFixed(2)}s Left)`
+                ? `Cached (${(cacheTimeLeft / 1000).toFixed(2)}s Left)`
                 : `Took ${loadTime}s to load.`;
             ctx.fillText(timeTakenText, 700 - (ctx.measureText(timeTakenText).width + 55), 60);
 

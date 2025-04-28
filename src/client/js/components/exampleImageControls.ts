@@ -191,6 +191,7 @@ export async function handleImageExampleControls(path: string) {
     if ((await isLoggedIn()) && inputBox.value === '') {
         const user = await getLoggedInUser();
         inputBox.value = user.user?.username ?? '';
-        updateOutput();
     }
+
+    updateOutput();
 }
