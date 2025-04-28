@@ -36,3 +36,9 @@ export const imgurClientId = 'bc5ef54d15d3437';
 export const imgurClientToken = '5347e284f8e14c91f3cf2451b8b8a5d9900372a1';
 
 export const proxyUrl = 'https://19a352f1b734f2ea69e8__cr.us:21444d83b8f619ed@gw.dataimpulse.com:823';
+
+export const cloudflareS3 = {
+    token: 'rmN6OjJmChuuRPAJbwXLpUfqjpbpaTHgve8ApGJV',
+    keyId: '9f93a9b1d7ff80303fb9fe4fe4b711d2',
+    accessKey: '760146513b50470ac438c901632d854ae3a6613123907fed49fd68e98b27115c'
+};
