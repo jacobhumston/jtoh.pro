@@ -54,7 +54,7 @@ export default async function () {
         createElement('h2', { innerText: 'Card Background Photo', className: 'accountSettingsHeader' }),
         createElement('div', {}, ['split', 'accountSettingsSplit']),
         createElement('a', {
-            innerText: "Click here to change your card's background photo.",
+            innerHTML: `${getWebIconHTML('image')} Click here to change your card's background photo.`,
             href: '/app/account/card-backgrounds',
             id: 'clickHereToChangeCardBackground'
         }),

@@ -48,8 +48,8 @@ export async function getOrderedDB(
     let values: any[] = [];
 
     let cached = false;
-    const cache = orderedDBCache[(db === skillPointsDB ? 'skillPoints' : 'cardsRequested') + game + `${includeJacob}`];
-    if (cache !== undefined && Date.now() - cache.lastUpdated < 1000 * 60 * 5) {
+    const cache = orderedDBCache[getDBName(db) + game + `${includeJacob}`];
+    if (cache !== undefined && Date.now() - cache.lastUpdated < 1000 * 60 * 2) {
         cached = true;
         values = cache.value;
     }

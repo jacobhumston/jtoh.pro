@@ -1420,6 +1420,10 @@ a {
     color: var(--color-background);
 }
 
+#clickHereToChangeCardBackground .materialSymbolsRounded {
+    vertical-align: top;
+}
+
 emoji-picker {
     --emoji-font-family: 'Twemoji';
 }
