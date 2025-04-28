@@ -728,6 +728,11 @@ img {
     margin-top: 0px;
 }
 
+#blogContainer img {
+    height: auto;
+    max-width: 100%;
+}
+
 .blogPostListElement {
     display: inline-block;
     padding: 15px 20px;
