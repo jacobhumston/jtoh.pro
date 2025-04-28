@@ -19,7 +19,7 @@ export default async function () {
     const url = new URL(window.location.href);
     const params = url.searchParams;
     const includeJacob = params.get('includeJacob') === 'true';
-    const type = params.get('type') ?? 'card-requests';
+    const type = params.get('type') ?? 'skill-points';
     const other = params.get('other') ?? 'etoh';
     const page = parseInt(params.get('page') ?? '1') ?? 1;
     const formatter = new Intl.NumberFormat();
@@ -44,6 +44,7 @@ export default async function () {
     const fixOther = (string: string) => string.toLowerCase().replaceAll(' ', '');
 
     leaderboards.forEach((thisType) => {
+        if (thisType.type === 'card-requests') return;
         const typeContainer = createElement('div');
         addClass(typeContainer, 'leaderboardSelectionTypeContainer');
         const name = createElement('span');
