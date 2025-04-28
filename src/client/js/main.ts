@@ -19,6 +19,11 @@ updatePageTitle();
 updateBlogDetails();
 handleLoginRedirect();
 
+const url = new URL(document.location.href);
+if (url.hostname !== 'localhost' && url.hostname !== 'jtoh.pro' && url.hostname !== 'beta.jtoh.pro') {
+    document.location.href = 'https://jtoh.pro';
+}
+
 try {
     const core = (await import(`./core/${getPageFileName()}.ts`)) as { default: () => void } | null;
     if (core) core.default();
