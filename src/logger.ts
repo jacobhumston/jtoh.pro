@@ -46,9 +46,17 @@ if (isDev) {
 
 logger.info(`Logger initialized. (${removedLogFolders} removed outdated log folders.)`);
 
-process.on('uncaughtException', (error) => {
-    logger.error(error);
+const handler = (error: Error) => {
+        if (error instanceof Error) {
+            logger.error(`Unhandled Rejection: ${error.message}`);
+            logger.error(error.stack || 'No stack trace available');
+        } else {
+            logger.error('Unhandled Rejection:', error);
+        }
     process.exit(1);
-});
+}
+
+process.on('uncaughtException', handler);
+process.on('unhandledRejection', handler);
 
 export default logger;

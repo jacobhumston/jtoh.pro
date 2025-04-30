@@ -34,6 +34,7 @@ declare -A commands
 
     # Commands executed by bun directly.
     commands["start"]="${dir_bun} run src/index.ts --dev"
+    commands["start-inspector"]="${dir_bun} run --inspect src/index.ts --dev"
     commands["tools-group-members"]="${dir_bun} run tools/group-members.ts"
     commands["tools-populate"]="${dir_bun} run tools/populate.ts"
     commands["cli"]="${dir_bun} run src/cli/index.ts"
