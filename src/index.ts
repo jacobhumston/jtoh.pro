@@ -197,7 +197,7 @@ app.onError((error, context) => {
     logger.error(error);
 
     // logger.error SUCKS at logging http errors... smh
-    console.log(error);
+    Bun.inspect(error);
 
     return context.json({ error: 'Internal server error.' }, 500);
 });
