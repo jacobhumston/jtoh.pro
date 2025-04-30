@@ -21,7 +21,7 @@ import { quickWebTest } from './quick-web-test';
 import { blog } from './blog';
 import type { Serve } from 'bun';
 import { socket, socketListen } from './socket';
-import { compress } from 'hono-compress';
+//import { compress } from 'hono-compress';
 import { cors } from 'hono/cors';
 import { serveSitemap } from './sitemap';
 import { csrf } from 'hono/csrf';
@@ -73,7 +73,7 @@ app.use((context, next) => {
 
 app.use(secureHeaders());
 
-app.use(compress());
+//app.use(compress());
 
 app.use(async (context, next) => {
     const host = context.req.header('host');
