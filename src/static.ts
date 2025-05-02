@@ -5,12 +5,13 @@ import mime from 'mime-types';
 import cleanCSS from 'clean-css';
 import minifyHTML from 'html-minifier';
 import { minify as minifyJS } from 'terser';
-import { isDev } from './dev';
-import { Transpiler } from 'bun';
+import { getURL, isDev } from './dev';
+//import { Transpiler } from 'bun';
 import logger from './logger';
 import { v4 as uuid } from 'uuid';
 import { getJSForPage } from './js';
 //import { PurgeCSS } from 'purgecss';
+import * as esbuild from 'esbuild';
 
 let cssCache: null | string = null;
 
@@ -40,7 +41,7 @@ function replaceTemplates(content: string, templateDir: string, stop: boolean = 
     return content;
 }
 
-const transpiler = new Transpiler({ target: 'browser', loader: 'ts' });
+//const transpiler = new Transpiler({ target: 'browser', loader: 'ts' });
 const pageIds: { [key: string]: string } = {};
 
 export default async function serveStatic(app: Hono) {
@@ -64,6 +65,11 @@ export default async function serveStatic(app: Hono) {
             fileExt = extname(filePath);
         }
 
+        if (!fs.existsSync(filePath) || (!fs.statSync(filePath).isFile() && path.endsWith('.js'))) {
+            filePath = join(__dirname, 'web', path.substring(0, path.length - 3) + '.ts');
+            fileExt = extname(filePath);
+        }
+
         if (!fs.existsSync(filePath)) {
             return next();
         } else {
@@ -76,7 +82,20 @@ export default async function serveStatic(app: Hono) {
             let ogCode = file.toString();
             if (fileExt === '.ts') {
                 try {
-                    ogCode = transpiler.transformSync(ogCode);
+                    const result = await esbuild.build({
+                        entryPoints: [filePath],
+                        minify: true,
+                        format: 'esm',
+                        bundle: true,
+                        logLevel: 'silent',
+                        outfile: `temp/client-js-${path}.js`,
+                        treeShaking: true,
+                        write: false,
+                        platform: 'browser'
+                    });
+                    ogCode = result.outputFiles[0].text;
+                    ogCode = `(async()=>{${ogCode}})();`;
+                    ogCode = ogCode.replaceAll('{{URL}}', getURL());
                 } catch (error) {
                     logger.error(error);
                     ogCode = '';

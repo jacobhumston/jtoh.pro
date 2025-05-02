@@ -36,6 +36,7 @@ import previewGen from './gens/preview';
 import listenForPackageLists from './packages';
 import { cleanUpTemp } from './files';
 import { getIP } from './ip';
+import embed from './embeddable';
 
 cleanUpTemp();
 cardImageCheck();
@@ -50,7 +51,7 @@ app.use(
     cors({
         origin: getURL(),
         credentials: false,
-        allowMethods: ['GET', 'POST']
+        allowMethods: ['GET', 'POST', 'OPTIONS']
     })
 );
 
@@ -63,12 +64,12 @@ app.use(
     })
 );
 
-app.use((context, next) => {
+app.use(async (context, next) => {
     const getHighEntropyValues =
         'Sec-CH-UA-Full-Version-List, Sec-CH-UA-Mobile, Sec-CH-UA-Model, Sec-CH-UA-Platform, Sec-CH-UA-Platform-Version, Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Form-Factors';
     context.res.headers.set('Accept-CH', getHighEntropyValues);
     context.res.headers.set('Critical-CH', getHighEntropyValues);
-    return next();
+    return await next();
 });
 
 app.use(secureHeaders());
@@ -89,7 +90,6 @@ app.use(async (context, next) => {
     } else {
         return context.json({ error: 'Invalid host.' }, 400);
     }
-    await next();
 });
 
 app.use(
@@ -127,7 +127,6 @@ captchaManager(app);
 admin(app);
 webUtils(app);
 serveLeaderboards(app);
-serveStatic(app);
 redirects(app);
 charts(app);
 blog(app);
@@ -138,6 +137,9 @@ credits(app);
 handleRequestCount(app);
 setupAccountEndpoints(app);
 listenForPackageLists(app);
+embed(app);
+
+serveStatic(app);
 
 etohGen(app);
 cscdGen(app);

@@ -6,7 +6,7 @@ import { createChallenge, verifySolution } from 'altcha-lib';
 import crypto from 'node:crypto';
 import { convertTo } from '@jacobhumston/tc.js';
 
-const hmac = crypto.randomBytes(255).toString('utf8');
+export const hmac = crypto.randomBytes(255).toString('utf8');
 
 export async function verifyCaptcha(token: string): Promise<boolean> {
     const ok = await verifySolution(token, hmac);

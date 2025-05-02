@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+    <head data-page="embed">
+        <template data-name="head"></template>
+        <template data-name="meta"></template>
+        <script src="/embeddable/script.js"></script>
+        <link rel="stylesheet" href="/embeddable/style.css" />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.css"
+        />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    </head>
+
+    <body>
+        <template data-name="headerLinks"></template>
+        <div id="container">
+            <h1>Embed</h1>
+            <p>
+                jtoh.pro has a built-in embed feature that allows you to embed stat cards into your own website! Bellow
+                is instructions on how to implement it into your own website.
+            </p>
+            <h2>How to Embed</h2>
+            The first step is to include the script tag and stylesheet in the head of your html file.
+            <pre>
+                    <code class="language-html">&lt;script src="https://jtoh.pro/embeddable/script.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="https://jtoh.pro/embeddable/style.css" /&gt;</code>
+            </pre>
+            Once you have that, you'll need to create a div element for the embed. Make sure to give it an id.
+            <code>jtohProEmbed</code> will be used in this example.
+            <pre>
+                    <code class="language-html">&lt;div id="jtohProEmbed"&gt;&lt;/div&gt;</code>
+            </pre>
+            The final element we need to create is a script tag. This will be used to create the embed. You can put this
+            script tag anywhere you would like. (Or skip this step if you already have a script tag in your html file.)
+            <i>An example of all the html combined can be found at the bottom of this guide!</i>
+            <pre>
+                <code class="language-html">&lt;script&gt;&lt;/script&gt;</code>
+            </pre>
+            Now that you the html elements in place, you can use the <code>globalThis.jtohProEmbed</code> object in a
+            script tag to create the embed. You'll likely want to do this <i>after</i> the page loads. This is to ensure
+            the globalThis object is available. On top of that, make sure your event listener is an async function. This
+            is because the <code>create</code> method returns a promise.
+            <i
+                >Note that the <code>create</code> method requires the container element to be passed as the first
+                argument. This is the id of the div element you created earlier.</i
+            >
+            <br />
+            <br />
+            The <code>embed</code> object returns two methods:
+            <br />
+            - <code>set</code> - Sets the embed to display a stat card. This method takes three arguments.
+            <br />
+            &nbsp;&nbsp;&nbsp;&nbsp; - <code>usernameOrId</code> <code>(string|number)</code> - The user to display.
+            This can be a username or a user id. (User id must be a number.)
+            <br />
+            &nbsp;&nbsp;&nbsp;&nbsp; - <code>game</code> <code>(string)</code> - The acronym of the game to get the
+            user's stats for. Available games are: <span id="gamesList"></span>
+            <br />
+            &nbsp;&nbsp;&nbsp;&nbsp; - [OPTIONAL] <code>urlSuffix?</code> <code>(string|undefined)</code> - Option query
+            string to append to the end of the request URL. Note that you do not need to include the
+            <code>&</code> symbol unless you have multiple query parameters. Example: <code>foo=true&bar=false</code>.
+            <br />
+            <br />
+            - <code>delete</code> - Deletes the embed. This method takes no arguments. NOTE: This method will
+            <i>not</i> delete the embed's container element.
+
+            <pre>
+                    <code class="language-js">// Listen for the page to load.
+window.addEventListener('load', async () => {
+    // Create the embed.
+    const embed = await globalThis.jtohProEmbed.create('jtohProEmbed');
+})</code>
+            </pre>
+            <h1>Live Example Bellow!</h1>
+            <div id="embedContainer"></div>
+            <template data-name="footer"></template>
+        </div>
+    </body>
+</html>
