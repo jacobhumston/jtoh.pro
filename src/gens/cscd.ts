@@ -109,7 +109,7 @@ export default function cscdGen(app: Hono) {
             //});
 
             let loadTime = Date.now();
-            const cached = await towerstatsCache.get(`cscd-${data.id}`);
+            const cached = await towerstatsCache.get(`${data.id}-cscd`);
             let towerStats: TowerDataCSCD | undefined =
                 cached ??
                 (await fetch(`https://api.towerstats.com/?id=${data.id}&apiKey=${towerStatsToken}&game=cscd`)
