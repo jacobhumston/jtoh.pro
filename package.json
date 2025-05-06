@@ -24,7 +24,7 @@
         "archiver": "^7.0.1",
         "axios": "^1.9.0",
         "bun": "^1.2.12",
-        "cache-manager": "^6.4.2",
+        "cache-manager": "^6.4.3",
         "chart.js": "^4.4.9",
         "clean-css": "^5.3.3",
         "color": "^5.0.0",
