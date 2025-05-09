@@ -28,7 +28,7 @@
         "chart.js": "^4.4.9",
         "clean-css": "^5.3.3",
         "color": "^5.0.0",
-        "color-name-list": "^11.13.0",
+        "color-name-list": "^11.14.0",
         "cron": "^4.3.0",
         "date-fns": "^4.1.0",
         "discord.js": "^14.19.3",
@@ -576,7 +576,7 @@
 
     "color-name": ["color-name@2.0.0", "", {}, "sha512-SbtvAMWvASO5TE2QP07jHBMXKafgdZz8Vrsrn96fiL+O92/FN/PLARzUW5sKt013fjAprK2d2iCn2hk2Xb5oow=="],
 
-    "color-name-list": ["color-name-list@11.13.0", "", {}, "sha512-mL8Lo3IWiwuanc8ea9aBlsSgjqy48jlxXKFRyRl7trRPsZlK0huCY5gdi3c9P0jFVWPhF1qygQJjNJEVAmHs3g=="],
+    "color-name-list": ["color-name-list@11.14.0", "", {}, "sha512-QX6ogDv5DEHI0Bf0CsSX47APisdfowMlENbcmkXdmEk7dTm6Ns0OCsPW6E/mMZCcEo0B+h28YgjhU6Z4kZiqzw=="],
 
     "color-string": ["color-string@2.0.1", "", { "dependencies": { "color-name": "^2.0.0" } }, "sha512-5z9FbYTZPAo8iKsNEqRNv+OlpBbDcoE+SY9GjLfDUHEfcNNV7tS9eSAlFHEaub/r5tBL9LtskAeq1l9SaoZ5tQ=="],
 

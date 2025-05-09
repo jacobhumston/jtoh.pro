@@ -28,7 +28,7 @@
         "chart.js": "^4.4.9",
         "clean-css": "^5.3.3",
         "color": "^5.0.0",
-        "color-name-list": "^11.13.0",
+        "color-name-list": "^11.14.0",
         "cron": "^4.3.0",
         "date-fns": "^4.1.0",
         "discord.js": "^14.19.3",
