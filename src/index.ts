@@ -8,7 +8,7 @@ import logger from './logger';
 import fs from 'node:fs';
 import webUtils from './web-utils';
 import serveLeaderboards from './leaderboards';
-import { isDev, getURL, port, getURLHost, isBeta, getURLObj } from './dev';
+import { isDev, getURL, port, getURLHost, isBeta, getURLObj, usingCustomUrl } from './dev';
 import setupLoginAuth from './login-auth';
 import { rateLimiter } from 'hono-rate-limiter';
 import { getTempToken } from './temp-tokens';
@@ -77,6 +77,7 @@ app.use(secureHeaders());
 //app.use(compress());
 
 app.use(async (context, next) => {
+    if (usingCustomUrl) return await next();
     const host = context.req.header('host');
     if (host) {
         let link: URL;
@@ -117,6 +118,12 @@ app.use(
         */
     })
 );
+
+app.get('/api/vars', async (context) => {
+    return context.json({
+        usingCustomUrl
+    });
+});
 
 app.get('/app/templates/*', async (context) => {
     return context.json({ error: 'Not found.' }, 404);
