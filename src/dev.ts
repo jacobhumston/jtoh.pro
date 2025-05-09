@@ -28,6 +28,7 @@ const { values } = parseArgs({
 export const isDev = values.dev ?? false;
 export const isBeta = (values.beta ?? false) && isDev == false;
 export const port = parseInt(values.port ?? '80') ?? 80;
+export const usingCustomUrl = !!values.url;
 
 if (isDev) process.env.NODE_ENV = 'development';
 else process.env.NODE_ENV = 'production';

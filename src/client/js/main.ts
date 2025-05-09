@@ -21,7 +21,13 @@ handleLoginRedirect();
 
 const url = new URL(document.location.href);
 if (url.hostname !== 'localhost' && url.hostname !== 'jtoh.pro' && url.hostname !== 'beta.jtoh.pro') {
-    document.location.href = 'https://jtoh.pro';
+    if (url.host.endsWith('devtunnels.ms')) {
+        const response = await fetch('/api/vars').catch(() => ({ json: () => ({ usingCustomUrl: false }) }));
+        const { usingCustomUrl } = await response.json();
+        if (!usingCustomUrl) document.location.href = 'https://jtoh.pro';
+    } else {
+        document.location.href = 'https://jtoh.pro';
+    }
 }
 
 try {
