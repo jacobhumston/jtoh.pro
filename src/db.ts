@@ -110,6 +110,7 @@ export async function getPlaceInLeaderboard(
 
 export async function getTotalInLeaderboard(db: typeof skillPointsDB | typeof cardsRequestedDB, game: gameNames) {
     const values = await getOrderedDB(db, game);
+    if (values.length === 0) return 0;
     return values[values.length - 1].rank;
 }
 
