@@ -1,4 +1,5 @@
 import { capitalizedGameNamesArray, fullNamesArray } from '../../../shared/gamelist';
+import { getLoggedInUser } from '../libs/auth';
 import { getWebToken } from '../libs/security';
 import {
     addChild,
@@ -42,9 +43,10 @@ export default async function () {
         }
     ];
     const fixOther = (string: string) => string.toLowerCase().replaceAll(' ', '');
+    const loggedInUser = await getLoggedInUser();
 
     leaderboards.forEach((thisType) => {
-        if (thisType.type === 'card-requests') return;
+        if (thisType.type === 'card-requests' && loggedInUser.admin === false) return;
         const typeContainer = createElement('div');
         addClass(typeContainer, 'leaderboardSelectionTypeContainer');
         const name = createElement('span');

@@ -3,7 +3,7 @@ import { getOrderedDB, cardsRequestedDB, skillPointsDB } from './db';
 import type { gameNames } from './shared/gamelist';
 import { gameNamesArray } from './shared/gamelist';
 import { verifyContext } from './captcha';
-import { getSignedInRobloxUser } from './login-auth';
+import { getSignedInRobloxUser, isSignedInAdmin } from './login-auth';
 import { userIdToThumbnailBust } from './roblox';
 
 export default function serveLeaderboards(app: Hono) {
@@ -18,6 +18,9 @@ export default function serveLeaderboards(app: Hono) {
         if (context.req.param('type') === 'card-requests') db = cardsRequestedDB;
         if (context.req.param('type') === 'skill-points') db = skillPointsDB;
         if (db === null) return context.json({ error: 'Invalid type.' }, 400) as any;
+
+        if (!(await isSignedInAdmin(context)) && context.req.param('type') === 'card-requests')
+            return context.json({ error: 'You are not allowed to view this leaderboard.' }, 403) as any;
 
         let page = Math.max(1, parseInt(context.req.query('page') ?? '1') ?? 1);
         if (isNaN(page)) page = 1;
