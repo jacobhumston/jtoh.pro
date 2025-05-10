@@ -8,6 +8,21 @@ import { getURL } from './dev';
 import { getTempToken } from './temp-tokens';
 
 export default async function embed(app: Hono) {
+    // @ts-expect-error
+    app.use('/api/embeddable/*', (context) => {
+        return context.json({ error: 'Coming soon!' }, 503);
+    });
+
+    // @ts-expect-error
+    app.use('/embeddable/*', (context) => {
+        return context.json({ error: 'Coming soon!' }, 503);
+    });
+
+    // @ts-expect-error
+    app.use('/app/embed', (context) => {
+        return context.json({ error: 'Coming soon!' }, 503);
+    });
+
     app.use('/api/embeddable/*', cors({ origin: '*' }));
     app.use('/embeddable/*', cors({ origin: '*' }));
 
