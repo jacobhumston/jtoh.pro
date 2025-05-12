@@ -45,11 +45,17 @@ export async function getWebToken(): Promise<string | undefined> {
 
     if (await isLoggedIn()) {
         const token = sessionStorage.getItem('captchaGateway');
-        const verified = await fetch(`/api/captcha/verify?token=${token}`).catch(() => ({
-            json: () => ({
-                success: false
-            })
-        }));
+        const verified = token
+            ? await fetch(`/api/captcha/verify?token=${token}`).catch(() => ({
+                  json: () => ({
+                      success: false
+                  })
+              }))
+            : {
+                  json: () => ({
+                      success: false
+                  })
+              };
         const verifiedData = await verified.json();
         if (verifiedData.success === true) {
             return token ?? '';
