@@ -45,7 +45,8 @@ export async function getJSForPage(pageName: string) {
         treeShaking: true,
         write: false,
         external: filesToExclude,
-        platform: 'browser'
+        platform: 'browser',
+        target: 'esnext'
     });
 
     let code = result.outputFiles[0].text;
