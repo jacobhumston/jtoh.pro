@@ -40,9 +40,9 @@
             Now that you the html elements in place, you can use the <code>globalThis.jtohProEmbed</code> object in a
             script tag to create the embed. You'll likely want to do this <i>after</i> the page loads. This is to ensure
             the globalThis object is available. On top of that, make sure your event listener is an async function. This
-            is because the <code>create</code> method returns a promise.
+            is because the <code>new</code> method returns a promise.
             <i
-                >Note that the <code>create</code> method requires the container element to be passed as the first
+                >Note that the <code>new</code> method requires the container element to be passed as the first
                 argument. This is the id of the div element you created earlier.</i
             >
             <br />
