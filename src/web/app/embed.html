@@ -69,7 +69,7 @@
                     <code class="language-js">// Listen for the page to load.
 window.addEventListener('load', async () => {
     // Create the embed.
-    const embed = await globalThis.jtohProEmbed.create('jtohProEmbed');
+    const embed = await globalThis.jtohProEmbed.new('jtohProEmbed');
     
     // Say we want to embed a CSCD card, we can do the following:
     await embed.set('LoveliestJacob', 'cscd', 'mode=legit');
@@ -87,7 +87,7 @@ window.addEventListener('load', async () => {
         &lt;link rel=&quot;stylesheet&quot; href=&quot;https://jtoh.pro/embeddable/style.css&quot; /&gt;
         &lt;script&gt;
             window.addEventListener(&#39;load&#39;, async () =&gt; {
-                const embed = await globalThis.jtohProEmbed.create(&#39;jtohProEmbed&#39;);
+                const embed = await globalThis.jtohProEmbed.new(&#39;jtohProEmbed&#39;);
                 await embed.set(&#39;Roblox&#39;, &#39;cscd&#39;, &#39;mode=legit&#39;);
             });
         &lt;/script&gt;
