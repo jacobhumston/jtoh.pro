@@ -9,8 +9,8 @@ import { getTempToken } from './temp-tokens';
 import { secureHeaders } from 'hono/secure-headers';
 
 export default async function embed(app: Hono) {
-    app.use('/api/embeddable/*', cors({ origin: '*' }), secureHeaders({ crossOriginResourcePolicy: false }));
-    app.use('/embeddable/*', cors({ origin: '*' }), secureHeaders({ crossOriginResourcePolicy: false }));
+    app.use('/api/embeddable/*', cors({ origin: '*' }), secureHeaders({ crossOriginResourcePolicy: 'cross-origin' }));
+    app.use('/embeddable/*', cors({ origin: '*' }), secureHeaders({ crossOriginResourcePolicy: 'cross-origin' }));
 
     app.get('/api/embeddable/get-captcha', async (context) => {
         const challenge = await createChallenge({
