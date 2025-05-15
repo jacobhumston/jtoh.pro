@@ -29,15 +29,20 @@ globalThis.jtohProEmbed = {
         if (!element) throw error(`Element with ID ${elementId} not found`);
 
         const container = createElement('div', {}, prefixId('container'));
-        const image = createElement('img', { alt: 'jtoh.pro Card' }, prefixId('image'));
+        const image = createElement(
+            'img',
+            { alt: 'jtoh.pro Card', src: '{{URL}}/embeddable/loading.svg' },
+            prefixId('image')
+        );
         const info = createElement(
             'i',
             { innerHTML: 'Statistics card provided by <a href="https://jtoh.pro" target="_blank">jtoh.pro</a>.' },
             prefixId('info')
         );
+        const share = createElement('button', { innerHTML: 'Share Card!', type: 'button' }, prefixId('share'));
         const captchaContainer = createElement('div', {}, prefixId('captcha-container'));
 
-        addChild(container, [image, info]);
+        addChild(container, [image, info, share, captchaContainer]);
 
         function getCaptchaToken(): Promise<string | undefined> {
             return new Promise(async (resolve) => {
@@ -56,7 +61,9 @@ globalThis.jtohProEmbed = {
             });
         }
 
-        addChild(element, [container, captchaContainer]);
+        addChild(element, [container]);
+
+        let currentShareUrl: string | null = null;
 
         const functions = {
             set: async (usernameOrId: string | number, game: gameNames, urlSuffix?: string) => {
@@ -64,11 +71,18 @@ globalThis.jtohProEmbed = {
                 if (!gameNamesArray.includes(game)) throw error(`Game "${game}" is not supported`);
                 const token = await getCaptchaToken();
                 image.src = `{{URL}}/api/embeddable/get-image/${game}/${username}?captcha=${token}${urlSuffix ? `&${urlSuffix}` : ''}`;
+                currentShareUrl = `https://jtoh.pro/${game === 'etoh' ? '' : game + '/'}${username}${urlSuffix ? `?${urlSuffix}` : ''}`;
             },
             delete: () => {
                 container.remove();
             }
         };
+
+        share.addEventListener('click', () => {
+            if (currentShareUrl) {
+                navigator.share({ url: currentShareUrl }).catch(error);
+            }
+        });
 
         return functions;
     }

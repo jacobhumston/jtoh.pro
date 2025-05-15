@@ -70,8 +70,38 @@
 window.addEventListener('load', async () => {
     // Create the embed.
     const embed = await globalThis.jtohProEmbed.create('jtohProEmbed');
+    
+    // Say we want to embed a CSCD card, we can do the following:
+    await embed.set('LoveliestJacob', 'cscd', 'mode=legit');
+
+    // Later down the road, if we want to delete the embed, we can do the following:
+    // embed.delete();
 })</code>
             </pre>
+            Our final example will look like this:
+            <pre>
+            <code class="language-html">&lt;!doctype html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;script src=&quot;https://jtoh.pro/embeddable/script.js&quot;&gt;&lt;/script&gt;
+        &lt;link rel=&quot;stylesheet&quot; href=&quot;https://jtoh.pro/embeddable/style.css&quot; /&gt;
+        &lt;script&gt;
+            window.addEventListener(&#39;load&#39;, async () =&gt; {
+                const embed = await globalThis.jtohProEmbed.create(&#39;jtohProEmbed&#39;);
+                await embed.set(&#39;Roblox&#39;, &#39;cscd&#39;, &#39;mode=legit&#39;);
+            });
+        &lt;/script&gt;
+    &lt;/head&gt;
+
+    &lt;body&gt;
+        &lt;div id=&quot;jtohProEmbed&quot;&gt;&lt;/div&gt;
+    &lt;/body&gt;
+&lt;/html&gt;</code>
+            </pre>
+            Note that if you would like to edit the stylesheet, you can do so by modifying the
+            <a href="/embeddable/style.css">style.css</a> css file. You can also use your own stylesheet of course. All
+            elements are prefixed with <code>jtoh-pro-</code> to avoid conflicts with your own styles. You are not
+            required to keep the link to jtoh.pro visible, however we would appreciate it if you did.
             <h1>Live Example Bellow!</h1>
             <div id="embedContainer"></div>
             <template data-name="footer"></template>
