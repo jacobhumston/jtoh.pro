@@ -72,7 +72,13 @@ app.use(async (context, next) => {
     return await next();
 });
 
-app.use(secureHeaders());
+app.use(async (context, next) => {
+    const excludedPaths = ['/embeddable', '/api/embeddable'];
+    if (excludedPaths.some((path) => context.req.path.startsWith(path))) {
+        return await next();
+    }
+    return await secureHeaders()(context, next);
+});
 
 //app.use(compress());
 
