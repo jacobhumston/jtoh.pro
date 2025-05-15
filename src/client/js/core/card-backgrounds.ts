@@ -119,7 +119,7 @@ export default async function () {
         .catch(() => null);
     if (!list) return createErrorPopup('Failed to load card backgrounds.', false);
 
-    addChild(container, [createElement('p', { innerText: 'Select your desired card background bellow.' })]);
+    addChild(container, [createElement('p', { innerText: 'Select your desired card background below.' })]);
 
     cardImagesContainer.innerHTML = '';
     for (const card of list.result) {

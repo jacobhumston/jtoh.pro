@@ -54,4 +54,9 @@
     background-color: #4e4166;
     font-family: 'Arial', sans-serif;
     border-radius: 15px;
+    border: none;
+}
+
+.jtoh-pro-share:hover {
+    cursor: pointer;
 }
