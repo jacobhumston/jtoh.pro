@@ -50,6 +50,9 @@ declare -A commands
     commands["bun-upgrade"]="bun upgrade"
     commands["bun-update"]="bun update --latest && bun install"
 
+    # Other commands.
+    commands["devtunnel"]="devtunnel host -p 80 --allow-anonymous"
+
     # Aliases.
     commands["f"]=${commands["format"]}
     commands["s"]=${commands["start"]}

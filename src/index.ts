@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { GlobalFonts } from '@napi-rs/canvas';
 import etohGen from './gens/etoh';
-import discordInteractions, { publishDiscordCommands } from './discord';
+import discordInteractions, { publishDiscordCommands } from './discord-bot/discord';
 import redirects from './redirects';
 import serveStatic from './static';
 import logger from './logger';
