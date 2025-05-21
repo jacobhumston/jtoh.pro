@@ -1,4 +1,4 @@
-import { addChild, createElement, getElementByIdExpected, waitForElementById } from '../../client/js/libs/util';
+import { addChild, createElement, getElementByIdExpected, waitForElementsByClassName } from '../../client/js/libs/util';
 import { gameNamesArray, type gameNames } from '../../shared/gamelist';
 
 // @ts-expect-error
@@ -48,7 +48,7 @@ globalThis.jtohProEmbed = {
             return new Promise(async (resolve) => {
                 captchaContainer.innerHTML =
                     '<altcha-widget challengeurl="{{URL}}/api/embeddable/get-captcha" hidelogo hidefooter></altcha-widget>';
-                const clicker = await waitForElementById('altcha_checkbox', {});
+                const clicker = ((await waitForElementsByClassName('altcha-checkbox', {})) ?? [])[0];
                 document.querySelector('altcha-widget')?.addEventListener('statechange', (ev) => {
                     // @ts-expect-error
                     if (ev.detail.state === 'verified') {
@@ -57,7 +57,8 @@ globalThis.jtohProEmbed = {
                         resolve(ev.detail.payload);
                     }
                 });
-                clicker?.click();
+                // @ts-expect-error
+                clicker?.firstElementChild?.click();
             });
         }
 

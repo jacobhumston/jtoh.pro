@@ -115,6 +115,14 @@ export type WaitForElementOptions = {
 };
 
 /**
+ * Wait for element class options.
+ */
+export interface WaitForElementClassOptions extends WaitForElementOptions {
+    /** The amount of the element to wait for. Default is 1. */
+    amount?: number;
+}
+
+/**
  * Wait for an element to be added to the DOM.
  * @param id The id of the element to wait for.
  * @param options The options for the wait.
@@ -324,4 +332,38 @@ export async function waitForWindowLoad(): Promise<void> {
 export function getWebsocketURL(type: string): string {
     const url = new URL(window.location.href);
     return `${url.protocol === 'https:' ? 'wss' : 'ws'}://${url.host}/api/socket?type=${type}`;
+}
+
+/**
+ * Wait for an element to be added to the DOM.
+ * @param id The class of the element to wait for.
+ * @param options The options for the wait.
+ * @returns A promise that resolves to the elements of the specific class, or null if it doesn't exist after the set timeout.
+ */
+export function waitForElementsByClassName(
+    className: string,
+    options: WaitForElementClassOptions
+): Promise<HTMLCollection | null> {
+    const alreadyFound = document.getElementsByClassName(className);
+    if (alreadyFound && alreadyFound.length >= (options.amount ?? 1))
+        return new Promise((resolve) => resolve(alreadyFound));
+
+    return new Promise((resolve) => {
+        let timer: Timer;
+        let interval: Timer;
+
+        interval = setInterval(() => {
+            const element = document.getElementsByClassName(className);
+            if (element && alreadyFound.length >= (options.amount ?? 1)) {
+                clearInterval(interval);
+                clearTimeout(timer);
+                resolve(element);
+            }
+        }, options.interval ?? 100);
+
+        timer = setTimeout(() => {
+            clearInterval(interval);
+            resolve(null);
+        }, options.timeout ?? 5000);
+    });
 }
