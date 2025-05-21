@@ -123,7 +123,7 @@ export async function addAuthUI() {
         if (!url.pathname.startsWith('/app/account/')) {
             const settingsButton = createElement('button', {
                 id: 'settingsOpener',
-                innerHTML: getWebIconHTML('settings'),
+                innerHTML: `${getWebIconHTML('settings')} Settings`,
                 type: 'button'
             });
 

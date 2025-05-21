@@ -61,6 +61,7 @@ export function getTheme(): Themes {
  */
 export async function listenForThemSelection() {
     const themeChangeOpener = await waitForElementById('themeChangeOpener', { timeout: 10000 });
+    const settingsOpener = getElementById('settingsOpener');
     if (!themeChangeOpener) return;
 
     let enabled = false;
@@ -77,12 +78,26 @@ export async function listenForThemSelection() {
         }
         if (enabled) {
             themeChangeOpener.innerHTML = `${getWebIconHTML('visibility_off')}`;
+            themeChangeOpener.style.borderRadius = '100%';
+
             if (loggedInName) loggedInName.style.display = 'none';
             if (loggedInDetails) loggedInDetails.style.paddingRight = '0px';
+
+            if (settingsOpener) {
+                settingsOpener.style.borderRadius = '100%';
+                settingsOpener.innerHTML = `${getWebIconHTML('settings')}`;
+            }
         } else {
-            themeChangeOpener.innerHTML = `${getWebIconHTML('brush')}`;
+            themeChangeOpener.innerHTML = `${getWebIconHTML('brush')} Theme`;
+            themeChangeOpener.style.borderRadius = '';
+
             if (loggedInName) loggedInName.style.display = '';
             if (loggedInDetails) loggedInDetails.style.paddingRight = '';
+
+            if (settingsOpener) {
+                settingsOpener.style.borderRadius = '';
+                settingsOpener.innerHTML = `${getWebIconHTML('settings')} Settings`;
+            }
         }
     });
 }
