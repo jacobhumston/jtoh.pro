@@ -16,6 +16,7 @@
         "@octokit/rest": "^21.1.1",
         "@schemastore/package": "^0.0.10",
         "@tensorflow/tfjs": "^4.22.0",
+        "@types/events": "^3.0.3",
         "@types/hotwired__turbo": "^8.0.4",
         "@types/quicklink": "^2.3.4",
         "@xterm/addon-web-links": "^0.11.0",
