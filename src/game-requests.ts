@@ -49,7 +49,7 @@ export default function (app: Hono) {
             return context.json({ error: 'Game is already listed, or has already been requested.' }, 400) as any;
         }
 
-        await octokit.rest.issues.create({
+        const issue = await octokit.rest.issues.create({
             owner: 'jacobhumston',
             repo: 'data.jtoh.pro',
             title: `Game Request: ${gameDetails.name}`,
@@ -59,7 +59,10 @@ The requested game is [${gameDetails.name.trim()}](https://www.roblox.com/games/
 Additional details:
 \`\`\`json
 ${JSON.stringify(gameDetails, null, 4)}
-\`\`\``
+\`\`\`
+
+*If you are the person who requested this game, you can use this issue to keep track of your request.*
+Have any questions? Leave a comment on this issue, or join our [Discord Server](https://discord.jtoh.pro) for help!`
         });
 
         fs.writeFileSync(
@@ -67,6 +70,6 @@ ${JSON.stringify(gameDetails, null, 4)}
             JSON.stringify([...alreadyRequestedUniverseIds, gameDetails.universeId])
         );
 
-        return context.json({ success: true, url: parsedURL.toString() });
+        return context.json({ success: true, url: issue.data.html_url });
     });
 }

@@ -41,7 +41,8 @@ export default async function () {
 
         if (response.ok) {
             alert('Game request submitted successfully!');
-            window.location.href = '/';
+            const data = await response.json();
+            window.location.href = data.url;
         } else {
             const errorData = await response.json();
             alert(`Error: ${errorData.error}`);
