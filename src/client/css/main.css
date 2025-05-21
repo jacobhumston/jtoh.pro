@@ -1323,6 +1323,7 @@ a {
     color: var(--color-background);
 }
 
+/*
 @media screen and (max-width: 720px) {
     .creditsPictureElement img {
         width: 100%;
@@ -1337,6 +1338,17 @@ a {
         overflow-x: scroll;
         flex-wrap: nowrap;
         gap: 10px;
+    }
+}*/
+
+@media screen and (max-width: 500px) {
+    .creditsElement {
+        max-width: 100%;
+    }
+
+    .creditsPictureElement {
+        width: 100%;
+        text-align: center;
     }
 }
 
@@ -1440,4 +1452,14 @@ pre code {
     border-radius: 15px !important;
     padding-top: 10px !important;
     padding-bottom: 10px !important;
+}
+
+@media screen and (max-width: 500px) {
+    #loggedInName {
+        display: none;
+    }
+
+    #loggedInDetails {
+        padding-right: 0px;
+    }
 }

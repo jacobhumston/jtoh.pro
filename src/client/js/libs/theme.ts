@@ -11,7 +11,7 @@ export interface ThemeEvents {
 }
 
 /** Theme events. */
-export const themeEvents: EventEmitter<ThemeEvents> = new EventEmitter();
+export const themeEvents: EventEmitter = new EventEmitter();
 
 /**
  * Apply the theme based on the user's preference or the saved theme.
