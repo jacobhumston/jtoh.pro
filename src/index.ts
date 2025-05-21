@@ -37,6 +37,7 @@ import listenForPackageLists from './packages';
 import { cleanUpTemp } from './files';
 import { getIP } from './ip';
 import embed from './embeddable';
+import gameRequests from './game-requests';
 
 cleanUpTemp();
 cardImageCheck();
@@ -151,6 +152,7 @@ handleRequestCount(app);
 setupAccountEndpoints(app);
 listenForPackageLists(app);
 embed(app);
+gameRequests(app);
 
 serveStatic(app);
 

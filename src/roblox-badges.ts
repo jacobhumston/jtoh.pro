@@ -42,7 +42,7 @@ export async function checkOwnedBadges(
         // console.log('Failed to check owned badges, trying again in 1 second...');
         if (actionCallback) actionCallback('retry');
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        return await checkOwnedBadges(userId, badges);
+        return await checkOwnedBadges(userId, badges, actionCallback);
     } else {
         if (actionCallback) actionCallback('success');
         const result = response.data;

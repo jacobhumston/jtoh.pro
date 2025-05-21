@@ -18,6 +18,14 @@ export function createModListFile() {
     return name;
 }
 
+export function createGameRequestsFile() {
+    const name = 'db/game-requests.json';
+    if (!fs.existsSync(name)) {
+        fs.writeFileSync(name, '[]');
+    }
+    return name;
+}
+
 export function cleanUpTemp() {
     if (!fs.existsSync('./temp')) fs.mkdirSync('./temp');
     const failed: string[] = [];
