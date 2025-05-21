@@ -10,7 +10,8 @@ import {
     getPlaceInLeaderboard,
     skillPointsDB,
     getTotalInLeaderboard,
-    updateSkillPoints
+    updateSkillPoints,
+    updateTowerCount
 } from '../db';
 import images from '../images';
 import { parseRobloxAccount } from '../login-auth';
@@ -156,6 +157,7 @@ export default function cscdGen(app: Hono) {
             if (towerStats !== undefined) {
                 updateCardRequestCount('cscd', data).catch(() => undefined);
                 await updateSkillPoints('cscd', data, towerStats.skill_points.legit).catch(() => undefined);
+                await updateTowerCount('cscd', data, towerStats.completed_towers.legit).catch(() => undefined);
 
                 towerStats.difficulty_colors['Nil'] = towerStats.difficulty_colors['nil'];
                 towerStats.difficulty_colors_outlines['Nil'] = towerStats.difficulty_colors_outlines['nil'];

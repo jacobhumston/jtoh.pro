@@ -21,6 +21,9 @@ const cardsRequestedDB = new Keyv({ store: cardsRequestedDBSqlite });
 const skillPointsDBSqlite = new KeyvSqlite('sqlite://db/skillpoints.sqlite');
 const skillPointsDB = new Keyv({ store: skillPointsDBSqlite });
 
+const towerCountDBSqlite = new KeyvSqlite('sqlite://db/towerCount.sqlite');
+const towerCountDB = new Keyv({ store: towerCountDBSqlite });
+
 const captchaBypassDBSqlite = new KeyvSqlite('sqlite://db/captchaBypass.sqlite');
 const captchaBypassDB = new Keyv({ store: captchaBypassDBSqlite });
 
@@ -41,14 +44,13 @@ export async function updateCardRequestCount(game: gameNames, user: RobloxUserRe
 
 const orderedDBCache: { [key: string]: { value: any[]; lastUpdated: number } } = {};
 export async function getOrderedDB(
-    db: typeof skillPointsDB | typeof cardsRequestedDB,
-    game: gameNames,
-    includeJacob: boolean = false
+    db: typeof skillPointsDB | typeof cardsRequestedDB | typeof towerCountDB,
+    game: gameNames
 ) {
     let values: any[] = [];
 
     let cached = false;
-    const cache = orderedDBCache[getDBName(db) + game + `${includeJacob}`];
+    const cache = orderedDBCache[getDBName(db) + game];
     if (cache !== undefined && Date.now() - cache.lastUpdated < 1000 * 60 * 2) {
         cached = true;
         values = cache.value;
@@ -59,11 +61,10 @@ export async function getOrderedDB(
         for await (const [key, value] of db.iterator()) {
             const [gameKey, _] = key.split('-');
             if (gameKey === game) {
-                if (value.user.name === 'LoveliestJacob' && !includeJacob && db === cardsRequestedDB) continue;
                 values.push(value);
             }
         }
-        orderedDBCache[(db === skillPointsDB ? 'skillPoints' : 'cardsRequested') + game + `${includeJacob}`] = {
+        orderedDBCache[(db === skillPointsDB ? 'skillPoints' : 'cardsRequested') + game] = {
             value: values,
             lastUpdated: Date.now()
         };
@@ -96,19 +97,31 @@ export async function updateSkillPoints(game: gameNames, user: RobloxUserResult,
     return await skillPointsDB.set(key, current);
 }
 
+export async function updateTowerCount(game: gameNames, user: RobloxUserResult, towers: number) {
+    type data = { count: number; user: RobloxUserResult };
+    const key = `${game}-${user.id}`;
+    const current = (await towerCountDB.get<data>(key)) ?? { count: 0, user: user };
+    if (current.user.thumbnail === undefined) current.user.thumbnail = '/app/assets/default-roblox-profile.png';
+    current.count = towers;
+    current.user = user;
+    return await towerCountDB.set(key, current);
+}
+
 export async function getPlaceInLeaderboard(
-    db: typeof skillPointsDB | typeof cardsRequestedDB,
+    db: typeof skillPointsDB | typeof cardsRequestedDB | typeof towerCountDB,
     game: gameNames,
-    user: RobloxUserResult,
-    includeJacob: boolean = false
+    user: RobloxUserResult
 ) {
-    const values = await getOrderedDB(db, game, includeJacob);
+    const values = await getOrderedDB(db, game);
     const userValue = values.find((value: { user: RobloxUserResult }) => value.user.id === user.id);
     if (userValue === undefined) return null;
     return userValue.rank;
 }
 
-export async function getTotalInLeaderboard(db: typeof skillPointsDB | typeof cardsRequestedDB, game: gameNames) {
+export async function getTotalInLeaderboard(
+    db: typeof skillPointsDB | typeof cardsRequestedDB | typeof towerCountDB,
+    game: gameNames
+) {
     const values = await getOrderedDB(db, game);
     if (values.length === 0) return 0;
     return values[values.length - 1].rank;
@@ -134,7 +147,8 @@ export {
     captchaBypassDB,
     gameBadgesDB,
     accountConfigDB,
-    captchaTokensDB
+    captchaTokensDB,
+    towerCountDB
 };
 
 export function getDBName(
@@ -147,6 +161,7 @@ export function getDBName(
         | typeof gameBadgesDB
         | typeof accountConfigDB
         | typeof captchaTokensDB
+        | typeof towerCountDB
 ) {
     if (db === statsDB) return 'stats';
     if (db === cardsRequestedDB) return 'cardsRequested';
@@ -156,5 +171,6 @@ export function getDBName(
     if (db === gameBadgesDB) return 'gameBadges';
     if (db === accountConfigDB) return 'accountConfig';
     if (db === captchaTokensDB) return 'captchaTokens';
+    if (db === towerCountDB) return 'towerCount';
     throw new Error('Invalid DB.');
 }
