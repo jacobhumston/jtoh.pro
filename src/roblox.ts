@@ -1,4 +1,4 @@
-import { donationsRobloxCloudToken } from './tokens';
+import { donationsRobloxCloudToken, robloxAccountCookie } from './tokens';
 
 const baseUrls = {
     users: function (path: string): string {
@@ -121,6 +121,21 @@ export async function listRobloxDatastores() {
         headers: {
             'x-api-key': donationsRobloxCloudToken
         }
+    });
+    return await response.json();
+}
+
+export async function getRobloxPlacesDetails(placeIds: [number]): Promise<any[]> {
+    const response = await fetch(
+        `https://games.roblox.com/v1/games/multiget-place-details?placeIds=${placeIds.join(',')}`,
+        {
+            headers: {
+                cookie: '.ROBLOSECURITY=' + robloxAccountCookie
+            },
+            credentials: 'include'
+        }
+    ).catch(() => {
+        return { json: () => [] };
     });
     return await response.json();
 }
