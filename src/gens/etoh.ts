@@ -10,7 +10,8 @@ import {
     updateSkillPoints,
     getPlaceInLeaderboard,
     skillPointsDB,
-    getTotalInLeaderboard
+    getTotalInLeaderboard,
+    updateTowerCount
 } from '../db';
 import images from '../images';
 import { parseRobloxAccount } from '../login-auth';
@@ -156,6 +157,7 @@ export default function etohGen(app: Hono) {
             if (towerStats !== undefined) {
                 updateCardRequestCount('etoh', data).catch(() => undefined);
                 await updateSkillPoints('etoh', data, towerStats.skill_points).catch(() => undefined);
+                await updateTowerCount('etoh', data, towerStats.completed_towers).catch(() => undefined);
 
                 ctx.textAlign = 'left';
                 ctx.fillStyle = 'white';

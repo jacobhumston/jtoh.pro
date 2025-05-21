@@ -19,7 +19,6 @@ export default async function () {
 
     const url = new URL(window.location.href);
     const params = url.searchParams;
-    const includeJacob = params.get('includeJacob') === 'true';
     const type = params.get('type') ?? 'skill-points';
     const other = params.get('other') ?? 'etoh';
     const page = parseInt(params.get('page') ?? '1') ?? 1;
@@ -40,6 +39,13 @@ export default async function () {
             other: capitalizedGameNamesArray,
             otherLabels: fullNamesArray,
             description: `Leaderboard of the user's with the most amount of skill points. \n${getWebIconHTML('info')} Skill points are calculated via completed towers amongst other factors.`
+        },
+        {
+            name: 'Completed Towers',
+            type: 'completed-towers',
+            other: capitalizedGameNamesArray,
+            otherLabels: fullNamesArray,
+            description: `Leaderboard of the user's with the most amount of towers completed.`
         }
     ];
     const fixOther = (string: string) => string.toLowerCase().replaceAll(' ', '');
@@ -60,7 +66,7 @@ export default async function () {
             button.innerText = thisType.otherLabels[index];
             addClass(button, 'leaderboardSelectionButton');
             button.onclick = () => {
-                window.location.href = `/app/leaderboards?type=${thisType.type}&other=${fixOther(thisOther)}&page=1${includeJacob ? '&includeJacob=true' : ''}`;
+                window.location.href = `/app/leaderboards?type=${thisType.type}&other=${fixOther(thisOther)}&page=1`;
             };
             button.type = 'button';
             if (thisType.type === type && fixOther(thisOther) === other) {
@@ -105,7 +111,7 @@ export default async function () {
         const token = await getWebToken();
 
         div.innerHTML = 'Loading... Please wait.';
-        fetch(`/api/leaderboards/${type}/${other}?includeJacob=${includeJacob}&page=${page}&captcha=${token}`)
+        fetch(`/api/leaderboards/${type}/${other}?page=${page}&captcha=${token}`)
             .then((response) => response.json())
             .then((response) => {
                 if (response.error) {
@@ -145,9 +151,7 @@ export default async function () {
                     previous.type = 'button';
                     if (page > 1) {
                         previous.onclick = () => {
-                            window.location.href = `/app/leaderboards?type=${type}&other=${other}&page=${page - 1}${
-                                includeJacob ? '&includeJacob=true' : ''
-                            }`;
+                            window.location.href = `/app/leaderboards?type=${type}&other=${other}&page=${page - 1}`;
                         };
                     } else {
                         previous.disabled = true;
@@ -165,9 +169,7 @@ export default async function () {
                     next.type = 'button';
                     if (page < response.total.pages) {
                         next.onclick = () => {
-                            window.location.href = `/app/leaderboards?type=${type}&other=${other}&page=${page + 1}${
-                                includeJacob ? '&includeJacob=true' : ''
-                            }`;
+                            window.location.href = `/app/leaderboards?type=${type}&other=${other}&page=${page + 1}`;
                         };
                     } else {
                         next.disabled = true;

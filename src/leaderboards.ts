@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { getOrderedDB, cardsRequestedDB, skillPointsDB } from './db';
+import { getOrderedDB, cardsRequestedDB, skillPointsDB, towerCountDB } from './db';
 import type { gameNames } from './shared/gamelist';
 import { gameNamesArray } from './shared/gamelist';
 import { verifyContext } from './captcha';
@@ -8,7 +8,6 @@ import { userIdToThumbnailBust } from './roblox';
 
 export default function serveLeaderboards(app: Hono) {
     app.get('/api/leaderboards/:type/:game', async (context) => {
-        const includeJacob = context.req.query('includeJacob') === 'true';
         const game = context.req.param('game') as gameNames;
 
         const captchaError = await verifyContext(context);
@@ -17,6 +16,7 @@ export default function serveLeaderboards(app: Hono) {
         let db = null;
         if (context.req.param('type') === 'card-requests') db = cardsRequestedDB;
         if (context.req.param('type') === 'skill-points') db = skillPointsDB;
+        if (context.req.param('type') === 'completed-towers') db = towerCountDB;
         if (db === null) return context.json({ error: 'Invalid type.' }, 400) as any;
 
         if (!(await isSignedInAdmin(context)) && context.req.param('type') === 'card-requests')
@@ -28,7 +28,7 @@ export default function serveLeaderboards(app: Hono) {
 
         if (!gameNamesArray.includes(game)) return context.json({ error: 'Invalid game.' }, 400) as any;
 
-        const leaderboardData = await getOrderedDB(db, game, includeJacob).catch(() => []);
+        const leaderboardData = await getOrderedDB(db, game).catch(() => []);
         const start = (page - 1) * 100;
 
         for (const data of leaderboardData) {
