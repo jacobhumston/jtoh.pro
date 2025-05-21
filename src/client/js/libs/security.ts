@@ -1,4 +1,4 @@
-import { getElementById, createElement, addChild, waitForPageLoad, getBody, waitForElementById } from './util';
+import { getElementById, createElement, addChild, waitForPageLoad, getBody, waitForElementsByClassName } from './util';
 import { isLoggedIn } from './auth';
 import 'altcha';
 
@@ -30,7 +30,7 @@ export async function getWebToken(): Promise<string | undefined> {
         return new Promise(async (resolve) => {
             captchaContainer.innerHTML =
                 '<altcha-widget challengeurl="/api/captcha/get" hidelogo hidefooter></altcha-widget>';
-            const clicker = await waitForElementById('altcha_checkbox', {});
+            const clicker = ((await waitForElementsByClassName('altcha-checkbox', {})) ?? [])[0];
             document.querySelector('altcha-widget')?.addEventListener('statechange', (ev) => {
                 // @ts-expect-error
                 if (ev.detail.state === 'verified') {
@@ -39,7 +39,8 @@ export async function getWebToken(): Promise<string | undefined> {
                     resolve(ev.detail.payload);
                 }
             });
-            clicker?.click();
+            // @ts-expect-error
+            clicker?.firstElementChild?.click();
         });
     }
 
