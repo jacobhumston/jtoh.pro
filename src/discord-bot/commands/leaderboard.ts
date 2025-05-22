@@ -122,7 +122,7 @@ export async function execute(interaction: discord.APIChatInputApplicationComman
             new discord.ButtonBuilder()
                 .setLabel('View Leaderboard')
                 .setStyle(discord.ButtonStyle.Link)
-                .setURL(`${getURL()}/app/leaderboards?type=${leaderboard?.name}&other=${game}`)
+                .setURL(`${getURL()}/app/leaderboards?type=${leaderboard?.name}&other=${game}&page=${page}`)
         )
     );
 
