@@ -111,9 +111,7 @@ export async function execute(interaction: discord.APIChatInputApplicationComman
                         `${find === value.user.id ? '\n' : ''}**${format.format(value.rank)})** ${value.user.name} — ${format.format(value.count)}${find === value.user.id ? '\n-# The requested user is shown above!\n' : ''}`
                 )
                 .join('\n') +
-                (leaderboardData.length > 100
-                    ? `\n-# And **${leaderboardData.length - page * 100}** other users...`
-                    : '')
+                (data.length === 100 ? `\n-# And **${leaderboardData.length - page * 100}** other users...` : '')
         )
     );
 
