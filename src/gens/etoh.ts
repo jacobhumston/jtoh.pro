@@ -98,7 +98,10 @@ export default function etohGen(app: Hono) {
             context.header('Content-Type', 'image/png');
             return context.body(await new Blob([image]).arrayBuffer());
         } else {
-            context.header('Content-Disposition', `inline; filename="${encodeURIComponent(data.name)}.png"`);
+            context.header(
+                'Content-Disposition',
+                `inline; filename="jtoh-pro-card-${encodeURIComponent(data.name)}.png"`
+            );
 
             const thumbnail =
                 data.thumbnail !== undefined

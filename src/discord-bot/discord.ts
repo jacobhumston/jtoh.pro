@@ -74,11 +74,15 @@ export default function discordInteractions(app: Hono) {
             if (command) {
                 commandExecutions[command.name](data);
                 return context.json({
-                    type: discord.InteractionResponseType.DeferredChannelMessageWithSource
+                    type: discord.InteractionResponseType.DeferredChannelMessageWithSource,
+                    data: { flags: discord.MessageFlags.IsComponentsV2 }
                 });
             }
         }
 
-        return context.json({ type: 4, data: { content: "I'm unable to respond to this interaction." } }) as any;
+        return context.json({
+            type: discord.InteractionResponseType.ChannelMessageWithSource,
+            data: { content: "I'm unable to respond to this interaction." }
+        }) as any;
     });
 }
