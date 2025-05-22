@@ -25,7 +25,7 @@
         "altcha-lib": "^1.2.0",
         "archiver": "^7.0.1",
         "axios": "^1.9.0",
-        "bun": "^1.2.13",
+        "bun": "^1.2.14",
         "cache-manager": "^6.4.3",
         "chart.js": "^4.4.9",
         "clean-css": "^5.3.3",
@@ -64,11 +64,11 @@
         "ua-parser-js": "^2.0.3",
         "uuid": "^11.1.0",
         "winston": "^3.17.0",
-        "zod": "^3.25.13"
+        "zod": "^3.25.20"
     },
     "devDependencies": {
         "@types/archiver": "^6.0.3",
-        "@types/bun": "^1.2.13",
+        "@types/bun": "^1.2.14",
         "@types/clean-css": "^4.2.11",
         "@types/cloudflare-turnstile": "^0.2.2",
         "@types/color": "^4.2.0",
