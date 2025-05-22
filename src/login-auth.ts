@@ -245,12 +245,14 @@ export async function isSignedInAdmin(context: Context) {
     return user.id === robloxAdminUserId;
 }
 
-export async function parseRobloxAccount(context: Context): Promise<RobloxUserResult | undefined> {
-    const providedUser: string = context.req.param('user').slice(0, 20);
+export async function parseRobloxAccountV2(
+    providedUser: string,
+    context?: Context
+): Promise<RobloxUserResult | undefined> {
     let user: BasicRobloxUserResult | undefined = undefined;
     if (providedUser.startsWith('!')) {
         user = await userIdToUser(parseInt(providedUser.slice(1))).catch(() => undefined);
-    } else if (providedUser === '$me') {
+    } else if (providedUser === '$me' && context) {
         let me = await getSignedInRobloxUser(context);
         if (!me) return undefined;
         user = await userIdToUser(me.id).catch(() => undefined);
@@ -282,4 +284,10 @@ export async function parseRobloxAccount(context: Context): Promise<RobloxUserRe
               }
             : undefined;
     return data;
+}
+
+export async function parseRobloxAccount(context: Context): Promise<RobloxUserResult | undefined> {
+    const providedUser: string = context.req.param('user').slice(0, 20);
+    if (!providedUser || providedUser.length < 1) return undefined;
+    return await parseRobloxAccountV2(providedUser, context);
 }
