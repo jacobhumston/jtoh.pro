@@ -15,7 +15,12 @@ export const commandExecutions: {
 for (const commandPath of fs.readdirSync('src/discord-bot/commands/')) {
     const { command, execute } = await import(`./commands/${commandPath}`);
     commands.push(command);
-    commandExecutions[command.toJSON().name] = execute;
+    try {
+        commandExecutions[command.toJSON().name] = execute;
+    } catch (e) {
+        logger.error(`Failed to load command ${commandPath}: ${e}`);
+        process.exit(1);
+    }
 }
 
 export async function publishDiscordCommands() {

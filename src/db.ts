@@ -64,7 +64,7 @@ export async function getOrderedDB(
                 values.push(value);
             }
         }
-        orderedDBCache[(db === skillPointsDB ? 'skillPoints' : 'cardsRequested') + game] = {
+        orderedDBCache[getDBName(db) + game] = {
             value: values,
             lastUpdated: Date.now()
         };
