@@ -30,14 +30,14 @@
         "chart.js": "^4.4.9",
         "clean-css": "^5.3.3",
         "color": "^5.0.0",
-        "color-name-list": "^11.19.0",
+        "color-name-list": "^11.20.0",
         "cron": "^4.3.0",
         "date-fns": "^4.1.0",
         "discord.js": "^14.19.3",
         "emoji-picker-element": "^1.26.3",
         "esbuild": "^0.25.4",
         "events": "^3.3.0",
-        "file-type": "^20.5.0",
+        "file-type": "^21.0.0",
         "highlight.js": "^11.11.1",
         "hono": "^4.7.10",
         "hono-compress": "^0.7.0",
@@ -64,7 +64,7 @@
         "ua-parser-js": "^2.0.3",
         "uuid": "^11.1.0",
         "winston": "^3.17.0",
-        "zod": "^3.25.20"
+        "zod": "^3.25.23"
     },
     "devDependencies": {
         "@types/archiver": "^6.0.3",
