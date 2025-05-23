@@ -1,4 +1,4 @@
-import { createErrorPopup } from '../libs/quickElements';
+import { createErrorPopup } from '../libs/quick-elements';
 import {
     addChild,
     addClass,

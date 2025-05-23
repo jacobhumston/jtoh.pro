@@ -519,18 +519,14 @@ button:disabled:hover {
 }
 
 #themeChangeOpener,
-#settingsOpener {
-    border-radius: 25px;
-}
-
-#themeChangeOpener,
 #settingsOpener,
 .themeChanger {
     padding: 10px;
     background-color: var(--color-background-darker);
     display: inline-block;
     margin: 0px;
-    margin-left: 5px;
+    border-radius: 25px;
+    margin-left: 10px;
 }
 
 #themeChangeOpener .materialSymbolsRounded,
@@ -539,19 +535,30 @@ button:disabled:hover {
     vertical-align: bottom;
 }
 
+.themeChanger {
+    margin-right: -2px;
+}
+
 #themeContainer {
     text-align: right;
     padding: 10px;
     display: block;
-    max-width: 700px;
+    max-width: fit-content;
     margin-left: auto;
     margin-right: auto;
+    background-color: var(--color-background-even-more-darker);
+    border-radius: 25px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    padding-left: 5px;
+    margin-bottom: 15px;
+    padding-top: 0px;
 }
 
 #themeChangeOpener:hover,
 #settingsOpener:hover,
 .themeChanger:hover {
-    background-color: var(--color-background-even-more-darker);
+    background-color: var(--color-background);
     color: var(--color-text);
 }
 
@@ -579,7 +586,11 @@ button:disabled:hover {
     font-size: 16px;
     margin: 4px 2px;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 25px;
+}
+
+#loginButton .materialSymbolsRounded {
+    vertical-align: middle;
 }
 
 #loginButton:hover {
@@ -588,26 +599,33 @@ button:disabled:hover {
 }
 
 #loggedInIcon {
-    width: 40px;
-    height: 40px;
+    height: 45px;
+    width: auto;
     object-fit: cover;
     display: inline;
     text-align: center;
     border-radius: 50%;
     vertical-align: middle;
-    background-color: var(--color-background-lighter);
+    background-color: var(--color-background-darker);
 }
 
 #loggedInName {
     vertical-align: middle;
     margin-left: 10px;
     font-size: large;
+    padding-bottom: 2px;
+    border-bottom: var(--color-background-lighter) 2px solid;
+    max-width: 150px;
+    width: auto;
+    display: inline-block;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .loggedIn {
     background-color: var(--color-background-even-more-darker);
     border-radius: 20px;
-    padding-right: 15px;
+    padding-right: 10px;
 }
 
 img {
@@ -1462,4 +1480,23 @@ pre code {
     #loggedInDetails {
         padding-right: 0px;
     }
+}
+
+#pageProgressBar {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 5px;
+    background-color: transparent;
+    z-index: 9999;
+}
+
+#pageProgressBarChild {
+    background-color: var(--color-text-header);
+    width: 0%;
+    display: block;
+    height: inherit;
+    transition-property: width, background-color;
+    transition-duration: 5s;
 }

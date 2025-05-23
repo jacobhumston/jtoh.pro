@@ -1,6 +1,6 @@
 import type { gameNames } from '../../../shared/gamelist';
 import { numberFormatter } from '../libs/formatters';
-import { createErrorPopup } from '../libs/quickElements';
+import { createErrorPopup } from '../libs/quick-elements';
 import { waitForElementById } from '../libs/util';
 
 /**
