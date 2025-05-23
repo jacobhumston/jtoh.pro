@@ -1,6 +1,6 @@
-import { updateRequestChart, updateRequestStats } from '../components/cardInfo';
-import { handleCopyLinks } from '../components/copyLinks';
-import { handleImageExampleControls } from '../components/exampleImageControls';
+import { updateRequestChart, updateRequestStats } from '../components/card-info';
+import { handleCopyLinks } from '../components/copy-links';
+import { handleImageExampleControls } from '../components/example-image-controls';
 
 export default function () {
     updateRequestStats('cscd');

@@ -1,6 +1,6 @@
 import { getLoggedInUser, isLoggedIn } from '../libs/auth';
 import { isDebounceActive, setDebounceActive, setDebounceInactive } from '../libs/debounce';
-import { createErrorPopup } from '../libs/quickElements';
+import { createErrorPopup } from '../libs/quick-elements';
 import {
     addClass,
     copyDataToClipboard,

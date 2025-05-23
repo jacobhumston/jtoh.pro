@@ -1,6 +1,7 @@
-import { updateBlogDetails } from './components/blogDetails';
+import { updateBlogDetails } from './components/blog-details';
 import { listenForImages } from './components/imageLoader';
-import { updateMenuBar } from './components/menuBar';
+import { updateMenuBar } from './components/menu-bar';
+import { initProgressBar } from './components/progress-bar';
 import { updatePageTitle } from './components/title';
 import { addAuthUI, handleLoginRedirect } from './libs/auth';
 import { applyTheme, listenForThemSelection } from './libs/theme';
@@ -18,6 +19,7 @@ updateMenuBar();
 updatePageTitle();
 updateBlogDetails();
 handleLoginRedirect();
+initProgressBar();
 
 const url = new URL(document.location.href);
 if (url.hostname !== 'localhost' && url.hostname !== 'jtoh.pro' && url.hostname !== 'beta.jtoh.pro') {

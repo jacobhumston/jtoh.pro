@@ -1,5 +1,5 @@
 import { convertTo } from '@jacobhumston/tc.js';
-import { createErrorPopup } from '../libs/quickElements';
+import { createErrorPopup } from '../libs/quick-elements';
 import { addChild, createElement, wait, waitForElementByIdExpected } from '../libs/util';
 
 export default async function () {

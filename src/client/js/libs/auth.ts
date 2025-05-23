@@ -1,4 +1,4 @@
-import { createErrorPopup } from './quickElements';
+import { createErrorPopup } from './quick-elements';
 import {
     getElementById,
     getPageFileName,
@@ -163,7 +163,11 @@ export async function addAuthUI() {
             addChild(menuBar, link);
         }
     } else {
-        const button = createElement('button', { id: 'loginButton', innerText: 'Login' });
+        const button = createElement('button', {
+            id: 'loginButton',
+            innerHTML: `${getWebIconHTML('person')} Login`,
+            type: 'button'
+        });
         button.addEventListener('click', () => {
             sessionStorage.setItem('LoginRedirect', window.location.href);
             window.location.href = '/login';
