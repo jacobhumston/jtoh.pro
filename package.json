@@ -21,7 +21,7 @@
         "@types/quicklink": "^2.3.4",
         "@xterm/addon-web-links": "^0.11.0",
         "@xterm/xterm": "^5.5.0",
-        "altcha": "^2.0.1",
+        "altcha": "^2.0.2",
         "altcha-lib": "^1.2.0",
         "archiver": "^7.0.1",
         "axios": "^1.9.0",
@@ -30,7 +30,7 @@
         "chart.js": "^4.4.9",
         "clean-css": "^5.3.3",
         "color": "^5.0.0",
-        "color-name-list": "^11.20.0",
+        "color-name-list": "^11.22.0",
         "cron": "^4.3.0",
         "date-fns": "^4.1.0",
         "discord.js": "^14.19.3",
@@ -64,7 +64,7 @@
         "ua-parser-js": "^2.0.3",
         "uuid": "^11.1.0",
         "winston": "^3.17.0",
-        "zod": "^3.25.23"
+        "zod": "^3.25.28"
     },
     "devDependencies": {
         "@types/archiver": "^6.0.3",
