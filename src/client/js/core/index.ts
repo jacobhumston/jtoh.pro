@@ -33,6 +33,8 @@ export default async function () {
 
     if (images.error || !images.result) return;
 
+    container.innerHTML = '';
+
     for (const game of games) {
         const gameContainer = createElement('div', {}, ['homepageGameSingleSelectionContainer']);
         const name = createElement('p', { innerText: game.name });

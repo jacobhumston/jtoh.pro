@@ -9,6 +9,7 @@ import { addClass, getPageFileName } from './libs/util';
 
 window.addEventListener('load', function () {
     addClass(document.head, '__loaded');
+    document.body.style.cursor = 'default';
 });
 
 applyTheme();

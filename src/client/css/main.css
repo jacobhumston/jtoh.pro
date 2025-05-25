@@ -48,6 +48,10 @@ body {
     overflow-x: hidden;
 }
 
+body {
+    cursor: wait;
+}
+
 button,
 textarea,
 select,
@@ -1194,6 +1198,10 @@ a {
     padding: 10px;
     background-color: var(--color-background-even-more-darker);
     border-radius: 10px;
+}
+
+#footerContainer a .materialSymbolsRounded {
+    vertical-align: text-top;
 }
 
 #copyright {
