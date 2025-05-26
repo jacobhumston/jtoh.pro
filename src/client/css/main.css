@@ -1200,19 +1200,59 @@ a {
     border-radius: 10px;
 }
 
+#footerContainer a {
+    background-color: var(--color-background-darker);
+    margin-bottom: 10px;
+    padding: 5px;
+    display: inline-block;
+    border-radius: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-right: 5px;
+}
+
 #footerContainer a .materialSymbolsRounded {
     vertical-align: text-top;
 }
 
-#copyright {
+#footerContainer a:hover {
     background-color: var(--color-background);
+    padding-bottom: 3px;
+}
+
+#copyright {
+    background-color: var(--color-background-darker);
     padding: 10px;
     border-radius: 15px;
-    margin-top: 15px;
     position: relative;
     display: inline-block;
     padding-left: 15px;
     padding-right: 15px;
+    margin-left: -10px;
+    margin-bottom: -10px;
+    border-bottom-right-radius: 0px;
+    border-top-left-radius: 0px;
+}
+
+#copyright a {
+    margin-bottom: 0px;
+    padding: 0px;
+    margin: 0px;
+}
+
+#copyright a:hover {
+    margin-bottom: 0px;
+    padding: 0px;
+    color: var(--color-text-link);
+    background-color: var(--color-background-darker) !important;
+    border-radius: 0px;
+    display: inline;
+}
+
+@media screen and (max-width: 600px) {
+    .footerBreak {
+        display: none;
+    }
 }
 
 .dangerInfoBox {
@@ -1507,4 +1547,39 @@ pre code {
     height: inherit;
     transition-property: width, background-color;
     transition-duration: 5s;
+}
+
+#faqSection {
+    background-color: var(--color-background-even-more-darker);
+    padding: 25px;
+    border-radius: 15px;
+    margin-top: 10px;
+    padding-top: 20px;
+}
+
+#faqSection h3 {
+    margin-top: 0px;
+    margin-bottom: 10px;
+    background-color: var(--color-background-darker);
+    display: block;
+    max-width: fit-content;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 15px;
+    border-radius: 25px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    margin-left: -25px;
+    border-left: solid 5px var(--color-text-header);
+}
+
+#faqSection p {
+    margin: 0px;
+}
+
+button,
+a {
+    transition-property: background-color, color;
+    transition-duration: 0.2s;
+    transition-timing-function: ease-in-out;
 }
