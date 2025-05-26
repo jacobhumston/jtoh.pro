@@ -45,7 +45,8 @@ export function charts(app: Hono) {
                         tension: 0.1,
                         color: '#ebebeb',
                         backgroundColor: '#ff4336',
-                        borderColor: '#f7685e'
+                        borderColor: '#f7685e',
+                        pointRadius: 0
                     }
                 ]
             },
