@@ -25,7 +25,11 @@ async function setup() {
         await fetch(`https://api.github.com/repos/jacobhumston/data.jtoh.pro/commits?path=blog&per_page=100`, {
             cache: 'no-store'
         }).catch(() => ({ json: async () => [] }))
-    ).json();
+    )
+        .json()
+        .catch(() => null);
+
+    if (!allCommits) return setTimeout(setup, convertTo({ minutes: 10 }, 'milliseconds'));
 
     if (lastCommitHash === allCommits[0].sha) {
         fs.rmSync(tempDir, { recursive: true, force: true });
@@ -49,7 +53,8 @@ async function setup() {
         json: async () => []
     }));
 
-    const filesJSON = await files.json();
+    const filesJSON = await files.json().catch(() => null);
+    if (!filesJSON) return setTimeout(setup, convertTo({ minutes: 10 }, 'milliseconds'));
     if (!Array.isArray(filesJSON)) {
         fs.rmSync(tempDir, { recursive: true, force: true });
         setTimeout(
