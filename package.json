@@ -31,7 +31,7 @@
         "clean-css": "^5.3.3",
         "color": "^5.0.0",
         "color-name-list": "^11.22.0",
-        "cron": "^4.3.0",
+        "cron": "^4.3.1",
         "date-fns": "^4.1.0",
         "discord.js": "^14.19.3",
         "emoji-picker-element": "^1.26.3",
@@ -64,7 +64,7 @@
         "ua-parser-js": "^2.0.3",
         "uuid": "^11.1.0",
         "winston": "^3.17.0",
-        "zod": "^3.25.34"
+        "zod": "^3.25.36"
     },
     "devDependencies": {
         "@types/archiver": "^6.0.3",
