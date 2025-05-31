@@ -57,23 +57,54 @@ export default async function () {
     });
 
     addChild(container, [
-        createElement('h2', { innerText: 'Upload Card', className: 'accountSettingsHeader' }),
+        createElement('h2', { innerText: 'Upload Custom Background', className: 'accountSettingsHeader' }),
         createElement('div', {}, ['split', 'accountSettingsSplit']),
         createElement('p', {
             innerHTML:
-                'Upload a custom card background! Note that your card will automatically be resized to <code>700x300</code> if it is not already that size. '
+                'Upload a custom card background! Note that your image will automatically be resized to <code>700x300</code> if it is not already that size. Only PNG files are allowed at a maximum size of <code>2MB</code>. You can only upload 5 images every 2 hours!'
         })
     ]);
 
     const uploadCardInput = createElement('input', {
         type: 'file',
-        accept: '.png'
+        accept: '.png',
+        title: 'Upload a custom card background.',
+        placeholder: 'Select a PNG file to upload.'
     });
 
     const submitUploadCardButton = createElement('button', {
         type: 'button',
-        innerHTML: getWebIconHTML('upload') + ' Upload Card',
+        innerHTML: getWebIconHTML('upload') + ' Upload',
         className: 'primaryButton'
+    });
+
+    const previewUploadCard = createElement('img', {
+        id: 'previewUploadCard',
+        alt: 'Preview of the uploaded card background.'
+    });
+
+    previewUploadCard.style.display = 'none';
+
+    uploadCardInput.addEventListener('change', async () => {
+        if (uploadCardInput.files && uploadCardInput.files.length > 0) {
+            const file = uploadCardInput.files[0];
+            if (file.type !== 'image/png') return;
+            if (file.size > 2000000) return;
+            const formData = new FormData();
+            formData.append('file', file);
+            const response = await fetch(
+                `/api/account/card-background/pre-crop-upload?captcha=${await getWebToken()}`,
+                {
+                    method: 'POST',
+                    body: formData
+                }
+            ).catch(() => null);
+            if (!response || !response.ok) return;
+            previewUploadCard.style.display = 'block';
+            previewUploadCard.src = URL.createObjectURL(await response.blob());
+        } else {
+            previewUploadCard.style.display = 'none';
+        }
     });
 
     submitUploadCardButton.addEventListener('click', async () => {
@@ -117,7 +148,13 @@ export default async function () {
         setDebounceInactive('submitUploadCardButton');
     });
 
-    addChild(container, [uploadCardInput, submitUploadCardButton]);
+    addChild(container, [
+        uploadCardInput,
+        submitUploadCardButton,
+        previewUploadCard,
+        createElement('br'),
+        createElement('a', { innerText: 'View Uploading Guidelines', href: '/app/uploading-guidelines' })
+    ]);
 
     addChild(container, [
         createElement('h2', { innerText: 'Card Backgrounds', className: 'accountSettingsHeader' }),

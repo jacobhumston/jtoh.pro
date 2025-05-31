@@ -20,6 +20,7 @@ import fs from 'node:fs';
 import { convertTo } from '@jacobhumston/tc.js';
 import { getIP } from './ip';
 import { v4 } from 'uuid';
+import { createModListFile } from './files';
 
 if (!fs.existsSync('cache')) fs.mkdirSync('cache');
 
@@ -243,6 +244,13 @@ export async function isSignedInAdmin(context: Context) {
     const user = await getSignedInRobloxUser(context);
     if (!user) return false;
     return user.id === robloxAdminUserId;
+}
+
+export async function isSignedInMod(context: Context) {
+    const user = await getSignedInRobloxUser(context);
+    if (!user) return false;
+    const users: number[] = JSON.parse(fs.readFileSync(createModListFile(), 'utf-8'));
+    return users.includes(user.id) ?? user.id === robloxAdminUserId;
 }
 
 export async function parseRobloxAccountV2(

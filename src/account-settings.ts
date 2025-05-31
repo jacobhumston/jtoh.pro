@@ -83,7 +83,10 @@ export function setupAccountEndpoints(app: Hono) {
 
             const currentCard = await getAccountCardPhotoBackground(user);
             if (currentCard?.custom === true)
-                return context.json({ error: 'Please delete your card before uploading another one.' }, 400);
+                return context.json(
+                    { error: 'Please delete your current background before uploading another one.' },
+                    400
+                );
 
             const body = await context.req.parseBody();
             const file = body['file'];
@@ -122,6 +125,32 @@ export function setupAccountEndpoints(app: Hono) {
         }
     );
 
+    app.post('/api/account/card-background/pre-crop-upload', async (context) => {
+        const captchaResult = await verifyContext(context);
+        if (captchaResult) return captchaResult;
+
+        const user = await getSignedInRobloxUser(context);
+        if (!user) return context.json({ error: 'Not logged in.' }, 401);
+
+        const body = await context.req.parseBody();
+        const file = body['file'];
+
+        if (!file || typeof file === 'string') return context.json({ error: 'Invalid file.' }, 400);
+
+        if (file.size > 2000000) return context.json({ error: 'File size exceeds 2MB limit.' }, 400);
+
+        const type = await fileTypeFromBlob(file);
+        if (!type || type.mime !== 'image/png')
+            return context.json({ error: 'Invalid file type. Only PNG is allowed.' }, 400);
+
+        const sharpImage = sharp(await file.arrayBuffer());
+        sharpImage.resize({ width: 700, height: 300, fit: 'cover' });
+
+        const buffer = await sharpImage.toBuffer();
+        context.header('Content-Type', 'image/png');
+        return context.body(await new Blob([buffer]).arrayBuffer());
+    });
+
     app.post('/api/account/card-background/remove', async (context) => {
         const user = await getSignedInRobloxUser(context);
         if (!user) return context.json({ error: 'Not logged in.' }, 401);
@@ -152,7 +181,7 @@ export function setupAccountEndpoints(app: Hono) {
         if (currentCard?.custom === true)
             return context.json(
                 {
-                    error: 'You cannot change your card background while using a custom card. Please delete your current card first.'
+                    error: 'You cannot change your card background while using a custom background. Please delete your current background first.'
                 },
                 400
             ) as any;

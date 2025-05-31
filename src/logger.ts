@@ -53,6 +53,7 @@ const handler = (error: Error) => {
     } else {
         logger.error('Unhandled Rejection:', error);
     }
+    Bun.inspect(error);
     process.exit(1);
 };
 

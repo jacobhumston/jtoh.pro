@@ -1,5 +1,5 @@
 import { updateBlogDetails } from './components/blog-details';
-import { listenForImages } from './components/imageLoader';
+import { listenForImages } from './components/image-loader';
 import { updateMenuBar } from './components/menu-bar';
 import { initProgressBar } from './components/progress-bar';
 import { updatePageTitle } from './components/title';
