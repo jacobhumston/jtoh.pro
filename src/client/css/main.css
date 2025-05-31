@@ -1490,7 +1490,8 @@ a {
     color: var(--color-background);
 }
 
-#clickHereToChangeCardBackground {
+#clickHereToChangeCardBackground,
+#clickHereToViewGuideLines {
     background-color: var(--color-text-header);
     color: var(--color-text);
     border: none;
@@ -1504,12 +1505,14 @@ a {
     border-radius: 5px;
 }
 
-#clickHereToChangeCardBackground:hover {
+#clickHereToChangeCardBackground:hover,
+#clickHereToViewGuideLines:hover {
     background-color: var(--color-text);
     color: var(--color-background);
 }
 
-#clickHereToChangeCardBackground .materialSymbolsRounded {
+#clickHereToChangeCardBackground .materialSymbolsRounded,
+#clickHereToViewGuideLines .materialSymbolsRounded {
     vertical-align: top;
 }
 
@@ -1608,4 +1611,8 @@ input[type='file']::file-selector-button:active {
 
 #previewUploadCard {
     max-width: 100%;
+}
+
+#clickHereToViewGuideLines {
+    margin-top: 15px;
 }
