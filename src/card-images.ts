@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import logger from './logger';
 
-const cardImages: Record<string, { name: string; extension: string; webPath: string }> = {};
+const cardImages: Record<string, { name: string; extension: string; webPath: string; custom: boolean }> = {};
 const cardImageFiles = fs.readdirSync('./src/web/app/assets/card-photos/');
 
 for (const file of cardImageFiles) {
@@ -10,7 +10,7 @@ for (const file of cardImageFiles) {
         continue;
     }
     const [name, extension] = file.split('.');
-    cardImages[name] = { name, extension, webPath: `/app/assets/card-photos/${file}` };
+    cardImages[name] = { name, extension, webPath: `/app/assets/card-photos/${file}`, custom: false };
 }
 
 export function getCardImages() {

@@ -59,3 +59,9 @@ export function getURLObj() {
 export function getArgsAsString() {
     return argv.toSpliced(0, 2).join(' ');
 }
+
+export function getEnvName() {
+    if (isDev) return 'dev';
+    if (isBeta) return 'beta';
+    return 'prod';
+}

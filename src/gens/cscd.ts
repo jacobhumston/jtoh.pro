@@ -34,7 +34,9 @@ export default function cscdGen(app: Hono) {
         if (data !== undefined) {
             const cardBackground = await getAccountCardPhotoBackground(data);
             if (cardBackground !== null) {
-                const image = await loadImage('src/web' + cardBackground.webPath).catch(() => null);
+                const image = await loadImage(
+                    cardBackground.custom ? new URL(cardBackground.webPath) : 'src/web' + cardBackground.webPath
+                ).catch(() => null);
                 if (image) {
                     ctx.save();
                     ctx.globalAlpha = 0.3;
@@ -161,6 +163,8 @@ export default function cscdGen(app: Hono) {
                 updateCardRequestCount('cscd', data).catch(() => undefined);
                 await updateSkillPoints('cscd', data, towerStats.skill_points.legit).catch(() => undefined);
                 await updateTowerCount('cscd', data, towerStats.completed_towers.legit).catch(() => undefined);
+                context.res.headers.set('X-Card-Success', 'true');
+                context.res.headers.set('X-Card-User-Id', data.id.toString());
 
                 towerStats.difficulty_colors['Nil'] = towerStats.difficulty_colors['nil'];
                 towerStats.difficulty_colors_outlines['Nil'] = towerStats.difficulty_colors_outlines['nil'];

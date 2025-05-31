@@ -23,6 +23,10 @@ export default async function credits(app: Hono) {
             {
                 info: 'Website Moderator',
                 userId: 322468106
+            },
+            {
+                info: 'Website Moderator',
+                userId: 2471855998
             }
         ]
     };
