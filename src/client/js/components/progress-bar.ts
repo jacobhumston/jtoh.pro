@@ -23,7 +23,9 @@ export async function initProgressBar() {
             target instanceof HTMLAnchorElement &&
             !target.hasAttribute('download') &&
             target.href &&
-            target.target !== '_blank'
+            target.target !== '_blank' &&
+            !target.href.includes('logout') &&
+            !target.href.includes('login')
         ) {
             event.preventDefault();
 
