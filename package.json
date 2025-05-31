@@ -40,7 +40,7 @@
         "events": "^3.3.0",
         "file-type": "^21.0.0",
         "highlight.js": "^11.11.1",
-        "hono": "^4.7.10",
+        "hono": "^4.7.11",
         "hono-compress": "^0.7.0",
         "hono-rate-limiter": "^0.4.2",
         "html-minifier": "^4.0.0",
