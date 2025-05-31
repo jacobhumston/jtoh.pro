@@ -16,6 +16,7 @@
         "@octokit/rest": "^22.0.0",
         "@schemastore/package": "^0.0.10",
         "@tensorflow/tfjs": "^4.22.0",
+        "@types/bun": "^1.2.15",
         "@types/events": "^3.0.3",
         "@types/hotwired__turbo": "^8.0.4",
         "@types/quicklink": "^2.3.4",
@@ -68,7 +69,6 @@
     },
     "devDependencies": {
         "@types/archiver": "^6.0.3",
-        "@types/bun": "^1.2.15",
         "@types/clean-css": "^4.2.11",
         "@types/cloudflare-turnstile": "^0.2.2",
         "@types/color": "^4.2.0",
