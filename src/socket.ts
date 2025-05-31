@@ -1,11 +1,11 @@
 import { createBunWebSocket } from 'hono/bun';
 import type { ServerWebSocket } from 'bun';
-import type { WSContext } from 'hono/ws';
+import type { WSContext, WSEvents } from 'hono/ws';
 import type { Hono, Context } from 'hono';
 
 const { upgradeWebSocket, websocket } = createBunWebSocket<ServerWebSocket>();
 
-type WebsocketHandler = ReturnType<Parameters<typeof upgradeWebSocket>[0]>;
+type WebsocketHandler = WSEvents;
 
 export const socket = websocket;
 export const sockets: () => Array<WSContext> = () => [];
