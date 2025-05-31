@@ -23,7 +23,9 @@ export default function previewGen(app: Hono) {
             let override = getCardImages()[context.req.query('cardBackgroundOverride') ?? ''];
             if (override) cardBackground = override;
             if (cardBackground !== null) {
-                const image = await loadImage('src/web' + cardBackground.webPath).catch(() => null);
+                const image = await loadImage(
+                    cardBackground.custom ? new URL(cardBackground.webPath) : 'src/web' + cardBackground.webPath
+                ).catch(() => null);
                 if (image) {
                     ctx.save();
                     ctx.globalAlpha = 0.3;

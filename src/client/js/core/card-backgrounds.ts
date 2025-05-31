@@ -1,6 +1,7 @@
 import { getLoggedInUser } from '../libs/auth';
 import { isDebounceActive, setDebounceActive, setDebounceInactive } from '../libs/debounce';
 import { createErrorPopup } from '../libs/quick-elements';
+import { getWebToken } from '../libs/security';
 import {
     addChild,
     addClass,
@@ -54,6 +55,69 @@ export default async function () {
         removeClass(removeBackgroundButton, 'successButton');
         setDebounceInactive('removeBackgroundButton');
     });
+
+    addChild(container, [
+        createElement('h2', { innerText: 'Upload Card', className: 'accountSettingsHeader' }),
+        createElement('div', {}, ['split', 'accountSettingsSplit']),
+        createElement('p', {
+            innerHTML:
+                'Upload a custom card background! Note that your card will automatically be resized to <code>700x300</code> if it is not already that size. '
+        })
+    ]);
+
+    const uploadCardInput = createElement('input', {
+        type: 'file',
+        accept: '.png'
+    });
+
+    const submitUploadCardButton = createElement('button', {
+        type: 'button',
+        innerHTML: getWebIconHTML('upload') + ' Upload Card',
+        className: 'primaryButton'
+    });
+
+    submitUploadCardButton.addEventListener('click', async () => {
+        if (isDebounceActive('submitUploadCardButton')) return;
+        setDebounceActive('submitUploadCardButton');
+
+        if (!uploadCardInput.files || uploadCardInput.files.length === 0) {
+            createErrorPopup('Please select a file to upload.', false);
+            setDebounceInactive('submitUploadCardButton');
+            return;
+        }
+
+        const file = uploadCardInput.files[0];
+        if (file.size > 2000000) {
+            createErrorPopup('File size exceeds the maximum limit of 2MB.', false);
+            setDebounceInactive('submitUploadCardButton');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await fetch(`/api/account/card-background/upload?captcha=${await getWebToken()}`, {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ error: 'Unknown error occurred.' }));
+            createErrorPopup(errorData.error, false);
+            setDebounceInactive('submitUploadCardButton');
+            return;
+        }
+
+        addClass(submitUploadCardButton, 'successButton');
+        const reset = temporarilySetElementText(submitUploadCardButton, getWebIconHTML('check') + ' Uploaded!');
+        await wait(2000);
+        reset();
+        removeClass(submitUploadCardButton, 'successButton');
+        uploadCardInput.value = '';
+        setDebounceInactive('submitUploadCardButton');
+    });
+
+    addChild(container, [uploadCardInput, submitUploadCardButton]);
 
     addChild(container, [
         createElement('h2', { innerText: 'Card Backgrounds', className: 'accountSettingsHeader' }),
@@ -164,7 +228,12 @@ export default async function () {
                 method: 'POST',
                 headers: { 'Content-Type': 'text/plain' }
             });
-            if (!response.ok) return createErrorPopup('Failed to set card background.', false);
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ error: 'Unknown error occurred.' }));
+                createErrorPopup(errorData.error, false);
+                setDebounceInactive('setCardButton');
+                return;
+            }
             addClass(setCardButton, 'successButton');
             const reset = temporarilySetElementText(setCardButton, getWebIconHTML('check') + ' Set!');
             await wait(2000);

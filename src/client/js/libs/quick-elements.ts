@@ -33,5 +33,7 @@ export async function createErrorPopup(error: string, autoClose: number | false)
 
     insertChild(await getBody(), 'afterbegin', errorPopup);
 
+    window.scroll({ top: 0, left: 0, behavior: 'smooth' });
+
     return errorPopup;
 }

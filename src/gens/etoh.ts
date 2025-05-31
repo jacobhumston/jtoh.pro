@@ -34,7 +34,9 @@ export default function etohGen(app: Hono) {
         if (data !== undefined) {
             const cardBackground = await getAccountCardPhotoBackground(data);
             if (cardBackground !== null) {
-                const image = await loadImage('src/web' + cardBackground.webPath).catch(() => null);
+                const image = await loadImage(
+                    cardBackground.custom ? new URL(cardBackground.webPath) : 'src/web' + cardBackground.webPath
+                ).catch(() => null);
                 if (image) {
                     ctx.save();
                     ctx.globalAlpha = 0.3;
@@ -161,6 +163,8 @@ export default function etohGen(app: Hono) {
                 updateCardRequestCount('etoh', data).catch(() => undefined);
                 await updateSkillPoints('etoh', data, towerStats.skill_points).catch(() => undefined);
                 await updateTowerCount('etoh', data, towerStats.completed_towers).catch(() => undefined);
+                context.res.headers.set('X-Card-Success', 'true');
+                context.res.headers.set('X-Card-User-Id', data.id.toString());
 
                 ctx.textAlign = 'left';
                 ctx.fillStyle = 'white';
