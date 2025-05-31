@@ -149,15 +149,20 @@ export default async function () {
     });
 
     addChild(container, [
-        uploadCardInput,
-        submitUploadCardButton,
+        createElement('div', {}, ['interactionFlex'], [uploadCardInput, submitUploadCardButton]),
         previewUploadCard,
-        createElement('br'),
-        createElement('a', { innerText: 'View Uploading Guidelines', href: '/app/uploading-guidelines' })
+        createElement('a', {
+            innerHTML: getWebIconHTML('list_alt') + ' View Uploading Guidelines',
+            href: '/app/uploading-guidelines',
+            id: 'clickHereToViewGuideLines'
+        })
     ]);
 
     addChild(container, [
-        createElement('h2', { innerText: 'Card Backgrounds', className: 'accountSettingsHeader' }),
+        createElement('h2', {
+            innerHTML: 'Card Backgrounds',
+            className: 'accountSettingsHeader'
+        }),
         createElement('div', {}, ['split', 'accountSettingsSplit'])
     ]);
 
