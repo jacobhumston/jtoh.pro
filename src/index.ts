@@ -38,6 +38,7 @@ import { cleanUpTemp } from './files';
 import { getIP } from './ip';
 import embed from './embeddable';
 import gameRequests from './game-requests';
+import { mods } from './mods';
 
 cleanUpTemp();
 cardImageCheck();
@@ -139,6 +140,7 @@ app.get('/app/templates/*', async (context) => {
 setupLoginAuth(app);
 captchaManager(app);
 admin(app);
+mods(app);
 webUtils(app);
 serveLeaderboards(app);
 redirects(app);

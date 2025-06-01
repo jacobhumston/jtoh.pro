@@ -28,6 +28,7 @@ export type User = {
 export type LoggedInUser = {
     user: null | User;
     admin: boolean;
+    mod: boolean;
 };
 
 let user: null | LoggedInUser = null;
@@ -37,7 +38,7 @@ let user: null | LoggedInUser = null;
  */
 export async function requestAuthMe() {
     return await fetch('/api/auth/@me').catch(() => ({
-        json: () => ({ user: null, admin: false }),
+        json: () => ({ user: null, admin: false, mod: false }),
         status: 200
     }));
 }
@@ -76,7 +77,7 @@ export async function checkAuth() {
         if (user.user) localStorage.setItem('cache_LoggedInUser', JSON.stringify(data));
     } else {
         createErrorPopup('Failed to check for a logged in user.', 4000);
-        user = { user: null, admin: false };
+        user = { user: null, admin: false, mod: false };
     }
 }
 
@@ -86,7 +87,7 @@ export async function checkAuth() {
  */
 export async function getLoggedInUser(): Promise<LoggedInUser> {
     await checkAuth();
-    if (!user) return { user: null, admin: false };
+    if (!user) return { user: null, admin: false, mod: false };
     return user;
 }
 
@@ -154,6 +155,14 @@ export async function addAuthUI() {
         addChild(loggedInDetails, [icon, name]);
 
         addClass(loggedInDetails, 'loggedIn');
+
+        if (user.mod === true) {
+            const link = createElement('a', {
+                href: '/app/mods/mod-panel',
+                innerText: 'Mod Panel'
+            });
+            addChild(menuBar, link);
+        }
 
         if (user.admin === true) {
             const link = createElement('a', {

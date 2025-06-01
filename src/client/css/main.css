@@ -1616,3 +1616,15 @@ input[type='file']::file-selector-button:active {
 #clickHereToViewGuideLines {
     margin-top: 15px;
 }
+
+#banReason,
+#banExpires {
+    padding: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    background-color: var(--color-background-even-more-darker);
+    border-radius: 15px;
+    margin: 0px;
+    display: block;
+    border: solid 2px var(--color-error);
+}
