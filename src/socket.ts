@@ -9,9 +9,12 @@ type WebsocketHandler = WSEvents;
 
 export const socket = websocket;
 export const sockets: () => Array<WSContext> = () => [];
-export const socketManagers = new Map<string, (context: Context) => WebsocketHandler>();
+export const socketManagers = new Map<string, (context: Context) => WebsocketHandler | Promise<WebsocketHandler>>();
 
-export function addSocketManager(type: string, manager: (context: Context) => WebsocketHandler) {
+export function addSocketManager(
+    type: string,
+    manager: (context: Context) => WebsocketHandler | Promise<WebsocketHandler>
+) {
     socketManagers.set(type, manager);
 }
 

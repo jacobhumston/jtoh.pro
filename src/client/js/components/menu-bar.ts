@@ -33,4 +33,11 @@ export async function updateMenuBar() {
 
     // Just for the sake of it, update the menu again.
     setTimeout(update, 3000);
+    setTimeout(() => {
+        for (const link of menuBarLinks) {
+            if (new URL(link.href).pathname === new URL(window.location.href).pathname) {
+                addClass(link, 'menuBarActive');
+            }
+        }
+    }, 3000);
 }

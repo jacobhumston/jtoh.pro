@@ -21,6 +21,7 @@ import { convertTo } from '@jacobhumston/tc.js';
 import { getIP } from './ip';
 import { v4 } from 'uuid';
 import { createModListFile } from './files';
+import { getPunishmentOfType } from './punishments';
 
 if (!fs.existsSync('cache')) fs.mkdirSync('cache');
 
@@ -50,7 +51,7 @@ const hashingTokenForAuthTokens = crypto
 export default function setupLoginAuth(app: Hono) {
     app.get('/api/auth/@me', async (context) => {
         const user = await getSignedInRobloxUser(context);
-        return context.json({ user: user, admin: await isSignedInAdmin(context) });
+        return context.json({ user: user, admin: await isSignedInAdmin(context), mod: await isSignedInMod(context) });
     });
 
     app.get('/api/auth', async (context) => {
@@ -58,7 +59,7 @@ export default function setupLoginAuth(app: Hono) {
         if (user) return context.redirect('/app/');
         let code = context.req.query('code');
         if (!code) return context.redirect(getAuthLoginURL());
-        let failed: null | boolean = null;
+        let failed: null | boolean | string = null;
         const captcha = context.req.query('captcha');
         if ((await verifyCaptcha(captcha ?? '')) !== true)
             return context.redirect(`/app/captcha?type=auth&code=${encryptCode(code, hashingTokenForCodes)}`);
@@ -101,7 +102,17 @@ export default function setupLoginAuth(app: Hono) {
                         const browser = await parsedUserAgent.getBrowser().withClientHints();
                         const device = await parsedUserAgent.getDevice().withClientHints();
                         const os = await parsedUserAgent.getOS().withClientHints();
-                        if (!browser.name) return context.redirect(getAuthLoginURL());
+                        if (!browser.name) {
+                            failed = true;
+                            return;
+                        }
+
+                        const punished = await getPunishmentOfType(parseInt(userResponseJSON.sub), 'LoginBan');
+                        if (punished) {
+                            failed = `/app/punishment?type=LoginBan&reason=${encodeURIComponent(punished.reason)}&expires=${punished.expires ?? 'Never'}`;
+                            return;
+                        }
+
                         const token =
                             crypto.randomBytes(256).toString('hex') +
                             '::' +
@@ -161,6 +172,7 @@ export default function setupLoginAuth(app: Hono) {
             }, 0)
         );
 
+        if (typeof failed === 'string') return context.redirect(failed);
         if (failed == true) return context.redirect(getAuthLoginURL());
         return context.redirect('/app/?loginRedirect=true');
     });
@@ -226,13 +238,16 @@ export async function getSignedInRobloxUser(context: Context): Promise<LoggedInU
 
         if (!uaSuccess) return null;
     }
-
     const data = (await loginAuthDB.get<LoggedInUserWho>(token)) ?? null;
     if (!data) return data;
     // @ts-expect-error
     data.who = undefined;
     // @ts-expect-error
     data.sessionId = undefined;
+
+    const punishments = await getPunishmentOfType(data.id, 'LoginBan');
+    if (punishments !== null) return null;
+
     return data;
 }
 
@@ -250,7 +265,7 @@ export async function isSignedInMod(context: Context) {
     const user = await getSignedInRobloxUser(context);
     if (!user) return false;
     const users: number[] = JSON.parse(fs.readFileSync(createModListFile(), 'utf-8'));
-    return users.includes(user.id) ?? user.id === robloxAdminUserId;
+    return users.includes(user.id) || user.id === robloxAdminUserId;
 }
 
 export async function parseRobloxAccountV2(
