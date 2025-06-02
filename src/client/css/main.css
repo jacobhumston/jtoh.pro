@@ -1628,3 +1628,153 @@ input[type='file']::file-selector-button:active {
     display: block;
     border: solid 2px var(--color-error);
 }
+
+#modPagesSelectContainer {
+    background-color: transparent;
+}
+
+#modPagesSelectButtonContainer {
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+#modPagesSelectContainer button {
+    padding: 5px;
+    margin: 0px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 20px;
+    margin-right: 10px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    padding-bottom: 8px;
+}
+
+#modPagesSelectContainer p {
+    margin: 0px;
+    padding: 0px;
+    display: block;
+    color: var(--color-text);
+    padding: 5px;
+    border-radius: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+    background-color: var(--color-background-even-more-darker);
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    border-bottom: solid 4px var(--color-background-lighter);
+    font-size: larger;
+}
+
+.modLogEntry {
+    background-color: var(--color-background-even-more-darker);
+    padding: 10px;
+    border-radius: 15px;
+    margin-bottom: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.modLogEntry p {
+    margin: 0px;
+}
+
+.modLogEntry p:first-of-type {
+    margin-bottom: 10px;
+}
+
+.modLogEntry .timestamp {
+    color: var(--color-text-darker);
+    font-size: small;
+}
+
+.modUserListElement {
+    background-color: var(--color-background-even-more-darker);
+    width: max-content;
+    padding: 5px;
+    border-radius: 25px;
+    padding-right: 10px;
+    margin-bottom: 10px;
+    vertical-align: middle;
+    display: list-item;
+    align-items: center;
+}
+
+.modUserListElement code {
+    border-radius: 25px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.modUserListElement img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: inline-block;
+    background-color: var(--color-background-darker);
+    vertical-align: middle;
+}
+
+.uploadCardBackgroundQueueItem {
+    background-color: var(--color-background-even-more-darker);
+    margin-bottom: 10px;
+    border-radius: 15px;
+    padding: 10px;
+    display: block;
+}
+
+.uploadCardBackgroundQueueItem p {
+    margin: 0px;
+    padding: 0px;
+    margin-bottom: 5px;
+}
+
+.uploadCardBackgroundQueueItem img {
+    width: 100%;
+    height: auto;
+}
+
+.uploadCardBackgroundQueueApproveItemButton {
+    background-color: var(--color-success);
+}
+
+.uploadCardBackgroundQueueDeclineItemButton {
+    background-color: var(--color-error);
+}
+
+#viewPunishmentsContainer,
+#punishmentContainer {
+    background-color: var(--color-background-even-more-darker);
+    padding: 10px;
+    border-radius: 15px;
+    margin-top: 10px;
+}
+
+#viewPunishmentsContainer h3,
+#punishmentContainer h3 {
+    margin-top: 0px;
+    margin-bottom: 5px;
+    padding-left: 10px;
+}
+
+#punishmentListContainer p {
+    padding: 10px;
+    background-color: var(--color-background-darker);
+    border-radius: 15px;
+    margin-bottom: 0px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+#punishmentListContainer button {
+    border-radius: 15px;
+    margin-top: 0px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    margin-bottom: 10px;
+}
+
+.noPunishmentsListed {
+    border-radius: 15px !important;
+}

@@ -1,16 +1,12 @@
 import { Hono } from 'hono';
 import { getSignedInRobloxUser, isSignedInMod, parseRobloxAccountV2 } from './login-auth';
 import fs from 'node:fs';
-import { createModListFile } from './files';
-import {
-    addPunishment,
-    getModLog,
-    getPunishments,
-    punishmentTypes,
-    removePunishment,
-    type PunishmentType
-} from './punishments';
+import { createLeadboardBlacklistFile, createModListFile, createUploadCardBackgroundsReviewQueueFile } from './files';
+import { addModLogEntry, addPunishment, getModLog, getPunishments, removePunishment } from './punishments';
 import { convert } from '@jacobhumston/tc.js';
+import { punishmentTypes, type PunishmentType } from './shared/punishment-types';
+import { accountConfigDB } from './db';
+import { createS3Path, s3 } from './s3';
 
 export function mods(app: Hono) {
     app.use('/app/mods/*', async (context, next) => {
@@ -31,14 +27,14 @@ export function mods(app: Hono) {
         return context.json({
             lists: {
                 mods: JSON.parse(fs.readFileSync(createModListFile(), 'utf-8')),
-                leaderboardBlacklist: JSON.parse(fs.readFileSync(createModListFile(), 'utf-8'))
+                leaderboardBlacklist: JSON.parse(fs.readFileSync(createLeadboardBlacklistFile(), 'utf-8'))
             }
         });
     });
 
     app.get('/api/mods/logs', async (context) => {
         const logs = getModLog();
-        return context.json({ logs: logs });
+        return context.json({ logs: logs.reverse() });
     });
 
     app.get('/api/mods/punishments/:user', async (context) => {
@@ -80,7 +76,7 @@ export function mods(app: Hono) {
 
         const response = await addPunishment(user.id, {
             type: type as PunishmentType,
-            reason: reason,
+            reason: decodeURIComponent(reason),
             modId: mod.id.toString(),
             expires: expires
         }).catch((error) => ({ error: error.message }));
@@ -104,10 +100,87 @@ export function mods(app: Hono) {
         if (!punishmentTypes.includes(type)) return context.json({ error: 'Invalid punishment type.' }, 400);
         if (reason.length > 2000) return context.json({ error: 'Reason is too long.' }, 400);
 
-        const response = await removePunishment(user.id, type as PunishmentType, mod.id, reason).catch((error) => ({
+        const response = await removePunishment(
+            user.id,
+            type as PunishmentType,
+            mod.id,
+            decodeURIComponent(reason)
+        ).catch((error) => ({
             error: error.message
         }));
         if (response) return context.json({ error: response.error }, 400);
         return context.json({ success: true });
+    });
+
+    app.get('/api/mods/upload-card-background-queue', async (context) => {
+        const queue: any[] = JSON.parse(fs.readFileSync(createUploadCardBackgroundsReviewQueueFile(), 'utf-8'));
+        return context.json({ queue: queue });
+    });
+
+    app.post('/api/mods/upload-card-background-queue/approve/:id', async (context) => {
+        const mod = await getSignedInRobloxUser(context);
+        if (!mod) return context.json({ error: 'Unauthorized.' }, 401);
+
+        const queue: any[] = JSON.parse(fs.readFileSync(createUploadCardBackgroundsReviewQueueFile(), 'utf-8'));
+        const item = queue.find((i) => i.id === context.req.param('id'));
+
+        if (!item) return context.json({ error: 'Item not found.' }, 404);
+
+        fs.writeFileSync(
+            createUploadCardBackgroundsReviewQueueFile(),
+            JSON.stringify(queue.filter((i) => i.id !== item.id))
+        );
+
+        addModLogEntry({
+            modId: mod.id.toString(),
+            userId: item.uploaderId.toString(),
+            action: `Approved card background upload: ${item.id} (${item.url})`,
+            reason: 'N/A',
+            timestamp: Date.now()
+        });
+
+        return context.json({ success: true, item: item });
+    });
+
+    app.post('/api/mods/upload-card-background-queue/remove/:id', async (context) => {
+        const mod = await getSignedInRobloxUser(context);
+        if (!mod) return context.json({ error: 'Unauthorized.' }, 401);
+
+        const queue: any[] = JSON.parse(fs.readFileSync(createUploadCardBackgroundsReviewQueueFile(), 'utf-8'));
+        const item = queue.find((i) => i.id === context.req.param('id'));
+
+        if (!item) return context.json({ error: 'Item not found.' }, 404);
+
+        const reason = context.req.query('reason');
+        if (!reason || reason.length > 2000) {
+            return context.json({ error: 'Invalid reason.' }, 400);
+        }
+
+        fs.writeFileSync(
+            createUploadCardBackgroundsReviewQueueFile(),
+            JSON.stringify(queue.filter((i) => i.id !== item.id))
+        );
+
+        const data = (await accountConfigDB.get(`_${item.uploaderId}`)) ?? {};
+
+        if (data.cardBackground?.startsWith('c:')) {
+            const id = data.cardBackground.slice(2);
+            if (id === item.id) {
+                const path = createS3Path(`card-photos/${id}.png`);
+                await s3.delete(path);
+                delete data.cardBackground;
+                await accountConfigDB.set(`_${item.uploaderId}`, data);
+            }
+        }
+
+        addModLogEntry({
+            modId: mod.id.toString(),
+            userId: item.uploaderId.toString(),
+            action: `Removed card background upload: ${item.id} (${item.url})`,
+            reason: decodeURIComponent(reason),
+            timestamp: Date.now()
+        });
+
+        return context.json({ success: true, item: item });
     });
 }
