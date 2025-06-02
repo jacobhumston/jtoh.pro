@@ -17,6 +17,8 @@ import { rateLimiter } from 'hono-rate-limiter';
 import { convert as timeConvert } from '@jacobhumston/tc.js';
 import { getIP } from './ip';
 import { getTempToken } from './temp-tokens';
+import { createUploadCardBackgroundsReviewQueueFile } from './files';
+import { getPunishmentOfType, getPunishments } from './punishments';
 
 function getKeyName(account: LoggedInUser | BasicRobloxUserResult | RobloxUserResult) {
     return `_${account.id}`;
@@ -81,6 +83,14 @@ export function setupAccountEndpoints(app: Hono) {
             const user = await getSignedInRobloxUser(context);
             if (!user) return context.json({ error: 'Not logged in.' }, 401);
 
+            const punishments = await getPunishmentOfType(user.id, 'UploadCardBackgroundBan');
+            if (punishments) {
+                return context.json(
+                    { error: 'You are not allowed to upload a card background. Reason: ' + punishments.reason },
+                    400
+                );
+            }
+
             const currentCard = await getAccountCardPhotoBackground(user);
             if (currentCard?.custom === true)
                 return context.json(
@@ -110,6 +120,14 @@ export function setupAccountEndpoints(app: Hono) {
             const data = (await accountConfigDB.get(getKeyName(user))) ?? {};
             data.cardBackground = `c:${id}`;
             await accountConfigDB.set(getKeyName(user), data);
+
+            const queue: any[] = JSON.parse(fs.readFileSync(createUploadCardBackgroundsReviewQueueFile(), 'utf-8'));
+            queue.push({
+                id,
+                url: getS3URL(`card-photos/${id}.png`),
+                uploaderId: user.id
+            });
+            fs.writeFileSync(createUploadCardBackgroundsReviewQueueFile(), JSON.stringify(queue));
 
             return context.json({
                 result: {
@@ -161,6 +179,11 @@ export function setupAccountEndpoints(app: Hono) {
             const id = data.cardBackground.slice(2);
             const path = createS3Path(`card-photos/${id}.png`);
             await s3.delete(path);
+            const queue: any[] = JSON.parse(fs.readFileSync(createUploadCardBackgroundsReviewQueueFile(), 'utf-8'));
+            fs.writeFileSync(
+                createUploadCardBackgroundsReviewQueueFile(),
+                JSON.stringify(queue.filter((item) => item.id !== id))
+            );
         }
 
         delete data.cardBackground;
@@ -196,6 +219,19 @@ export function setupAccountEndpoints(app: Hono) {
                 card
             }
         });
+    });
+
+    app.get('/api/account/punishments', async (context) => {
+        const user = await getSignedInRobloxUser(context);
+        if (!user) return context.json({ error: 'Not logged in.' }, 401);
+
+        const data = await getPunishments(user.id);
+        const newData = data.map((punishment) => ({
+            punishmentType: punishment.type,
+            expires: punishment.expires,
+            reason: punishment.reason
+        }));
+        return context.json({ result: newData });
     });
 
     app.get('/api/account/download-data', async (context) => {

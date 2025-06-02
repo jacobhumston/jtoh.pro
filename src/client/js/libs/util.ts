@@ -367,3 +367,40 @@ export function waitForElementsByClassName(
         }, options.timeout ?? 5000);
     });
 }
+
+const robloxAccountCache: Record<string, { id: number; name: string; displayName: string; thumbnail: string }> = {};
+
+/**
+ * Fetch a Roblox account's details by user value. (Such as !id or username.)
+ * @param user The user value to fetch the account details for.
+ * @returns The user details, or undefined if the user does not exist or an error occurred.
+ */
+export async function getRobloxAccountDetails(
+    user: string
+): Promise<undefined | { id: number; name: string; displayName: string; thumbnail: string }> {
+    if (robloxAccountCache[user] && !user.startsWith('$')) return robloxAccountCache[user];
+
+    const response = await fetch(`/api/util/roblox-user/${user}`).catch(console.error);
+    if (!response || !response.ok) return undefined;
+    const data = (await response.json().catch(console.error)) as
+        | { id: number; name: string; displayName: string; thumbnail: string }
+        | undefined;
+
+    if (data) {
+        robloxAccountCache[user] = data;
+        return data;
+    }
+    return undefined;
+}
+
+/**
+ * Update the page's display URL without reloading the page.
+ * @param url The new URL to set as the display URL.
+ */
+export function updatePageDisplayURL(url: string) {
+    try {
+        window.history.replaceState({}, document.title, url);
+    } catch (error) {
+        console.error(error);
+    }
+}

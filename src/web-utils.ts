@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { v4 } from 'uuid';
 import { userIdToThumbnail, userIdToThumbnailFull, userIdToThumbnailBust, getRobloxAvatar3dAssets } from './roblox';
 import { getLicenseReport } from './license-report';
+import { parseRobloxAccountV2 } from './login-auth';
 
 export default function webUtils(app: Hono) {
     app.get('/api/util/ping', async (context) => {
@@ -28,6 +29,12 @@ export default function webUtils(app: Hono) {
 
     app.get('/api/util/uuid', async (context) => {
         return context.json({ uuid: v4() });
+    });
+
+    app.get('/api/util/roblox-user/:user', async (context) => {
+        const user = await parseRobloxAccountV2(context.req.param('user'), context);
+        if (!user) return context.json({ error: 'Invalid user.' }, 400);
+        return context.json(user);
     });
 
     app.get('/api/util/user-roblox-thumbnails/:userId', async (context) => {
