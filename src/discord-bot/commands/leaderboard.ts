@@ -64,7 +64,10 @@ export async function execute(interaction: discord.APIChatInputApplicationComman
     if (interaction.data.options[0].options === undefined) return;
 
     // @ts-ignore
-    const leaderboard: any = leaderboards.find((l) => l.name === interaction.data.options[0].name);
+    const leaderboard: { name: string; display: string; db: typeof skillPointsDB } = leaderboards.find(
+        // @ts-ignore
+        (l) => l.name === interaction.data.options[0].name
+    );
     const game = interaction.data.options[0].options[0].value as gameNames;
 
     const fullGameName = fullNamesArray[gameNamesArray.indexOf(game as gameNames)];
@@ -92,6 +95,25 @@ export async function execute(interaction: discord.APIChatInputApplicationComman
                 text.setContent(`-# **(find)** Invalid username, please try again.`)
             );
         }
+    }
+
+    if (leaderboardData.length === 0) {
+        container.addTextDisplayComponents((text) =>
+            text.setContent(
+                `-# **(empty)** No users found on the ${leaderboard.display} leaderboard for ${fullGameName}.`
+            )
+        );
+        form.set(
+            'payload_json',
+            JSON.stringify({ components: [container.toJSON()], flags: discord.MessageFlags.IsComponentsV2 })
+        );
+        await rest
+            .patch(discord.Routes.webhookMessage(discordInteractionsApplicationId, interaction.token, '@original'), {
+                body: form,
+                passThroughBody: true
+            })
+            .catch(console.log);
+        return;
     }
 
     const format = new Intl.NumberFormat();
