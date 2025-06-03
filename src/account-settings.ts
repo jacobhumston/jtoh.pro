@@ -133,7 +133,7 @@ export function setupAccountEndpoints(app: Hono) {
             if (!isDev) {
                 discordStaffWebhook
                     .send({
-                        content: `New card background upload by @${user.username} \`${user.id}\`, please review this uploaded image when you available to do so.\n-# It is recommend that you say something in this channel once you have completed the review, so other staff members know it is handled!\n\n*[Open Mode Panel - Card Uploads](https://jtoh.pro/app/mods/mod-panel?page=Card%20Uploads)*\n\n CC: @here`
+                        content: `A new card background uploaded by **${user.username}** (\`${user.id}\`), please review this uploaded image when you are available to do so.\n-# It is recommend that you say something in this channel once you have completed the review, so that other staff members will know it was handled!\n\n*[Open Mod Panel - Card Uploads](https://jtoh.pro/redirect?url=https://jtoh.pro/app/mods/mod-panel?page=Card%20Uploads)*\n\n CC: @here`
                     })
                     .catch(console.error);
             }
