@@ -9,7 +9,7 @@ import { verifyContext } from './captcha';
 import mime from 'mime-types';
 import fs from 'fs';
 import { randomUUIDv7 } from 'bun';
-import { getURLHost } from './dev';
+import { getURLHost, isDev } from './dev';
 import { createS3Path, getS3URL, s3 } from './s3';
 import { fileTypeFromBlob } from 'file-type';
 import sharp from 'sharp';
@@ -19,6 +19,7 @@ import { getIP } from './ip';
 import { getTempToken } from './temp-tokens';
 import { createUploadCardBackgroundsReviewQueueFile } from './files';
 import { getPunishmentOfType, getPunishments } from './punishments';
+import { discordStaffWebhook } from './events';
 
 function getKeyName(account: LoggedInUser | BasicRobloxUserResult | RobloxUserResult) {
     return `_${account.id}`;
@@ -129,6 +130,14 @@ export function setupAccountEndpoints(app: Hono) {
             });
             fs.writeFileSync(createUploadCardBackgroundsReviewQueueFile(), JSON.stringify(queue));
 
+            if (!isDev()) {
+                discordStaffWebhook
+                    .send({
+                        content: `New card background upload by @${user.username} \`${user.id}\`, please review this uploaded image when you available to do so.\n-# It is recommend that you say something in this channel once you have completed the review, so other staff members know it is handled!\n\n*[Open Mode Panel - Card Uploads](https://jtoh.pro/app/mods/mod-panel?page=Card%20Uploads)*\n\n CC: @here`
+                    })
+                    .catch(console.error);
+            }
+
             return context.json({
                 result: {
                     success: true,
@@ -166,6 +175,8 @@ export function setupAccountEndpoints(app: Hono) {
 
         const buffer = await sharpImage.toBuffer();
         context.header('Content-Type', 'image/png');
+
+        // @ts-expect-error
         return context.body(await new Blob([buffer]).arrayBuffer());
     });
 

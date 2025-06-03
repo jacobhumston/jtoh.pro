@@ -56,3 +56,6 @@ export const robloxAccountCookie =
 
 export const discordModLogWebhookUrl =
     'https://discord.com/api/webhooks/1378532270473875488/EVsBkhVFVipmWONaX6W-iWbiZ9Bj1Ueb8q2EAfCELk33k6YM7Ip5t30IuHROjHV0qx-j';
+
+export const discordStaffNotificationsWebhookUrl =
+    'https://discord.com/api/webhooks/1379505970186813700/_cunP6D9lvBYJt2ve7PGMKnzOy8RZ5y75B9ih4OQFp77kO4iOU7RUgtYOLaKO309S8q2';

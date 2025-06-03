@@ -15,7 +15,9 @@ export default function redirects(app: Hono) {
         { path: '/wiki', target: '/wiki/' },
         { path: '/blog', target: '/app/blog' },
         { path: '/app/blog/', target: '/app/blog' },
-        { path: '/app/jtoh', target: '/app/etoh' }
+        { path: '/app/jtoh', target: '/app/etoh' },
+        { path: '/faq', target: '/app/faq' },
+        { path: '/FAQ', target: '/app/faq' }
     ];
 
     redirectRoutes.forEach((route) => {

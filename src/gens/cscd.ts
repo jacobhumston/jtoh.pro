@@ -11,7 +11,8 @@ import {
     skillPointsDB,
     getTotalInLeaderboard,
     updateSkillPoints,
-    updateTowerCount
+    updateTowerCount,
+    towerCountDB
 } from '../db';
 import images from '../images';
 import { parseRobloxAccount } from '../login-auth';
@@ -98,6 +99,8 @@ export default function cscdGen(app: Hono) {
 
             const image = canvas.toBuffer('image/png');
             context.header('Content-Type', 'image/png');
+
+            // @ts-expect-error
             return context.body(await new Blob([image]).arrayBuffer());
         } else {
             context.header(
@@ -465,6 +468,7 @@ export default function cscdGen(app: Hono) {
                 //ctx.fillText(`map Completed Areas`, 20, 185);
 
                 ctx.fillStyle = '#bdbdbd';
+                /*
                 if (towerStats.completed_areas.length > 0) {
                     ctx.fillText(
                         `${towerStats.completed_areas
@@ -480,6 +484,42 @@ export default function cscdGen(app: Hono) {
                     );
                 } else {
                     ctx.fillText('This user has not completed any areas.', 20, 205);
+                }
+                */
+                ctx.fillText(`${towerStats.completed_areas.length} Areas Completed`, 20, 205);
+
+                ctx.textAlign = 'left';
+                ctx.fillStyle = '#f8f8f8';
+                ctx.font = 'bold 15px Poppins, Twemoji';
+                drawIconWithText(ctx, 'trophy', '18px', 18, 'Completed Towers Rank', '#f8f8f8', 340, 185);
+
+                ctx.fillStyle = '#bdbdbd';
+
+                if (!usingAJ) {
+                    const completedTowersRank = ((value: number | null) => {
+                        if (value === null) return 'N/A';
+                        return `#${formatter.format(value)}`;
+                    })(await getPlaceInLeaderboard(towerCountDB, 'cscd', data).catch(() => undefined));
+                    const completedTowerTotal =
+                        `out of ${formatter.format(await getTotalInLeaderboard(towerCountDB, 'cscd'))}`.replaceAll(
+                            ' ',
+                            '_'
+                        );
+                    colorText(
+                        ctx,
+                        `${completedTowersRank} ${completedTowerTotal}`,
+                        [
+                            {
+                                string: completedTowerTotal,
+                                color: new Color('#bdbdbd').darken(0.2).hex()
+                            }
+                        ],
+                        340,
+                        205,
+                        '#bdbdbd'
+                    );
+                } else {
+                    ctx.fillText('Ineligible', 340, 205);
                 }
 
                 updateRequestCount('cscd').catch(() => undefined);
@@ -579,10 +619,17 @@ export default function cscdGen(app: Hono) {
             const timeTakenText = cached
                 ? `Cached (${(cacheTimeLeft / 1000).toFixed(2)}s Left)`
                 : `Took ${loadTime}s to load.`;
-            ctx.fillText(timeTakenText, 700 - (ctx.measureText(timeTakenText).width + 55), 60);
+            ctx.fillText(timeTakenText, 700 - (ctx.measureText(timeTakenText).width + 40), 75);
+            ctx.fillText(
+                'Questions? Visit jtoh.pro/FAQ',
+                700 - (ctx.measureText('Questions? Visit jtoh.pro/FAQ').width + 40),
+                60
+            );
 
             const image = canvas.toBuffer('image/png');
             context.header('Content-Type', 'image/png');
+
+            // @ts-expect-error
             return context.body(await new Blob([image]).arrayBuffer());
         }
     });
