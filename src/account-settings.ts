@@ -130,7 +130,7 @@ export function setupAccountEndpoints(app: Hono) {
             });
             fs.writeFileSync(createUploadCardBackgroundsReviewQueueFile(), JSON.stringify(queue));
 
-            if (!isDev()) {
+            if (!isDev) {
                 discordStaffWebhook
                     .send({
                         content: `New card background upload by @${user.username} \`${user.id}\`, please review this uploaded image when you available to do so.\n-# It is recommend that you say something in this channel once you have completed the review, so other staff members know it is handled!\n\n*[Open Mode Panel - Card Uploads](https://jtoh.pro/app/mods/mod-panel?page=Card%20Uploads)*\n\n CC: @here`
