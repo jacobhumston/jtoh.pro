@@ -172,7 +172,7 @@ export async function handleImageExampleControls(path: string) {
         const blobURL = URL.createObjectURL(response);
         const link = createElement('a', {
             href: blobURL,
-            download: `${new URL(image.src).pathname.split('/').pop()}.png`
+            download: `jtoh-pro-card-${new URL(image.src).pathname.split('/').pop()}.png`
         });
         link.click();
         URL.revokeObjectURL(blobURL);
