@@ -14,7 +14,7 @@ import { createS3Path, getS3URL, s3 } from './s3';
 import { fileTypeFromBlob } from 'file-type';
 import sharp from 'sharp';
 import { rateLimiter } from 'hono-rate-limiter';
-import { convert as timeConvert } from '@jacobhumston/tc.js';
+import { convertTo, convert as timeConvert } from '@jacobhumston/tc.js';
 import { getIP } from './ip';
 import { getTempToken } from './temp-tokens';
 import { createUploadCardBackgroundsReviewQueueFile } from './files';
@@ -131,11 +131,30 @@ export function setupAccountEndpoints(app: Hono) {
             fs.writeFileSync(createUploadCardBackgroundsReviewQueueFile(), JSON.stringify(queue));
 
             if (!isDev) {
-                discordStaffWebhook
-                    .send({
-                        content: `A new card background uploaded by **${user.username}** (\`${user.id}\`), please review this uploaded image when you are available to do so.\n-# It is recommend that you say something in this channel once you have completed the review, so that other staff members will know it was handled!\n\n*[Open Mod Panel - Card Uploads](https://jtoh.pro/redirect?url=https://jtoh.pro/app/mods/mod-panel?page=Card%20Uploads)*\n\n CC: @here`
-                    })
-                    .catch(console.error);
+                new Promise(async () => {
+                    const message = await discordStaffWebhook
+                        .send({
+                            content: `A new card background uploaded by **${user.username}** (\`${user.id}\`), please review this uploaded image when you are available to do so.\n\n*[Open Mod Panel - Card Uploads](https://jtoh.pro/redirect?url=https://jtoh.pro/app/mods/mod-panel?page=Card%20Uploads)*\n\n CC: @here`
+                        })
+                        .catch(console.error);
+                    if (message) {
+                        const timer = setInterval(
+                            () => {
+                                const queue: any[] = JSON.parse(
+                                    fs.readFileSync(createUploadCardBackgroundsReviewQueueFile(), 'utf-8')
+                                );
+                                if (queue.find((item) => item.id === id)) return;
+                                clearInterval(timer);
+                                discordStaffWebhook
+                                    .editMessage(message.id, {
+                                        content: 'This notification was handled! Thank you. :D'
+                                    })
+                                    .catch(console.error);
+                            },
+                            convertTo({ minutes: 5 }, 'milliseconds')
+                        );
+                    }
+                });
             }
 
             return context.json({
