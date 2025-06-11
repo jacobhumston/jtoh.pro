@@ -1,8 +1,9 @@
+import { isDebounceActive, setDebounceActive, setDebounceInactive } from './debounce';
 import { addClass, removeClass, getWebIconHTML, getElementById, waitForElementById } from './util';
 import { EventEmitter } from 'events';
 
 /** Theme types. */
-export type Themes = 'themesLight' | 'themesDark';
+export type Themes = 'themesLight' | 'themesDark' | 'themesGlass';
 
 /** Theme events. */
 export interface ThemeEvents {
@@ -72,8 +73,26 @@ export async function listenForThemSelection() {
         const loggedInDetails = getElementById('loggedInDetails');
         for (const theme of themes) {
             theme.dataset.enabled = enabled.toString();
+            let clickedGlassSecrete = 0;
             theme.addEventListener('click', () => {
-                updateTheme((theme.dataset.theme ?? '') as Themes);
+                if (isDebounceActive('themeChanger')) return;
+                const ThisTheme = (theme.dataset.theme ?? '') as Themes;
+                updateTheme(ThisTheme);
+                if (ThisTheme === 'themesLight') {
+                    if (clickedGlassSecrete < 6) {
+                        clickedGlassSecrete++;
+                    } else {
+                        updateTheme('themesGlass');
+                        clickedGlassSecrete = 0;
+                        setDebounceActive('themeChanger');
+                        setTimeout(() => {
+                            setDebounceInactive('themeChanger');
+                        }, 3000);
+                    }
+                    setTimeout(() => {
+                        clickedGlassSecrete--;
+                    }, 1000);
+                }
             });
         }
         if (enabled) {
