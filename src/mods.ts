@@ -183,4 +183,10 @@ export function mods(app: Hono) {
 
         return context.json({ success: true, item: item });
     });
+
+    app.get('/api/mods/get-uploads', async function (context) {
+        const photos = await s3.list().catch(console.error);
+        if (!photos) return context.json({ error: 'Something went wrong.' }, 500);
+        return context.json({ uploads: photos.contents });
+    });
 }
