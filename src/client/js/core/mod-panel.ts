@@ -430,6 +430,31 @@ export default async function () {
         cleanUp: undefined
     });
 
+    pages.push({
+        title: 'Uploads',
+        update: async function () {
+            addChild(pageContainer, [
+                createElement('h2', { innerText: 'Uploads' }),
+                createElement('p', {
+                    innerText: 'User uploads can be viewed below. If something is wrong, please let LovelyJacob know!'
+                })
+            ]);
+
+            const response = await fetch('/api/mods/get-uploads')
+                .then((res) => res.json())
+                .catch(console.error);
+            if (response) {
+                for (const upload of response.uploads) {
+                    const image = createElement('img', { src: `https://r2.jtoh.pro/${upload.key}` }, ['uploadedImage']);
+                    addChild(pageContainer, image);
+                }
+            } else {
+                alert('Failed to load uploads.');
+            }
+        },
+        cleanUp: undefined
+    });
+
     addChild(modContainer, [pagesSelectContainer, pageContainer]);
 
     let lastCleanUp: undefined | (() => Promise<any>) = undefined;

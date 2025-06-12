@@ -1778,3 +1778,9 @@ input[type='file']::file-selector-button:active {
 .noPunishmentsListed {
     border-radius: 15px !important;
 }
+
+.uploadedImage {
+    max-width: 100%;
+    height: auto;
+    margin-top: 10px;
+}
