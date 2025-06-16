@@ -32,11 +32,16 @@ export async function getAccountCardPhotoBackground(
     const name: string = cardBackground?.cardBackground ?? '';
 
     if (name.startsWith('c:')) {
-        const id = name.slice(2);
+        let id = name.slice(2);
+        let extension = 'png';
+        if (id.includes(':')) {
+            id = id.split(':')[0];
+            extension = id.split(':')[1];
+        }
         return {
             name: `${id}`,
-            extension: 'png',
-            webPath: getS3URL(`card-photos/${id}.png`),
+            extension: extension,
+            webPath: getS3URL(`card-photos/${id}.${extension}`),
             custom: true
         };
     }
