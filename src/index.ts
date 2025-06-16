@@ -194,7 +194,7 @@ app.get('/api/app.webmanifest', async (context) => {
             name: 'JToH Pro' + (isDev ? ' (Dev)' : isBeta ? ' (Beta)' : ''),
             icons: [
                 {
-                    src: '/app/assets/roblox-icon.png',
+                    src: `${getURL()}/app/assets/roblox-icon.png`,
                     sizes: '512x512',
                     type: 'image/png'
                 }
