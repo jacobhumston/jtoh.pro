@@ -145,13 +145,17 @@ export function setupAccountEndpoints(app: Hono) {
                                 );
                                 if (queue.find((item) => item.id === id)) return;
                                 clearInterval(timer);
-                                discordStaffWebhook
-                                    .editMessage(message.id, {
-                                        content: 'This notification was handled! Thank you. :D'
-                                    })
-                                    .catch(console.error);
+                                if (queue.find((item) => item.uploaderId === user.id)) {
+                                    discordStaffWebhook.deleteMessage(message.id).catch(console.error);
+                                } else {
+                                    discordStaffWebhook
+                                        .editMessage(message.id, {
+                                            content: 'This notification has been handled, thank you!'
+                                        })
+                                        .catch(console.error);
+                                }
                             },
-                            convertTo({ minutes: 5 }, 'milliseconds')
+                            convertTo({ seconds: 5 }, 'milliseconds')
                         );
                     }
                 });
