@@ -60,12 +60,12 @@
         "sitemap": "^8.0.0",
         "sxcu.api": "^2.0.6",
         "terminal-kit": "^3.1.2",
-        "terser": "^5.42.0",
+        "terser": "^5.43.0",
         "tweetnacl": "^1.0.3",
         "ua-parser-js": "^2.0.3",
         "uuid": "^11.1.0",
         "winston": "^3.17.0",
-        "zod": "^3.25.65"
+        "zod": "^3.25.67"
     },
     "devDependencies": {
         "@types/archiver": "^6.0.3",
