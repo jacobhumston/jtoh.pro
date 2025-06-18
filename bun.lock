@@ -40,7 +40,7 @@
         "events": "^3.3.0",
         "file-type": "^21.0.0",
         "highlight.js": "^11.11.1",
-        "hono": "^4.7.11",
+        "hono": "^4.8.0",
         "hono-compress": "^0.7.0",
         "hono-rate-limiter": "^0.4.2",
         "html-minifier": "^4.0.0",
@@ -877,7 +877,7 @@
 
     "homedir-polyfill": ["homedir-polyfill@1.0.3", "", { "dependencies": { "parse-passwd": "^1.0.0" } }, "sha512-eSmmWE5bZTK2Nou4g0AI3zZ9rswp7GRKoKXS1BLUkvPviOqs4YTN1djQIqrXy9k5gEtdLPy86JjRwsNM9tnDcA=="],
 
-    "hono": ["hono@4.7.11", "", {}, "sha512-rv0JMwC0KALbbmwJDEnxvQCeJh+xbS3KEWW5PC9cMJ08Ur9xgatI0HmtgYZfOdOSOeYsp5LO2cOhdI8cLEbDEQ=="],
+    "hono": ["hono@4.8.0", "", {}, "sha512-NoiHrqJxoe1MYXqW+/0/Q4NCizKj2Ivm4KmX8mOSBtw9UJ7KYaOGKkO7csIwO5UlZpfvVRdcgiMb0GGyjEjtcw=="],
 
     "hono-compress": ["hono-compress@0.7.0", "", { "dependencies": { "@mongodb-js/zstd": "^2.0.0", "brotli-wasm": "^3.0.1" }, "optionalDependencies": { "@rollup/rollup-linux-x64-gnu": "^4.28.1" }, "peerDependencies": { "hono": "^4.6.13" } }, "sha512-sJup+6Mp8ZIcGok140acl689dx7WOJPXF86NX5YzPifeeM6mp1jsvwtke0cMiNoyrPvhNEaMAS9Cx497TVv4PQ=="],
 
