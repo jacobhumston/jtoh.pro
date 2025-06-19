@@ -20,6 +20,11 @@ export default async function () {
             id: '3762953501',
             path: 'cscd',
             name: "Caleb's Soul Crushing Domain"
+        },
+        {
+            id: '7500221064',
+            path: 'otoh',
+            name: 'OToH'
         }
     ];
 
