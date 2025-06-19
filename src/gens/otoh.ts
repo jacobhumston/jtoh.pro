@@ -208,7 +208,8 @@ export default function otohGen(app: Hono) {
                     let text = towerStats.hardest_tower.replaceAll(' ', '_');
                     if (text.length > 35) text = towerStats.hardest_abbreviation;
                     const raw = towerStats.hardest_raw_difficulty.toString();
-                    const difficultyColor = towerStats.difficulty_colors[towerStats.difficulties[raw.split('.')[0]]];
+                    const difficultyColor =
+                        towerStats.difficulty_colors[parseInt(towerStats.difficulties[raw.split('.')[0]]) + 1];
                     colorText(
                         ctx,
                         `Hardest tower is ${text} (${raw})`,
