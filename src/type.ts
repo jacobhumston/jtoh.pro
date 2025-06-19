@@ -125,3 +125,31 @@ export type TowerDataCSCD = {
     username: string;
     error: string | undefined;
 };
+
+export type TowerDataOToH = {
+    completed_towers: number;
+    completed_types: Record<string, unknown>;
+    completions: Record<string, unknown>;
+    difficulties: Record<string, string>;
+    difficulty_colors: Record<string, string>;
+    difficulty_colors_outlines: Record<string, string | null>;
+    difficulty_progress: Record<string, [number, number]>;
+    donated_amount: number;
+    hardest_abbreviation: string | null;
+    hardest_raw_difficulty: number;
+    hardest_tower: string | null;
+    has_sc_completion: boolean;
+    id: number;
+    mappings: Record<
+        string,
+        {
+            acronym: string;
+            authors: number[];
+            difficulty: number;
+            name: string;
+        }
+    >;
+    sub_difficulties: Record<string, string>;
+    total_towers: number;
+    error: string | undefined;
+};

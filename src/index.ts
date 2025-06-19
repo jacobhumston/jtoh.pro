@@ -39,6 +39,7 @@ import { getIP } from './ip';
 import embed from './embeddable';
 import gameRequests from './game-requests';
 import { mods } from './mods';
+import otohGen from './gens/otoh';
 
 cleanUpTemp();
 cardImageCheck();
@@ -160,6 +161,7 @@ serveStatic(app);
 
 etohGen(app);
 cscdGen(app);
+otohGen(app);
 previewGen(app);
 
 app.get('/', async (context) => {
