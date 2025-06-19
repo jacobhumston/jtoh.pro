@@ -99,7 +99,6 @@ export default function etohGen(app: Hono) {
 
             const image = canvas.toBuffer('image/png');
             context.header('Content-Type', 'image/png');
-            // @ts-expect-error
             return context.body(await new Blob([image]).arrayBuffer());
         } else {
             context.header(
@@ -120,7 +119,10 @@ export default function etohGen(app: Hono) {
             const cached = await towerstatsCache.get(`${data.id}-etoh`);
             let towerStats: TowerDataEToH | undefined =
                 cached ??
-                (await fetch(`https://api.towerstats.com/?id=${data.id}&apiKey=${towerStatsToken}`)
+                (await fetch(`https://api.towerstats.com/api/etoh`, {
+                    method: 'POST',
+                    body: JSON.stringify({ id: data.id, apiKey: towerStatsToken })
+                })
                     .then((res) => {
                         loadTime = (Date.now() - loadTime) / 1000;
                         loadTime = parseFloat(loadTime.toFixed(2));
@@ -579,7 +581,6 @@ export default function etohGen(app: Hono) {
             const image = canvas.toBuffer('image/png');
             context.header('Content-Type', 'image/png');
 
-            // @ts-expect-error
             return context.body(await new Blob([image]).arrayBuffer());
         }
     });
