@@ -60,7 +60,7 @@
         "sitemap": "^8.0.0",
         "sxcu.api": "^2.0.6",
         "terminal-kit": "^3.1.2",
-        "terser": "^5.43.0",
+        "terser": "^5.43.1",
         "tweetnacl": "^1.0.3",
         "ua-parser-js": "^2.0.3",
         "uuid": "^11.1.0",
