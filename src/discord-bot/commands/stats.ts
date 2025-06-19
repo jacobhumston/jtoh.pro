@@ -2,12 +2,14 @@ import * as discord from 'discord.js';
 import { rest } from '../rest';
 import { discordInteractionsApplicationId } from '../../tokens';
 import { fullNamesArray, gameNamesArray, type gameNames } from '../../shared/gamelist';
+import { UTCDate } from '@date-fns/utc';
+import { isAfter, isToday, parse, startOfMonth, startOfWeek, startOfYear } from 'date-fns';
+import { statsDB } from '../../db';
 import { getURL } from '../../dev';
-import { parseRobloxAccountV2 } from '../../login-auth';
 
 export const command = new discord.SlashCommandBuilder()
     .setName('stats')
-    .setDescription('Get the jtoh.pro stats of a game.')
+    .setDescription('Get the jtoh.pro card request stats for a game.')
     .setContexts([
         discord.InteractionContextType.BotDM,
         discord.InteractionContextType.PrivateChannel,
@@ -20,9 +22,7 @@ export const command = new discord.SlashCommandBuilder()
 
 gameNamesArray.forEach((game, index) => {
     command.addSubcommand((subcommand) => {
-        subcommand
-            .setName(game)
-            .setDescription(`Get the jtoh.pro stats cof for ${fullNamesArray[index]}.`);
+        subcommand.setName(game).setDescription(`Get the jtoh.pro stats for ${fullNamesArray[index]} card requests.`);
         return subcommand;
     });
 });
@@ -35,50 +35,52 @@ export async function execute(interaction: discord.APIChatInputApplicationComman
     if (interaction.data.options[0].type !== discord.ApplicationCommandOptionType.Subcommand) return;
     if (interaction.data.options[0].options === undefined) return;
 
-
+    const game = interaction.data.options[0].name;
     const fullGameName = fullNamesArray[gameNamesArray.indexOf(game as gameNames)];
 
     const container = new discord.ContainerBuilder();
 
-    if (user) {
-        let url = new URL(`${getURL()}${game === 'etoh' ? '' : '/' + game}/embed/${user.name}`);
-        if (game === 'cscd' && interaction.data.options[0].options[1]) {
-            const mode = interaction.data.options[0].options[1].value as string;
-            if (mode) url.searchParams.append('mode', mode);
-        }
+    container.addTextDisplayComponents((text) => text.setContent(`**Card Request Stats for ${fullGameName}**`));
 
-        container.addTextDisplayComponents((text) =>
-            text.setContent(
-                `**Here is your link!**\n-# ${fullGameName} embedded card for [${user.name}](https://roblox.com/users/${user.id}/profile).`
-            )
-        );
+    const now = new UTCDate();
+    const startOfCurrentMonth = startOfMonth(now);
+    const startOfCurrentWeek = startOfWeek(now);
+    const startOfCurrentYear = startOfYear(now);
 
-        container.addTextDisplayComponents((text) => text.setContent(url.toString()));
+    let todayCount = 0;
+    let monthCount = 0;
+    let weekCount = 0;
+    let yearCount = 0;
+    let totalCount = 0;
 
-        container.addTextDisplayComponents((text) =>
-            text.setContent('-# **Tip:** You can right click the link (or tap and hold on mobile) to copy it.')
-        );
-    } else {
-        container.addTextDisplayComponents((text) => {
-            text.setContent(`**The user you requested does not exist.** Please try again.
+    // @ts-ignore-next-line
+    for await (const [key, value] of statsDB[game].iterator()) {
+        const date = parse(key, 'MM-dd-yyyy', new UTCDate());
 
-Available User Options: 
-- \`{Roblox Username}\`
-- \`!{Roblox User ID}\`
--# *(Do not include the brackets.)*
-                `);
-            return text;
-        });
+        if (isToday(date)) todayCount += value;
 
-        container.addActionRowComponents((row) =>
-            row.addComponents(
-                new discord.ButtonBuilder()
-                    .setStyle(discord.ButtonStyle.Link)
-                    .setLabel('Need Help?')
-                    .setURL(`https://discord.jtoh.pro`)
-            )
-        );
+        if (isAfter(date, startOfCurrentMonth) || isToday(date)) monthCount += value;
+
+        if (isAfter(date, startOfCurrentWeek) || isToday(date)) weekCount += value;
+
+        if (isAfter(date, startOfCurrentYear) || isToday(date)) yearCount += value;
+
+        totalCount += value;
     }
+
+    container.addTextDisplayComponents((text) =>
+        text.setContent(
+            `**Today:** ${todayCount}\n` +
+                `**This Week:** ${weekCount}\n` +
+                `**This Month:** ${monthCount}\n` +
+                `**This Year:** ${yearCount}\n` +
+                `**Total:** ${totalCount}`
+        )
+    );
+
+    container.addMediaGalleryComponents((gallery) =>
+        gallery.addItems((item) => item.setURL(`${getURL()}/api/charts/card-requests/${game}`))
+    );
 
     const payload: discord.RESTPostAPIInteractionFollowupJSONBody = {
         components: [container.toJSON()],
