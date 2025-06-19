@@ -68,18 +68,22 @@ export async function execute(interaction: discord.APIChatInputApplicationComman
         totalCount += value;
     }
 
+    const formatter = new Intl.NumberFormat();
+
     container.addTextDisplayComponents((text) =>
         text.setContent(
-            `**Today:** ${todayCount}\n` +
-                `**This Week:** ${weekCount}\n` +
-                `**This Month:** ${monthCount}\n` +
-                `**This Year:** ${yearCount}\n` +
-                `**Total:** ${totalCount}`
+            `\`\`\`ts
+     Today : ${formatter.format(todayCount)}
+ This Week : ${formatter.format(weekCount)}
+This Month : ${formatter.format(monthCount)}
+ This Year : ${formatter.format(yearCount)}
+     Total : ${formatter.format(totalCount)}
+\`\`\``
         )
     );
 
     container.addMediaGalleryComponents((gallery) =>
-        gallery.addItems((item) => item.setURL(`${getURL()}/api/charts/card-requests/${game}`))
+        gallery.addItems((item) => item.setURL(`${getURL()}/api/charts/card-requests/${game}?width=500&height=250`))
     );
 
     const payload: discord.RESTPostAPIInteractionFollowupJSONBody = {
