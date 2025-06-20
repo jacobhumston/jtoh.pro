@@ -615,8 +615,8 @@ export default function otohGen(app: Hono) {
                 `<html>
                     <head> <!-- ${new Date().toISOString()} --!> 
                         <meta property="og:title" content="Stats for ${data.displayName}">
-                        <meta property="og:description" content="Viewing @${data.name}'s Eternal Towers of Hell stats. Click the link above to view more stats.">
-                        <meta property="og:image" content="${new URL(context.req.url).origin}/${data.name}?nocache=${v4()}">
+                        <meta property="og:description" content="Viewing @${data.name}'s OToH stats. Click the link above to view more stats.">
+                        <meta property="og:image" content="${new URL(context.req.url).origin}/otoh/${data.name}?nocache=${v4()}">
                         <meta property="og:type" content="image"><meta property="og:url" content="https://towerstats.com/otoh?username=${data.name}">
                         <meta property="twitter:card" content="summary_large_image">
                         <meta http-equiv="refresh" content="0; url=https://towerstats.com/otoh?username=${data.name}" />
