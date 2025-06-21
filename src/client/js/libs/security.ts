@@ -74,3 +74,12 @@ export async function getWebToken(): Promise<string | undefined> {
         return await getTurnstileToken();
     }
 }
+
+/** Log warning to console. */
+export function logConsolePasteWarning(): void {
+    console.log('%c' + 'Warning!', 'color:rgb(168, 34, 34); font-size: 72px; font-weight: bold;');
+    console.log(
+        '%c' + 'Do not paste anything here! You may get your account stolen or your device compromised!',
+        'color:rgba(255, 255, 255, 0.75); font-size: 20px; font-weight: bold;'
+    );
+}
