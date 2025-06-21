@@ -4,6 +4,7 @@ import { updateMenuBar } from './components/menu-bar';
 // import { initProgressBar } from './components/progress-bar';
 import { updatePageTitle } from './components/title';
 import { addAuthUI, handleLoginRedirect } from './libs/auth';
+import { logConsolePasteWarning } from './libs/security';
 import { applyTheme, listenForThemSelection } from './libs/theme';
 import { addClass, getPageFileName } from './libs/util';
 
@@ -21,6 +22,7 @@ updatePageTitle();
 updateBlogDetails();
 handleLoginRedirect();
 // initProgressBar();
+logConsolePasteWarning();
 
 const url = new URL(document.location.href);
 if (url.hostname !== 'localhost' && url.hostname !== 'jtoh.pro' && url.hostname !== 'beta.jtoh.pro') {

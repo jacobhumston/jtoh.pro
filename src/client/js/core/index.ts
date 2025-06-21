@@ -1,6 +1,15 @@
 import { convertTo } from '@jacobhumston/tc.js';
 import { createErrorPopup } from '../libs/quick-elements';
-import { addChild, createElement, wait, waitForElementByIdExpected } from '../libs/util';
+import {
+    addChild,
+    addClass,
+    createElement,
+    getElementByIdExpected,
+    getWebIconHTML,
+    insertChild,
+    wait,
+    waitForElementByIdExpected
+} from '../libs/util';
 
 export default async function () {
     const container = await waitForElementByIdExpected('homepageGameSelectionsContainer', 'div', {
@@ -24,9 +33,13 @@ export default async function () {
         {
             id: '7500221064',
             path: 'otoh',
-            name: 'OToH'
+            name: 'OToH',
+            featured: true
         }
     ];
+
+    const containerFeatured = getElementByIdExpected('homepageGameSelectionsContainerFeatured', 'div');
+    if (!containerFeatured) return;
 
     const idList = games.map((game) => game.id).join(',');
     const images = await (
@@ -61,6 +74,24 @@ export default async function () {
 
         addChild(image, [name, open]);
         addChild(gameContainer, [image]);
-        addChild(container, gameContainer);
+
+        if (game.featured) {
+            addChild(containerFeatured, gameContainer);
+            addClass(gameContainer, 'homepageGameSingleSelectionContainerFeatured');
+        } else {
+            addChild(container, gameContainer);
+        }
+    }
+
+    if (containerFeatured.children.length > 0) {
+        containerFeatured.style.display = 'block';
+        insertChild(
+            containerFeatured,
+            'afterbegin',
+            createElement('p', {
+                innerHTML: getWebIconHTML('star') + 'Featured Game',
+                className: 'homepageGameSelectionsContainerFeaturedTitle'
+            })
+        );
     }
 }
