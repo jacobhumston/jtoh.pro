@@ -11,3 +11,9 @@ export const towerstatsCache = createCache({
     ttl: convertTo({ minutes: 3 }, 'milliseconds'),
     cacheId: 'towerstats'
 });
+
+export const robloxAPICache = createCache({
+    stores: [keyv],
+    ttl: convertTo({ minutes: 3 }, 'milliseconds'),
+    cacheId: 'robloxAPI'
+});
