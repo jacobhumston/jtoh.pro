@@ -1818,3 +1818,66 @@ input[type='file']::file-selector-button:active {
     height: auto;
     margin-top: 10px;
 }
+
+#discordBotDisplayExample {
+    max-width: 100%;
+    border-radius: 25px;
+    margin-bottom: 10px;
+}
+
+#homepageDiscordBotContainer {
+    background-color: var(--color-background-even-more-darker);
+    padding: 10px;
+    border-radius: 25px;
+    padding-top: 0px;
+    margin-top: 15px;
+    box-sizing: border-box;
+    padding-bottom: 0px;
+}
+
+#homepageDiscordBotContainer h2 {
+    display: inline-block;
+    margin-bottom: 10px;
+    background-color: var(--color-background-darker);
+    padding: 10px;
+    margin-top: 0px;
+    border-bottom-right-radius: 25px;
+    border-top-left-radius: 25px;
+    margin-left: -10px;
+    padding-right: 25px;
+    padding-left: 25px;
+}
+
+#homepageDiscordBotContainer p {
+    margin-top: 0px;
+    margin-left: -10px;
+    padding: 10px;
+    background-color: var(--color-background-darker);
+    border-left: solid 5px var(--color-background-lighter);
+    margin-right: -10px;
+}
+
+#installDiscordBotButton {
+    background-color: var(--color-text-header);
+    color: var(--color-text);
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    display: inline-block;
+    box-sizing: border-box;
+    margin-left: -10px;
+    margin-right: -10px;
+    display: block;
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+    text-align: center;
+}
+
+#installDiscordBotButton:hover {
+    background-color: var(--color-text);
+    color: var(--color-background);
+}
+
+#installDiscordBotButton .materialSymbolsRounded {
+    vertical-align: middle;
+}
