@@ -3,6 +3,7 @@ import { v4 } from 'uuid';
 import { userIdToThumbnail, userIdToThumbnailFull, userIdToThumbnailBust, getRobloxAvatar3dAssets } from './roblox';
 import { getLicenseReport } from './license-report';
 import { parseRobloxAccountV2 } from './login-auth';
+import { robloxAPICache } from './cache';
 
 export default function webUtils(app: Hono) {
     app.get('/api/util/ping', async (context) => {
@@ -32,8 +33,11 @@ export default function webUtils(app: Hono) {
     });
 
     app.get('/api/util/roblox-user/:user', async (context) => {
+        if (await robloxAPICache.get(`user:${context.req.param('user')}`))
+            return context.json((await robloxAPICache.get(`user:${context.req.param('user')}`)) as any);
         const user = await parseRobloxAccountV2(context.req.param('user'), context);
         if (!user) return context.json({ error: 'Invalid user.' }, 400);
+        robloxAPICache.set(`user:${context.req.param('user')}`, user);
         return context.json(user);
     });
 
@@ -60,6 +64,11 @@ export default function webUtils(app: Hono) {
     });
 
     app.get('/api/util/roblox-universe-thumbnail/:universeIds', async (context) => {
+        if (await robloxAPICache.get(`universe-thumbnail:${context.req.param('universeIds')}`))
+            return context.json(
+                (await robloxAPICache.get(`universe-thumbnail:${context.req.param('universeIds')}`)) as any
+            );
+
         const result = await (
             await fetch(
                 `https://thumbnails.roblox.com/v1/games/multiget/thumbnails?universeIds=${context.req.param('universeIds')}&defaults=true&size=768x432&format=Png&isCircular=false`
@@ -73,6 +82,8 @@ export default function webUtils(app: Hono) {
             images[image.universeId] = image.thumbnails[0].imageUrl;
         }
 
+        robloxAPICache.set(`universe-thumbnail:${context.req.param('universeIds')}`, { result: images });
+
         return context.json({ result: images });
     });
 
@@ -81,6 +92,11 @@ export default function webUtils(app: Hono) {
         if (!universeId || isNaN(parseInt(universeId))) {
             return context.json({ error: 'Invalid universeId.' }, 400);
         }
+
+        if (await robloxAPICache.get(`universe-thumbnails:${context.req.param('universeId')}`))
+            return context.json(
+                (await robloxAPICache.get(`universe-thumbnails:${context.req.param('universeId')}`)) as any
+            );
 
         const result = await (
             await fetch(
@@ -94,6 +110,8 @@ export default function webUtils(app: Hono) {
         for (const image of result.data) {
             thumbnails[image.universeId] = image.thumbnails.map((thumbnail: any) => thumbnail.imageUrl).reverse();
         }
+
+        robloxAPICache.set(`universe-thumbnails:${context.req.param('universeId')}`, { result: thumbnails });
 
         return context.json({ result: thumbnails });
     });
