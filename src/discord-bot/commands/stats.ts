@@ -6,6 +6,7 @@ import { UTCDate } from '@date-fns/utc';
 import { isAfter, isToday, parse, startOfMonth, startOfWeek, startOfYear } from 'date-fns';
 import { statsDB } from '../../db';
 import { getURL } from '../../dev';
+import { v4 } from 'uuid';
 
 export const command = new discord.SlashCommandBuilder()
     .setName('stats')
@@ -83,7 +84,9 @@ This Month : ${formatter.format(monthCount)}
     );
 
     container.addMediaGalleryComponents((gallery) =>
-        gallery.addItems((item) => item.setURL(`${getURL()}/api/charts/card-requests/${game}?width=500&height=250`))
+        gallery.addItems((item) =>
+            item.setURL(`${getURL()}/api/charts/card-requests/${game}?width=500&height=250&nocache=${v4()}`)
+        )
     );
 
     const payload: discord.RESTPostAPIInteractionFollowupJSONBody = {
