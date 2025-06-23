@@ -1819,10 +1819,11 @@ input[type='file']::file-selector-button:active {
     margin-top: 10px;
 }
 
-#discordBotDisplayExample {
+#homepageDiscordBotContainer img {
     max-width: 100%;
     border-radius: 25px;
     margin-bottom: 10px;
+    width: 100%;
 }
 
 #homepageDiscordBotContainer {
@@ -1880,4 +1881,18 @@ input[type='file']::file-selector-button:active {
 
 #installDiscordBotButton .materialSymbolsRounded {
     vertical-align: middle;
+}
+
+#discordBotDisplayExampleMobile {
+    display: none;
+}
+
+@media screen and (orientation: portrait) {
+    #discordBotDisplayExampleMobile {
+        display: block;
+    }
+
+    #discordBotDisplayExample {
+        display: none;
+    }
 }
