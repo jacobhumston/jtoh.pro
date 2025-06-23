@@ -1,6 +1,5 @@
 import { getElementById, createElement, addChild, waitForPageLoad, getBody, waitForElementsByClassName } from './util';
 import { isLoggedIn } from './auth';
-import 'altcha';
 
 /**
  * Get a web token for the captcha system.
@@ -28,6 +27,8 @@ export async function getWebToken(): Promise<string | undefined> {
      */
     function getTurnstileToken(): Promise<string | undefined> {
         return new Promise(async (resolve) => {
+            await import('altcha');
+
             captchaContainer.innerHTML =
                 '<altcha-widget challengeurl="/api/captcha/get" hidelogo hidefooter></altcha-widget>';
             const clicker = ((await waitForElementsByClassName('altcha-checkbox', {})) ?? [])[0];
