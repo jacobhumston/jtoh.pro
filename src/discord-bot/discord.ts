@@ -90,4 +90,8 @@ export default function discordInteractions(app: Hono) {
             data: { content: "I'm unable to respond to this interaction." }
         }) as any;
     });
+
+    app.get('/api/discord-commands', async (context) => {
+        return context.json(commands.map((command) => command.toJSON()));
+    });
 }
