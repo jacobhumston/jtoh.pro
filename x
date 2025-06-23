@@ -52,6 +52,7 @@ declare -A commands
 
     # Other commands.
     commands["devtunnel"]="devtunnel host -p 80 --allow-anonymous"
+    commands["cloc"]="cloc --exclude-list-file=.gitignore ."
 
     # Aliases.
     commands["f"]=${commands["format"]}
