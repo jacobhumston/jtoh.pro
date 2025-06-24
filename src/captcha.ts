@@ -7,6 +7,7 @@ import crypto from 'node:crypto';
 import { convertTo } from '@jacobhumston/tc.js';
 
 export const hmac = crypto.randomBytes(255).toString('utf8');
+export const maxNumber = 400000;
 
 export async function verifyCaptcha(token: string): Promise<boolean> {
     const ok = await verifySolution(token, hmac);
@@ -57,7 +58,8 @@ export function captchaManager(app: Hono) {
     app.get('/api/captcha/get', async (context) => {
         const challenge = await createChallenge({
             hmacKey: hmac,
-            expires: new Date(Date.now() + convertTo({ minutes: 10 }, 'milliseconds'))
+            expires: new Date(Date.now() + convertTo({ minutes: 10 }, 'milliseconds')),
+            maxNumber: maxNumber
         });
 
         return context.json(challenge);
