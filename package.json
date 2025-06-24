@@ -64,7 +64,7 @@
         "terminal-kit": "^3.1.2",
         "terser": "^5.43.1",
         "tweetnacl": "^1.0.3",
-        "ua-parser-js": "^2.0.3",
+        "ua-parser-js": "^2.0.4",
         "uuid": "^11.1.0",
         "winston": "^3.17.0",
         "zod": "^3.25.67"
