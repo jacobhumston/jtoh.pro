@@ -310,7 +310,7 @@ export async function parseRobloxAccountV2(
 }
 
 export async function parseRobloxAccount(context: Context): Promise<RobloxUserResult | undefined> {
-    const providedUser: string = context.req.param('user').slice(0, 20);
+    const providedUser: string = context.req.param('user');
     if (!providedUser || providedUser.length < 1) return undefined;
     return await parseRobloxAccountV2(providedUser, context);
 }
