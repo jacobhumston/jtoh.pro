@@ -36,9 +36,9 @@ export default async function () {
         {
             name: 'Skill Points',
             type: 'skill-points',
-            other: capitalizedGameNamesArray,
-            otherLabels: fullNamesArray,
-            description: `Leaderboard of the user's with the most amount of skill points. \n${getWebIconHTML('info')} Skill points are calculated via completed towers amongst other factors.`
+            other: capitalizedGameNamesArray.filter((x) => x !== 'OToH'),
+            otherLabels: fullNamesArray.filter((x) => x !== 'OToH'),
+            description: `Leaderboard of the user's with the most amount of skill points. \n${getWebIconHTML('info')} Curious how skill points are calculated? Check out the <a href="/app/faq">FAQ</a>!`
         },
         {
             name: 'Completed Towers',
