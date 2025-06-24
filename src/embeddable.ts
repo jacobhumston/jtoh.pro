@@ -2,7 +2,7 @@ import { convertTo } from '@jacobhumston/tc.js';
 import { createChallenge } from 'altcha-lib';
 import type { Hono } from 'hono';
 import { cors } from 'hono/cors';
-import { hmac, verifyCaptcha } from './captcha';
+import { hmac, maxNumber, verifyCaptcha } from './captcha';
 import { gameNamesArray, type gameNames } from './shared/gamelist';
 import { getURL } from './dev';
 import { getTempToken } from './temp-tokens';
@@ -15,7 +15,8 @@ export default async function embed(app: Hono) {
     app.get('/api/embeddable/get-captcha', async (context) => {
         const challenge = await createChallenge({
             hmacKey: hmac,
-            expires: new Date(Date.now() + convertTo({ minutes: 10 }, 'milliseconds'))
+            expires: new Date(Date.now() + convertTo({ minutes: 10 }, 'milliseconds')),
+            maxNumber: maxNumber
         });
 
         return context.json(challenge);

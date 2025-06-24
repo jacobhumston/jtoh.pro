@@ -1896,3 +1896,42 @@ input[type='file']::file-selector-button:active {
         display: none;
     }
 }
+
+#captchaContainer {
+    background-color: var(--color-background-darker);
+    display: inline-block;
+    position: sticky;
+    bottom: 50px;
+    padding: 10px;
+    border-radius: 15px;
+    text-align: center;
+    width: 70%;
+    border-radius: 10px;
+    left: calc(15% - 15px);
+    border: solid 5px var(--color-background-lighter);
+}
+
+#captchaContainer p {
+    padding: 0px;
+    margin: 0px;
+    margin-bottom: 10px;
+}
+
+#captchaContainer i {
+    margin-top: 5px;
+    display: block;
+}
+
+#captchaContainer altcha-widget {
+    display: inline-block;
+    text-align: left;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media screen and (min-width: 550px) {
+    #captchaContainer {
+        width: 500px;
+        left: calc((100% - 500px) / 2 - 15px);
+    }
+}

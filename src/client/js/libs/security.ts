@@ -1,4 +1,4 @@
-import { getElementById, createElement, addChild, waitForPageLoad, getBody, waitForElementsByClassName } from './util';
+import { getElementById, createElement, addChild, waitForPageLoad, waitForElementsByClassName } from './util';
 import { isLoggedIn } from './auth';
 
 /**
@@ -9,33 +9,47 @@ export async function getWebToken(): Promise<string | undefined> {
     await waitForPageLoad();
 
     let captchaContainer = getElementById('captchaContainer') as HTMLElement;
-
-    if (!captchaContainer) {
-        captchaContainer = createElement('div', { id: 'captchaContainer' });
-
-        const container = getElementById('container');
-        if (container) {
-            addChild(container, captchaContainer);
-        } else {
-            addChild(await getBody(), captchaContainer);
-        }
+    if (captchaContainer) {
+        console.warn(
+            'Legacy captcha container found, they should no longer be created or used, as they will be skipped.'
+        );
+        captchaContainer.remove();
     }
 
+    captchaContainer = createElement('div', { id: 'captchaContainer' });
+    addChild(
+        captchaContainer,
+        createElement('p', {
+            innerHTML:
+                'An action you are trying to perform requires a captcha. <br>Please wait a moment as we verify that you are not a robot.'
+        })
+    );
+    captchaContainer.style.display = 'none';
+    addChild(document.documentElement, captchaContainer);
+
     /**
-     * Get turnstile token.
-     * @returns The turnstile token.
+     * Get an altcha token.
+     * @returns The altcha token.
      */
-    function getTurnstileToken(): Promise<string | undefined> {
+    function getAltchaToken(): Promise<string | undefined> {
         return new Promise(async (resolve) => {
+            captchaContainer.innerHTML = `${captchaContainer.innerHTML}<altcha-widget challengeurl="/api/captcha/get" hidelogo hidefooter></altcha-widget>`;
+            addChild(
+                captchaContainer,
+                createElement('i', {
+                    innerHTML: 'Having trouble? <a target="_blank" href="https://discord.jtoh.pro">Let us know.</a>'
+                })
+            );
+            captchaContainer.style.display = '';
+
             await import('altcha');
 
-            captchaContainer.innerHTML =
-                '<altcha-widget challengeurl="/api/captcha/get" hidelogo hidefooter></altcha-widget>';
             const clicker = ((await waitForElementsByClassName('altcha-checkbox', {})) ?? [])[0];
             document.querySelector('altcha-widget')?.addEventListener('statechange', (ev) => {
                 // @ts-expect-error
                 if (ev.detail.state === 'verified') {
                     captchaContainer.innerHTML = '';
+                    captchaContainer.style.display = 'none';
                     // @ts-expect-error
                     resolve(ev.detail.payload);
                 }
@@ -62,17 +76,17 @@ export async function getWebToken(): Promise<string | undefined> {
         if (verifiedData.success === true) {
             return token ?? '';
         } else {
-            const newToken = await getTurnstileToken();
+            const newToken = await getAltchaToken();
             const newVerified = await fetch(`/api/captcha/gateway?token=${newToken}`).catch(() => undefined);
-            if (!newVerified) return await getTurnstileToken();
+            if (!newVerified) return await getAltchaToken();
             const data = await newVerified.json();
-            if (data.error) return await getTurnstileToken();
+            if (data.error) return await getAltchaToken();
             const verifiedToken = data.token;
             sessionStorage.setItem('captchaGateway', verifiedToken);
             return verifiedToken;
         }
     } else {
-        return await getTurnstileToken();
+        return await getAltchaToken();
     }
 }
 
