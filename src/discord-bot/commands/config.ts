@@ -1,0 +1,134 @@
+import * as discord from 'discord.js';
+import { rest } from '../rest';
+import { discordInteractionsApplicationId } from '../../tokens';
+import { discordBotConfigDB } from '../../db';
+import { getUserId } from '../util';
+import { getURLHost } from '../../dev';
+import { randomUUIDv7 } from 'bun';
+import fs from 'node:fs';
+import archiver from 'archiver';
+
+export const command = new discord.SlashCommandBuilder()
+    .setName('config')
+    .setDescription('Configure your bot settings.')
+    .setContexts([
+        discord.InteractionContextType.BotDM,
+        discord.InteractionContextType.PrivateChannel,
+        discord.InteractionContextType.Guild
+    ])
+    .setIntegrationTypes([
+        discord.ApplicationIntegrationType.GuildInstall,
+        discord.ApplicationIntegrationType.UserInstall
+    ]);
+
+command.addSubcommandGroup((group) =>
+    group
+        .setName('user-autocomplete')
+        .setDescription('Configure your user autocomplete settings.')
+        .addSubcommand((subcommand) =>
+            subcommand
+                .setName('pin')
+                .setDescription('Pin a user to your autocompletion.')
+                .addStringOption((option) =>
+                    option.setName('user').setDescription('The user to pin.').setRequired(true)
+                )
+        )
+        .addSubcommand((subcommand) =>
+            subcommand
+                .setName('unpin')
+                .setDescription('Unpin a user from your autocompletion.')
+                .addStringOption((option) =>
+                    option.setName('user').setDescription('The user to unpin.').setRequired(true)
+                )
+        )
+        .addSubcommand((subcommand) => subcommand.setName('clear').setDescription('Clear your pinned users.'))
+        .addSubcommand((subcommand) => subcommand.setName('view').setDescription('View your pinned users.'))
+);
+
+command.addSubcommand((subcommand) =>
+    subcommand.setName('download').setDescription('Download your data that was stored by the bot.')
+);
+
+export async function execute(interaction: discord.APIChatInputApplicationCommandInteraction) {
+    const form = new FormData();
+
+    if (!interaction.data.options) return;
+
+    const container = new discord.ContainerBuilder();
+
+    if (interaction.data.options[0].type === discord.ApplicationCommandOptionType.Subcommand) {
+        const command = interaction.data.options[0];
+        if (command.name === 'download') {
+            const storedData = (await discordBotConfigDB.get(`${getUserId(interaction)}`)) ?? {};
+
+            const fileName = `temp/archive-${randomUUIDv7()}.zip`;
+            fs.writeFileSync(fileName, '');
+            let finished = false;
+            const writable = fs.createWriteStream(fileName);
+            writable.on('close', () => {
+                finished = true;
+            });
+            const archive = archiver('zip');
+            archive.pipe(writable);
+            archive.append(JSON.stringify(storedData), {
+                name: 'data.json'
+            });
+            archive.append(
+                `>> ACCOUNT DATA REQUEST @ ${getURLHost()} (jtoh.pro Discord Bot)
+Account data request for @${interaction.member ? interaction.member?.user.username : interaction.user?.username}.
+Requested and delivered on ${new Date().toUTCString()}.
+The contents delivered should NOT be shared with anyone.
+
+>> FILE INFORMATION
+"data.json" - Data stored by the bot for your Discord account.
+
+>> HAVE QUESTIONS?
+Join our support server at https://discord.jtoh.pro
+Create a "General Website Support Ticket" in #get-support
+            `,
+                { name: 'READ-ME.txt' }
+            );
+            archive.finalize();
+            await new Promise((resolve) => {
+                const interval = setInterval(() => {
+                    if (finished) {
+                        clearInterval(interval);
+                        resolve(void 0);
+                    }
+                }, 100);
+            });
+            const file = fs.readFileSync(fileName);
+            const fileData = file.buffer.slice(file.byteOffset, file.byteOffset + file.byteLength) as any;
+            fs.rmSync(fileName);
+            form.set('files[0]', new Blob([fileData], { type: 'application/zip' }), 'jtoh-pro-discord-data.zip');
+
+            container.addTextDisplayComponents((text) =>
+                text.setContent('Your data has been prepared and is ready for download.')
+            );
+            container.addFileComponents((file) => file.setURL('attachment://jtoh-pro-discord-data.zip'));
+            container.addTextDisplayComponents((text) =>
+                text.setContent(
+                    '-# This data is unlikely to include any personal information, however it is recommended that you do not share this data with anyone.'
+                )
+            );
+        } else {
+            container.addTextDisplayComponents((text) => text.setContent('Unknown config command.'));
+        }
+    } else if (interaction.data.options[0].type === discord.ApplicationCommandOptionType.SubcommandGroup) {
+    }
+
+    const payload: discord.RESTPostAPIInteractionFollowupJSONBody = {
+        components: [container.toJSON()],
+        flags: discord.MessageFlags.IsComponentsV2 | discord.MessageFlags.Ephemeral
+    };
+    form.set('payload_json', JSON.stringify(payload));
+
+    await rest
+        .patch(discord.Routes.webhookMessage(discordInteractionsApplicationId, interaction.token, '@original'), {
+            body: form,
+            passThroughBody: true
+        })
+        .catch(console.log);
+}
+
+export const ephemeral = true;

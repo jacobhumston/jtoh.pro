@@ -5,6 +5,7 @@ import { getWebToken } from '../libs/security';
 import {
     addChild,
     createElement,
+    getElementById,
     getElementByIdExpected,
     getWebIconHTML,
     temporarilySetElementText,
@@ -59,7 +60,8 @@ export default async function () {
             id: 'clickHereToChangeCardBackground'
         }),
         createElement('p', {
-            innerHTML: 'This is the photo that will be used as the background of your card.'
+            innerHTML: 'This is the photo that will be used as the background of your card.',
+            id: 'cardBackgroundThisPhotoWillBeUsedParagraph'
         })
     ]);
 
@@ -85,9 +87,11 @@ export default async function () {
             currentCardImageContainer.innerHTML = '';
             addChild(currentCardImageContainer, [
                 createElement('p', {
-                    innerHTML: 'You have not set a card background photo yet. Click the link above to set one.'
+                    innerHTML: 'You have not set a card background photo yet. Click the button above to set one.'
                 })
             ]);
+            const p = getElementById('cardBackgroundThisPhotoWillBeUsedParagraph');
+            if (p) p.remove();
         }
     })();
 
@@ -145,4 +149,48 @@ export default async function () {
             ]
         )
     ]);
+
+    addChild(container, [
+        createElement('h2', { innerText: 'Account Punishments', className: 'accountSettingsHeader' }),
+        createElement('div', {}, ['split', 'accountSettingsSplit']),
+        createElement(
+            'p',
+            {
+                innerText:
+                    'Account punishments are restrictions placed by staff members which prevent you from completing specific actions. These restrictions are only placed on users who violate our guidelines.'
+            },
+            []
+        )
+    ]);
+
+    const punishments = await await fetch('/api/account/punishments')
+        .then((res) => res.json())
+        .catch(() => ({
+            result: []
+        }));
+
+    if (punishments.result.length === 0) {
+        addChild(container, [
+            createElement('p', {
+                innerText: 'You have no account punishments at this time. This means your account is in good standing!',
+                id: 'accountSettingsNoPunishments'
+            })
+        ]);
+    } else {
+        const punishmentsList = createElement('div', { id: 'accountSettingsPunishmentsList' });
+        addChild(container, [punishmentsList]);
+
+        for (const punishment of punishments.result) {
+            const punishmentItem = createElement('div', {
+                innerHTML: `<span class="accountSettingsPunishmentType">${getWebIconHTML('warning')} ${punishment.punishmentType}</span> - ${punishment.reason}`,
+                className: 'accountSettingsPunishmentItem'
+            });
+            if (punishment.expires) {
+                punishmentItem.innerHTML += `<br><span class="accountSettingsPunishmentExpires">Expires on ${new Date(punishment.expires).toLocaleString()}</span>`;
+            } else {
+                punishmentItem.innerHTML += `<br><span class="accountSettingsPunishmentExpires">This punishment does not expire.</span>`;
+            }
+            addChild(punishmentsList, [punishmentItem]);
+        }
+    }
 }

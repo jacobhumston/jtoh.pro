@@ -40,6 +40,7 @@ import embed from './embeddable';
 import gameRequests from './game-requests';
 import { mods } from './mods';
 import otohGen from './gens/otoh';
+import { gitHash } from './git-hash';
 
 cleanUpTemp();
 cardImageCheck();
@@ -130,7 +131,8 @@ app.use(
 
 app.get('/api/vars', async (context) => {
     return context.json({
-        usingCustomUrl
+        usingCustomUrl,
+        version: gitHash
     });
 });
 
@@ -209,6 +211,11 @@ app.get('/api/app.webmanifest', async (context) => {
     );
 });
 
+app.get('/api/clear-site-cache', async (context) => {
+    context.res.headers.set('Clear-Site-Data', '"cache"');
+    return context.json({ message: 'Success.' });
+});
+
 app.notFound((context) => {
     if (context.req.path.startsWith('/app/')) return context.redirect('/app/404');
     else return context.json({ error: 'Not found.' }, 404);
@@ -232,4 +239,5 @@ export default {
 
 quickWebTest();
 
+logger.info(`Git Hash: ${gitHash}`);
 logger.info(`Server started. ${getURL()}`);

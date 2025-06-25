@@ -6,6 +6,7 @@ import { updatePageTitle } from './components/title';
 import { addAuthUI, handleLoginRedirect } from './libs/auth';
 import { logConsolePasteWarning } from './libs/security';
 import { applyTheme, listenForThemSelection } from './libs/theme';
+import { checkForUpdates } from './libs/updater';
 import { addClass, getPageFileName } from './libs/util';
 
 window.addEventListener('load', function () {
@@ -13,6 +14,7 @@ window.addEventListener('load', function () {
     document.body.style.cursor = 'default';
 });
 
+logConsolePasteWarning();
 applyTheme();
 listenForImages();
 listenForThemSelection();
@@ -22,7 +24,7 @@ updatePageTitle();
 updateBlogDetails();
 handleLoginRedirect();
 // initProgressBar();
-logConsolePasteWarning();
+checkForUpdates();
 
 const url = new URL(document.location.href);
 if (url.hostname !== 'localhost' && url.hostname !== 'jtoh.pro' && url.hostname !== 'beta.jtoh.pro') {

@@ -4,6 +4,7 @@ import { discordInteractionsApplicationId } from '../../tokens';
 import { fullNamesArray, gameNamesArray, type gameNames } from '../../shared/gamelist';
 import { getURL } from '../../dev';
 import { parseRobloxAccountV2 } from '../../login-auth';
+import { autocompleteUserSelection, getFocusedOptionName } from '../autocomplete';
 
 export const command = new discord.SlashCommandBuilder()
     .setName('embed')
@@ -24,7 +25,11 @@ gameNamesArray.forEach((game, index) => {
             .setName(game)
             .setDescription(`Get an embed of a stat card for ${fullNamesArray[index]}.`)
             .addStringOption((option) =>
-                option.setName('user').setDescription('The user to get the embed for.').setRequired(true)
+                option
+                    .setName('user')
+                    .setDescription('The user to get the embed for.')
+                    .setRequired(true)
+                    .setAutocomplete(true)
             );
         if (game === 'cscd')
             subcommand.addStringOption((option) =>
@@ -109,4 +114,12 @@ Available User Options:
             passThroughBody: true
         })
         .catch(console.log);
+}
+
+export async function autocomplete(
+    interaction: discord.APIApplicationCommandAutocompleteInteraction
+): Promise<discord.APICommandAutocompleteInteractionResponseCallbackData> {
+    const focusedOptionName = getFocusedOptionName(interaction);
+    if (focusedOptionName !== 'user') return { choices: [] };
+    return await autocompleteUserSelection(interaction);
 }

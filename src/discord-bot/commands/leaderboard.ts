@@ -5,6 +5,7 @@ import { fullNamesArray, gameNamesArray, type gameNames } from '../../shared/gam
 import { getURL } from '../../dev';
 import { getOrderedDB, skillPointsDB, towerCountDB } from '../../db';
 import { parseRobloxAccountV2 } from '../../login-auth';
+import { autocompleteUserSelection, getFocusedOptionName } from '../autocomplete';
 
 export const command = new discord.SlashCommandBuilder()
     .setName('leaderboard')
@@ -50,7 +51,11 @@ leaderboards.forEach((leaderboard) => {
                     .setRequired(true)
             )
             .addStringOption((option) =>
-                option.setName('find').setDescription("Find a user's rank on the leaderboard.").setRequired(false)
+                option
+                    .setName('find')
+                    .setDescription("Find a user's rank on the leaderboard.")
+                    .setRequired(false)
+                    .setAutocomplete(true)
             );
         return subcommand;
     });
@@ -158,4 +163,12 @@ export async function execute(interaction: discord.APIChatInputApplicationComman
             passThroughBody: true
         })
         .catch(console.log);
+}
+
+export async function autocomplete(
+    interaction: discord.APIApplicationCommandAutocompleteInteraction
+): Promise<discord.APICommandAutocompleteInteractionResponseCallbackData> {
+    const focusedOptionName = getFocusedOptionName(interaction);
+    if (focusedOptionName !== 'user' && focusedOptionName !== 'find') return { choices: [] };
+    return await autocompleteUserSelection(interaction);
 }
