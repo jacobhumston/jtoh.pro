@@ -5,6 +5,7 @@ import { fullNamesArray, gameNamesArray, type gameNames } from '../../shared/gam
 import { getURL } from '../../dev';
 import { parseRobloxAccountV2 } from '../../login-auth';
 import { autocompleteUserSelection, getFocusedOptionName } from '../autocomplete';
+import { addRecent } from '../util';
 
 export const command = new discord.SlashCommandBuilder()
     .setName('card')
@@ -63,6 +64,8 @@ export async function execute(interaction: discord.APIChatInputApplicationComman
     const user = await parseRobloxAccountV2(username as string);
 
     if (user) {
+        await addRecent(interaction, user.name);
+
         let url = new URL(`${getURL()}${game === 'etoh' ? '' : '/' + game}/${user.name}`);
         if (game === 'cscd' && interaction.data.options[0].options[1]) {
             const mode = interaction.data.options[0].options[1].value as string;

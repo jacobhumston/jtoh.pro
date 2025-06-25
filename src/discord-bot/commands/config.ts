@@ -23,7 +23,7 @@ export const command = new discord.SlashCommandBuilder()
 
 command.addSubcommandGroup((group) =>
     group
-        .setName('user-autocomplete')
+        .setName('user-ac')
         .setDescription('Configure your user autocomplete settings.')
         .addSubcommand((subcommand) =>
             subcommand
@@ -31,6 +31,13 @@ command.addSubcommandGroup((group) =>
                 .setDescription('Pin a user to your autocompletion.')
                 .addStringOption((option) =>
                     option.setName('user').setDescription('The user to pin.').setRequired(true)
+                )
+                .addStringOption((option) =>
+                    option
+                        .setName('slot')
+                        .setDescription('The slot to pin the user to.')
+                        .setRequired(true)
+                        .addChoices({ name: '1', value: '1' }, { name: '2', value: '2' }, { name: '3', value: '3' })
                 )
         )
         .addSubcommand((subcommand) =>
@@ -114,7 +121,43 @@ Create a "General Website Support Ticket" in #get-support
         } else {
             container.addTextDisplayComponents((text) => text.setContent('Unknown config command.'));
         }
-    } else if (interaction.data.options[0].type === discord.ApplicationCommandOptionType.SubcommandGroup) {
+    } else if (
+        interaction.data.options[0].type === discord.ApplicationCommandOptionType.SubcommandGroup &&
+        interaction.data.options[0].name === 'user-ac'
+    ) {
+        const command = interaction.data.options[0].options[0];
+        const userId = getUserId(interaction);
+        const config = (await discordBotConfigDB.get(`${userId}`)) ?? {};
+
+        if (!config.ac_recent) config.ac_recent = [];
+        if (!config.ac_pinned) config.ac_pinned = [];
+
+        if (command.name === 'pin') {
+        } else if (command.name === 'unpin') {
+        } else if (command.name === 'clear') {
+        } else if (command.name === 'view') {
+            if (config.ac_recent.length === 0) {
+                container.addTextDisplayComponents((text) =>
+                    text.setContent('⏰ **Recent users:**\n-# No recent users found.')
+                );
+            } else {
+                container.addTextDisplayComponents((text) =>
+                    text.setContent(`⏰**Recent users:**\n* ${config.ac_recent.join('\n * ')}`)
+                );
+            }
+
+            if (config.ac_pinned.length === 0) {
+                container.addTextDisplayComponents((text) =>
+                    text.setContent('📌 **Pinned users:**\n-# No pinned users found.')
+                );
+            } else {
+                container.addTextDisplayComponents((text) =>
+                    text.setContent(`📌 **Pinned users:**\n* ${config.ac_pinned.join('\n * ')}`)
+                );
+            }
+        } else {
+            container.addTextDisplayComponents((text) => text.setContent('Unknown config command.'));
+        }
     }
 
     const payload: discord.RESTPostAPIInteractionFollowupJSONBody = {

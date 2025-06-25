@@ -5,6 +5,9 @@ import fs from 'node:fs';
 import logger from '../logger';
 import { getURL } from '../dev';
 import * as discord from 'discord.js';
+import { wait } from '../util';
+import { rest } from './rest';
+import { getUserId } from './util';
 
 export const discordAPIURL = 'https://discord.com/api/v10';
 export const commands: discord.SlashCommandBuilder[] = [];
@@ -90,7 +93,19 @@ export default function discordInteractions(app: Hono) {
         } else if (data.type === discord.InteractionType.ApplicationCommand) {
             const command = commands.find((cmd: any) => cmd.name === data.data.name);
             if (command) {
-                commandExecutions[command.name](data);
+                new Promise(async () => {
+                    await wait({ seconds: 1 });
+                    const response = await rest
+                        .get(discord.Routes.webhookMessage(discordInteractionsApplicationId, data.token, '@original'))
+                        .catch(() => null);
+                    if (response) {
+                        commandExecutions[command.name](data);
+                    } else {
+                        logger.error(`Failed to execute command ${command.name}: Interaction response not found.`);
+                        await rest.post(discord.Routes.channelMessages(getUserId(data)), { body: JSON.stringify{ content: 'Failed to execute command.' } });
+                    }
+                });
+
                 const flags = isEphemeral[command.name]
                     ? discord.MessageFlags.IsComponentsV2 | discord.MessageFlags.Ephemeral
                     : discord.MessageFlags.IsComponentsV2;
