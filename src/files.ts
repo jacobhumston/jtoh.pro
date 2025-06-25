@@ -47,7 +47,7 @@ export function cleanUpTemp() {
     const failed: string[] = [];
     for (const file of fs.readdirSync('./temp')) {
         try {
-            fs.rmSync(`./temp/${file}`);
+            fs.rmSync(`./temp/${file}`, { force: true, recursive: true });
         } catch {
             failed.push(file);
         }

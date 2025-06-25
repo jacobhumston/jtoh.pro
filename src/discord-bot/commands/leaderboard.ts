@@ -6,6 +6,7 @@ import { getURL } from '../../dev';
 import { getOrderedDB, skillPointsDB, towerCountDB } from '../../db';
 import { parseRobloxAccountV2 } from '../../login-auth';
 import { autocompleteUserSelection, getFocusedOptionName } from '../autocomplete';
+import { addRecent } from '../util';
 
 export const command = new discord.SlashCommandBuilder()
     .setName('leaderboard')
@@ -86,6 +87,7 @@ export async function execute(interaction: discord.APIChatInputApplicationComman
         const username = interaction.data.options[0].options[1].value as string;
         const user = await parseRobloxAccountV2(username).catch(() => null);
         if (user) {
+            await addRecent(interaction, user.name);
             const index = leaderboardData.findIndex((data) => data.user.id === user.id);
             if (index !== -1) {
                 find = leaderboardData[index].user.id;
