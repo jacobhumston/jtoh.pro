@@ -52,5 +52,6 @@ export function cleanUpTemp() {
             failed.push(file);
         }
     }
+    console.log(`Cleaned up temp files. (${failed.length} failed)`);
     //if (failed.length > 0) logger.warn(`Failed to delete temp files. (${failed.length}): ${failed.join(', ')}`);
 }
