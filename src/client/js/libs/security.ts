@@ -25,6 +25,7 @@ export async function getWebToken(): Promise<string | undefined> {
         })
     );
     captchaContainer.style.display = 'none';
+    captchaContainer.style.bottom = '-300px';
     addChild(document.documentElement, captchaContainer);
 
     /**
@@ -48,14 +49,21 @@ export async function getWebToken(): Promise<string | undefined> {
             document.querySelector('altcha-widget')?.addEventListener('statechange', (ev) => {
                 // @ts-expect-error
                 if (ev.detail.state === 'verified') {
-                    captchaContainer.innerHTML = '';
-                    captchaContainer.style.display = 'none';
+                    captchaContainer.style.bottom = '-300px';
+                    setTimeout(() => {
+                        captchaContainer.remove();
+                    }, 1000);
                     // @ts-expect-error
                     resolve(ev.detail.payload);
                 }
             });
-            // @ts-expect-error
-            clicker?.firstElementChild?.click();
+            setTimeout(() => {
+                captchaContainer.style.bottom = '';
+            }, 500);
+            setTimeout(() => {
+                // @ts-expect-error
+                clicker?.firstElementChild?.click();
+            }, 1000);
         });
     }
 
@@ -74,6 +82,7 @@ export async function getWebToken(): Promise<string | undefined> {
               };
         const verifiedData = await verified.json();
         if (verifiedData.success === true) {
+            captchaContainer.remove();
             return token ?? '';
         } else {
             const newToken = await getAltchaToken();

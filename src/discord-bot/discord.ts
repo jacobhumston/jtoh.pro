@@ -8,15 +8,28 @@ import * as discord from 'discord.js';
 
 export const discordAPIURL = 'https://discord.com/api/v10';
 export const commands: discord.SlashCommandBuilder[] = [];
+
 export const commandExecutions: {
     [key: string]: (interaction: discord.APIApplicationCommandInteraction) => Promise<void>;
 } = {};
 
+export const autocompleteExecutions: {
+    [key: string]: (
+        interaction: discord.APIApplicationCommandAutocompleteInteraction
+    ) => Promise<discord.APICommandAutocompleteInteractionResponseCallbackData>;
+} = {};
+
+export const isEphemeral: {
+    [key: string]: boolean;
+} = {};
+
 for (const commandPath of fs.readdirSync('src/discord-bot/commands/')) {
-    const { command, execute } = await import(`./commands/${commandPath}`);
+    const { command, execute, autocomplete, ephemeral } = await import(`./commands/${commandPath}`);
     commands.push(command);
     try {
         commandExecutions[command.toJSON().name] = execute;
+        if (autocomplete) autocompleteExecutions[command.toJSON().name] = autocomplete;
+        if (ephemeral) isEphemeral[command.toJSON().name] = ephemeral;
     } catch (e) {
         logger.error(`Failed to load command ${commandPath}: ${e}`);
         process.exit(1);
@@ -78,10 +91,27 @@ export default function discordInteractions(app: Hono) {
             const command = commands.find((cmd: any) => cmd.name === data.data.name);
             if (command) {
                 commandExecutions[command.name](data);
+                const flags = isEphemeral[command.name]
+                    ? discord.MessageFlags.IsComponentsV2 | discord.MessageFlags.Ephemeral
+                    : discord.MessageFlags.IsComponentsV2;
+
                 return context.json({
                     type: discord.InteractionResponseType.DeferredChannelMessageWithSource,
-                    data: { flags: discord.MessageFlags.IsComponentsV2 }
+                    data: { flags: flags }
                 });
+            }
+        } else if (data.type === discord.InteractionType.ApplicationCommandAutocomplete) {
+            const command = commands.find((cmd: any) => cmd.name === data.data.name);
+            if (command && autocompleteExecutions[command.name]) {
+                return context.json({
+                    type: discord.InteractionResponseType.ApplicationCommandAutocompleteResult,
+                    data: await autocompleteExecutions[command.name](data)
+                }) as any;
+            } else {
+                return context.json({
+                    type: discord.InteractionResponseType.ApplicationCommandAutocompleteResult,
+                    data: { choices: [] }
+                }) as any;
             }
         }
 

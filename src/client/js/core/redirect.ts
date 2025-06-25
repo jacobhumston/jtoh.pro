@@ -1,3 +1,4 @@
+import { isLoggedIn } from '../libs/auth';
 import { getElementById, waitForPageLoad } from '../libs/util';
 
 export default async function () {
@@ -5,10 +6,10 @@ export default async function () {
 
     const redirectButton = getElementById('redirectButton') as HTMLButtonElement;
 
-    function redirect() {
+    async function redirect() {
         const url = new URL(window.location.href);
         const searchParams = url.searchParams;
-        let newUrl: any = null;
+        let newUrl: any = '';
 
         if (searchParams.has('url')) {
             newUrl = searchParams.get('url');
@@ -28,7 +29,16 @@ export default async function () {
             document.location.href = '/';
         } else {
             if (newUrl.host === url.host && newUrl.protocol === url.protocol) {
-                document.location.href = newUrl.href;
+                if (newUrl.href.includes('mod') || newUrl.href.includes('admin')) {
+                    if (!(await isLoggedIn())) {
+                        sessionStorage.setItem('LoginRedirect', window.location.href);
+                        window.location.href = '/login';
+                    } else {
+                        document.location.href = newUrl.href;
+                    }
+                } else {
+                    document.location.href = newUrl.href;
+                }
             } else {
                 document.location.href = '/';
             }

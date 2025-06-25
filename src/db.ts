@@ -142,6 +142,9 @@ const captchaTokensDB = new Keyv({ store: captchaTokensDBSqlite });
 const punishmentsDBSqlite = new KeyvSqlite('sqlite://db/punishments.sqlite');
 const punishmentsDB = new Keyv({ store: punishmentsDBSqlite });
 
+const discordBotConfigDBSqlite = new KeyvSqlite('sqlite://db/discordBotConfig.sqlite');
+const discordBotConfigDB = new Keyv({ store: discordBotConfigDBSqlite });
+
 export {
     statsDB,
     cardsRequestedDB,
@@ -152,7 +155,8 @@ export {
     accountConfigDB,
     captchaTokensDB,
     towerCountDB,
-    punishmentsDB
+    punishmentsDB,
+    discordBotConfigDB
 };
 
 export function getDBName(
@@ -167,6 +171,7 @@ export function getDBName(
         | typeof captchaTokensDB
         | typeof towerCountDB
         | typeof punishmentsDB
+        | typeof discordBotConfigDB
 ) {
     if (db === statsDB) return 'stats';
     if (db === cardsRequestedDB) return 'cardsRequested';
@@ -178,5 +183,6 @@ export function getDBName(
     if (db === captchaTokensDB) return 'captchaTokens';
     if (db === towerCountDB) return 'towerCount';
     if (db === punishmentsDB) return 'punishments';
+    if (db === discordBotConfigDB) return 'discordBotConfig';
     throw new Error('Invalid DB.');
 }
