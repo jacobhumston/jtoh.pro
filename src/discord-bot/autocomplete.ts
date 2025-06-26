@@ -18,6 +18,7 @@ export async function autocompleteUserSelection(
 
     for (const recent of config.ac_recent) {
         if (config.ac_pinned.includes(recent)) continue;
+        if (recent === null || recent === undefined) continue;
         choices.push({
             name: '⏰ ' + recent,
             value: recent
@@ -25,6 +26,7 @@ export async function autocompleteUserSelection(
     }
 
     for (const pin of config.ac_pinned) {
+        if (pin === null || pin === undefined) continue;
         choices.push({
             name: '📌 ' + pin,
             value: pin

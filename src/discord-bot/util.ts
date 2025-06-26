@@ -11,7 +11,9 @@ export async function addRecent(interaction: discord.APIInteraction, username: s
     const config = (await discordBotConfigDB.get(`${userId}`)) ?? {};
 
     if (!config.ac_recent) config.ac_recent = [];
-    if (config.ac_recent.includes(username)) return;
+    if (!config.ac_pinned) config.ac_pinned = [];
+
+    if (config.ac_recent.includes(username) || config.ac_pinned.includes(username)) return;
     if (config.ac_recent.length >= 2) config.ac_recent.shift();
 
     config.ac_recent.push(username);

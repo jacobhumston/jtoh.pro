@@ -28,7 +28,7 @@ checkForUpdates();
 
 const url = new URL(document.location.href);
 if (url.hostname !== 'localhost' && url.hostname !== 'jtoh.pro' && url.hostname !== 'beta.jtoh.pro') {
-    if (url.host.endsWith('devtunnels.ms')) {
+    if (url.host.endsWith('devtunnels.ms') || url.host.endsWith('app.github.dev')) {
         const response = await fetch('/api/vars').catch(() => ({ json: () => ({ usingCustomUrl: false }) }));
         const { usingCustomUrl } = await response.json();
         if (!usingCustomUrl) document.location.href = 'https://jtoh.pro';
