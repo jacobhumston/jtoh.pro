@@ -102,6 +102,7 @@ export default function discordInteractions(app: Hono) {
                     if (response) {
                         commandExecutions[command.name](data);
                     } else {
+                        logger.error(`Failed to execute command ${command.name}: Interaction response not found.`);
                         const config = (await discordBotConfigDB.get(`${getUserId(data)}`)) ?? {};
                         config.dm_notifs = config.dm_notifs ?? [];
                         if (config.dm_notifs.includes('command_timeout')) return;
@@ -120,7 +121,16 @@ export default function discordInteractions(app: Hono) {
                             // @ts-ignore
                             .post(discord.Routes.channelMessages(channel.id), {
                                 body: JSON.stringify({
-                                    content: `Hello! You are receiving this message because you attempted to execute a command, however we did not respond in time.\n-# Discord requires applications to respond within 3 seconds.\n\nIf this is happening frequently, please let us know!\nYou will only receive this message once. \n-# Note that if you receive the error again, it's for the same reason as stated above.\n\n*The command did not execute and no data was modified, created, or deleted. Please try again.*`
+                                    components: [
+                                        new discord.ContainerBuilder()
+                                            .addTextDisplayComponents((text) =>
+                                                text.setContent(
+                                                    `Hello! You are receiving this message because you attempted to execute a command, however we did not respond in time.\n-# Discord requires applications to respond within 3 seconds.\n\nIf this is happening frequently, please let us know!\nYou will only receive this message once. \n-# Note that if you receive the error again, it's for the same reason as stated above.\n\n*The command did not execute and no data was modified, created, or deleted. Please try again.*`
+                                                )
+                                            )
+                                            .toJSON()
+                                    ],
+                                    flags: discord.MessageFlags.IsComponentsV2
                                 }),
                                 passThroughBody: true,
                                 headers: {
@@ -129,7 +139,6 @@ export default function discordInteractions(app: Hono) {
                             })
                             .catch(console.error);
                         if (res) await discordBotConfigDB.set(`${getUserId(data)}`, config);
-                        logger.error(`Failed to execute command ${command.name}: Interaction response not found.`);
                     }
                 });
 
