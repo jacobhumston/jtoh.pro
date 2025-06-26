@@ -7,6 +7,7 @@ import { getURLHost } from '../../dev';
 import { randomUUIDv7 } from 'bun';
 import fs from 'node:fs';
 import archiver from 'archiver';
+import { parseRobloxAccountV2 } from '../../login-auth';
 
 export const command = new discord.SlashCommandBuilder()
     .setName('config')
@@ -23,7 +24,7 @@ export const command = new discord.SlashCommandBuilder()
 
 command.addSubcommandGroup((group) =>
     group
-        .setName('user-ac')
+        .setName('autocomplete')
         .setDescription('Configure your user autocomplete settings.')
         .addSubcommand((subcommand) =>
             subcommand
@@ -45,7 +46,11 @@ command.addSubcommandGroup((group) =>
                 .setName('unpin')
                 .setDescription('Unpin a user from your autocompletion.')
                 .addStringOption((option) =>
-                    option.setName('user').setDescription('The user to unpin.').setRequired(true)
+                    option
+                        .setName('slot')
+                        .setDescription('The slot to unpin from.')
+                        .setRequired(true)
+                        .addChoices({ name: '1', value: '1' }, { name: '2', value: '2' }, { name: '3', value: '3' })
                 )
         )
         .addSubcommand((subcommand) => subcommand.setName('clear').setDescription('Clear your pinned users.'))
@@ -123,7 +128,7 @@ Create a "General Website Support Ticket" in #get-support
         }
     } else if (
         interaction.data.options[0].type === discord.ApplicationCommandOptionType.SubcommandGroup &&
-        interaction.data.options[0].name === 'user-ac'
+        interaction.data.options[0].name === 'autocomplete'
     ) {
         const command = interaction.data.options[0].options[0];
         const userId = getUserId(interaction);
@@ -133,8 +138,54 @@ Create a "General Website Support Ticket" in #get-support
         if (!config.ac_pinned) config.ac_pinned = [];
 
         if (command.name === 'pin') {
+            const user = command.options?.find((opt) => opt.name === 'user')?.value as string;
+            const slot = command.options?.find((opt) => opt.name === 'slot')?.value as string;
+            const parsedUser = await parseRobloxAccountV2(user);
+
+            if (!user || !slot || !parsedUser) {
+                container.addTextDisplayComponents((text) =>
+                    text.setContent('Please provide a valid user and slot to pin.')
+                );
+            } else if (config.ac_pinned.includes(parsedUser.name)) {
+                container.addTextDisplayComponents((text) =>
+                    text.setContent(`The user ${parsedUser.name} is already pinned.`)
+                );
+            } else {
+                config.ac_pinned[parseInt(slot) - 1] = parsedUser.name;
+                config.ac_pinned[0] = config.ac_pinned[0] ?? null;
+                config.ac_pinned[1] = config.ac_pinned[1] ?? null;
+                config.ac_pinned[2] = config.ac_pinned[2] ?? null;
+                await discordBotConfigDB.set(`${userId}`, config);
+                container.addTextDisplayComponents((text) =>
+                    text.setContent(`📌 Pinned ${parsedUser.name} to slot ${slot}.`)
+                );
+            }
         } else if (command.name === 'unpin') {
+            const slot = command.options?.find((opt) => opt.name === 'slot')?.value as string;
+
+            if (!slot || !config.ac_pinned[parseInt(slot) - 1]) {
+                container.addTextDisplayComponents((text) =>
+                    text.setContent(
+                        'Please provide a valid slot to unpin from.' + !config.ac_pinned[parseInt(slot) - 1]
+                            ? ' **The slot is empty.**'
+                            : ''
+                    )
+                );
+            } else {
+                const originalName = config.ac_pinned[parseInt(slot) - 1];
+                config.ac_pinned[parseInt(slot) - 1] = null;
+                config.ac_pinned[0] = config.ac_pinned[0] ?? null;
+                config.ac_pinned[1] = config.ac_pinned[1] ?? null;
+                config.ac_pinned[2] = config.ac_pinned[2] ?? null;
+                await discordBotConfigDB.set(`${userId}`, config);
+                container.addTextDisplayComponents((text) =>
+                    text.setContent(`📌 Unpinned ${originalName} from slot ${slot}.`)
+                );
+            }
         } else if (command.name === 'clear') {
+            config.ac_pinned = [];
+            await discordBotConfigDB.set(`${userId}`, config);
+            container.addTextDisplayComponents((text) => text.setContent('📌 Cleared all pinned users.'));
         } else if (command.name === 'view') {
             if (config.ac_recent.length === 0) {
                 container.addTextDisplayComponents((text) =>
@@ -142,7 +193,7 @@ Create a "General Website Support Ticket" in #get-support
                 );
             } else {
                 container.addTextDisplayComponents((text) =>
-                    text.setContent(`⏰**Recent users:**\n* ${config.ac_recent.join('\n * ')}`)
+                    text.setContent(`⏰ **Recent users:**\n* ${config.ac_recent.join('\n * ')}`)
                 );
             }
 
@@ -152,7 +203,9 @@ Create a "General Website Support Ticket" in #get-support
                 );
             } else {
                 container.addTextDisplayComponents((text) =>
-                    text.setContent(`📌 **Pinned users:**\n* ${config.ac_pinned.join('\n * ')}`)
+                    text.setContent(
+                        `📌 **Pinned users:**\n* (1) ${config.ac_pinned[0] ?? 'None'}\n* (2) ${config.ac_pinned[1] ?? 'None'}\n* (3) ${config.ac_pinned[2] ?? 'None'}`
+                    )
                 );
             }
         } else {
