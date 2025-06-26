@@ -187,6 +187,12 @@ Create a "General Website Support Ticket" in #get-support
             await discordBotConfigDB.set(`${userId}`, config);
             container.addTextDisplayComponents((text) => text.setContent('📌 Cleared all pinned users.'));
         } else if (command.name === 'view') {
+            container.addTextDisplayComponents((text) =>
+                text.setContent(
+                    'Note that the order below is the same order it will appear in autocompletion.\n-# Autocompletion for users can be used in any command that accepts a Roblox user as input.'
+                )
+            );
+
             if (config.ac_recent.length === 0) {
                 container.addTextDisplayComponents((text) =>
                     text.setContent('⏰ **Recent users:**\n-# No recent users found.')
@@ -204,7 +210,7 @@ Create a "General Website Support Ticket" in #get-support
             } else {
                 container.addTextDisplayComponents((text) =>
                     text.setContent(
-                        `📌 **Pinned users:**\n* (1) ${config.ac_pinned[0] ?? 'None'}\n* (2) ${config.ac_pinned[1] ?? 'None'}\n* (3) ${config.ac_pinned[2] ?? 'None'}`
+                        `📌 **Pinned users:**\n\`[1]\` ${config.ac_pinned[0] ?? 'None'}\n\`[2]\` ${config.ac_pinned[1] ?? 'None'}\n\`[3]\` ${config.ac_pinned[2] ?? 'None'}`
                     )
                 );
             }
