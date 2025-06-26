@@ -36,7 +36,7 @@
         "cron": "^4.3.1",
         "css": "^3.0.0",
         "date-fns": "^4.1.0",
-        "discord.js": "^14.20.0",
+        "discord.js": "^14.21.0",
         "emoji-picker-element": "^1.26.3",
         "esbuild": "^0.25.5",
         "events": "^3.3.0",
