@@ -5,6 +5,7 @@
     "scripts": {},
     "dependencies": {
         "@date-fns/utc": "^2.1.0",
+        "@discordjs/rest": "^2.5.1",
         "@highlightjs/cdn-assets": "^11.11.1",
         "@hono/zod-validator": "^0.7.0",
         "@hotwired/turbo": "^8.0.13",
