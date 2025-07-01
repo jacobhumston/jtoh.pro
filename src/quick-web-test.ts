@@ -15,6 +15,8 @@ export async function quickWebTest(replaceLogger: typeof logger = logger) {
         if (!response.ok) {
             replaceLogger.error(`Failed to fetch ${file}`);
             failed = true;
+        } else {
+            console.log(`(QWT): Loaded ${file}`);
         }
     }
     if (failed === false) replaceLogger.info('Quick web test was successful.');
