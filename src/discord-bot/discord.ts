@@ -5,10 +5,6 @@ import fs from 'node:fs';
 import logger from '../logger';
 import { getURL } from '../dev';
 import * as discord from 'discord.js';
-import { wait } from '../util';
-import { rest } from './rest';
-import { getUserId } from './util';
-import { discordBotConfigDB } from '../db';
 
 export const discordAPIURL = 'https://discord.com/api/v10';
 export const commands: discord.SlashCommandBuilder[] = [];
@@ -95,51 +91,7 @@ export default function discordInteractions(app: Hono) {
             const command = commands.find((cmd: any) => cmd.name === data.data.name);
             if (command) {
                 new Promise(async () => {
-                    await wait({ seconds: 1 });
-                    const response = await rest
-                        .get(discord.Routes.webhookMessage(discordInteractionsApplicationId, data.token, '@original'))
-                        .catch(() => null);
-                    if (response) {
-                        commandExecutions[command.name](data);
-                    } else {
-                        logger.error(`Failed to execute command ${command.name}: Interaction response not found.`);
-                        const config = (await discordBotConfigDB.get(`${getUserId(data)}`)) ?? {};
-                        config.dm_notifs = config.dm_notifs ?? [];
-                        if (config.dm_notifs.includes('command_timeout')) return;
-                        config.dm_notifs.push('command_timeout');
-                        const channel = await rest
-                            .post(discord.Routes.userChannels(), {
-                                body: JSON.stringify({ recipient_id: getUserId(data) }),
-                                passThroughBody: true,
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                }
-                            })
-                            .catch(console.error);
-                        if (!channel) return;
-                        const res = await rest
-                            // @ts-ignore
-                            .post(discord.Routes.channelMessages(channel.id), {
-                                body: JSON.stringify({
-                                    components: [
-                                        new discord.ContainerBuilder()
-                                            .addTextDisplayComponents((text) =>
-                                                text.setContent(
-                                                    `Hello! You are receiving this message because you attempted to execute a command, however we did not respond in time.\n-# Discord requires applications to respond within 3 seconds.\n\nIf this is happening frequently, please let us know!\nYou will only receive this message once. \n-# Note that if you receive the error again, it's for the same reason as stated above.\n\n*The command did not execute and no data was modified, created, or deleted. Please try again.*`
-                                                )
-                                            )
-                                            .toJSON()
-                                    ],
-                                    flags: discord.MessageFlags.IsComponentsV2
-                                }),
-                                passThroughBody: true,
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                }
-                            })
-                            .catch(console.error);
-                        if (res) await discordBotConfigDB.set(`${getUserId(data)}`, config);
-                    }
+                    commandExecutions[command.name](data);
                 });
 
                 const flags = isEphemeral[command.name]
