@@ -110,7 +110,7 @@ export default async function serveStatic(app: Hono) {
                         compress: {
                             ecma: 2020,
                             hoist_funs: true,
-                            drop_console: !isDev,
+                            drop_console: false,
                             booleans_as_integers: true,
                             arguments: true,
                             unsafe: true,
