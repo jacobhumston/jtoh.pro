@@ -42,6 +42,7 @@
         "esbuild": "^0.25.6",
         "events": "^3.3.0",
         "file-type": "^21.0.0",
+        "google-closure-compiler": "^20250701.0.0",
         "highlight.js": "^11.11.1",
         "hono": "^4.8.4",
         "hono-compress": "^0.7.0",

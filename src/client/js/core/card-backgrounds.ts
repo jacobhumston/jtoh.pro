@@ -233,7 +233,8 @@ export default async function () {
         const cardImage = createElement('img', { src: card.webPath, alt: card.name });
         const setCardButton = createElement('button', {
             innerHTML: getWebIconHTML('image') + ' Set as Background',
-            type: 'button'
+            type: 'button',
+            className: 'setCardButton'
         });
 
         cardImage.style = `background-image: url('${card.webPath}') !important;`;
