@@ -1961,3 +1961,7 @@ input[type='file']::file-selector-button:active {
     border-radius: 15px;
     margin-bottom: 10px;
 }
+
+.dangerButton {
+    background-color: var(--color-error);
+}

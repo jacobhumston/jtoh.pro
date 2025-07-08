@@ -76,6 +76,7 @@
         "@types/clean-css": "^4.2.11",
         "@types/cloudflare-turnstile": "^0.2.2",
         "@types/color": "^4.2.0",
+        "@types/google-closure-compiler": "^20231112.0.0",
         "@types/html-minifier": "^4.0.5",
         "@types/markdown-it": "^14.1.2",
         "@types/mime-types": "^3.0.1",
