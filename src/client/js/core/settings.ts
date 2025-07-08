@@ -31,18 +31,23 @@ export default async function () {
     ]);
 
     const logoutButton = createElement('button', { innerHTML: getWebIconHTML('logout') + ' Logout', type: 'button' });
+    const logoutAllSessionsButton = createElement('button', {
+        innerHTML: getWebIconHTML('logout') + ' Logout All Sessions',
+        type: 'button',
+        className: 'dangerButton'
+    });
     const switchAccountsButton = createElement('button', {
         innerHTML: getWebIconHTML('switch_account') + ' Switch Accounts',
         type: 'button'
     });
 
-    const generalControlsDescription = createElement('p', {
-        innerHTML: `Logging out will log you out of all other sessions as well. To logout only on this session, please ${createElement('a', { innerHTML: 'click here', href: '/logout?single=true' }).outerHTML}.`
-    });
-
-    addChild(container, [logoutButton, switchAccountsButton, generalControlsDescription]);
+    addChild(container, [logoutButton, switchAccountsButton, logoutAllSessionsButton]);
 
     logoutButton.addEventListener('click', async () => {
+        window.location.href = '/logout?single=true';
+    });
+
+    logoutAllSessionsButton.addEventListener('click', async () => {
         window.location.href = '/logout';
     });
 
