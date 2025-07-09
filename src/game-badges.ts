@@ -1,4 +1,4 @@
-import jsonc from 'jsonc-parser';
+import * as jsonc from 'jsonc-parser';
 import { gameBadgesDB } from './db';
 import { convertTo } from '@jacobhumston/tc.js';
 import { wait } from './util';
