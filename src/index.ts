@@ -48,10 +48,7 @@ cardImageCheck();
 const app = new Hono({
     getPath: (request) => {
         const url = new URL(request.url);
-        const host = url.host;
-        if (host.endsWith('.etoh.pro') || host.endsWith('.roblox-obby.pro') || host.endsWith('.jtoh.pro')) {
-            return '/app/profile-creator/?ref=' + host.split('.')[0];
-        }
+        //const host = url.host;
         return url.pathname;
     }
 });
@@ -109,13 +106,11 @@ app.use(async (context, next) => {
         if (link.host === 'etoh.pro' || link.host === 'roblox-obby.pro')
             return context.redirect(getURL() + '/app/profile-creator/');
 
-        if (
-            link.host === getURLObj().host ||
-            link.host.endsWith('.jtoh.pro') ||
-            link.host.endsWith('.roblox-obby.pro') ||
-            link.host.endsWith('.etoh.pro')
-        )
-            return await next();
+        if (host.endsWith('.etoh.pro') || host.endsWith('.roblox-obby.pro') || host.endsWith('.jtoh.pro')) {
+            return context.redirect(getURL() + '/app/profile-creator/?ref=' + host.split('.')[0]);
+        }
+
+        if (link.host === getURLObj().host) return await next();
         return context.redirect(getURL() + link.pathname + link.search);
     } else {
         return context.json({ error: 'Invalid host.' }, 400);
