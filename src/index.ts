@@ -8,7 +8,7 @@ import logger from './logger';
 import fs from 'node:fs';
 import webUtils from './web-utils';
 import serveLeaderboards from './leaderboards';
-import { isDev, getURL, port, getURLHost, isBeta, getURLObj, usingCustomUrl } from './dev';
+import { isDev, getURL, port, getURLHost, isBeta, getURLObj, usingCustomUrl, skipQWT } from './dev';
 import setupLoginAuth from './login-auth';
 import { rateLimiter } from 'hono-rate-limiter';
 import { getTempToken } from './temp-tokens';
@@ -251,7 +251,8 @@ export default {
     websocket: socket as any
 } satisfies Serve;
 
-quickWebTest();
+if (!skipQWT) quickWebTest();
+else logger.info('Quick Web Test skipped.');
 
 logger.info(`Git Hash: ${gitHash}`);
 logger.info(`Server started. ${getURL()}`);

@@ -1,3 +1,4 @@
+import { numberFormatter } from './formatters';
 import { addChild, createElement, getBody, insertChild } from './util';
 
 /**
@@ -16,6 +17,14 @@ export async function createErrorPopup(error: string, autoClose: number | false)
     });
 
     addChild(errorPopup, [errorPopupText, errorPopupClose]);
+
+    if (autoClose) {
+        const autoCloseText = createElement('p', {
+            innerText: `This popup will automatically close within ${numberFormatter.format(autoClose / 1000)} seconds of it being opened.`,
+            className: 'errorPopupAutoCloseNotice'
+        });
+        addChild(errorPopup, autoCloseText);
+    }
 
     let closed = false;
     if (autoClose) {

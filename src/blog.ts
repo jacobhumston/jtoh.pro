@@ -21,6 +21,7 @@ async function setup() {
     const tempDir = `temp/blog-${Date.now()}`;
     fs.mkdirSync(tempDir, { recursive: true });
 
+    // @ts-expect-error
     const allCommits: any[] = await (
         await fetch(`https://api.github.com/repos/jacobhumston/data.jtoh.pro/commits?path=blog&per_page=100`, {
             cache: 'no-store'
@@ -85,6 +86,7 @@ async function setup() {
         }
         dataString += '-->';
 
+        // @ts-expect-error
         const commits: any[] = await (
             await fetch(
                 `https://api.github.com/repos/jacobhumston/data.jtoh.pro/commits?path=${file.path}&per_page=100`,

@@ -76,7 +76,7 @@ export default function setupLoginAuth(app: Hono) {
             method: 'post'
         })
             .then(async (tokenResponse) => {
-                const tokenResponseJSON = await tokenResponse.json();
+                const tokenResponseJSON = (await tokenResponse.json()) as any;
                 if (!tokenResponseJSON.access_token) {
                     failed = true;
                     return;
@@ -87,7 +87,7 @@ export default function setupLoginAuth(app: Hono) {
                     }
                 })
                     .then(async (userResponse) => {
-                        const userResponseJSON = await userResponse.json();
+                        const userResponseJSON = (await userResponse.json()) as any;
                         if (!userResponseJSON.sub) {
                             failed = true;
                             return;
@@ -150,8 +150,8 @@ export default function setupLoginAuth(app: Hono) {
                                 sameSite: 'Strict',
                                 secure: true,
                                 expires: new Date(Date.now() + convertTo({ weeks: 3 }, 'milliseconds')),
-                                domain: getURLHost(),
-                                signingSecret: cookieSecret
+                                domain: getURLHost()
+                                //signingSecret: cookieSecret
                             }
                         );
                         failed = false;
@@ -190,8 +190,8 @@ export default function setupLoginAuth(app: Hono) {
             httpOnly: true,
             sameSite: 'Strict',
             secure: true,
-            domain: getURLHost(),
-            signingSecret: cookieSecret
+            domain: getURLHost()
+            //signingSecret: cookieSecret
         });
 
         if (context.req.query('single') !== 'true') {
