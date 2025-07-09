@@ -50,7 +50,7 @@ const app = new Hono({
         const url = new URL(request.url);
         const host = url.host;
         if (host.endsWith('.etoh.pro') || host.endsWith('.roblox-obby.pro') || host.endsWith('.jtoh.pro')) {
-            return '/app/profile-creator?ref=' + host.split('.')[0];
+            return '/app/profile-creator/?ref=' + host.split('.')[0];
         }
         return url.pathname;
     }
