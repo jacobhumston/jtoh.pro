@@ -23,5 +23,7 @@
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "noPropertyAccessFromIndexSignature": false
-    }
+    },
+    "references": [{ "path": "./tsconfig.server.json" }, { "path": "./tsconfig.client.json" }],
+    "files": []
 }

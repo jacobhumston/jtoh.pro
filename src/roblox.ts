@@ -30,7 +30,7 @@ export async function usernameToUser(username: string): Promise<BasicRobloxUserR
             'Content-Type': 'application/json'
         }
     });
-    return (await response.json()).data[0] as any;
+    return ((await response.json()) as any).data[0] as any;
 }
 
 export async function userIdToUser(userId: number): Promise<BasicRobloxUserResult> {
@@ -44,7 +44,7 @@ export async function userIdToUser(userId: number): Promise<BasicRobloxUserResul
             'Content-Type': 'application/json'
         }
     });
-    return (await response.json()).data[0] as any;
+    return ((await response.json()) as any).data[0] as any;
 }
 
 export async function userIdToThumbnail(userId: number): Promise<string> {
@@ -57,7 +57,7 @@ export async function userIdToThumbnail(userId: number): Promise<string> {
             }
         }
     );
-    return (await response.json()).data[0].imageUrl as string;
+    return ((await response.json()) as any).data[0].imageUrl as string;
 }
 
 export async function userIdToThumbnailFull(userId: number): Promise<string> {
@@ -70,7 +70,7 @@ export async function userIdToThumbnailFull(userId: number): Promise<string> {
             }
         }
     );
-    return (await response.json()).data[0].imageUrl as string;
+    return ((await response.json()) as any).data[0].imageUrl as string;
 }
 
 export async function userIdToThumbnailBust(userId: number): Promise<string> {
@@ -83,7 +83,7 @@ export async function userIdToThumbnailBust(userId: number): Promise<string> {
             }
         }
     );
-    return (await response.json()).data[0].imageUrl as string;
+    return ((await response.json()) as any).data[0].imageUrl as string;
 }
 
 // https://devforum.roblox.com/t/using-robloxs-avatar-3d-api-to-import-users-avatars-into-a-website-or-whatever-youd-like/2432524
@@ -94,15 +94,15 @@ export function getRobloxCDNFromHash(hash: string) {
 }
 
 export async function getRobloxAvatar3dAssets(userId: number) {
-    const result1 = await fetch(`https://thumbnails.roblox.com/v1/users/avatar-3d?userId=${userId}`)
+    const result1 = (await fetch(`https://thumbnails.roblox.com/v1/users/avatar-3d?userId=${userId}`)
         .then((res) => res.json())
-        .catch(() => undefined);
+        .catch(() => undefined)) as any;
     if (!result1) return null;
     if (!result1.imageUrl) return null;
 
-    const result2 = await fetch(result1.imageUrl)
+    const result2 = (await fetch(result1.imageUrl)
         .then((res) => res.json())
-        .catch(() => undefined);
+        .catch(() => undefined)) as any;
     if (!result2) return null;
     if (!result2.camera || !result2.aabb || !result2.mtl || !result2.obj || !result2.textures) return null;
 
@@ -137,5 +137,5 @@ export async function getRobloxPlacesDetails(placeIds: [number]): Promise<any[]>
     ).catch(() => {
         return { json: () => [] };
     });
-    return await response.json();
+    return (await response.json()) as any;
 }

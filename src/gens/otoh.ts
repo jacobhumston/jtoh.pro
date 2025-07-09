@@ -116,7 +116,7 @@ export default function otohGen(app: Hono) {
             //});
 
             let loadTime = Date.now();
-            const cached = await towerstatsCache.get(`${data.id}-otoh`);
+            const cached: TowerDataOToH | undefined = await towerstatsCache.get(`${data.id}-otoh`);
             let towerStats: TowerDataOToH | undefined =
                 cached ??
                 (await fetch(`https://api.towerstats.com/api/otoh`, {
@@ -126,7 +126,7 @@ export default function otohGen(app: Hono) {
                     .then((res) => {
                         loadTime = (Date.now() - loadTime) / 1000;
                         loadTime = parseFloat(loadTime.toFixed(2));
-                        if (res.ok) return res.json();
+                        if (res.ok) return res.json() as Promise<TowerDataOToH>;
                         return undefined;
                     })
                     .catch(() => undefined));

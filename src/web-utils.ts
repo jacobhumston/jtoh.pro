@@ -69,11 +69,11 @@ export default function webUtils(app: Hono) {
                 (await robloxAPICache.get(`universe-thumbnail:${context.req.param('universeIds')}`)) as any
             );
 
-        const result = await (
+        const result = (await (
             await fetch(
                 `https://thumbnails.roblox.com/v1/games/multiget/thumbnails?universeIds=${context.req.param('universeIds')}&defaults=true&size=768x432&format=Png&isCircular=false`
             ).catch(() => ({ json: async () => ({}) }))
-        ).json();
+        ).json()) as any;
 
         if (!result.data) return context.json({ error: 'No data.' }, 400);
 
@@ -98,11 +98,11 @@ export default function webUtils(app: Hono) {
                 (await robloxAPICache.get(`universe-thumbnails:${context.req.param('universeId')}`)) as any
             );
 
-        const result = await (
+        const result = (await (
             await fetch(
                 `https://thumbnails.roblox.com/v1/games/multiget/thumbnails?universeIds=${universeId}&defaults=true&size=768x432&format=Png&isCircular=false&countPerUniverse=1000`
             ).catch(() => ({ json: async () => ({}) }))
-        ).json();
+        ).json()) as any;
 
         if (!result.data) return context.json({ error: 'No data.' }, 400);
 

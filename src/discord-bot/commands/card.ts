@@ -87,6 +87,7 @@ export async function execute(interaction: discord.APIChatInputApplicationComman
                 )
             );
         } else {
+            // @ts-expect-error
             form.append('files[0]', await image.blob(), `jtoh-pro-card-${user.name}.png`);
             container.addTextDisplayComponents((text) =>
                 text.setContent(

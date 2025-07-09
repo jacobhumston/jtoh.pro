@@ -43,7 +43,6 @@ export function charts(app: Hono) {
                         data: data.map((x) => x.requests),
                         fill: false,
                         tension: 0.1,
-                        color: '#ebebeb',
                         backgroundColor: '#ff4336',
                         borderColor: '#f7685e',
                         pointRadius: 0
@@ -55,9 +54,6 @@ export function charts(app: Hono) {
                     family: 'Poppins'
                 },
                 plugins: {
-                    customCanvasBackgroundColor: {
-                        color: '#1c1c1c'
-                    },
                     legend: {
                         labels: {
                             color: '#ebebeb',
@@ -100,11 +96,11 @@ export function charts(app: Hono) {
             plugins: [
                 {
                     id: 'customCanvasBackgroundColor',
-                    beforeDraw: (chart, _, options) => {
+                    beforeDraw: (chart) => {
                         const { ctx } = chart;
                         ctx.save();
                         ctx.globalCompositeOperation = 'destination-over';
-                        ctx.fillStyle = options.color;
+                        ctx.fillStyle = '#1c1c1c';
                         // @ts-ignore-next-line
                         drawRoundedRect(ctx, 0, 0, chart.width, chart.height, 10);
                         ctx.restore();

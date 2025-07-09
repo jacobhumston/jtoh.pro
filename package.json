@@ -82,6 +82,7 @@
         "@types/html-minifier": "^4.0.5",
         "@types/markdown-it": "^14.1.2",
         "@types/mime-types": "^3.0.1",
+        "@types/node": "^24.0.12",
         "@types/terminal-kit": "^2.5.7",
         "@types/uuid": "^10.0.0",
         "depcheck": "^1.4.7",

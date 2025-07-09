@@ -1,4 +1,4 @@
-import { parseArgs } from 'util';
+import { parseArgs } from 'node:util';
 import process from 'node:process';
 import { argv } from 'bun';
 
@@ -19,6 +19,9 @@ const { values } = parseArgs({
         },
         cookie: {
             type: 'string'
+        },
+        skipQWT: {
+            type: 'boolean'
         }
     },
     strict: true,
@@ -29,6 +32,7 @@ export const isDev = values.dev ?? false;
 export const isBeta = (values.beta ?? false) && isDev == false;
 export const port = parseInt(values.port ?? '80') ?? 80;
 export const usingCustomUrl = !!values.url;
+export const skipQWT = values.skipQWT ?? false;
 
 if (isDev) process.env.NODE_ENV = 'development';
 else process.env.NODE_ENV = 'production';
