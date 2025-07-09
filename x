@@ -59,6 +59,7 @@ declare -A commands
     commands["s"]=${commands["start"]}
     commands["v"]=${commands["version"]}   
     commands["c"]="${commands["bun-upgrade"]} && ${commands["bun-update"]} && ${commands["format"]}" 
+    commands["bun"]="${dir_bun}"
 
 # Help function.
 print_help() {
