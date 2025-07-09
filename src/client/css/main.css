@@ -1965,3 +1965,10 @@ input[type='file']::file-selector-button:active {
 .dangerButton {
     background-color: var(--color-error);
 }
+
+#downloadLicenses {
+    margin-top: 0px;
+    margin-bottom: 10px;
+    display: inline-block;
+    margin-left: 10px;
+}

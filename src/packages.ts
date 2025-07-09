@@ -5,6 +5,7 @@ import ourPackage from '../package.json';
 
 export default function listenForPackageLists(app: Hono) {
     let cache: any = null;
+    let licenseCache: any = null;
 
     app.get('/api/credits/packages', async (context) => {
         if (cache) return context.json({ count: cache.length, packages: cache });
@@ -53,5 +54,83 @@ export default function listenForPackageLists(app: Hono) {
         cache = smallerPackages;
 
         return context.json({ count: smallerPackages.length, packages: smallerPackages });
+    });
+
+    app.get('/api/credits/packages/licenses.txt', async (context) => {
+        if (licenseCache)
+            return context.text(licenseCache, 200, {
+                'Content-Type': 'text/plain; charset=utf-8',
+                'Cache-Control': 'public, max-age=86400'
+            });
+
+        function addLicense(p1: string, p2?: string): string | null {
+            const basePath = p2 ? `node_modules/${p1}/${p2}` : `node_modules/${p1}`;
+            const licenseFiles = [
+                'LICENSE',
+                'LICENSE.md',
+                'license',
+                'license.md',
+                'LICENCE',
+                'LICENCE.md',
+                'licence',
+                'licence.md',
+                'License',
+                'License.md',
+                'License.txt',
+                'license.txt',
+                'LICENSE.txt',
+                'LICENSE-MIT.txt',
+                'LICENSE.BSD',
+                'LICENSE-MIT',
+                'LICENSE.MIT',
+                'LICENSE-APACHE.txt',
+                'license-mit'
+            ];
+            for (const licenseFile of licenseFiles) {
+                const filePath = `${basePath}/${licenseFile}`;
+                if (fs.existsSync(filePath)) {
+                    return fs.readFileSync(filePath, 'utf-8') + `\n\nSource: ${filePath.replace('node_modules/', '')}`;
+                }
+            }
+            return null;
+        }
+
+        const licenses: string[] = [];
+        let noLicense: string[] = [];
+        for (const thisPackage of fs.readdirSync('node_modules/')) {
+            if (thisPackage.startsWith('.')) continue;
+            if (thisPackage.startsWith('@')) {
+                for (const thisSubPackage of fs.readdirSync(`node_modules/${thisPackage}/`)) {
+                    const license = addLicense(thisPackage, thisSubPackage);
+                    if (license) licenses.push(license);
+                    else noLicense.push(`${thisPackage}/${thisSubPackage}`);
+                }
+                continue;
+            }
+            const license = addLicense(thisPackage);
+            if (license) licenses.push(license);
+            else noLicense.push(thisPackage);
+        }
+
+        noLicense.sort();
+        const pkgSortByLength = noLicense.toSorted((a, b) => b.length - a.length);
+        noLicense = noLicense.map((pkg) => {
+            const files = fs.readdirSync(`node_modules/${pkg}/`);
+            const found = files.find((file) => file.toLowerCase().includes('license'));
+            const stringPadding = pkgSortByLength[0].length - pkg.length;
+            return (
+                pkg +
+                (found ? `${`${stringPadding > 0 ? ' '.repeat(stringPadding) : ''} | Possible match: ${found}`}` : '')
+            );
+        });
+
+        licenseCache =
+            licenses.join('\n\n<[|]<<------------------------------------------------>>[|]>\n\n') +
+            '\n\n<[|]<<------------------------------------------------>>[|]>\n\nNo license found for:\n* ' +
+            noLicense.join('\n* ');
+        return context.text(licenseCache, 200, {
+            'Content-Type': 'text/plain; charset=utf-8',
+            'Cache-Control': 'public, max-age=86400'
+        });
     });
 }

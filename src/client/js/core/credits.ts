@@ -26,7 +26,13 @@ export default async function () {
     if (packages.error || credits.error) return createErrorPopup('Failed to load credits.', false);
 
     const packageCount = createElement('h3', { innerText: `${packages.count} Packages`, id: 'packageCount' });
-    addChild(packagesContainer, packageCount);
+    const downloadLicenses = createElement('a', {
+        download: 'licenses.txt',
+        href: '/api/credits/packages/licenses.txt',
+        innerText: 'Download Licenses',
+        id: 'downloadLicenses'
+    });
+    addChild(packagesContainer, [packageCount, downloadLicenses, createElement('br')]);
 
     new Promise(() => {
         for (const pkg of packages.packages) {
