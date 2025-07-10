@@ -188,3 +188,6 @@ cdn
 
 # heaps
 src/web/app/admin/heaps/
+
+# other
+.api/
