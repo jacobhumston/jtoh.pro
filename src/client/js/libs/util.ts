@@ -133,8 +133,8 @@ export function waitForElementById(id: string, options: WaitForElementOptions): 
     if (alreadyFound) return new Promise((resolve) => resolve(alreadyFound));
 
     return new Promise((resolve) => {
-        let timer: Timer;
-        let interval: Timer;
+        let timer: number;
+        let interval: number;
 
         interval = setInterval(() => {
             const element = getElementById(id);
@@ -349,8 +349,8 @@ export function waitForElementsByClassName(
         return new Promise((resolve) => resolve(alreadyFound));
 
     return new Promise((resolve) => {
-        let timer: Timer;
-        let interval: Timer;
+        let timer: number;
+        let interval: number;
 
         interval = setInterval(() => {
             const element = document.getElementsByClassName(className);

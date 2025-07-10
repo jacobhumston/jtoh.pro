@@ -4,7 +4,7 @@ import { updateMenuBar } from './components/menu-bar';
 // import { initProgressBar } from './components/progress-bar';
 import { updatePageTitle } from './components/title';
 import { addAuthUI, handleLoginRedirect } from './libs/auth';
-import { logConsolePasteWarning } from './libs/security';
+import { displayDevBanner, logConsolePasteWarning } from './libs/security';
 import { applyTheme, listenForThemSelection } from './libs/theme';
 import { checkForUpdates } from './libs/updater';
 import { addClass, getPageFileName } from './libs/util';
@@ -27,7 +27,14 @@ handleLoginRedirect();
 checkForUpdates();
 
 const url = new URL(document.location.href);
-if (url.hostname !== 'localhost' && url.hostname !== 'jtoh.pro' && url.hostname !== 'beta.jtoh.pro') {
+if (
+    url.hostname !== 'localhost' &&
+    url.hostname !== 'jtoh.pro' &&
+    url.hostname !== 'beta.jtoh.pro' &&
+    !url.hostname.endsWith('.jtoh.pro') &&
+    !url.hostname.endsWith('.etoh.pro') &&
+    !url.hostname.endsWith('.roblox-obby.pro')
+) {
     if (url.host.endsWith('devtunnels.ms') || url.host.endsWith('app.github.dev')) {
         const response = await fetch('/api/vars').catch(() => ({ json: () => ({ usingCustomUrl: false }) }));
         const { usingCustomUrl } = await response.json();
@@ -43,3 +50,5 @@ try {
 } catch (_) {
     // Do nothing :3
 }
+
+displayDevBanner();

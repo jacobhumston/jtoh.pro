@@ -72,7 +72,7 @@
         "ua-parser-js": "^2.0.4",
         "uuid": "^11.1.0",
         "winston": "^3.17.0",
-        "zod": "^4.0.2"
+        "zod": "^4.0.3"
     },
     "devDependencies": {
         "@types/archiver": "^6.0.3",
