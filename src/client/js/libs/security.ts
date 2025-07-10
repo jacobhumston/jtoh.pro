@@ -1,4 +1,12 @@
-import { getElementById, createElement, addChild, waitForPageLoad, waitForElementsByClassName } from './util';
+import {
+    getElementById,
+    createElement,
+    addChild,
+    waitForPageLoad,
+    waitForElementsByClassName,
+    insertChild,
+    getBody
+} from './util';
 import { isLoggedIn } from './auth';
 
 /**
@@ -106,4 +114,29 @@ export function logConsolePasteWarning(): void {
         '%c' + 'Do not paste anything here! You may get your account stolen or your device compromised!',
         'color:rgba(255, 255, 255, 0.75); font-size: 20px; font-weight: bold;'
     );
+}
+
+/**
+ * Display a development banner if the site is in development mode.
+ */
+export async function displayDevBanner(): Promise<void> {
+    const isDev = await fetch('/api/vars')
+        .then((res) => res.json())
+        .then((data) => data.isDev)
+        .catch(console.error);
+
+    if (!isDev) return;
+
+    const banner = createElement(
+        'div',
+        { id: 'devBanner' },
+        [],
+        [
+            createElement('p', {
+                innerText:
+                    'You are currently viewing a development build of jtoh.pro. Please avoid leaking anything unless you are instructed to do so.'
+            })
+        ]
+    );
+    insertChild(await getBody(), 'afterbegin', banner);
 }

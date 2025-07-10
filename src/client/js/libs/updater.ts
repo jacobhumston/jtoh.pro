@@ -3,7 +3,7 @@
  * If it is, a request will be sent to the server to update the website.
  */
 export async function checkForUpdates() {
-    const version = await await fetch('/api/vars')
+    const version = await fetch('/api/vars')
         .then((res) => res.json())
         .then((data) => data.version)
         .catch(console.error);

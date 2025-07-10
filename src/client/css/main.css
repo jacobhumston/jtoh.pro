@@ -35,6 +35,8 @@
     --altcha-color-error-text: var(--color-error);
     --altcha-color-footer-bg: var(--color-background);
     --altcha-max-width: 260px;
+    --dev-banner-background: #5064c0;
+    --dev-banner-text: #ffffff;
 }
 
 html,
@@ -1971,4 +1973,17 @@ input[type='file']::file-selector-button:active {
     margin-bottom: 10px;
     display: inline-block;
     margin-left: 10px;
+}
+
+#devBanner {
+    background-color: var(--dev-banner-background);
+    color: var(--dev-banner-text);
+    padding: 10px;
+    text-align: center;
+    font-size: small;
+}
+
+#devBanner p {
+    margin: 0px;
+    padding: 0px;
 }

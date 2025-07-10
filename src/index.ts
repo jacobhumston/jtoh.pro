@@ -48,7 +48,17 @@ cardImageCheck();
 const app = new Hono({
     getPath: (request) => {
         const url = new URL(request.url);
-        //const host = url.host;
+        const host = url.host;
+        if (
+            (host.endsWith('.etoh.pro') ||
+                host.endsWith('.roblox-obby.pro') ||
+                host.endsWith('.jtoh.pro') ||
+                host.endsWith(`.${getURLHost()}`)) &&
+            host !== getURLHost()
+        ) {
+            const user = host.split('.')[0];
+            return `/api/custom-sites/${user}?path=${url.pathname}`;
+        }
         return url.pathname;
     }
 });
@@ -106,8 +116,13 @@ app.use(async (context, next) => {
         if (link.host === 'etoh.pro' || link.host === 'roblox-obby.pro')
             return context.redirect(getURL() + '/app/profile-creator/');
 
-        if (host.endsWith('.etoh.pro') || host.endsWith('.roblox-obby.pro') || host.endsWith('.jtoh.pro')) {
-            return context.redirect(getURL() + '/app/profile-creator/?ref=' + host.split('.')[0]);
+        if (
+            host.endsWith('.etoh.pro') ||
+            host.endsWith('.roblox-obby.pro') ||
+            host.endsWith('.jtoh.pro') ||
+            host.endsWith(`.${getURLHost()}`)
+        ) {
+            return context.redirect(getURL() + '/app/profile-creator/?ref=' + host);
         }
 
         if (link.host === getURLObj().host) return await next();
@@ -146,7 +161,9 @@ app.use(
 app.get('/api/vars', async (context) => {
     return context.json({
         usingCustomUrl,
-        version: gitHash
+        version: gitHash,
+        isDev,
+        url: getURL()
     });
 });
 
@@ -240,6 +257,8 @@ app.onError((error, context) => {
 
     // logger.error SUCKS at logging http errors... smh
     Bun.inspect(error);
+
+    console.error(error);
 
     return context.json({ error: 'Internal server error.' }, 500);
 });
