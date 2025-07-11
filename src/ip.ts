@@ -12,7 +12,7 @@ export function getIP(context: Context): string {
         (isDev
             ? getURLHost() !== 'dev.jtoh.pro'
                 ? getConnInfo(context).remote.address
-                : context.req.header('CF-Connecting-IP')
+                : (context.req.header('CF-Connecting-IP') ?? 'NOIP')
             : context.req.header('CF-Connecting-IP')) ?? 'NOIP'
     );
 }

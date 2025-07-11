@@ -177,9 +177,12 @@ export function wait(ms: number): Promise<undefined> {
 
 /**
  * Get the file name of the current page.
+ * Note: This will return 'custom-site' if root[data-custom] is set to true.
  * @returns The file name of the current page.
  */
 export function getPageFileName(): string {
+    if (document.documentElement.dataset.custom === 'true') return 'custom-site';
+
     const href = new URL(document.location.href);
     const path = href.pathname.split('/');
     // Work around for index.html
