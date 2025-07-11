@@ -1987,3 +1987,35 @@ input[type='file']::file-selector-button:active {
     margin: 0px;
     padding: 0px;
 }
+
+#unclaimedCustomSiteNotice {
+    text-align: center;
+    display: block;
+    margin-top: 30px;
+    padding: 10px;
+    background-color: var(--color-background-even-more-darker);
+    border-radius: 15px;
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#unclaimedCustomSiteHeadBackLink {
+    display: block;
+    background-color: var(--color-text-header);
+    color: var(--color-text);
+    border: none;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 10px;
+    max-width: fit-content;
+}
+
+#unclaimedCustomSiteHeadBackLink:hover {
+    background-color: var(--color-text);
+    color: var(--color-background);
+}
