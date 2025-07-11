@@ -2,6 +2,7 @@ import type { Hono } from 'hono';
 import { JSDOM } from 'jsdom';
 import { parseRobloxAccountV2WithCache } from './login-auth';
 import { customSitesDB } from './db';
+import { getURL, getURLHost } from './dev';
 
 export default async function listenForCustomSites(app: Hono) {
     app.get('/api/custom-sites/*', async (context) => {
@@ -23,6 +24,12 @@ export default async function listenForCustomSites(app: Hono) {
             element.id = 'unclaimedCustomSiteNotice';
             element.innerHTML = `This custom site has not been claimed yet by ${user.name}!`;
             document.body.appendChild(element);
+
+            const element2 = document.createElement('a');
+            element2.href = getURL();
+            element2.innerHTML = `Head back to ${getURLHost()}.`
+            element2.id = 'unclaimedCustomSiteHeadBackLink';
+            document.body.appendChild(element2);
             return context.html(dom.serialize());
         }
 
