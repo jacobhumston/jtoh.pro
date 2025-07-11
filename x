@@ -67,7 +67,7 @@ declare -A commands
     commands["cloc"]="cloc --exclude-list-file=.gitignore ."
     commands["bun"]="${dir_bun}"
     commands["tunnel"]="cloudflared tunnel run --token eyJhIjoiOWYwNjAwZjNmZmI3MDNhYWYxN2U5MmRkYjNkMzJlMzEiLCJ0IjoiNmM2NWEzMWUtYmU3Ny00YjkzLThjNGEtODNjNmYzNjcxZDJhIiwicyI6IlpHVTNPV05sTVRZdFpHUTFaaTAwWlRFMUxXSTRNRGN0WVRobU1qVXhaR05qWVRKaiJ9"
-    commands["install-cloudflared"]="${install_cloudflared}"
+    commands["install-cloudflared"]="install_cloudflared"
 
     # Aliases.
     commands["f"]=${commands["format"]}
