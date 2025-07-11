@@ -22,6 +22,7 @@ import { getIP } from './ip';
 import { v4 } from 'uuid';
 import { createModListFile } from './files';
 import { getPunishmentOfType } from './punishments';
+import { robloxAPICache } from './cache';
 
 if (!fs.existsSync('cache')) fs.mkdirSync('cache');
 
@@ -313,4 +314,17 @@ export async function parseRobloxAccount(context: Context): Promise<RobloxUserRe
     const providedUser: string = context.req.param('user');
     if (!providedUser || providedUser.length < 1) return undefined;
     return await parseRobloxAccountV2(providedUser, context);
+}
+
+export async function parseRobloxAccountV2WithCache(
+    providedUser: string,
+    context?: Context
+): Promise<RobloxUserResult | undefined> {
+    if (await robloxAPICache.get(`user:${providedUser}`)) return await robloxAPICache.get(`user:${providedUser}`);
+
+    const user = await parseRobloxAccountV2(providedUser, context);
+    if (!user) return undefined;
+
+    await robloxAPICache.set(`user:${providedUser}`, user);
+    return user;
 }

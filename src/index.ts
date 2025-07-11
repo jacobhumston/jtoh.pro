@@ -41,6 +41,7 @@ import gameRequests from './game-requests';
 import { mods } from './mods';
 import otohGen from './gens/otoh';
 import { gitHash } from './git-hash';
+import listenForCustomSites from './custom-sites';
 
 cleanUpTemp();
 cardImageCheck();
@@ -54,10 +55,12 @@ const app = new Hono({
                 host.endsWith('.roblox-obby.pro') ||
                 host.endsWith('.jtoh.pro') ||
                 host.endsWith(`.${getURLHost()}`)) &&
-            host !== getURLHost()
+            host !== getURLHost() &&
+            !url.pathname.startsWith('/api/') &&
+            !url.pathname.startsWith('/app/assets/')
         ) {
-            const user = host.split('.')[0];
-            return `/api/custom-sites/${user}?path=${url.pathname}`;
+            const id = host.split('.')[0];
+            return `/api/custom-sites/${id}${url.pathname}`;
         }
         return url.pathname;
     }
@@ -79,7 +82,7 @@ app.use(
     csrf({
         origin: (origin) => {
             const url = new URL(origin);
-            return url.origin === getURLObj().origin;
+            return url.origin === getURLObj().origin || url.origin.endsWith(`.${getURLHost()}`);
         }
     })
 );
@@ -189,6 +192,7 @@ setupAccountEndpoints(app);
 listenForPackageLists(app);
 embed(app);
 gameRequests(app);
+listenForCustomSites(app);
 
 serveStatic(app);
 
@@ -229,7 +233,7 @@ app.get('/api/app.webmanifest', async (context) => {
             name: 'JToH Pro' + (isDev ? ' (Dev)' : isBeta ? ' (Beta)' : ''),
             icons: [
                 {
-                    src: `${getURL()}/app/assets/roblox-icon.png`,
+                    src: `/app/assets/roblox-icon.png`,
                     sizes: '512x512',
                     type: 'image/png'
                 }
