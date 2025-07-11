@@ -27,7 +27,7 @@ export default async function listenForCustomSites(app: Hono) {
 
             const element2 = document.createElement('a');
             element2.href = getURL();
-            element2.innerHTML = `Head back to ${getURLHost()}.`
+            element2.innerHTML = `Head back to ${getURLHost()}.`;
             element2.id = 'unclaimedCustomSiteHeadBackLink';
             document.body.appendChild(element2);
             return context.html(dom.serialize());
