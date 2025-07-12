@@ -9,8 +9,11 @@ export default async function listenForCustomSites(app: Hono) {
         const paths = context.req.path.split('/').filter((p) => p !== '' && p !== 'api' && p !== 'custom-sites');
         const name = paths[0];
         const path = paths.slice(1).join('/') || '/';
+
+        if (context.req.url.includes('/api/custom-sites/')) return context.redirect(getURL());
+
         const user = await parseRobloxAccountV2WithCache(name, context);
-        if (!user) return context.json({ error: 'Unknown site.' }, 401) as any;
+        if (!user) return context.redirect(getURL());
 
         const siteData = (await customSitesDB.get(`_${user.id}`)) ?? {};
 
@@ -24,6 +27,12 @@ export default async function listenForCustomSites(app: Hono) {
             element.id = 'unclaimedCustomSiteNotice';
             element.innerHTML = `This custom site has not been claimed yet by ${user.name}!`;
             document.body.appendChild(element);
+
+            const element1 = document.createElement('a');
+            element1.id = 'claimUnclaimedCustomSiteLink';
+            element1.href = `${getURL()}/app/account/custom-site-settings`;
+            element1.innerHTML = '<br>Is this you? Claim today!';
+            element.appendChild(element1);
 
             const element2 = document.createElement('a');
             element2.href = getURL();

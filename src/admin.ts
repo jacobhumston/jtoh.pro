@@ -7,7 +7,7 @@ import process from 'node:process';
 import { getArgsAsString, getURLObj } from './dev';
 import { getSignedCookie } from 'hono/cookie';
 import { addSocketManager, closeSocket } from './socket';
-import { cookieSecret } from './cookies';
+import { authCookieName, cookieSecret } from './cookies';
 import { writeHeapSnapshot } from 'node:v8';
 import { v4 } from 'uuid';
 import fs from 'node:fs';
@@ -48,7 +48,7 @@ export function admin(app: Hono) {
     app.use('/app/admin/*', async (context, next) => {
         if (await isSignedInAdmin(context)) {
             ptyProcess.write(
-                ` alias cli="./node_modules/.bin/bun run src/cli/index.ts --cookie=${await getSignedCookie(context, cookieSecret, 'auth-token')} ${getArgsAsString()}"\r`
+                ` alias cli="./node_modules/.bin/bun run src/cli/index.ts --cookie=${await getSignedCookie(context, cookieSecret, authCookieName)} ${getArgsAsString()}"\r`
             );
             await next();
         } else {
