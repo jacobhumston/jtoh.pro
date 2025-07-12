@@ -14,7 +14,7 @@ import { userIdToUser, userIdToThumbnail, usernameToUser } from './roblox';
 import jtohGroupMembers from '../etc/group-members/jtoh.json';
 import rvsGroupMembers from '../etc/group-members/rvs.json';
 import cscdGroupMembers from '../etc/group-members/cscd.json';
-import { cookieSecret } from './cookies';
+import { authCookieName, cookieSecret } from './cookies';
 import { UAParser } from 'ua-parser-js';
 import fs from 'node:fs';
 import { convertTo } from '@jacobhumston/tc.js';
@@ -143,7 +143,7 @@ export default function setupLoginAuth(app: Hono) {
                         );
                         await setSignedCookie(
                             context,
-                            'auth-token',
+                            authCookieName,
                             encryptCode(token, hashingTokenForAuthTokens),
                             cookieSecret,
                             {
@@ -182,12 +182,12 @@ export default function setupLoginAuth(app: Hono) {
         const user = await getSignedInRobloxUser(context);
         if (!user) return context.json({ error: 'Not signed in.' }, 401);
         const token = decryptCode(
-            (await getSignedCookie(context, cookieSecret, 'auth-token')) as string,
+            (await getSignedCookie(context, cookieSecret, authCookieName)) as string,
             hashingTokenForAuthTokens
         );
         await loginAuthDB.delete(token);
 
-        deleteCookie(context, 'auth-token', {
+        deleteCookie(context, authCookieName, {
             httpOnly: true,
             sameSite: 'Strict',
             secure: true,
@@ -209,7 +209,7 @@ export default function setupLoginAuth(app: Hono) {
 }
 
 export async function getSignedInRobloxUser(context: Context): Promise<LoggedInUser | null> {
-    let token = await getSignedCookie(context, cookieSecret, 'auth-token');
+    let token = await getSignedCookie(context, cookieSecret, authCookieName);
     if (!token) {
         if (context.req.query('authToken') && context.req.path.startsWith('/api/admin/')) {
             token = context.req.query('authToken') ?? '';
