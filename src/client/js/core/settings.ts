@@ -52,7 +52,7 @@ export default async function () {
     });
 
     switchAccountsButton.addEventListener('click', async () => {
-        sessionStorage.setItem('LoginRedirect', window.location.href);
+        window.sessionStorage.setItem('LoginRedirect', window.location.href);
         window.location.href = '/logout?switch=true&single=true';
     });
 

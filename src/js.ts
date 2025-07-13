@@ -3,7 +3,6 @@ import fs from 'node:fs';
 import { minify as minifyJS } from 'terser';
 import logger from './logger';
 import { isDev } from './dev';
-// import { compiler } from 'google-closure-compiler';
 
 const cache: { [key: string]: string } = {};
 
@@ -53,27 +52,6 @@ export async function getJSForPage(pageName: string) {
     let code = result.outputFiles[0].text;
 
     code = `(async()=>{${code}})();`;
-
-    /*
-    const closureCompiler = new compiler({
-        js: code,
-        compilation_level: 'ADVANCED_OPTIMIZATIONS',
-        externs: ['src/client/js/externs/prototype.js']
-    });
-
-    const compiledCode: string = await new Promise(function (resolve) {
-        closureCompiler.run((exitCode, stdout, stderr) => {
-            if (exitCode !== 0) {
-                logger.error(stderr);
-                resolve('');
-            } else {
-                resolve(stdout);
-            }
-        });
-    });
-    */
-
-    //code = compiledCode;
 
     code =
         // @ts-ignore

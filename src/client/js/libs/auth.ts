@@ -178,7 +178,7 @@ export async function addAuthUI() {
             type: 'button'
         });
         button.addEventListener('click', () => {
-            sessionStorage.setItem('LoginRedirect', window.location.href);
+            window.sessionStorage.setItem('LoginRedirect', window.location.href);
             window.location.href = '/login';
         });
 
@@ -195,13 +195,13 @@ export function handleLoginRedirect() {
     const url = new URL(window.location.href);
     const redirect = url.searchParams.get('loginRedirect');
     if (redirect === 'true') {
-        const loginRedirect = sessionStorage.getItem('LoginRedirect') as string;
+        const loginRedirect = window.sessionStorage.getItem('LoginRedirect') as string;
         try {
             const newURL = new URL(loginRedirect);
             if (url.hostname === newURL.hostname) {
                 window.location.href = newURL.href;
             }
-            sessionStorage.removeItem('LoginRedirect');
+            window.sessionStorage.removeItem('LoginRedirect');
         } catch (error) {
             console.error(error);
             const url = new URL(window.location.href);

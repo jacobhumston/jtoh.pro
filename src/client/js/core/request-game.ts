@@ -14,7 +14,7 @@ export default async function () {
 
     if (!(await isLoggedIn())) {
         alert('You must be logged in to request a game.');
-        sessionStorage.setItem('LoginRedirect', window.location.href);
+        window.sessionStorage.setItem('LoginRedirect', window.location.href);
         window.location.href = '/login';
         return;
     }
