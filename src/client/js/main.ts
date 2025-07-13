@@ -33,7 +33,8 @@ if (
     url.hostname !== 'beta.jtoh.pro' &&
     !url.hostname.endsWith('.jtoh.pro') &&
     !url.hostname.endsWith('.etoh.pro') &&
-    !url.hostname.endsWith('.roblox-obby.pro')
+    !url.hostname.endsWith('.roblox-obby.pro') &&
+    !url.hostname.endsWith('.localhost')
 ) {
     if (url.host.endsWith('devtunnels.ms') || url.host.endsWith('app.github.dev')) {
         const response = await fetch('/api/vars').catch(() => ({ json: () => ({ usingCustomUrl: false }) }));

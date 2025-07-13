@@ -119,6 +119,7 @@ app.use(async (context, next) => {
         if (link.host === 'etoh.pro' || link.host === 'roblox-obby.pro')
             return context.redirect(getURL() + '/app/profile-creator/');
 
+        /*
         if (
             host.endsWith('.etoh.pro') ||
             host.endsWith('.roblox-obby.pro') ||
@@ -127,8 +128,9 @@ app.use(async (context, next) => {
         ) {
             return context.redirect(getURL() + '/app/profile-creator/?ref=' + host);
         }
+            */
 
-        if (link.host === getURLObj().host) return await next();
+        if (link.host.endsWith('.' + getURLObj().host) || link.host === getURLHost()) return await next();
         return context.redirect(getURL() + link.pathname + link.search);
     } else {
         return context.json({ error: 'Invalid host.' }, 400);

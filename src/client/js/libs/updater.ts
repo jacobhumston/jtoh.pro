@@ -9,9 +9,9 @@ export async function checkForUpdates() {
         .catch(console.error);
 
     if (!version) return;
-    if (version === localStorage.getItem('$VERSION')) return;
+    if (version === window.localStorage.getItem('$VERSION')) return;
 
-    localStorage.setItem('$VERSION', version);
+    window.localStorage.setItem('$VERSION', version);
     await fetch('/api/clear-site-cache').catch(console.error);
 
     return;

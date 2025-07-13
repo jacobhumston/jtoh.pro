@@ -76,7 +76,7 @@ export async function getWebToken(): Promise<string | undefined> {
     }
 
     if (await isLoggedIn()) {
-        const token = sessionStorage.getItem('captchaGateway');
+        const token = window.sessionStorage.getItem('captchaGateway');
         const verified = token
             ? await fetch(`/api/captcha/verify?token=${token}`).catch(() => ({
                   json: () => ({
@@ -99,7 +99,7 @@ export async function getWebToken(): Promise<string | undefined> {
             const data = await newVerified.json();
             if (data.error) return await getAltchaToken();
             const verifiedToken = data.token;
-            sessionStorage.setItem('captchaGateway', verifiedToken);
+            window.sessionStorage.setItem('captchaGateway', verifiedToken);
             return verifiedToken;
         }
     } else {
@@ -120,6 +120,8 @@ export function logConsolePasteWarning(): void {
  * Display a development banner if the site is in development mode.
  */
 export async function displayDevBanner(): Promise<void> {
+    if (window.sessionStorage.getItem('ignoreDevBanner') === 'true') return;
+
     const isDev = await fetch('/api/vars')
         .then((res) => res.json())
         .then((data) => data.isDev)
@@ -140,3 +142,21 @@ export async function displayDevBanner(): Promise<void> {
     );
     insertChild(await getBody(), 'afterbegin', banner);
 }
+
+/**
+ * Utility function to toggle the dev banner.
+ */
+// @ts-expect-error
+globalThis.jp_toggleDevBanner = function () {
+    const banner = getElementById('devBanner');
+    if (banner) {
+        banner.remove();
+        window.sessionStorage.setItem('ignoreDevBanner', 'true');
+        console.log('Development banner hidden. Run "jp_toggleDevBanner()" to show it again.');
+    } else {
+        displayDevBanner();
+        window.sessionStorage.setItem('ignoreDevBanner', 'false');
+        console.log('Development banner shown. Run "jp_toggleDevBanner()" to hide it again.');
+        displayDevBanner();
+    }
+};

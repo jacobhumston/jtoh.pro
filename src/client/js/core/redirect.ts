@@ -28,10 +28,13 @@ export default async function () {
         if (!newUrl) {
             document.location.href = '/';
         } else {
-            if (newUrl.host === url.host && newUrl.protocol === url.protocol) {
+            if (
+                (newUrl.host === url.host || newUrl.host.endswith('.' + url.host)) &&
+                newUrl.protocol === url.protocol
+            ) {
                 if (newUrl.href.includes('mod') || newUrl.href.includes('admin')) {
                     if (!(await isLoggedIn())) {
-                        sessionStorage.setItem('LoginRedirect', window.location.href);
+                        window.sessionStorage.setItem('LoginRedirect', window.location.href);
                         window.location.href = '/login';
                     } else {
                         document.location.href = newUrl.href;
