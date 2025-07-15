@@ -1,3 +1,5 @@
+const startLoadTime = window.performance.now();
+
 import { updateBlogDetails } from './components/blog-details';
 import { listenForImages } from './components/image-loader';
 import { updateMenuBar } from './components/menu-bar';
@@ -7,7 +9,11 @@ import { addAuthUI, handleLoginRedirect } from './libs/auth';
 import { displayDevBanner, logConsolePasteWarning } from './libs/security';
 import { applyTheme, listenForThemSelection } from './libs/theme';
 import { checkForUpdates } from './libs/updater';
-import { addClass, getPageFileName } from './libs/util';
+import { addClass, getPageFileName, hookFetchLogger } from './libs/util';
+
+const url = new URL(document.location.href);
+const devLoggerEnabled = url.hostname !== 'jtoh.pro';
+if (devLoggerEnabled) hookFetchLogger();
 
 window.addEventListener('load', function () {
     addClass(document.head, '__loaded');
@@ -26,7 +32,6 @@ handleLoginRedirect();
 // initProgressBar();
 checkForUpdates();
 
-const url = new URL(document.location.href);
 if (
     url.hostname !== 'localhost' &&
     url.hostname !== 'jtoh.pro' &&
@@ -46,10 +51,18 @@ if (
 }
 
 try {
-    const core = (await import(`./core/${getPageFileName()}.ts`)) as { default: () => void } | null;
-    if (core) core.default();
+    const core = (await import(`./core/${getPageFileName()}.ts`)) as { default: () => Promise<void> } | null;
+    if (core) await core.default();
 } catch (_) {
     // Do nothing :3
+    // hahah i LIED!
+    console.log(`%c[Client] No core module found for this site.`, 'color: #caff4fff; font-weight: bold;');
 }
 
 displayDevBanner();
+
+if (devLoggerEnabled)
+    console.log(
+        `%c[Client] Loaded in ${Math.round(window.performance.now() - startLoadTime)}ms`,
+        'color: #4fffad; font-weight: bold;'
+    );
