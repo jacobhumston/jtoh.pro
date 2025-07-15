@@ -159,18 +159,21 @@ export default async function serveStatic(app: Hono) {
             });
             */
 
+            const minifiedContent = minifyHTML.minify(content, {
+                quoteCharacter: "'",
+                collapseWhitespace: true,
+                removeComments: true,
+                removeAttributeQuotes: true
+            });
+
+            const js = await getJSForPage(pageName);
+
             file = Buffer.from(
-                minifyHTML
-                    .minify(content, {
-                        quoteCharacter: "'",
-                        collapseWhitespace: true,
-                        removeComments: true,
-                        removeAttributeQuotes: true
-                    })
+                minifiedContent
                     .replaceAll('{{pageId}}', pageId)
                     .replaceAll('{{currentYear}}', new Date().getFullYear().toString())
-                    .replace('<style template=styles></style>', `<style>${getCSS()}</style>`)
-                    .replace('<script template=js></script>', `<script>${await getJSForPage(pageName)}</script>`)
+                    .replaceAll('<style template=styles></style>', `<style>${getCSS()}</style>`)
+                    .replaceAll('<script template=js></script>', `<script>${js}</script>`)
             );
         }
 
