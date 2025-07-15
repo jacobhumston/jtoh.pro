@@ -407,3 +407,15 @@ export function updatePageDisplayURL(url: string) {
         console.error(error);
     }
 }
+
+/**
+ * Hook the fetch logger to log all fetch requests to the console.
+ */
+export function hookFetchLogger(): void {
+    const originalFetch = window.fetch;
+    window.fetch = async (...args: Parameters<typeof originalFetch>) => {
+        const response = await originalFetch(...args);
+        console.log('[Request]', ...args, response);
+        return response;
+    };
+}
