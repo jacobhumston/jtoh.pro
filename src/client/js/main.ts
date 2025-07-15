@@ -56,13 +56,13 @@ try {
 } catch (_) {
     // Do nothing :3
     // hahah i LIED!
-    console.log(`%c[Client] No core module found for this site.`, 'color: #caff4fff; font-weight: bold;');
+    console.log(`%c` + `[Client] No core module found for this site.`, 'color: #caff4fff; font-weight: bold;');
 }
 
 displayDevBanner();
 
 if (devLoggerEnabled)
     console.log(
-        `%c[Client] Loaded in ${Math.round(window.performance.now() - startLoadTime)}ms`,
+        `%c` + `[Client] Loaded in ${Math.round(window.performance.now() - startLoadTime)}ms`,
         'color: #4fffad; font-weight: bold;'
     );
