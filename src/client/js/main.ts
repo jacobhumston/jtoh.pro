@@ -56,7 +56,10 @@ try {
 } catch (_) {
     // Do nothing :3
     // hahah i LIED!
-    console.log(`%c` + `[Client] No core module found for this site.`, 'color: #caff4fff; font-weight: bold;');
+    console.log(
+        `%c` + `[Client] No core module found for '${getPageFileName()}'.`,
+        'color: #caff4fff; font-weight: bold; background-color: #585858ff; padding: 5px;'
+    );
 }
 
 displayDevBanner();
@@ -64,5 +67,5 @@ displayDevBanner();
 if (devLoggerEnabled)
     console.log(
         `%c` + `[Client] Loaded in ${Math.round(window.performance.now() - startLoadTime)}ms`,
-        'color: #4fffad; font-weight: bold;'
+        'color: #4fffad; font-weight: bold; background-color: #585858ff; padding: 5px;'
     );
