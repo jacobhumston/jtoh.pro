@@ -45,7 +45,7 @@
         "fdir": "^6.4.6",
         "file-type": "^21.0.0",
         "fuse.js": "^7.1.0",
-        "google-closure-compiler": "^20250709.0.0",
+        "google-closure-compiler": "^20250713.0.0",
         "google-fonts-helper": "^3.7.3",
         "highlight.js": "^11.11.1",
         "hono": "^4.8.5",
@@ -1029,17 +1029,17 @@
 
     "globals": ["globals@11.12.0", "", {}, "sha512-WOBp/EEGUiIsJSp7wcv/y6MO+lV9UoncWqxuFfm8eBwzWNgyfBd6Gz+IeKQ9jCmyhoH99g15M3T+QaVHFjizVA=="],
 
-    "google-closure-compiler": ["google-closure-compiler@20250709.0.0", "", { "dependencies": { "chalk": "5.x", "google-closure-compiler-java": "^20250709.0.0", "minimist": "1.x", "vinyl": "3.x", "vinyl-sourcemaps-apply": "^0.2.0" }, "optionalDependencies": { "google-closure-compiler-linux": "^20250709.0.0", "google-closure-compiler-linux-arm64": "^20250709.0.0", "google-closure-compiler-macos": "^20250709.0.0", "google-closure-compiler-windows": "^20250709.0.0" }, "bin": { "google-closure-compiler": "cli.js" } }, "sha512-FUdjG7vri7Pi/iswJj1bFcE3cYOcGLnez2nKaEK8qSailRFQlnp8j9vuT60EOU8FLzckEPI0Sf882Q7vJPilFg=="],
+    "google-closure-compiler": ["google-closure-compiler@20250713.0.0", "", { "dependencies": { "chalk": "5.x", "google-closure-compiler-java": "^20250713.0.0", "minimist": "1.x", "vinyl": "3.x", "vinyl-sourcemaps-apply": "^0.2.0" }, "optionalDependencies": { "google-closure-compiler-linux": "^20250713.0.0", "google-closure-compiler-linux-arm64": "^20250713.0.0", "google-closure-compiler-macos": "^20250713.0.0", "google-closure-compiler-windows": "^20250713.0.0" }, "bin": { "google-closure-compiler": "cli.js" } }, "sha512-c+7LQXd633gUZhsvn1XKip/AB+2J0uZfyDc8v4OYFNy5RrnZ69g2cAKdCGxalEwo9HHFTuBPt1a3dZbkQVDEtA=="],
 
-    "google-closure-compiler-java": ["google-closure-compiler-java@20250709.0.0", "", {}, "sha512-gyriPJ8nYxYVa5wqeMJZsOdFoDDcHSmGHG9VNYjQrcdIOWyxW9Ggcb2gtrI/MEa54CLoRbzUJ12ELO1mzePMlQ=="],
+    "google-closure-compiler-java": ["google-closure-compiler-java@20250713.0.0", "", {}, "sha512-cTL8s+XPWVtQ8H82xVKViTCe9qYYv8/8PCRAo22mMj9wqtCJuoo98P3fsP6mAm2XVzOna5HVMxNGeAdxuAkSjg=="],
 
-    "google-closure-compiler-linux": ["google-closure-compiler-linux@20250709.0.0", "", { "os": "linux", "cpu": [ "x32", "x64", ] }, "sha512-kpl9W+696vnGzpa/ewfwpsRR3t42g3CDQ5hFjQAitxtZpnejU7ik94+O8D+56049zS2O85LdWRDCbckvzEXw+w=="],
+    "google-closure-compiler-linux": ["google-closure-compiler-linux@20250713.0.0", "", { "os": "linux", "cpu": [ "x32", "x64", ] }, "sha512-5KJbEjOtlxCJPkT7+rT3jkKVpBXLdmQXOhAcAGBVt4NJl6qXS2Eti9k3Au62AFwlK6iqKypnv0rpgkJzDjA89Q=="],
 
-    "google-closure-compiler-linux-arm64": ["google-closure-compiler-linux-arm64@20250709.0.0", "", { "os": "linux", "cpu": "arm64" }, "sha512-3mLAD9JpAM0StUb2VTOw4L/rIxksTO7lOfuI0+OyexQfLIRLM8M9jeUgrOAPbmgDsyYZ8Q3pHX2qcnURexZsrw=="],
+    "google-closure-compiler-linux-arm64": ["google-closure-compiler-linux-arm64@20250713.0.0", "", { "os": "linux", "cpu": "arm64" }, "sha512-DDH3Nlvea8d7YZHBMwwNwk+xNaSUVryuULENtcUAShYaVudw0lfYnbaRLLfgwURofHOPi1qEwSpvEKPCcWMlDQ=="],
 
-    "google-closure-compiler-macos": ["google-closure-compiler-macos@20250709.0.0", "", { "os": "darwin", "cpu": "arm64" }, "sha512-2/MXSVgM+HmnzwbyWdfY2ZVjKgK8LFtCKhsQQhsSV/f2jnrHcuG9+RkzLrzQsO1zPpHaLcXAkizf4AUpCfuzBA=="],
+    "google-closure-compiler-macos": ["google-closure-compiler-macos@20250713.0.0", "", { "os": "darwin", "cpu": "arm64" }, "sha512-y390M21QL0GHKrj9IHmkT+R2kKjG/qOzHC0Pg5b6MbFibg+H5sLemGKc91AEfJL6tfeRfRzkE5oPgqtNXMGaAA=="],
 
-    "google-closure-compiler-windows": ["google-closure-compiler-windows@20250709.0.0", "", { "os": "win32", "cpu": [ "x32", "x64", ] }, "sha512-ZnmgRzx0qIVQu0zw7ZTJQz3tMFVhwzeODZfXRnYDLeNkJA7IBaWsNHTALA7pUcgPM+YDDr4ihQOexMc0u4s7LQ=="],
+    "google-closure-compiler-windows": ["google-closure-compiler-windows@20250713.0.0", "", { "os": "win32", "cpu": [ "x32", "x64", ] }, "sha512-7bTKVbmfV4lcyWcBtwkM4/e6RFOjGS2dSvdg+Do6wfHw0QqPDQZSFYRE+8lYmaxuArAcdU5PTe485yiSoLkc3g=="],
 
     "google-fonts-helper": ["google-fonts-helper@3.7.3", "", { "dependencies": { "deepmerge": "^4.3.1", "hookable": "^5.5.3", "ofetch": "^1.4.1", "ufo": "^1.5.4" } }, "sha512-dENZeK6RMvkCOFoKbLbS+pyoDgpmk4U6BYmfXnztMar2d8SjEG6valxql/Lkyi7bu5F+3FTdE+gAEYSYZ5zzMA=="],
 

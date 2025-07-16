@@ -172,8 +172,8 @@ export default async function serveStatic(app: Hono) {
                 minifiedContent
                     .replaceAll('{{pageId}}', pageId)
                     .replaceAll('{{currentYear}}', new Date().getFullYear().toString())
-                    .replaceAll('<style template=styles></style>', `<style>${getCSS()}</style>`)
-                    .replaceAll('<script template=js></script>', `<script>${js}</script>`)
+                    .replace('<style template=styles></style>', () => `<style>${getCSS()}</style>`)
+                    .replace('<script template=js></script>', () => `<script>${js}</script>`)
             );
         }
 
