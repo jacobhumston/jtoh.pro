@@ -6,6 +6,7 @@ import { updateMenuBar } from './components/menu-bar';
 // import { initProgressBar } from './components/progress-bar';
 import { updatePageTitle } from './components/title';
 import { addAuthUI, handleLoginRedirect } from './libs/auth';
+import { disableLogger, log } from './libs/logger';
 import { displayDevBanner, logConsolePasteWarning } from './libs/security';
 import { applyTheme, listenForThemSelection } from './libs/theme';
 import { checkForUpdates } from './libs/updater';
@@ -13,7 +14,11 @@ import { addClass, getPageFileName, hookFetchLogger } from './libs/util';
 
 const url = new URL(document.location.href);
 const devLoggerEnabled = url.hostname !== 'jtoh.pro';
-if (devLoggerEnabled) hookFetchLogger();
+if (devLoggerEnabled) {
+    hookFetchLogger();
+} else {
+    disableLogger();
+}
 
 window.addEventListener('load', function () {
     addClass(document.head, '__loaded');
@@ -53,19 +58,11 @@ if (
 try {
     const core = (await import(`./core/${getPageFileName()}.ts`)) as { default: () => Promise<void> } | null;
     if (core) await core.default();
-} catch (_) {
+} catch (error) {
     // Do nothing :3
-    // hahah i LIED!
-    console.log(
-        `%c` + `[Client] No core module found for '${getPageFileName()}'.`,
-        'color: #caff4fff; font-weight: bold; background-color: #585858ff; padding: 5px;'
-    );
+    // hahaha i LIED!
+    log('error', `${error}`);
 }
 
 displayDevBanner();
-
-if (devLoggerEnabled)
-    console.log(
-        `%c` + `[Client] Loaded in ${Math.round(window.performance.now() - startLoadTime)}ms`,
-        'color: #4fffad; font-weight: bold; background-color: #585858ff; padding: 5px;'
-    );
+log('success', `Loaded in ${Math.round(window.performance.now() - startLoadTime)}ms`);

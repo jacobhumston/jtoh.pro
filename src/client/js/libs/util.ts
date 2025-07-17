@@ -1,3 +1,5 @@
+import { getDefaultLoggerStylesheet, log } from './logger';
+
 /**
  * Add a class or multiple classes to an element.
  * @param element The element to add the class to.
@@ -415,7 +417,27 @@ export function hookFetchLogger(): void {
     const originalFetch = window.fetch;
     window.fetch = async (...args: Parameters<typeof originalFetch>) => {
         const response = await originalFetch(...args);
-        console.log('[Request]', ...args, response);
+        let url = args[0].toString();
+        if (url.startsWith('/')) {
+            url = new URL(url, window.location.href).href;
+        }
+        const newURL = new URL(url);
+        newURL.searchParams.keys().forEach((key) => newURL.searchParams.delete(key));
+        //if (!url.startsWith('https://')) log('error', 'Fetch request to an insecure URL detected!');
+        log(
+            'info',
+            `Fetch ${(args[1] ?? {}).method ?? 'GET'} request to %c${url}%c completed with status ${response.status}`,
+            [
+                getDefaultLoggerStylesheet({
+                    color: '#00bfff',
+                    extra: [
+                        { name: 'text-decoration', value: 'none' },
+                        { name: 'margin-left', value: '-5px' }
+                    ]
+                }),
+                getDefaultLoggerStylesheet({ 'padding-right': '5px' })
+            ]
+        );
         return response;
     };
 }
