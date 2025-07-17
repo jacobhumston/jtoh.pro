@@ -1,3 +1,4 @@
+import { log } from '../libs/logger';
 import { createErrorPopup } from '../libs/quick-elements';
 import {
     addChild,
@@ -34,8 +35,11 @@ export default async function () {
     });
     addChild(packagesContainer, [packageCount, downloadLicenses, createElement('br')]);
 
+    log('success', `Loaded ${credits.credits.length} credits and ${packages.packages.length} packages.`);
+
     new Promise(() => {
         for (const pkg of packages.packages) {
+            //log('info', `Loading package: ${pkg.name} (${pkg.version})`);
             const packageElement = createElement('a', {
                 innerText: `${pkg.name}`,
                 href: pkg.url,
@@ -60,6 +64,7 @@ export default async function () {
 
     new Promise(async () => {
         for (const person of credits.credits) {
+            //log('info', `Loading credit: ${person.user.name} (${person.info})`);
             const creditsElement = createElement('div', {}, ['creditsElement']);
 
             const creditsPictureElement = createElement('div', {}, ['creditsPictureElement']);

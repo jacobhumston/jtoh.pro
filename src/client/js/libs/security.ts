@@ -8,6 +8,7 @@ import {
     getBody
 } from './util';
 import { isLoggedIn } from './auth';
+import { log } from './logger';
 
 /**
  * Get a web token for the captcha system.
@@ -155,11 +156,12 @@ globalThis.jp_toggleDevBanner = function () {
     if (banner) {
         banner.remove();
         window.sessionStorage.setItem('ignoreDevBanner', 'true');
-        console.log('Development banner hidden. Run "jp_toggleDevBanner()" to show it again.');
+        log('success', 'Development banner hidden. Run "jp_toggleDevBanner()" to show it again.');
     } else {
         displayDevBanner();
         window.sessionStorage.setItem('ignoreDevBanner', 'false');
-        console.log('Development banner shown. Run "jp_toggleDevBanner()" to hide it again.');
+        log('success', 'Development banner shown. Run "jp_toggleDevBanner()" to hide it again.');
         displayDevBanner();
     }
+    return 'jp_toggleDevBanner() has been called. The banner is now ' + (banner ? 'hidden' : 'shown') + '.';
 };

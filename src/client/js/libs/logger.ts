@@ -1,4 +1,5 @@
 let logDisabled = false;
+let logIndex = 0;
 const logColors = {
     info: '#00bfff',
     warn: '#ffa500',
@@ -15,11 +16,12 @@ export function log(type: 'info' | 'warn' | 'error' | 'success', message: string
     if (logDisabled) return;
     const extraStylesArray = [];
     if (extraStyles) extraStylesArray.push(...extraStyles);
-
+    logIndex++;
     console.log(
-        `%c[${type.toUpperCase()}] %c${message}`,
+        `%c[${logIndex}] %c[${type.toUpperCase()}] %c${message}`,
+        `color: #757575ff; font-weight: normal; background-color: #242424ff; padding: 5px; padding-right: 0px; font-weight: bold;`,
         `color: ${logColors[type]}; font-weight: bold; background-color: #242424ff; padding: 5px; padding-right: 0px; font-weight: bold;`,
-        'color: #c7c7c7ff; font-weight: normal; background-color: #242424ff; padding: 5px; padding-left: 0px;',
+        'color: #c7c7c7ff; font-weight: normal; background-color: #242424ff; padding: 5px; margin-left: -5px;',
         ...extraStylesArray
     );
 }

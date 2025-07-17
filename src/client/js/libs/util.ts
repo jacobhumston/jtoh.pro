@@ -422,11 +422,11 @@ export function hookFetchLogger(): void {
             url = new URL(url, window.location.href).href;
         }
         const newURL = new URL(url);
-        newURL.searchParams.keys().forEach((key) => newURL.searchParams.delete(key));
+        //newURL.searchParams.keys().forEach((key) => newURL.searchParams.delete(key));
         //if (!url.startsWith('https://')) log('error', 'Fetch request to an insecure URL detected!');
         log(
             'info',
-            `Fetch ${(args[1] ?? {}).method ?? 'GET'} request to %c${url}%c completed with status ${response.status}`,
+            `Fetch ${(args[1] ?? {}).method ?? 'GET'} request to %c${newURL.hostname.replaceAll('.', '/')} @ ${newURL.pathname}%c completed with status ${response.status} (${response.ok ? 'OK' : 'ERROR'})`,
             [
                 getDefaultLoggerStylesheet({
                     color: '#00bfff',
