@@ -1,3 +1,4 @@
+import { document } from '../libs/global';
 import { addClass, getBody, removeClass } from '../libs/util';
 
 /**

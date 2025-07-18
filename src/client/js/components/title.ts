@@ -1,3 +1,4 @@
+import { document, window } from '../libs/global';
 import { getHead } from '../libs/util';
 
 /**

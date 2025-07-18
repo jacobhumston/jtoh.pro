@@ -1,3 +1,4 @@
+import { window } from './global';
 import { numberFormatter } from './formatters';
 import { addChild, createElement, getBody, insertChild } from './util';
 

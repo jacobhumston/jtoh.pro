@@ -1,3 +1,4 @@
+import { window } from '../libs/global';
 import { addClass, wait, waitForElementById, waitForPageLoad } from '../libs/util';
 
 /**

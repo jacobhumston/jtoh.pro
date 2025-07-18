@@ -1,3 +1,4 @@
+import { document, window } from './global';
 import { createErrorPopup } from './quick-elements';
 import {
     getElementById,

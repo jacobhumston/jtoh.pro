@@ -1,3 +1,4 @@
+import { document, window } from '../libs/global';
 import { isLoggedIn } from '../libs/auth';
 import { getElementById, waitForPageLoad } from '../libs/util';
 

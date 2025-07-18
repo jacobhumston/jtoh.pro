@@ -1,3 +1,4 @@
+import { document, window } from '../libs/global';
 import { isDebounceActive, setDebounceActive, setDebounceInactive } from '../libs/debounce';
 import {
     addClass,

@@ -1,3 +1,4 @@
+import { window } from '../libs/global';
 import { capitalizedGameNamesArray, fullNamesArray } from '../../../shared/gamelist';
 import { getLoggedInUser } from '../libs/auth';
 import { getWebToken } from '../libs/security';
