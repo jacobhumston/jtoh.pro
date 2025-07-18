@@ -1,3 +1,4 @@
+import { document } from '../libs/global';
 import { getElementByIdExpected, waitForPageLoad } from '../libs/util';
 
 export default async function () {

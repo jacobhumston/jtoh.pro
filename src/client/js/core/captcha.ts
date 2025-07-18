@@ -1,3 +1,4 @@
+import { document, window } from '../libs/global';
 import { getWebToken } from '../libs/security';
 
 export default async function () {

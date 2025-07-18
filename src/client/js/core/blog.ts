@@ -1,3 +1,4 @@
+import { window } from '../libs/global';
 import { addChild, addClass, createElement, getElementById, getWebIconHTML, waitForPageLoad } from '../libs/util';
 
 export default async function () {

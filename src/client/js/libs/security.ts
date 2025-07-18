@@ -1,3 +1,4 @@
+import { document, window } from './global';
 import {
     getElementById,
     createElement,

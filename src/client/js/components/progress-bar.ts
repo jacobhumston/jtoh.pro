@@ -1,3 +1,4 @@
+import { document } from '../libs/global';
 import { getBody, waitForElementByIdExpected, waitForPageLoad } from '../libs/util';
 
 /**

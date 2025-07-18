@@ -1,3 +1,5 @@
+import { window } from './global';
+
 /**
  * Checks if a new version of the website is available.
  * If it is, a request will be sent to the server to update the website.

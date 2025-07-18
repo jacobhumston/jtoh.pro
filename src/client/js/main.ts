@@ -1,3 +1,5 @@
+import { document, window } from './libs/global';
+
 const startLoadTime = window.performance.now();
 
 import { updateBlogDetails } from './components/blog-details';

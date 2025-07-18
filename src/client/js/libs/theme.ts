@@ -1,3 +1,4 @@
+import { document, window } from './global';
 import { isDebounceActive, setDebounceActive, setDebounceInactive } from './debounce';
 import { addClass, removeClass, getWebIconHTML, getElementById, waitForElementById } from './util';
 import { EventEmitter } from 'events';

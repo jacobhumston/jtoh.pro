@@ -1,3 +1,4 @@
+import { window } from '../libs/global';
 import { isLoggedIn } from '../libs/auth';
 import { getWebToken } from '../libs/security';
 import { getElementByIdExpected, waitForPageLoad } from '../libs/util';

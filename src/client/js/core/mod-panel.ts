@@ -1,3 +1,4 @@
+import { document, window } from '../libs/global';
 import { punishmentTypes, type ModLogEntry } from '../../../shared/punishment-types';
 import { isDebounceActive, setDebounceActive, setDebounceInactive } from '../libs/debounce';
 import {
@@ -30,7 +31,7 @@ export default async function () {
 
     const pages: Array<{ title: string; update: () => Promise<any>; cleanUp: undefined | (() => Promise<any>) }> = [];
 
-    let uploadCardBackgroundQueueTimer: Timer | undefined = undefined;
+    let uploadCardBackgroundQueueTimer: number | undefined = undefined;
     pages.push({
         title: 'Card Uploads',
         update: async () => {
