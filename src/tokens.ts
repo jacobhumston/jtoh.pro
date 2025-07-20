@@ -18,10 +18,13 @@ export const discordInteractionsToken = isDev
       ? 'MTMwMDQzMzU5MTU1Mjk2Njc0OA.GxUSth.5MOhrpWu0swoTV-G6V1ijY_d1aW3YLe4msB1Pk'
       : 'MTI4NTE0ODA4MDE4OTk5NzEwNw.GRRp8v.My3_48n6vIWOKZwQOOjPzZ1RaxTbvpyu6PiG5E'; // prod
 
-export const robloxAuthClientId = isDev ? '4129388561659670705' : '2567423461004624377';
-export const robloxAuthSecret = isDev
-    ? 'RBX-uPA5-K2ewUqJUOWYUTsc6APDAioHX2QQLwy7mus1OV1bV_SIECYzh9OmX04kgplz'
-    : 'RBX-KkLtWcojrUu8-RE95CFx4MenWvsMH6ty2Pvv7COmX4slZTNQ0Mb8tIVinmrXuE2_';
+//export const robloxAuthClientId = isDev ? '4129388561659670705' : '2567423461004624377';
+//export const robloxAuthSecret = isDev
+//    ? 'RBX-uPA5-K2ewUqJUOWYUTsc6APDAioHX2QQLwy7mus1OV1bV_SIECYzh9OmX04kgplz'
+//    : 'RBX-KkLtWcojrUu8-RE95CFx4MenWvsMH6ty2Pvv7COmX4slZTNQ0Mb8tIVinmrXuE2_';
+
+export const robloxAuthClientId = '2567423461004624377';
+export const robloxAuthSecret = 'RBX-KkLtWcojrUu8-RE95CFx4MenWvsMH6ty2Pvv7COmX4slZTNQ0Mb8tIVinmrXuE2_';
 
 export const theCatApiToken = 'live_2nTZ9TxN25x26zvxK3MGh00CALdsOJ4GNX552EQ3mqa6YCKM29nGRTBrA0ks45Ao';
 
