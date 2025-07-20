@@ -42,6 +42,7 @@ import { mods } from './mods';
 import otohGen from './gens/otoh';
 import { gitHash } from './git-hash';
 import listenForCustomSites from './custom-sites';
+import { referralsDB, updateReferralCount } from './db';
 
 cleanUpTemp();
 cardImageCheck();
@@ -163,6 +164,17 @@ app.use(
     })
 );
 
+app.use(async (context, next) => {
+    const referral = context.req.query('ref') || context.req.query('referral');
+    if (referral) {
+        const codes = (await referralsDB.get('codes')) ?? [];
+        if (codes.includes(referral.toLowerCase())) {
+            updateReferralCount(referral.toLocaleLowerCase());
+        }
+    }
+    return await next();
+});
+
 app.get('/api/vars', async (context) => {
     return context.json({
         usingCustomUrl,
@@ -235,15 +247,24 @@ app.get('/api/app.webmanifest', async (context) => {
             name: 'JToH Pro' + (isDev ? ' (Dev)' : isBeta ? ' (Beta)' : ''),
             icons: [
                 {
-                    src: `/app/assets/roblox-icon.png`,
+                    src: `${getURL()}/app/assets/branding/logo-colorful.png`,
                     sizes: '512x512',
                     type: 'image/png'
                 }
             ],
-            start_url: '/app/',
+            screenshots: [
+                {
+                    url: `${getURL()}/app/assets/screenshots/mobile/one.png`
+                },
+                {
+                    url: `${getURL()}/app/assets/screenshots/mobile/two.png`
+                }
+            ],
+            start_url: `${getURL()}/app/`,
             display: 'standalone',
             theme_color: '#b58dffde',
-            background_color: '#222222'
+            background_color: '#222222',
+            description: 'Easily generate and share your Eternal Tower of Hell stats and more with jtoh.pro!'
         })
     );
 });

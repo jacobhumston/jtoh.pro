@@ -28,7 +28,8 @@ while (partsRemoved) {
         }
     }
 }
-const command = parts[0];
+const command = parts[0].startsWith('https://') ? parts[1] : parts[0];
+const sliceIndex = parts[0].startsWith('https://') ? 2 : 1;
 
 if (!command) {
     logger.error('No command provided! Use "help" for a list of commands.');
@@ -38,7 +39,7 @@ if (!command) {
 const commands = getCommands();
 const cmd = commands.find((c) => c.name === command);
 if (cmd) {
-    await cmd.execute(parts.slice(1), cookie);
+    await cmd.execute(parts.slice(sliceIndex), cookie);
 } else {
     logger.error(`Command "${command}" not found! Use "help" for a list of commands.`);
     process.exit(0);

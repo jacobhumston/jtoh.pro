@@ -32,6 +32,12 @@ export async function updateRequestCount(game: gameNames) {
     statsDB[game].set(today, ((await statsDB[game].get<number>(today)) ?? 0) + 1);
 }
 
+export async function updateReferralCount(code: string) {
+    const today = new UTCDate().toLocaleString('en-US').split(',')[0].replaceAll('/', '-');
+    const codeDB = new Keyv({ store: referralsDBSqlite, namespace: code });
+    codeDB.set(today, ((await codeDB.get<number>(today)) ?? 0) + 1);
+}
+
 export async function updateCardRequestCount(game: gameNames, user: RobloxUserResult) {
     type data = { count: number; user: RobloxUserResult };
     const key = `${game}-${user.id}`;
@@ -148,6 +154,9 @@ const discordBotConfigDB = new Keyv({ store: discordBotConfigDBSqlite });
 const customSitesDBSqlite = new KeyvSqlite('sqlite://db/customSites.sqlite');
 const customSitesDB = new Keyv({ store: customSitesDBSqlite });
 
+const referralsDBSqlite = new KeyvSqlite('sqlite://db/referrals.sqlite');
+const referralsDB = new Keyv({ store: referralsDBSqlite });
+
 export {
     statsDB,
     cardsRequestedDB,
@@ -160,7 +169,8 @@ export {
     towerCountDB,
     punishmentsDB,
     discordBotConfigDB,
-    customSitesDB
+    customSitesDB,
+    referralsDB
 };
 
 export function getDBName(
@@ -177,6 +187,7 @@ export function getDBName(
         | typeof punishmentsDB
         | typeof discordBotConfigDB
         | typeof customSitesDB
+        | typeof referralsDB
 ) {
     if (db === statsDB) return 'stats';
     if (db === cardsRequestedDB) return 'cardsRequested';
@@ -190,5 +201,6 @@ export function getDBName(
     if (db === punishmentsDB) return 'punishments';
     if (db === discordBotConfigDB) return 'discordBotConfig';
     if (db === customSitesDB) return 'customSites';
+    if (db === referralsDB) return 'referrals';
     throw new Error('Invalid DB.');
 }
