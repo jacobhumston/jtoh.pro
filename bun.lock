@@ -24,7 +24,7 @@
         "@types/quicklink": "^2.3.4",
         "@xterm/addon-web-links": "^0.11.0",
         "@xterm/xterm": "^5.5.0",
-        "altcha": "^2.0.5",
+        "altcha": "^2.1.0",
         "altcha-lib": "^1.3.0",
         "api": "^6.1.3",
         "archiver": "^7.0.1",
@@ -601,7 +601,7 @@
 
     "ajv-draft-04": ["ajv-draft-04@1.0.0", "", { "peerDependencies": { "ajv": "^8.5.0" }, "optionalPeers": ["ajv"] }, "sha512-mv00Te6nmYbRp5DCwclxtt7yV/joXJPGS7nM+97GdxvuttCOfgI3K4U25zboyeX0O+myI8ERluxQe5wljMmVIw=="],
 
-    "altcha": ["altcha@2.0.5", "", { "dependencies": { "@altcha/crypto": "^0.0.1" }, "optionalDependencies": { "@rollup/rollup-linux-x64-gnu": "4.18.0" } }, "sha512-pjHXPceaVcD/d8QuNAYYfc2TX3u/3mPKbS1yONj8FwKJOuhbS35Do7JcdDSMYtnZKEECK0Ugknbr/ervYbuNmA=="],
+    "altcha": ["altcha@2.1.0", "", { "dependencies": { "@altcha/crypto": "^0.0.1" }, "optionalDependencies": { "@rollup/rollup-linux-x64-gnu": "4.18.0" } }, "sha512-V+Ug4Qr9oLR2WcDSgtzmwOzHGqoencaJoyRmUb1hqZ6Y91B3Xe8vHQ0Q3RwoKuBOYHX9yTYccJvaWHEp8+4UIQ=="],
 
     "altcha-lib": ["altcha-lib@1.3.0", "", {}, "sha512-PpFg/JPuR+Jiud7Vs54XSDqDxvylcp+0oDa/i1ARxBA/iKDqLeNlO8PorQbfuDTMVLYRypAa/2VDK3nbBTAu5A=="],
 
