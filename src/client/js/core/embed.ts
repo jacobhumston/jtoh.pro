@@ -1,10 +1,10 @@
 import { getElementById, waitForPageLoad } from '../libs/util';
 import { gameNamesArray } from '../../../shared/gamelist';
+import hljs from 'highlight.js';
 
 export default async function () {
     await waitForPageLoad();
 
-    // @ts-expect-error
     hljs.highlightAll();
 
     const listElement = getElementById('gamesList') as HTMLDivElement;
