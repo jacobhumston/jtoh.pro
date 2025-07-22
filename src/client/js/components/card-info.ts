@@ -43,7 +43,7 @@ export async function updateRequestChart(game: gameNames) {
     const chart = (await waitForElementById('cardRequestChartImage', { timeout: 10000 })) as HTMLImageElement;
 
     if (chart) {
-        chart.src = `/api/charts/card-requests/${game}?width=500&height=250`;
+        chart.src = `/api/charts/card-requests/${game}?width=500&height=250&nocache=${Date.now()}`;
     } else {
         createErrorPopup('Failed to update request chart, element was missing.', 4000);
         console.error('Failed to update request chart, element was missing.');

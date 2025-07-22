@@ -1,8 +1,8 @@
 import * as jsonc from 'jsonc-parser';
-import { gameBadgesDB } from './db';
-import { convertTo } from '@jacobhumston/tc.js';
+//import { gameBadgesDB } from './db';
+//import { convertTo } from '@jacobhumston/tc.js';
 import { wait } from './util';
-import { isDev } from './dev';
+//import { isDev } from './dev';
 
 interface BadgeIcon {
     id: number;
@@ -121,6 +121,7 @@ export async function getRobloxGamesUniverseIds(): Promise<{ universeIds: number
         });
 }
 
+/*
 async function update(force: boolean = false): Promise<void> {
     const universeIds = (await getRobloxGamesUniverseIds()).universeIds;
     for (const id of universeIds) {
@@ -139,6 +140,7 @@ async function update(force: boolean = false): Promise<void> {
         }
     }
 }
+*/
 
-update(isDev);
-setInterval(() => update(true), convertTo({ days: 0.25 }, 'milliseconds'));
+//update(isDev);
+//setInterval(() => update(true), convertTo({ days: 0.25 }, 'milliseconds'));

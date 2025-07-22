@@ -1476,8 +1476,6 @@ a {
 }
 
 .homepageGameSingleSelectionContainer p {
-    position: absolute;
-    top: 0px;
     font-size: larger;
     background-color: var(--color-background-even-more-darker);
     padding: 10px;
@@ -1487,6 +1485,11 @@ a {
     border-top-left-radius: 30px;
     padding-right: 20px;
     padding-left: 20px;
+    display: inline-block;
+    box-sizing: border-box;
+    position: relative;
+    margin-right: 10px;
+    margin-bottom: 10px;
 }
 
 .homepageGameSingleSelectionContainer div {
@@ -1518,6 +1521,73 @@ a {
 .homepageGameSingleSelectionContainer a:hover {
     background-color: var(--color-text);
     color: var(--color-background);
+}
+
+.homepageGameSingleSelectionContainer .partnerLabel {
+    background-color: var(--color-text-highlight);
+    color: var(--color-background-even-more-darker);
+    border-radius: 25px;
+    padding: 0px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-weight: bold;
+    display: inline;
+    box-sizing: border-box;
+    font-size: medium;
+    margin-right: 10px;
+}
+
+.homepageGameSingleSelectionContainer .statCount {
+    background-color: var(--color-text-bold-no-transparency);
+    color: var(--color-text);
+    padding: 5px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+    display: block;
+    font-size: large;
+    max-width: fit-content;
+}
+
+.homepageGameSingleSelectionContainer .statCount .materialSymbolsRounded {
+    vertical-align: text-bottom;
+}
+
+#homepageGameStats {
+    background-color: var(--color-background-even-more-darker);
+    padding: 10px;
+    border-radius: 25px;
+    padding-top: 0px;
+    margin-top: 15px;
+    box-sizing: border-box;
+    padding-bottom: 15px;
+    margin-bottom: 30px;
+}
+
+#homepageGameStats h2 {
+    display: inline-block;
+    margin-bottom: 10px;
+    background-color: var(--color-background-darker);
+    padding: 10px;
+    margin-top: 0px;
+    border-bottom-right-radius: 25px;
+    border-top-left-radius: 25px;
+    margin-left: -10px;
+    padding-right: 25px;
+    padding-left: 25px;
+}
+
+#homepageGameStats #requestStats {
+    margin-top: 15px !important;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#homepageGameStats #cardRequestChartImage {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
 }
 
 #clickHereToChangeCardBackground,
