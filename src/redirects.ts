@@ -24,6 +24,7 @@ export default function redirects(app: Hono) {
     redirectRoutes.forEach((route) => {
         app.get(route.path, async (context) => {
             const searchParams = new URL(context.req.url).searchParams;
+            if (searchParams.has('ref')) searchParams.delete('ref');
             const searchParamsString = searchParams.toString().length > 0 ? '?' + searchParams.toString() : '';
             return context.redirect(route.target + searchParamsString);
         });

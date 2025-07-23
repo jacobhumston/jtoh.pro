@@ -69,3 +69,16 @@ bun install
 # Get started with commands:
 ./x
 ```
+
+<details>
+    <summary>Having issues with unbuffer command?</summary>
+
+Try running the following:
+
+```bash
+export TCLLIBPATH="/usr/lib/tcltk/x86_64-linux-gnu"
+```
+
+Also make sure expect is installed.
+
+</details>

@@ -157,6 +157,10 @@ const customSitesDB = new Keyv({ store: customSitesDBSqlite });
 const referralsDBSqlite = new KeyvSqlite('sqlite://db/referrals.sqlite');
 const referralsDB = new Keyv({ store: referralsDBSqlite });
 
+export const rawDBS = {
+    referralsDBSqlite
+};
+
 export {
     statsDB,
     cardsRequestedDB,

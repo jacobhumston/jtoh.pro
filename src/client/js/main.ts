@@ -15,6 +15,12 @@ import { checkForUpdates } from './libs/updater';
 import { addClass, getPageFileName, hookFetchLogger } from './libs/util';
 
 const url = new URL(document.location.href);
+
+if (url.searchParams.has('ref')) {
+    url.searchParams.delete('ref');
+    document.location.href = url.toString();
+}
+
 const devLoggerEnabled = url.hostname !== 'jtoh.pro';
 if (devLoggerEnabled) {
     hookFetchLogger();

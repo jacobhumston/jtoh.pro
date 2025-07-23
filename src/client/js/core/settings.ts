@@ -13,6 +13,11 @@ import {
     wait,
     waitForPageLoad
 } from '../libs/util';
+import { Chart, registerables } from 'chart.js';
+import { log } from '../libs/logger';
+
+Chart.register(...registerables);
+Chart.defaults.font.family = 'Poppins';
 
 export default async function () {
     await waitForPageLoad();
@@ -197,6 +202,44 @@ export default async function () {
                 punishmentItem.innerHTML += `<br><span class="accountSettingsPunishmentExpires">This punishment does not expire.</span>`;
             }
             addChild(punishmentsList, [punishmentItem]);
+        }
+    }
+
+    const viewableRefs = await (await fetch(account.admin ? '/api/refs/list' : '/api/refs/viewable')).json();
+    if (viewableRefs.codes.length > 0) {
+        log('success', `User can view the following referral codes: ${viewableRefs.codes.join(', ')}`);
+
+        addChild(container, [
+            createElement('h2', { innerText: 'Referral Codes', className: 'accountSettingsHeader' }),
+            createElement('div', {}, ['split', 'accountSettingsSplit']),
+            createElement(
+                'p',
+                {
+                    innerText:
+                        'Referral codes allow you to track how many clicks your links have received. All codes you have access to view are listed below. Please contact our partnership email for assistance.'
+                },
+                []
+            )
+        ]);
+
+        const referralCodesList = createElement('div', { id: 'accountSettingsReferralCodesList' });
+        addChild(container, [referralCodesList]);
+
+        for (const code of viewableRefs.codes) {
+            const data = await (await fetch(`/api/refs/stats/${code}`)).json();
+
+            const codeItem = createElement('div', { className: 'accountSettingsReferralCodeItem' });
+            const codeHeader = createElement('h3', {
+                innerHTML: `${getWebIconHTML('star')} ${code}`,
+                className: 'accountSettingsReferralCodeHeader'
+            });
+            const overview = createElement('p', {
+                className: 'accountSettingsReferralStats',
+                innerHTML: `<b>Today</b>:  ${data.stats.today} <b>This Week:</b> ${data.stats.week} <b>This Month:</b> ${data.stats.month} <b>This Year:</b> ${data.stats.year} <b>Total:</b> ${data.stats.total}`
+            });
+
+            addChild(codeItem, [codeHeader, overview]);
+            addChild(referralCodesList, [codeItem]);
         }
     }
 }

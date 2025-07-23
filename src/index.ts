@@ -43,6 +43,7 @@ import otohGen from './gens/otoh';
 import { gitHash } from './git-hash';
 import listenForCustomSites from './custom-sites';
 import { referralsDB, updateReferralCount } from './db';
+import setupRefs from './refs';
 
 cleanUpTemp();
 cardImageCheck();
@@ -165,7 +166,7 @@ app.use(
 );
 
 app.use(async (context, next) => {
-    const referral = context.req.query('ref') || context.req.query('referral');
+    const referral = context.req.query('ref');
     if (referral) {
         const codes = (await referralsDB.get('codes')) ?? [];
         if (codes.includes(referral.toLowerCase())) {
@@ -207,6 +208,7 @@ listenForPackageLists(app);
 embed(app);
 gameRequests(app);
 listenForCustomSites(app);
+setupRefs(app);
 
 serveStatic(app);
 
@@ -217,6 +219,7 @@ previewGen(app);
 
 app.get('/', async (context) => {
     const searchParams = new URL(context.req.url).searchParams;
+    if (searchParams.has('ref')) searchParams.delete('ref');
     const searchParamsString = searchParams.toString().length > 0 ? '?' + searchParams.toString() : '';
     return context.redirect('/app/' + searchParamsString);
 });

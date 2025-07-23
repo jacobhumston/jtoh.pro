@@ -28,6 +28,12 @@ while (partsRemoved) {
         }
     }
 }
+
+if (parts.length === 0) {
+    logger.error('No command provided! Use "help" for a list of commands.');
+    process.exit(0);
+}
+
 const command = parts[0].startsWith('https://') ? parts[1] : parts[0];
 const sliceIndex = parts[0].startsWith('https://') ? 2 : 1;
 

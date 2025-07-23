@@ -9,7 +9,7 @@ export default {
     args: [
         {
             name: 'command',
-            description: 'The command to execute.',
+            description: 'The command to execute. (list, add, add-viewer, delete)',
             required: true,
             type: 'string'
         },
@@ -59,6 +59,16 @@ export default {
                 }
             } else {
                 logger.error(`Referral code ${code} does not exist.`);
+            }
+        } else if (command === 'delete' && code) {
+            const codes = (await referralsDB.get('codes')) || [];
+            if (codes.includes(code)) {
+                const index = codes.indexOf(code);
+                codes.splice(index, 1);
+                await referralsDB.set('codes', codes);
+                logger.info(`Deleted referral code: ${code}`);
+            } else {
+                logger.warn(`Referral code ${code} does not exist.`);
             }
         } else {
             logger.error(`Unknown command (or missing args): ${command}`);
