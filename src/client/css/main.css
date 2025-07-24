@@ -2089,3 +2089,42 @@ input[type='file']::file-selector-button:active {
     background-color: var(--color-text);
     color: var(--color-background);
 }
+
+.accountSettingsReferralCodeItem {
+    background-color: var(--color-background-even-more-darker);
+    padding: 10px;
+    border-radius: 15px;
+    margin-top: 10px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.accountSettingsReferralChart {
+    display: block;
+}
+
+.accountSettingsReferralStats {
+    background-color: var(--color-background-darker);
+    padding: 10px;
+    border-radius: 15px;
+    margin-top: 10px;
+    display: block;
+}
+
+.accountSettingsReferralCodeHeader .materialSymbolsRounded {
+    vertical-align: center;
+}
+
+.accountSettingsReferralCodeHeader {
+    margin: 0px;
+}
+
+.accountSettingsReferralStats b {
+    color: var(--color-success);
+    background-color: var(--color-background-even-more-darker);
+    padding: 5px;
+    border-radius: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-left: 10px;
+}

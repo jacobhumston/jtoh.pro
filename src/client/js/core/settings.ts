@@ -9,12 +9,15 @@ import {
     getElementById,
     getElementByIdExpected,
     getWebIconHTML,
+    stringToColorHex,
     temporarilySetElementText,
     wait,
     waitForPageLoad
 } from '../libs/util';
 import { Chart, registerables } from 'chart.js';
 import { log } from '../libs/logger';
+import { numberFormatter } from '../libs/formatters';
+import Color from 'color';
 
 Chart.register(...registerables);
 Chart.defaults.font.family = 'Poppins';
@@ -235,10 +238,80 @@ export default async function () {
             });
             const overview = createElement('p', {
                 className: 'accountSettingsReferralStats',
-                innerHTML: `<b>Today</b>:  ${data.stats.today} <b>This Week:</b> ${data.stats.week} <b>This Month:</b> ${data.stats.month} <b>This Year:</b> ${data.stats.year} <b>Total:</b> ${data.stats.total}`
+                innerHTML: `<b>Today:</b>  ${numberFormatter.format(data.stats.today)} <b>This Week:</b> ${numberFormatter.format(data.stats.week)} <b>This Month:</b> ${numberFormatter.format(data.stats.month)} <b>This Year:</b> ${numberFormatter.format(data.stats.year)} <b>Total:</b> ${numberFormatter.format(data.stats.total)}`
+            });
+            const chartCanvas = createElement('canvas', { className: 'accountSettingsReferralChart' });
+
+            new Chart(chartCanvas, {
+                type: 'line',
+                data: {
+                    labels: data.data.map((x: any) =>
+                        new Date(x.date).toLocaleString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric'
+                        })
+                    ),
+                    datasets: [
+                        {
+                            label: `Clicks`,
+                            data: data.data.map((x: any) => x.views),
+                            fill: false,
+                            tension: 0.1,
+                            backgroundColor: stringToColorHex(code),
+                            borderColor: new Color(stringToColorHex(code)).darken(0.2).hex(),
+                            pointRadius: 3
+                        }
+                    ]
+                },
+                options: {
+                    animation: false,
+                    font: {
+                        family: 'Poppins'
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#ebebeb',
+                                font: {
+                                    family: 'Poppins'
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: `Daily Referrals - ${code}`,
+                            color: '#ebebeb',
+                            font: {
+                                family: 'Poppins'
+                            }
+                        }
+                    },
+                    layout: {
+                        padding: 10
+                    },
+                    scales: {
+                        y: {
+                            grid: {
+                                color: '#828282'
+                            },
+                            ticks: {
+                                color: '#ebebeb'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: '#828282'
+                            },
+                            ticks: {
+                                color: '#ebebeb'
+                            }
+                        }
+                    }
+                }
             });
 
-            addChild(codeItem, [codeHeader, overview]);
+            addChild(codeItem, [codeHeader, chartCanvas, overview]);
             addChild(referralCodesList, [codeItem]);
         }
     }

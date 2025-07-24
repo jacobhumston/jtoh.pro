@@ -442,3 +442,22 @@ export function hookFetchLogger(): void {
         return response;
     };
 }
+
+/**
+ * Convert a string to a color based on its content.
+ * SOURCE: https://stackoverflow.com/a/16348977
+ * @param str The string to convert to a color.
+ * @returns The hex code. (Includes the #)
+ */
+export function stringToColorHex(str: string) {
+    let hash = 0;
+    str.split('').forEach((char) => {
+        hash = char.charCodeAt(0) + ((hash << 5) - hash);
+    });
+    let color = '#';
+    for (let i = 0; i < 3; i++) {
+        const value = (hash >> (i * 8)) & 0xff;
+        color += value.toString(16).padStart(2, '0');
+    }
+    return color;
+}
