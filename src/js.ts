@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import { minify as minifyJS } from 'terser';
 import logger from './logger';
 import { isDev } from './dev';
+import prettier from 'prettier';
 
 const cache: { [key: string]: string } = {};
 
@@ -21,7 +22,7 @@ export async function getJSForPage(pageName: string) {
             if (fs.statSync(filePath).isDirectory()) {
                 addFile(filePath);
             } else if (filePath.endsWith('.ts') && !filePath.includes('main.ts')) {
-                if (filePath.includes('core') && !filePath.includes(pageName)) {
+                if (filePath.includes('core') && !filePath.endsWith('/' + pageName + '.ts')) {
                     files.push(filePath);
                 }
             }
@@ -37,7 +38,7 @@ export async function getJSForPage(pageName: string) {
 
     const result = await esbuild.build({
         entryPoints: ['src/client/js/main.ts'],
-        minify: true,
+        minify: !isDev,
         format: 'esm',
         bundle: true,
         logLevel: 'silent',
@@ -53,50 +54,66 @@ export async function getJSForPage(pageName: string) {
 
     code = `(async()=>{${code}})();`;
 
-    code =
-        // @ts-ignore
-        (
-            await minifyJS(code, {
-                mangle: true,
-                module: false,
-                toplevel: true,
-                compress: {
-                    ecma: 2020,
-                    hoist_funs: true,
-                    drop_console: false,
-                    booleans_as_integers: true,
-                    arguments: true,
-                    unsafe: true,
-                    passes: 4,
-                    unsafe_Function: true,
-                    unsafe_math: true,
-                    unsafe_methods: true,
-                    unsafe_proto: true,
+    if (!isDev) {
+        code =
+            // @ts-ignore
+            (
+                await minifyJS(code, {
+                    mangle: true,
+                    module: false,
                     toplevel: true,
-                    module: true,
-                    reduce_vars: true,
-                    inline: true,
-                    collapse_vars: true,
-                    pure_getters: true
-                },
-                output: {
-                    comments: false
-                }
-            }).catch((error) => {
-                logger.error(error);
-                return { code: '' };
-            })
-        ).code ?? '';
+                    compress: {
+                        ecma: 2020,
+                        hoist_funs: true,
+                        drop_console: false,
+                        booleans_as_integers: true,
+                        arguments: true,
+                        unsafe: true,
+                        passes: 4,
+                        unsafe_Function: true,
+                        unsafe_math: true,
+                        unsafe_methods: true,
+                        unsafe_proto: true,
+                        toplevel: true,
+                        module: true,
+                        reduce_vars: true,
+                        inline: true,
+                        collapse_vars: true,
+                        pure_getters: true
+                    },
+                    output: {
+                        comments: false
+                    }
+                }).catch((error) => {
+                    logger.error(error);
+                    return { code: '' };
+                })
+            ).code ?? '';
+    }
 
     for (const file of filesToExclude) {
         code = code
             .replace(`"${file}":()=>import("${file}"),`, '')
             .replace(`"${file}":()=>import("${file}")`, '')
             .replace(`"${file}"(){return import("${file}")},`, '')
-            .replace(`"${file}"(){return import("${file}")}`, '');
+            .replace(`"${file}"(){return import("${file}")}`, '')
+            .replace(`"${file}": () => import("${file}"),`, '');
     }
 
     code = code.replace('{{pageName}}', pageName.split('.')[0]);
+
+    if (isDev) {
+        code = await prettier.format(code, {
+            parser: 'babel',
+            trailingComma: 'none',
+            tabWidth: 4,
+            semi: true,
+            singleQuote: true,
+            printWidth: 120,
+            useTabs: false,
+            endOfLine: 'auto'
+        });
+    }
 
     cache[cacheId] = code;
 

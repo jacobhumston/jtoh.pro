@@ -70,6 +70,7 @@ try {
     // Do nothing :3
     // hahaha i LIED!
     log('error', `${error}`);
+    console.error(error);
 }
 
 displayDevBanner();

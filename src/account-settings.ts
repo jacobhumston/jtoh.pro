@@ -204,6 +204,7 @@ export function setupAccountEndpoints(app: Hono) {
         const buffer = await sharpImage.toBuffer();
         context.header('Content-Type', 'image/png');
 
+        // @ts-expect-error
         return context.body(await new Blob([buffer]).arrayBuffer());
     });
 

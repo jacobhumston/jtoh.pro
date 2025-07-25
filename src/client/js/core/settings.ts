@@ -233,12 +233,12 @@ export default async function () {
 
             const codeItem = createElement('div', { className: 'accountSettingsReferralCodeItem' });
             const codeHeader = createElement('h3', {
-                innerHTML: `${getWebIconHTML('star')} ${code}`,
+                innerHTML: `${getWebIconHTML('star')} <span>${code}</span>`,
                 className: 'accountSettingsReferralCodeHeader'
             });
             const overview = createElement('p', {
                 className: 'accountSettingsReferralStats',
-                innerHTML: `<b>Today:</b>  ${numberFormatter.format(data.stats.today)} <b>This Week:</b> ${numberFormatter.format(data.stats.week)} <b>This Month:</b> ${numberFormatter.format(data.stats.month)} <b>This Year:</b> ${numberFormatter.format(data.stats.year)} <b>Total:</b> ${numberFormatter.format(data.stats.total)}`
+                innerHTML: `<span><b>Today:</b>  ${numberFormatter.format(data.stats.today)}</span> <span><b>This Week:</b> ${numberFormatter.format(data.stats.week)}</span> <span><b>This Month:</b> ${numberFormatter.format(data.stats.month)}</span> <span><b>This Year:</b> ${numberFormatter.format(data.stats.year)}</span> <span><b>Total:</b> ${numberFormatter.format(data.stats.total)}</span>`
             });
             const chartCanvas = createElement('canvas', { className: 'accountSettingsReferralChart' });
 
@@ -256,7 +256,7 @@ export default async function () {
                         {
                             label: `Clicks`,
                             data: data.data.map((x: any) => x.views),
-                            fill: false,
+                            fill: true,
                             tension: 0.1,
                             backgroundColor: stringToColorHex(code),
                             borderColor: new Color(stringToColorHex(code)).darken(0.2).hex(),

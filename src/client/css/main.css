@@ -2108,7 +2108,13 @@ input[type='file']::file-selector-button:active {
     padding: 10px;
     border-radius: 15px;
     margin-top: 10px;
-    display: block;
+    margin-bottom: 0px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
 }
 
 .accountSettingsReferralCodeHeader .materialSymbolsRounded {
@@ -2119,12 +2125,20 @@ input[type='file']::file-selector-button:active {
     margin: 0px;
 }
 
-.accountSettingsReferralStats b {
-    color: var(--color-success);
+.accountSettingsReferralStats span {
     background-color: var(--color-background-even-more-darker);
     padding: 5px;
     border-radius: 10px;
     padding-left: 10px;
     padding-right: 10px;
-    margin-left: 10px;
+    display: inline-block;
+    align-self: center;
+}
+
+.accountSettingsReferralStats span b {
+    color: var(--color-success);
+}
+
+.accountSettingsReferralCodeHeader span {
+    color: var(--color-text-highlight);
 }
