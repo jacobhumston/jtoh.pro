@@ -20,6 +20,8 @@ export const command = new discord.SlashCommandBuilder()
         discord.ApplicationIntegrationType.UserInstall
     ]);
 
+export const ephemeral = true;
+
 gameNamesArray.forEach((game, index) => {
     command.addSubcommand((subcommand) => {
         subcommand
@@ -82,6 +84,12 @@ export async function execute(interaction: discord.APIChatInputApplicationComman
 
         container.addTextDisplayComponents((text) =>
             text.setContent('-# **Tip:** You can right click the link (or tap and hold on mobile) to copy it.')
+        );
+
+        container.addTextDisplayComponents((text) =>
+            text.setContent(
+                `**What does this link do?**\njtoh.pro embed links allow you to share a stat card while also linking to the user's TowerStats.com profile at the same time. Simply copy & paste the link into a channel where you have embed permissions!`
+            )
         );
     } else {
         container.addTextDisplayComponents((text) => {

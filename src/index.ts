@@ -76,14 +76,19 @@ app.use(
     cors({
         origin: getURL(),
         credentials: false,
-        allowMethods: ['GET', 'POST', 'OPTIONS']
+        allowMethods: ['GET', 'POST', 'OPTIONS', 'HEAD']
     })
 );
 
 app.use(
     csrf({
         origin: (origin) => {
-            const url = new URL(origin);
+            let url: URL;
+            try {
+                url = new URL(origin);
+            } catch {
+                return false;
+            }
             return url.origin === getURLObj().origin || url.origin.endsWith(`.${getURLHost()}`);
         }
     })

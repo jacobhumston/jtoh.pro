@@ -23,6 +23,7 @@ import { v4 } from 'uuid';
 import { createModListFile } from './files';
 import { getPunishmentOfType } from './punishments';
 import { robloxAPICache } from './cache';
+import emojiRegex from 'emoji-regex';
 
 if (!fs.existsSync('cache')) fs.mkdirSync('cache');
 
@@ -274,6 +275,11 @@ export async function parseRobloxAccountV2(
     context?: Context
 ): Promise<RobloxUserResult | undefined> {
     let user: BasicRobloxUserResult | undefined = undefined;
+
+    providedUser = providedUser.trim();
+    providedUser = providedUser.replace(' ', '');
+    providedUser = providedUser.replace(emojiRegex(), '');
+
     if (providedUser.startsWith('!')) {
         user = await userIdToUser(parseInt(providedUser.slice(1))).catch(() => undefined);
     } else if (providedUser === '$me' && context) {

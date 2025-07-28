@@ -99,6 +99,8 @@ export default function otohGen(app: Hono) {
 
             const image = canvas.toBuffer('image/png');
             context.header('Content-Type', 'image/png');
+
+            // @ts-expect-error
             return context.body(await new Blob([image]).arrayBuffer());
         } else {
             context.header(
@@ -600,6 +602,7 @@ export default function otohGen(app: Hono) {
             const image = canvas.toBuffer('image/png');
             context.header('Content-Type', 'image/png');
 
+            // @ts-expect-error
             return context.body(await new Blob([image]).arrayBuffer());
         }
     });
