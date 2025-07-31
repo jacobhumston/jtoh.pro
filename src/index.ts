@@ -39,7 +39,6 @@ import { getIP } from './ip';
 import embed from './embeddable';
 import gameRequests from './game-requests';
 import { mods } from './mods';
-import otohGen from './gens/otoh';
 import { gitHash } from './git-hash';
 import listenForCustomSites from './custom-sites';
 import { referralsDB, updateReferralCount } from './db';
@@ -219,7 +218,6 @@ serveStatic(app);
 
 etohGen(app);
 cscdGen(app);
-otohGen(app);
 previewGen(app);
 
 app.get('/', async (context) => {

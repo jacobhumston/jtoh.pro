@@ -29,10 +29,7 @@ export default async function () {
         if (!newUrl) {
             document.location.href = '/';
         } else {
-            if (
-                (newUrl.host === url.host || newUrl.host.endswith('.' + url.host)) &&
-                newUrl.protocol === url.protocol
-            ) {
+            if (newUrl.host === url.host) {
                 if (newUrl.href.includes('mod') || newUrl.href.includes('admin')) {
                     if (!(await isLoggedIn())) {
                         window.sessionStorage.setItem('LoginRedirect', window.location.href);
