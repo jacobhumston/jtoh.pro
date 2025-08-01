@@ -276,6 +276,8 @@ export async function parseRobloxAccountV2(
 ): Promise<RobloxUserResult | undefined> {
     let user: BasicRobloxUserResult | undefined = undefined;
 
+    if (!providedUser || providedUser.length < 1) return undefined;
+
     providedUser = providedUser.trim();
     providedUser = providedUser.replace(' ', '');
     providedUser = providedUser.replace(emojiRegex(), '');
