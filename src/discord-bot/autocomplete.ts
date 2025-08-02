@@ -58,3 +58,26 @@ export function getFocusedOptionName(
 
     return focusedOption;
 }
+
+export function getFocusedOptionValue(
+    interaction: discord.APIApplicationCommandAutocompleteInteraction
+): string | undefined {
+    let focusedOption: string | undefined;
+
+    for (const option of interaction.data.options) {
+        if (option.type === discord.ApplicationCommandOptionType.String && option.focused) {
+            focusedOption = option.value;
+            break;
+        }
+        if (option.type === discord.ApplicationCommandOptionType.Subcommand) {
+            for (const subOption of option.options || []) {
+                if (subOption.type === discord.ApplicationCommandOptionType.String && subOption.focused) {
+                    focusedOption = subOption.value;
+                    break;
+                }
+            }
+        }
+    }
+
+    return focusedOption;
+}
