@@ -153,9 +153,8 @@ const referralsDBSqlite = new KeyvSqlite('sqlite://db/referrals.sqlite');
 const referralsDB = new Keyv({ store: referralsDBSqlite });
 
 export function getReferralCodeDB(code: string) {
-    console.log(refCodesDBs);
     if (refCodesDBs[code]) return refCodesDBs[code];
-    refCodesDBs[code] = new Keyv({ store: referralsDBSqlite, namespace: code });
+    refCodesDBs[code] = new Keyv({ store: new KeyvSqlite('sqlite://db/referrals.sqlite'), namespace: code });
     return refCodesDBs[code];
 }
 
