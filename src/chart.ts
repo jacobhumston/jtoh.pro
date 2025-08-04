@@ -27,7 +27,7 @@ export function charts(app: Hono) {
 
         const canvas = new Canvas(clamp(width, 100, 500), clamp(height, 100, 500));
         // @ts-ignore-next-line
-        new Chart(canvas, {
+        const chart = new Chart(canvas, {
             type: 'line',
             data: {
                 labels: data.map((x) =>
@@ -109,6 +109,7 @@ export function charts(app: Hono) {
             ]
         });
         context.header('Content-Type', 'image/png');
+        setTimeout(() => chart.destroy(), 100);
         // @ts-expect-error
         return context.body(await new Blob([canvas.toBuffer('image/png')]).arrayBuffer());
     });
@@ -157,7 +158,7 @@ export function charts(app: Hono) {
 
         const canvas = new Canvas(clamp(width, 100, 500), clamp(height, 100, 500));
         // @ts-ignore-next-line
-        new Chart(canvas, {
+        const chart = new Chart(canvas, {
             type: 'line',
             data: {
                 labels: allDates.map((x) =>
@@ -229,6 +230,7 @@ export function charts(app: Hono) {
             ]
         });
         context.header('Content-Type', 'image/png');
+        setTimeout(() => chart.destroy(), 100);
         // @ts-expect-error
         return context.body(await new Blob([canvas.toBuffer('image/png')]).arrayBuffer());
     });
