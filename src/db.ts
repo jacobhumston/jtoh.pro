@@ -9,6 +9,7 @@ import { createLeadboardBlacklistFile } from './files';
 if (!fs.existsSync('db/')) fs.mkdirSync('db/');
 
 const statsDB: Record<gameNames, Keyv> = {} as Record<gameNames, Keyv>;
+const refCodesDBs: Record<string, Keyv> = {};
 
 gameNamesArray.forEach((game) => {
     const statsDBSqlite = new KeyvSqlite('sqlite://db/stats.sqlite');
@@ -30,12 +31,6 @@ const captchaBypassDB = new Keyv({ store: captchaBypassDBSqlite });
 export async function updateRequestCount(game: gameNames) {
     const today = new UTCDate().toLocaleString('en-US').split(',')[0].replaceAll('/', '-');
     statsDB[game].set(today, ((await statsDB[game].get<number>(today)) ?? 0) + 1);
-}
-
-export async function updateReferralCount(code: string) {
-    const today = new UTCDate().toLocaleString('en-US').split(',')[0].replaceAll('/', '-');
-    const codeDB = new Keyv({ store: referralsDBSqlite, namespace: code });
-    codeDB.set(today, ((await codeDB.get<number>(today)) ?? 0) + 1);
 }
 
 export async function updateCardRequestCount(game: gameNames, user: RobloxUserResult) {
@@ -157,9 +152,18 @@ const customSitesDB = new Keyv({ store: customSitesDBSqlite });
 const referralsDBSqlite = new KeyvSqlite('sqlite://db/referrals.sqlite');
 const referralsDB = new Keyv({ store: referralsDBSqlite });
 
-export const rawDBS = {
-    referralsDBSqlite
-};
+export function getReferralCodeDB(code: string) {
+    console.log(refCodesDBs);
+    if (refCodesDBs[code]) return refCodesDBs[code];
+    refCodesDBs[code] = new Keyv({ store: referralsDBSqlite, namespace: code });
+    return refCodesDBs[code];
+}
+
+export async function updateReferralCount(code: string) {
+    const today = new UTCDate().toLocaleString('en-US').split(',')[0].replaceAll('/', '-');
+    const codeDB = getReferralCodeDB(code);
+    codeDB.set(today, ((await codeDB.get<number>(today)) ?? 0) + 1);
+}
 
 export {
     statsDB,

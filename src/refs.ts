@@ -1,7 +1,6 @@
 import { Hono } from 'hono';
 import { getSignedInRobloxUser, isSignedInAdmin } from './login-auth';
-import { rawDBS, referralsDB } from './db';
-import Keyv from 'keyv';
+import { getReferralCodeDB, referralsDB } from './db';
 import { isAfter, isToday, parse, startOfMonth, startOfWeek, startOfYear } from 'date-fns';
 import { UTCDate } from '@date-fns/utc';
 
@@ -40,7 +39,7 @@ export default function setupRefs(app: Hono) {
         }
 
         const data: Array<{ date: string; views: number }> = [];
-        const db = new Keyv({ store: rawDBS.referralsDBSqlite, namespace: code });
+        const db = getReferralCodeDB(code);
 
         let todayCount = 0;
         let monthCount = 0;

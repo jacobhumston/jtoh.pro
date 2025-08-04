@@ -174,7 +174,7 @@ app.use(async (context, next) => {
     if (referral) {
         const codes = (await referralsDB.get('codes')) ?? [];
         if (codes.includes(referral.toLowerCase())) {
-            updateReferralCount(referral.toLocaleLowerCase());
+            updateReferralCount(referral.toLowerCase());
         }
     }
     return await next();
