@@ -24,6 +24,10 @@ export const isEphemeral: {
 } = {};
 
 for (const commandPath of fs.readdirSync('src/discord-bot/commands/')) {
+    if (commandPath.startsWith('_')) {
+        logger.info('Skipping command "' + commandPath + "'");
+        continue;
+    }
     const { command, execute, autocomplete, ephemeral } = await import(`./commands/${commandPath}`);
     commands.push(command);
     try {
