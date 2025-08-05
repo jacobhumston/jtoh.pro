@@ -82,6 +82,10 @@ export function admin(app: Hono) {
         return context.json({ url: `${getURLObj().href}app/admin/heaps/${name}` });
     });
 
+    app.get('/api/admin/memory-usage', async (context) => {
+        return context.json(process.memoryUsage());
+    });
+
     addSocketManager('terminal', async (context) => {
         if (!(await isSignedInAdmin(context))) return closeSocket();
         return {
