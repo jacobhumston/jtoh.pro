@@ -79,7 +79,8 @@ export async function getJSForPage(pageName: string) {
                         reduce_vars: true,
                         inline: true,
                         collapse_vars: true,
-                        pure_getters: true
+                        pure_getters: true,
+                        unused: true
                     },
                     output: {
                         comments: false
