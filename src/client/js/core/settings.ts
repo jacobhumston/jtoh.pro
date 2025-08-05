@@ -256,16 +256,16 @@ export default async function () {
                         {
                             label: `Clicks`,
                             data: data.data.map((x: any) => x.views),
-                            fill: true,
+                            fill: 'origin',
                             tension: 0.1,
-                            backgroundColor: stringToColorHex(code),
+                            backgroundColor: stringToColorHex(code) + '40',
                             borderColor: new Color(stringToColorHex(code)).darken(0.2).hex(),
-                            pointRadius: 3
+                            pointRadius: 8,
+                            pointHoverRadius: 10
                         }
                     ]
                 },
                 options: {
-                    animation: false,
                     font: {
                         family: 'Poppins'
                     },
