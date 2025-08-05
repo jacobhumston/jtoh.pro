@@ -140,8 +140,7 @@ export async function displayDevBanner(): Promise<void> {
         [],
         [
             createElement('p', {
-                innerText:
-                    'You are currently viewing a development build of jtoh.pro. Please avoid leaking anything unless you are instructed to do so.'
+                innerText: 'You are currently viewing a development build of jtoh.pro.'
             })
         ]
     );
