@@ -461,3 +461,17 @@ export function stringToColorHex(str: string) {
     }
     return color;
 }
+
+/**
+ *  Adds open in new icon to anchor elements that need it.
+ */
+export function addOpenIconToAnchorLinks() {
+    const anchorElements = document.getElementsByTagName('a');
+    for (const a of anchorElements) {
+        if (a.target === '_blank' && a.childElementCount === 0) {
+            const icon = getWebIconHTML('open_in_new');
+            a.insertAdjacentHTML('beforeend', icon);
+            addClass(a, 'anchorElementWithIcon');
+        }
+    }
+}

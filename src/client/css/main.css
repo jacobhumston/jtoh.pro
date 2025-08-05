@@ -2142,3 +2142,7 @@ input[type='file']::file-selector-button:active {
 .accountSettingsReferralCodeHeader span {
     color: var(--color-text-highlight);
 }
+
+.anchorElementWithIcon .materialSymbolsRounded {
+    vertical-align: middle;
+}

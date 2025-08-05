@@ -12,7 +12,7 @@ import { disableLogger, log } from './libs/logger';
 import { displayDevBanner, logConsolePasteWarning } from './libs/security';
 import { applyTheme, listenForThemSelection } from './libs/theme';
 import { checkForUpdates } from './libs/updater';
-import { addClass, getPageFileName, hookFetchLogger } from './libs/util';
+import { addClass, addOpenIconToAnchorLinks, getPageFileName, hookFetchLogger } from './libs/util';
 
 const url = new URL(document.location.href);
 
@@ -31,6 +31,7 @@ if (devLoggerEnabled) {
 window.addEventListener('load', function () {
     addClass(document.head, '__loaded');
     document.body.style.cursor = 'default';
+    addOpenIconToAnchorLinks();
 });
 
 logConsolePasteWarning();
