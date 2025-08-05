@@ -118,7 +118,7 @@ export default function etohGen(app: Hono) {
             //});
 
             let loadTime = Date.now();
-            const cached: TowerDataEToH | undefined = await towerstatsCache.get(`${data.id}-etoh`);
+            const cached: TowerDataEToH | undefined = towerstatsCache.get(`${data.id}-etoh`);
             let towerStats: TowerDataEToH | undefined =
                 cached ??
                 (await fetch(`https://api.towerstats.com/api/etoh`, {
@@ -137,8 +137,8 @@ export default function etohGen(app: Hono) {
                 towerStats = undefined;
             }
 
-            if (towerStats !== undefined && cached === null) {
-                await towerstatsCache.set(`${data.id}-etoh`, towerStats);
+            if (towerStats !== undefined && cached === undefined) {
+                towerstatsCache.set(`${data.id}-etoh`, towerStats);
             }
 
             /*
@@ -569,7 +569,7 @@ export default function etohGen(app: Hono) {
             ctx.fillStyle = '#a8a8a8';
             ctx.font = 'italic 10px Poppins';
             ctx.textAlign = 'left';
-            const cacheTimeLeft = ((await towerstatsCache.ttl(`${data.id}-etoh`)) ?? 0) - Date.now();
+            const cacheTimeLeft = towerstatsCache.getRemainingTTL(`${data.id}-etoh`);
             const timeTakenText = cached
                 ? `Cached (${(cacheTimeLeft / 1000).toFixed(2)}s Left)`
                 : `Took ${loadTime}s to load.`;

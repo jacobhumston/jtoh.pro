@@ -1,25 +1,5 @@
 import { convertTo } from '@jacobhumston/tc.js';
-import { createCache } from 'cache-manager';
-import { Keyv } from 'keyv';
+import tllCache from '@isaacs/ttlcache';
 
-const keyv = new Keyv({});
-keyv.serialize = undefined;
-keyv.deserialize = undefined;
-
-export const towerstatsCache = createCache({
-    stores: [keyv],
-    ttl: convertTo({ minutes: 3 }, 'milliseconds'),
-    cacheId: 'towerstats'
-});
-
-export const robloxAPICache = createCache({
-    stores: [keyv],
-    ttl: convertTo({ minutes: 3 }, 'milliseconds'),
-    cacheId: 'robloxAPI'
-});
-
-export const robloxUserCache = createCache({
-    stores: [keyv],
-    ttl: convertTo({ minutes: 3 }, 'milliseconds'),
-    cacheId: 'robloxUser'
-});
+export const towerstatsCache = new tllCache({ max: 1000, ttl: convertTo({ minutes: 3 }, 'milliseconds') });
+export const robloxAPICache = new tllCache({ max: 1000, ttl: convertTo({ minutes: 3 }, 'milliseconds') });

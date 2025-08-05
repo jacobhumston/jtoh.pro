@@ -33,8 +33,8 @@ export default function webUtils(app: Hono) {
     });
 
     app.get('/api/util/roblox-user/:user', async (context) => {
-        if (await robloxAPICache.get(`user:${context.req.param('user')}`))
-            return context.json((await robloxAPICache.get(`user:${context.req.param('user')}`)) as any);
+        if (robloxAPICache.get(`user:${context.req.param('user')}`))
+            return context.json(robloxAPICache.get(`user:${context.req.param('user')}`) as any);
         const user = await parseRobloxAccountV2(context.req.param('user'), context);
         if (!user) return context.json({ error: 'Invalid user.' }, 400);
         robloxAPICache.set(`user:${context.req.param('user')}`, user);
@@ -64,10 +64,8 @@ export default function webUtils(app: Hono) {
     });
 
     app.get('/api/util/roblox-universe-thumbnail/:universeIds', async (context) => {
-        if (await robloxAPICache.get(`universe-thumbnail:${context.req.param('universeIds')}`))
-            return context.json(
-                (await robloxAPICache.get(`universe-thumbnail:${context.req.param('universeIds')}`)) as any
-            );
+        if (robloxAPICache.get(`universe-thumbnail:${context.req.param('universeIds')}`))
+            return context.json(robloxAPICache.get(`universe-thumbnail:${context.req.param('universeIds')}`) as any);
 
         const result = (await (
             await fetch(
@@ -93,10 +91,8 @@ export default function webUtils(app: Hono) {
             return context.json({ error: 'Invalid universeId.' }, 400);
         }
 
-        if (await robloxAPICache.get(`universe-thumbnails:${context.req.param('universeId')}`))
-            return context.json(
-                (await robloxAPICache.get(`universe-thumbnails:${context.req.param('universeId')}`)) as any
-            );
+        if (robloxAPICache.get(`universe-thumbnails:${context.req.param('universeId')}`))
+            return context.json(robloxAPICache.get(`universe-thumbnails:${context.req.param('universeId')}`) as any);
 
         const result = (await (
             await fetch(

@@ -328,7 +328,7 @@ export async function parseRobloxAccountV2WithCache(
     providedUser: string,
     context?: Context
 ): Promise<RobloxUserResult | undefined> {
-    if (await robloxAPICache.get(`user:${providedUser}`)) return await robloxAPICache.get(`user:${providedUser}`);
+    if (robloxAPICache.get(`user:${providedUser}`)) return robloxAPICache.get(`user:${providedUser}`);
 
     const user = await parseRobloxAccountV2(providedUser, context);
     if (!user) return undefined;

@@ -118,7 +118,7 @@ export default function cscdGen(app: Hono) {
             //});
 
             let loadTime = Date.now();
-            const cached = await towerstatsCache.get(`${data.id}-cscd`);
+            const cached = towerstatsCache.get(`${data.id}-cscd`);
             let towerStats: TowerDataCSCD | undefined =
                 cached ??
                 (await fetch(`https://api.towerstats.com/api/cscd`, {
@@ -137,8 +137,8 @@ export default function cscdGen(app: Hono) {
                 towerStats = undefined;
             }
 
-            if (towerStats !== undefined && cached === null) {
-                await towerstatsCache.set(`${data.id}-cscd`, towerStats);
+            if (towerStats !== undefined && cached === undefined) {
+                towerstatsCache.set(`${data.id}-cscd`, towerStats);
             }
 
             /*
@@ -618,10 +618,11 @@ export default function cscdGen(app: Hono) {
             ctx.fillStyle = '#a8a8a8';
             ctx.font = 'italic 10px Poppins';
             ctx.textAlign = 'left';
-            const cacheTimeLeft = ((await towerstatsCache.ttl(`${data.id}-cscd`)) ?? 0) - Date.now();
+            const cacheTimeLeft = towerstatsCache.getRemainingTTL(`${data.id}-cscd`);
             const timeTakenText = cached
                 ? `Cached (${(cacheTimeLeft / 1000).toFixed(2)}s Left)`
                 : `Took ${loadTime}s to load.`;
+
             ctx.fillText(timeTakenText, 700 - (ctx.measureText(timeTakenText).width + 40), 75);
             ctx.fillText(
                 'Questions? Visit jtoh.pro/FAQ',
