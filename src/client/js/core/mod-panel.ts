@@ -50,11 +50,15 @@ export default async function () {
                     .catch(console.error);
             }
 
-            const queueElementsContainer = createElement('div', { id: 'uploadCardBackgroundQueue' });
+            const queueElementsContainer = createElement('div', {
+                id: 'uploadCardBackgroundQueue',
+                innerHTML: 'Loading...'
+            });
             addChild(pageContainer, queueElementsContainer);
 
             async function update() {
                 const queue = (await fetchQueue()).reverse();
+                if (queueElementsContainer.innerHTML === 'Loading...') queueElementsContainer.innerHTML = '';
                 for (const item of queue) {
                     const existingElement = getElementById(`uploadCardBackgroundQueueItem${item.uploaderId}`);
                     if (existingElement) continue;
