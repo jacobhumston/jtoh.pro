@@ -108,23 +108,9 @@ export default async function serveStatic(app: Hono) {
                         mangle: true,
                         module: fileExt === '.ts',
                         compress: {
-                            ecma: 2020,
-                            hoist_funs: true,
-                            drop_console: false,
-                            booleans_as_integers: true,
-                            arguments: true,
-                            unsafe: true,
                             passes: 3,
-                            unsafe_Function: true,
-                            unsafe_math: true,
-                            unsafe_methods: true,
-                            unsafe_proto: true,
                             toplevel: true,
-                            module: true,
-                            reduce_vars: true,
-                            inline: true,
-                            collapse_vars: true,
-                            pure_getters: true
+                            module: true
                         },
                         output: {
                             comments: false
