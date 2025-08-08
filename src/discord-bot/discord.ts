@@ -176,11 +176,12 @@ export default function discordInteractions(app: Hono) {
                         value: eventData.guild
                             ? `${eventData.guild.name} \`${eventData.guild.id}\`\n* Owner ID: \`${eventData.guild.owner_id}\` \n* Vanity? ${eventData.guild.vanity_url_code ? `https://discord.gg/${eventData.guild.vanity_url_code}` : 'No'}`
                             : 'N/A (User Install)',
-                        inline: false
+                        inline: eventData.guild ? false : true
                     },
                     {
                         name: 'Timestamp',
-                        value: `<t:${Math.floor(Date.now() / 1000)}:F>`
+                        value: `<t:${Math.floor(Date.now() / 1000)}:F>`,
+                        inline: true
                     }
                 );
                 generalLogsWebhook.send({ embeds: [embed] }).catch(logger.info);
