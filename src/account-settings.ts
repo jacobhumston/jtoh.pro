@@ -205,7 +205,7 @@ export function setupAccountEndpoints(app: Hono) {
         context.header('Content-Type', 'image/png');
 
         // @ts-expect-error
-        return context.body(await new Blob([buffer]).arrayBuffer());
+        return context.body(buffer.buffer);
     });
 
     app.post('/api/account/card-background/remove', async (context) => {
