@@ -204,6 +204,8 @@ export function setupAccountEndpoints(app: Hono) {
         const buffer = await sharpImage.toBuffer();
         context.header('Content-Type', 'image/png');
 
+        console.log('pre-crop done!', buffer.byteLength, 'bytes');
+
         // @ts-expect-error
         return context.body(buffer.buffer);
     });
@@ -321,8 +323,7 @@ The contents delivered should NOT be shared with anyone.
 "account-sessions.json" - Sessions logged into your account. Contains session identifiers and general security information.
 
 >> HAVE QUESTIONS?
-Join our support server at https://discord.jtoh.pro
-Create a "General Website Support Ticket" in #get-support
+Shoot us an email at support@jtoh.pro
             `,
             { name: 'READ-ME.txt' }
         );

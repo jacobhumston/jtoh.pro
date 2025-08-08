@@ -95,8 +95,7 @@ The contents delivered should NOT be shared with anyone.
 "data.json" - Data stored by the bot for your Discord account.
 
 >> HAVE QUESTIONS?
-Join our support server at https://discord.jtoh.pro
-Create a "General Website Support Ticket" in #get-support
+Shoot us an email at support@jtoh.pro
             `,
                 { name: 'READ-ME.txt' }
             );
