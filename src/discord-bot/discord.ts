@@ -133,6 +133,7 @@ export default function discordInteractions(app: Hono) {
         return context.json(commands.map((command) => command.toJSON()));
     });
 
+    // log bot installation events
     app.post('/api/discord-events', async (context) => {
         const signature = context.req.header('X-Signature-Ed25519') ?? '';
         const timestamp = context.req.header('X-Signature-Timestamp') ?? '';
@@ -165,6 +166,7 @@ export default function discordInteractions(app: Hono) {
             ) {
                 const eventData = event.data;
                 const embed = new discord.EmbedBuilder();
+                embed.setColor('Random');
                 embed.setTitle('Discord Bot Installed');
                 embed.addFields(
                     { name: 'User', value: `${eventData.user.username} \`${eventData.user.id}\``, inline: true },
@@ -173,8 +175,12 @@ export default function discordInteractions(app: Hono) {
                         name: 'Guid',
                         value: eventData.guild
                             ? `${eventData.guild.name} \`${eventData.guild.id}\`\n* Owner ID: \`${eventData.guild.owner_id}\` \n* Vanity? ${eventData.guild.vanity_url_code ? `https://discord.gg/${eventData.guild.vanity_url_code}` : 'No'}`
-                            : 'Guild N/A (User Install)',
+                            : 'N/A (User Install)',
                         inline: false
+                    },
+                    {
+                        name: 'Timestamp',
+                        value: `<t:${Math.floor(Date.now() / 1000)}:F>`
                     }
                 );
                 generalLogsWebhook.send({ embeds: [embed] }).catch(logger.info);
