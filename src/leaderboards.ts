@@ -4,7 +4,7 @@ import type { gameNames } from './shared/gamelist';
 import { gameNamesArray } from './shared/gamelist';
 import { verifyContext } from './captcha';
 import { getSignedInRobloxUser, isSignedInAdmin, parseRobloxAccountV2WithCache } from './login-auth';
-import { getRobloxFriendsWithCache, userIdToThumbnailBust, type RobloxUserResult } from './roblox';
+import { getRobloxFriendsWithCache, userIdToThumbnailBust } from './roblox';
 
 export default function serveLeaderboards(app: Hono) {
     app.get('/api/leaderboards/:type/:game', async (context) => {

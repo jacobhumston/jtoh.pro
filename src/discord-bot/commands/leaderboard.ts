@@ -4,9 +4,10 @@ import { discordInteractionsApplicationId } from '../../tokens';
 import { fullNamesArray, gameNamesArray, type gameNames } from '../../shared/gamelist';
 import { getURL } from '../../dev';
 import { getOrderedDB, skillPointsDB, towerCountDB } from '../../db';
-import { parseRobloxAccountV2 } from '../../login-auth';
+import { parseRobloxAccountV2, parseRobloxAccountV2WithCache } from '../../login-auth';
 import { autocompleteUserSelection, getFocusedOptionName } from '../autocomplete';
 import { addRecent } from '../util';
+import { getRobloxFriendsWithCache } from '../../roblox';
 
 export const command = new discord.SlashCommandBuilder()
     .setName('leaderboard')
@@ -57,6 +58,13 @@ leaderboards.forEach((leaderboard) => {
                     .setDescription("Find a user's rank on the leaderboard.")
                     .setRequired(false)
                     .setAutocomplete(true)
+            )
+            .addStringOption((option) =>
+                option
+                    .setName('friends-of')
+                    .setDescription("View the leaderboard with only this user's friends.")
+                    .setRequired(false)
+                    .setAutocomplete(true)
             );
         return subcommand;
     });
@@ -79,12 +87,37 @@ export async function execute(interaction: discord.APIChatInputApplicationComman
     const fullGameName = fullNamesArray[gameNamesArray.indexOf(game as gameNames)];
 
     const container = new discord.ContainerBuilder();
-    const leaderboardData = await getOrderedDB(leaderboard?.db, game).catch(() => []);
+    let leaderboardData = await getOrderedDB(leaderboard?.db, game).catch(() => []);
     let page = 1;
     let find = null;
 
-    if (interaction.data.options[0].options[1]) {
-        const username = interaction.data.options[0].options[1].value as string;
+    const friendsOfOption = interaction.data.options[0].options.find((option) => option.name === 'friends-of');
+    const findOption = interaction.data.options[0].options.find((option) => option.name === 'find');
+
+    const lastRank = leaderboardData[leaderboardData.length - 1].rank + 1;
+    let friendLeaderboardName: string | null = null;
+    if (friendsOfOption) {
+        const mainUser = await parseRobloxAccountV2WithCache(friendsOfOption.value as string);
+        if (mainUser) {
+            friendLeaderboardName = mainUser.name;
+            const friends = await getRobloxFriendsWithCache(mainUser.id);
+            if (!friends) return null;
+            leaderboardData = leaderboardData.filter(
+                (item) => friends.find((user) => user.id === item.user.id) !== undefined || item.user.id === mainUser.id
+            );
+            for (const friend of friends) {
+                if (leaderboardData.find((user) => user.user.id === friend.id) === undefined) {
+                    // @ts-expect-error
+                    friend.thumbnail = '';
+                    // @ts-expect-error
+                    leaderboardData.push({ rank: lastRank, user: friend, count: 0 });
+                }
+            }
+        }
+    }
+
+    if (findOption) {
+        const username = findOption.value as string;
         const user = await parseRobloxAccountV2(username).catch(() => null);
         if (user) {
             await addRecent(interaction, user.name);
@@ -128,7 +161,7 @@ export async function execute(interaction: discord.APIChatInputApplicationComman
 
     container.addTextDisplayComponents((text) =>
         text.setContent(
-            `**${leaderboard?.display} Leaderboard for ${fullGameName}**\n-# ${page === 1 ? 'Top 100' : `${format.format(data[0].rank)}-${format.format(data[data.length - 1].rank)} placed`} users as of <t:${Math.floor(Date.now() / 1000)}:f>.`
+            `**${leaderboard?.display} ${friendLeaderboardName ? 'Friends ' : ''}Leaderboard ${friendLeaderboardName ? `of ${friendLeaderboardName} ` : ''}for ${fullGameName}**\n-# ${page === 1 ? 'Top 100' : `${format.format(data[0].rank)}-${format.format(data[data.length - 1].rank)} placed`} users as of <t:${Math.floor(Date.now() / 1000)}:f>.`
         )
     );
 
@@ -171,6 +204,7 @@ export async function autocomplete(
     interaction: discord.APIApplicationCommandAutocompleteInteraction
 ): Promise<discord.APICommandAutocompleteInteractionResponseCallbackData> {
     const focusedOptionName = getFocusedOptionName(interaction);
-    if (focusedOptionName !== 'user' && focusedOptionName !== 'find') return { choices: [] };
+    if (focusedOptionName !== 'user' && focusedOptionName !== 'find' && focusedOptionName !== 'friends-of')
+        return { choices: [] };
     return await autocompleteUserSelection(interaction);
 }
