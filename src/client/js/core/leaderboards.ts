@@ -145,6 +145,10 @@ export default async function () {
                         addChild(div, myRank);
                     }
 
+                    if (response.me && !friendsOf) {
+                        userCount.innerHTML = `${userCount.innerHTML} <a href="/app/leaderboards?type=${type}&other=${other}&page=1&friendsOf=${response.me.user.name}">View friends only leaderboard.</a>`;
+                    }
+
                     const pagination = createElement('div');
                     addClass(pagination, 'leaderboardPagination');
                     addChild(div, pagination);
