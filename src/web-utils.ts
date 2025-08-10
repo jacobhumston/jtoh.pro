@@ -1,7 +1,6 @@
 import { Hono } from 'hono';
 import { v4 } from 'uuid';
 import { userIdToThumbnail, userIdToThumbnailFull, userIdToThumbnailBust, getRobloxAvatar3dAssets } from './roblox';
-import { getLicenseReport } from './license-report';
 import { parseRobloxAccountV2 } from './login-auth';
 import { robloxAPICache } from './cache';
 
@@ -56,11 +55,6 @@ export default function webUtils(app: Hono) {
         const userId = parseInt(context.req.param('userId'));
         if (isNaN(userId)) return context.json({ error: 'Invalid userId.' }, 400);
         return context.json(Object.assign({ userId }, await getRobloxAvatar3dAssets(userId).catch(() => null)));
-    });
-
-    app.get('/api/admin/license-report', async (context) => {
-        // @ts-ignore-next-line
-        return context.json(await getLicenseReport());
     });
 
     app.get('/api/util/roblox-universe-thumbnail/:universeIds', async (context) => {
