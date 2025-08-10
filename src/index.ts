@@ -156,6 +156,7 @@ app.use(
             return context.json({ error: 'Rate limit exceeded. Please wait and try again.' }, 429) as any;
         },
         skip: async (context) => {
+            if (context.req.path === '/app/assets/default-roblox-profile.png') return true;
             return (context.req.query('rlb-token') ?? '') === getTempToken('rlb-token');
         }
         /*

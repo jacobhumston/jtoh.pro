@@ -22,6 +22,7 @@ export default async function () {
     const params = url.searchParams;
     const type = params.get('type') ?? 'skill-points';
     const other = params.get('other') ?? 'etoh';
+    const friendsOf = params.get('friendsOf');
     const page = parseInt(params.get('page') ?? '1') ?? 1;
     const formatter = new Intl.NumberFormat();
     const description = getElementById('leaderboardCurrentDescription') as HTMLDivElement;
@@ -67,7 +68,7 @@ export default async function () {
             button.innerText = thisType.otherLabels[index];
             addClass(button, 'leaderboardSelectionButton');
             button.onclick = () => {
-                window.location.href = `/app/leaderboards?type=${thisType.type}&other=${fixOther(thisOther)}&page=1`;
+                window.location.href = `/app/leaderboards?type=${thisType.type}&other=${fixOther(thisOther)}&page=1${friendsOf ? `&friendsOf=${friendsOf}` : ''}`;
             };
             button.type = 'button';
             if (thisType.type === type && fixOther(thisOther) === other) {
@@ -112,7 +113,9 @@ export default async function () {
         const token = await getWebToken();
 
         div.innerHTML = 'Loading... Please wait.';
-        fetch(`/api/leaderboards/${type}/${other}?page=${page}&captcha=${token}`)
+        fetch(
+            `/api/leaderboards/${type}/${other}?page=${page}&captcha=${token}${friendsOf ? `&friendsOf=${friendsOf}` : ''}`
+        )
             .then((response) => response.json())
             .then((response) => {
                 if (response.error) {
@@ -152,7 +155,7 @@ export default async function () {
                     previous.type = 'button';
                     if (page > 1) {
                         previous.onclick = () => {
-                            window.location.href = `/app/leaderboards?type=${type}&other=${other}&page=${page - 1}`;
+                            window.location.href = `/app/leaderboards?type=${type}&other=${other}&page=${page - 1}${friendsOf ? `&friendsOf=${friendsOf}` : ''}`;
                         };
                     } else {
                         previous.disabled = true;
@@ -170,7 +173,7 @@ export default async function () {
                     next.type = 'button';
                     if (page < response.total.pages) {
                         next.onclick = () => {
-                            window.location.href = `/app/leaderboards?type=${type}&other=${other}&page=${page + 1}`;
+                            window.location.href = `/app/leaderboards?type=${type}&other=${other}&page=${page + 1}${friendsOf ? `&friendsOf=${friendsOf}` : ''}`;
                         };
                     } else {
                         next.disabled = true;

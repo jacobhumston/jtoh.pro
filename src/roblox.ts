@@ -1,3 +1,4 @@
+import { robloxAPICache } from './cache';
 import { donationsRobloxCloudToken, robloxAccountCookie } from './tokens';
 
 const baseUrls = {
@@ -138,4 +139,22 @@ export async function getRobloxPlacesDetails(placeIds: [number]): Promise<any[]>
         return { json: () => [] };
     });
     return (await response.json()) as any;
+}
+
+export async function getRobloxFriendsWithCache(
+    userId: number
+): Promise<Array<{ id: number; name: string; displayName: string }> | null> {
+    if (robloxAPICache.has(`friends:${userId}`)) return robloxAPICache.get<any>(`friends:${userId}`);
+
+    const response = await fetch(`https://friends.roblox.com/v1/users/${userId}/friends`).catch(() => null);
+    if (!response) return null;
+
+    const json = await response.json().catch(() => null);
+    if (!json || json['data'] === undefined) return null;
+
+    let data = json.data;
+    data = data.filter((user: any) => user.id !== -1);
+
+    robloxAPICache.set(`friends:${userId}`, data);
+    return data as any;
 }

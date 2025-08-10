@@ -47,7 +47,7 @@ const orderedDBCache: { [key: string]: { value: any[]; lastUpdated: number } } =
 export async function getOrderedDB(
     db: typeof skillPointsDB | typeof cardsRequestedDB | typeof towerCountDB,
     game: gameNames
-) {
+): Promise<Array<{ count: number; user: RobloxUserResult; rank: number }>> {
     let values: any[] = [];
 
     let cached = false;
@@ -85,7 +85,8 @@ export async function getOrderedDB(
             values[index].rank = prev.rank + 1;
         }
     });
-    return values;
+
+    return values as any;
 }
 
 export async function updateSkillPoints(game: gameNames, user: RobloxUserResult, points: number) {

@@ -469,6 +469,7 @@ export function addOpenIconToAnchorLinks() {
     const anchorElements = document.getElementsByTagName('a');
     for (const a of anchorElements) {
         if (a.target === '_blank' && a.childElementCount === 0) {
+            if (a.parentElement && a.parentElement.id === 'copyright') continue;
             const icon = getWebIconHTML('open_in_new');
             a.insertAdjacentHTML('beforeend', icon);
             addClass(a, 'anchorElementWithIcon');

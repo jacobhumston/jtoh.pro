@@ -3,8 +3,8 @@ import { getOrderedDB, cardsRequestedDB, skillPointsDB, towerCountDB } from './d
 import type { gameNames } from './shared/gamelist';
 import { gameNamesArray } from './shared/gamelist';
 import { verifyContext } from './captcha';
-import { getSignedInRobloxUser, isSignedInAdmin } from './login-auth';
-import { userIdToThumbnailBust } from './roblox';
+import { getSignedInRobloxUser, isSignedInAdmin, parseRobloxAccountV2WithCache } from './login-auth';
+import { getRobloxFriendsWithCache, userIdToThumbnailBust, type RobloxUserResult } from './roblox';
 
 export default function serveLeaderboards(app: Hono) {
     app.get('/api/leaderboards/:type/:game', async (context) => {
@@ -28,7 +28,29 @@ export default function serveLeaderboards(app: Hono) {
 
         if (!gameNamesArray.includes(game)) return context.json({ error: 'Invalid game.' }, 400) as any;
 
-        const leaderboardData = await getOrderedDB(db, game).catch(() => []);
+        let leaderboardData = await getOrderedDB(db, game).catch(() => []);
+        const lastRank = leaderboardData[leaderboardData.length - 1].rank + 1;
+
+        if (context.req.query('friendsOf')) {
+            const mainUser = await parseRobloxAccountV2WithCache(context.req.query('friendsOf') ?? '', context);
+            if (mainUser) {
+                const friends = await getRobloxFriendsWithCache(mainUser.id);
+                if (!friends) return null;
+                leaderboardData = leaderboardData.filter(
+                    (item) =>
+                        friends.find((user) => user.id === item.user.id) !== undefined || item.user.id === mainUser.id
+                );
+                for (const friend of friends) {
+                    if (leaderboardData.find((user) => user.user.id === friend.id) === undefined) {
+                        // @ts-expect-error
+                        friend.thumbnail = '';
+                        // @ts-expect-error
+                        leaderboardData.push({ rank: lastRank, user: friend, count: 0 });
+                    }
+                }
+            }
+        }
+
         const start = (page - 1) * 100;
 
         for (const data of leaderboardData) {

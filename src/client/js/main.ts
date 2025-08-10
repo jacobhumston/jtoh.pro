@@ -31,8 +31,9 @@ if (devLoggerEnabled) {
 window.addEventListener('load', function () {
     addClass(document.head, '__loaded');
     document.body.style.cursor = 'default';
-    addOpenIconToAnchorLinks();
 });
+
+window.addEventListener('DOMContentLoaded', addOpenIconToAnchorLinks);
 
 logConsolePasteWarning();
 applyTheme();

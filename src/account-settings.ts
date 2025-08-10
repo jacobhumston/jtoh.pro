@@ -204,7 +204,7 @@ export function setupAccountEndpoints(app: Hono) {
         const buffer = await sharpImage.toBuffer();
         context.header('Content-Type', 'image/png');
 
-        console.log('pre-crop done!', buffer.byteLength, 'bytes');
+        //console.log('pre-crop done!', buffer.byteLength, 'bytes');
 
         // @ts-expect-error
         return context.body(buffer.buffer);

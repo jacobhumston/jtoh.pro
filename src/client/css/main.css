@@ -2144,5 +2144,5 @@ input[type='file']::file-selector-button:active {
 }
 
 .anchorElementWithIcon .materialSymbolsRounded {
-    vertical-align: middle;
+    vertical-align: text-bottom;
 }
