@@ -3,3 +3,4 @@ import tllCache from '@isaacs/ttlcache';
 
 export const towerstatsCache = new tllCache({ max: 1000, ttl: convertTo({ minutes: 3 }, 'milliseconds') });
 export const robloxAPICache = new tllCache({ max: 1000, ttl: convertTo({ minutes: 3 }, 'milliseconds') });
+export const leaderboardCache = new tllCache({ max: 1000, ttl: convertTo({ minutes: 1 }, 'milliseconds') });

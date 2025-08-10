@@ -5,6 +5,7 @@ import { UTCDate } from '@date-fns/utc';
 import type { RobloxUserResult } from './roblox';
 import { gameNamesArray, type gameNames } from './shared/gamelist';
 import { createLeadboardBlacklistFile } from './files';
+import { leaderboardCache } from './cache';
 
 if (!fs.existsSync('db/')) fs.mkdirSync('db/');
 
@@ -43,7 +44,6 @@ export async function updateCardRequestCount(game: gameNames, user: RobloxUserRe
     return await cardsRequestedDB.set(key, current);
 }
 
-const orderedDBCache: { [key: string]: { value: any[]; lastUpdated: number } } = {};
 export async function getOrderedDB(
     db: typeof skillPointsDB | typeof cardsRequestedDB | typeof towerCountDB,
     game: gameNames
@@ -51,10 +51,10 @@ export async function getOrderedDB(
     let values: any[] = [];
 
     let cached = false;
-    const cache = orderedDBCache[getDBName(db) + game];
-    if (cache !== undefined && Date.now() - cache.lastUpdated < 1000 * 60 * 2) {
+    const cache = leaderboardCache.get(getDBName(db) + game) as any;
+    if (cache !== undefined) {
         cached = true;
-        values = cache.value;
+        values = cache;
     }
 
     if (!cached) {
@@ -65,10 +65,7 @@ export async function getOrderedDB(
                 values.push(value);
             }
         }
-        orderedDBCache[getDBName(db) + game] = {
-            value: values,
-            lastUpdated: Date.now()
-        };
+        leaderboardCache.set(getDBName(db) + game, values);
     }
 
     const blackListedUsers: number[] = JSON.parse(fs.readFileSync(createLeadboardBlacklistFile(), 'utf-8'));
