@@ -50,10 +50,10 @@
         "fdir": "^6.4.6",
         "file-type": "^21.0.0",
         "fuse.js": "^7.1.0",
-        "google-closure-compiler": "^20250805.0.0",
+        "google-closure-compiler": "^20250810.0.0",
         "google-fonts-helper": "^3.7.3",
         "highlight.js": "^11.11.1",
-        "hono": "^4.9.0",
+        "hono": "^4.9.1",
         "hono-compress": "^0.7.0",
         "hono-rate-limiter": "^0.4.2",
         "html-minifier": "^4.0.0",
@@ -78,7 +78,7 @@
         "sharp": "^0.34.3",
         "sitemap": "^8.0.0",
         "sprintf-js": "^1.1.3",
-        "sxcu.api": "^2.0.6",
+        "sxcu.api": "^2.0.7",
         "terminal-kit": "^3.1.2",
         "terser": "^5.43.1",
         "tweetnacl": "^1.0.3",
@@ -1082,17 +1082,17 @@
 
     "globals": ["globals@11.12.0", "", {}, "sha512-WOBp/EEGUiIsJSp7wcv/y6MO+lV9UoncWqxuFfm8eBwzWNgyfBd6Gz+IeKQ9jCmyhoH99g15M3T+QaVHFjizVA=="],
 
-    "google-closure-compiler": ["google-closure-compiler@20250805.0.0", "", { "dependencies": { "chalk": "5.x", "google-closure-compiler-java": "^20250805.0.0", "minimist": "1.x", "vinyl": "3.x", "vinyl-sourcemaps-apply": "^0.2.0" }, "optionalDependencies": { "google-closure-compiler-linux": "^20250805.0.0", "google-closure-compiler-linux-arm64": "^20250805.0.0", "google-closure-compiler-macos": "^20250805.0.0", "google-closure-compiler-windows": "^20250805.0.0" }, "bin": { "google-closure-compiler": "cli.js" } }, "sha512-P2W6NOGi29FizXDYCleB8N2/KBpexWhsu0j750MFZ+ok0yg0Fdk4HUrcLOlEpkJsfo3eBhFFzyYHpGALTnf4LQ=="],
+    "google-closure-compiler": ["google-closure-compiler@20250810.0.0", "", { "dependencies": { "chalk": "5.x", "google-closure-compiler-java": "^20250810.0.0", "minimist": "1.x", "vinyl": "3.x", "vinyl-sourcemaps-apply": "^0.2.0" }, "optionalDependencies": { "google-closure-compiler-linux": "^20250810.0.0", "google-closure-compiler-linux-arm64": "^20250810.0.0", "google-closure-compiler-macos": "^20250810.0.0", "google-closure-compiler-windows": "^20250810.0.0" }, "bin": { "google-closure-compiler": "cli.js" } }, "sha512-xDZb5cKCnrsSIUQKhEhFHmR0RpjhAFDFcG4am9+ggph/ZyDna/1tNxijUcC6k2D4Yu7jQkjNBnIZpKcDWX/5Yw=="],
 
-    "google-closure-compiler-java": ["google-closure-compiler-java@20250805.0.0", "", {}, "sha512-FR3qGAzZqrR2jztPF2+pdzRJ9jC+aiFJ1aDW/e1tjV8Mu+0L1ZZYNTW8MlfE4vu0jlmgL5R5czNogyF0iVBvog=="],
+    "google-closure-compiler-java": ["google-closure-compiler-java@20250810.0.0", "", {}, "sha512-VP8ZL9YMlRFy0L1IIBa4RCNMkWZus0aLjcS0vbgs+PgPKOIyC9nOyzb4w0dpnDpR/ejYv58C1B/P06AtohPXhQ=="],
 
-    "google-closure-compiler-linux": ["google-closure-compiler-linux@20250805.0.0", "", { "os": "linux", "cpu": [ "x32", "x64", ] }, "sha512-+JLRKHWsQJXGm5jAZbTeVs5eebPnE02iDReYHqQI2QKq5nsdoUsxndxlpQJ2LNi3L/BT8Yj1cxOAmNLxBQGvmw=="],
+    "google-closure-compiler-linux": ["google-closure-compiler-linux@20250810.0.0", "", { "os": "linux", "cpu": [ "x32", "x64", ] }, "sha512-2q0X56y3nXOA0yeVY8rra9ULrsOXGJzCXeNulMVVTCPAL22YApUvcMemWQUkPBFWPJI2zp8tc0QF5cc5/hp6aA=="],
 
-    "google-closure-compiler-linux-arm64": ["google-closure-compiler-linux-arm64@20250805.0.0", "", { "os": "linux", "cpu": "arm64" }, "sha512-6BQG8gb3FGPnMygWxztHDCdtk8p7N3SkeRF96Um3vNB45qx1L9F+ZFK8q8nvPNrI7AVaSRlQOBT0YW/S4Q8q0w=="],
+    "google-closure-compiler-linux-arm64": ["google-closure-compiler-linux-arm64@20250810.0.0", "", { "os": "linux", "cpu": "arm64" }, "sha512-UNdzUZ82n9NxIGWw+qv82cvp6v4po6sf00JWGXqUnOjWrWei+UmVrKPxFozj20Y7dFl7I4MwMDctcrPRStiNsw=="],
 
-    "google-closure-compiler-macos": ["google-closure-compiler-macos@20250805.0.0", "", { "os": "darwin", "cpu": "arm64" }, "sha512-3lyErupHc/4C6jyP4IXPZ9ZM0tZ+HJuJG9kz35LBOhflO5AX0VsUx5maOGfcc7ZiMG1FMwhHFNjFfrE/p76rEw=="],
+    "google-closure-compiler-macos": ["google-closure-compiler-macos@20250810.0.0", "", { "os": "darwin", "cpu": "arm64" }, "sha512-z/IIwCWwcBHFKPZCQ1/nsX7K9BSnOs6C9a+apfq9oDJYckeh6kJrN+x4uGhcRJ8CzsPAhq6y+eQ4AZfw6/wSyA=="],
 
-    "google-closure-compiler-windows": ["google-closure-compiler-windows@20250805.0.0", "", { "os": "win32", "cpu": [ "x32", "x64", ] }, "sha512-jzLvijz0MXwuvMfofRnJH4dYOr5VbYgL+s19apB6oRFiqhsBxFGOPgySovZtCJgzy2Go2D5vhq7HaLTbDt+tLw=="],
+    "google-closure-compiler-windows": ["google-closure-compiler-windows@20250810.0.0", "", { "os": "win32", "cpu": [ "x32", "x64", ] }, "sha512-h6dBsKEkIDKFduBcc3V6fyXjHysQU98NBy8C7QJf643tZd+QObWZHdus0ve2I7tYUTUP+2zUhTb8k00kibHtAQ=="],
 
     "google-fonts-helper": ["google-fonts-helper@3.7.3", "", { "dependencies": { "deepmerge": "^4.3.1", "hookable": "^5.5.3", "ofetch": "^1.4.1", "ufo": "^1.5.4" } }, "sha512-dENZeK6RMvkCOFoKbLbS+pyoDgpmk4U6BYmfXnztMar2d8SjEG6valxql/Lkyi7bu5F+3FTdE+gAEYSYZ5zzMA=="],
 
@@ -1118,7 +1118,7 @@
 
     "homedir-polyfill": ["homedir-polyfill@1.0.3", "", { "dependencies": { "parse-passwd": "^1.0.0" } }, "sha512-eSmmWE5bZTK2Nou4g0AI3zZ9rswp7GRKoKXS1BLUkvPviOqs4YTN1djQIqrXy9k5gEtdLPy86JjRwsNM9tnDcA=="],
 
-    "hono": ["hono@4.9.0", "", {}, "sha512-JAUc4Sqi3lhby2imRL/67LMcJFKiCu7ZKghM7iwvltVZzxEC5bVJCsAa4NTnSfmWGb+N2eOVtFE586R+K3fejA=="],
+    "hono": ["hono@4.9.1", "", {}, "sha512-qfvdJ42t6CQE0N/iSCa8KsW8SQqYD67YB+TYbwPHlnALvX+s7ynh8otR1NEk5jXtUg73gpV/B82OSufDmwtX3w=="],
 
     "hono-compress": ["hono-compress@0.7.0", "", { "dependencies": { "@mongodb-js/zstd": "^2.0.0", "brotli-wasm": "^3.0.1" }, "optionalDependencies": { "@rollup/rollup-linux-x64-gnu": "^4.28.1" }, "peerDependencies": { "hono": "^4.6.13" } }, "sha512-sJup+6Mp8ZIcGok140acl689dx7WOJPXF86NX5YzPifeeM6mp1jsvwtke0cMiNoyrPvhNEaMAS9Cx497TVv4PQ=="],
 
@@ -1776,7 +1776,7 @@
 
     "swagger2openapi": ["swagger2openapi@7.0.8", "", { "dependencies": { "call-me-maybe": "^1.0.1", "node-fetch": "^2.6.1", "node-fetch-h2": "^2.3.0", "node-readfiles": "^0.2.0", "oas-kit-common": "^1.0.8", "oas-resolver": "^2.5.6", "oas-schema-walker": "^1.1.5", "oas-validator": "^5.0.8", "reftools": "^1.1.9", "yaml": "^1.10.0", "yargs": "^17.0.1" }, "bin": { "swagger2openapi": "swagger2openapi.js", "oas-validate": "oas-validate.js", "boast": "boast.js" } }, "sha512-upi/0ZGkYgEcLeGieoz8gT74oWHA0E7JivX7aN9mAf+Tc7BQoRBvnIGHoPDw+f9TXTW4s6kGYCZJtauP6OYp7g=="],
 
-    "sxcu.api": ["sxcu.api@2.0.6", "", { "bin": { "sxcu": "build/cli/index.js" } }, "sha512-n66Gs6hIxqgMy1N8FYbpan2pDHPPjxvX7EkDyUYuSX65g7ItyXBvnBkaPjHOORIaqM9W2s5QvO18mZF8ULLeDQ=="],
+    "sxcu.api": ["sxcu.api@2.0.7", "", { "bin": { "sxcu": "build/cli/index.js" } }, "sha512-XdHt/85x+7n43gEiavtjhc48gIhusmSgdyu78EIAB/ML2X0VMUioiEq/aCFJEkp/OLTWAUYyPbLf3GuPceZFHA=="],
 
     "symbol-tree": ["symbol-tree@3.2.4", "", {}, "sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw=="],
 
