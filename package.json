@@ -46,7 +46,7 @@
         "discord.js": "^14.21.0",
         "emoji-picker-element": "^1.26.3",
         "emoji-regex": "^10.4.0",
-        "esbuild": "^0.25.8",
+        "esbuild": "^0.25.9",
         "events": "^3.3.0",
         "fdir": "^6.4.6",
         "file-type": "^21.0.0",
