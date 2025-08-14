@@ -5,15 +5,7 @@ import logger from './logger';
 import { isDev } from './dev';
 import prettier from 'prettier';
 
-const cache: { [key: string]: string } = {};
-
 export async function getJSForPage(pageName: string) {
-    const cacheId = pageName;
-
-    if (cache[cacheId] && !isDev) {
-        return cache[cacheId];
-    }
-
     const files: string[] = [];
     function addFile(dir: string) {
         const dirFiles = fs.readdirSync(dir);
@@ -100,8 +92,6 @@ export async function getJSForPage(pageName: string) {
             endOfLine: 'auto'
         });
     }
-
-    cache[cacheId] = code;
 
     return code;
 }

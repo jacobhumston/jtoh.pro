@@ -110,7 +110,7 @@ export async function getPlaceInLeaderboard(
     db: typeof skillPointsDB | typeof cardsRequestedDB | typeof towerCountDB,
     game: gameNames,
     user: RobloxUserResult
-) {
+): Promise<number | null> {
     const values = await getOrderedDB(db, game);
     const userValue = values.find((value: { user: RobloxUserResult }) => value.user.id === user.id);
     if (userValue === undefined) return null;

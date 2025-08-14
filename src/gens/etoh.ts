@@ -19,9 +19,10 @@ import { parseRobloxAccount } from '../login-auth';
 import { towerStatsToken } from '../tokens';
 import { getAccountCardPhotoBackground } from '../account-settings';
 import { towerstatsCache } from '../cache';
+import { createRateLimitMiddleware } from '../rate-limits';
 
 export default function etohGen(app: Hono) {
-    app.get('/:user', async (context) => {
+    app.get('/:user', createRateLimitMiddleware({ minutes: 10 }, 5), async (context) => {
         const providedUser: string = context.req.param('user').slice(0, 20);
         const data = await parseRobloxAccount(context);
         const formatter = new Intl.NumberFormat('en-US');
@@ -403,7 +404,7 @@ export default function etohGen(app: Hono) {
                 const spRank = ((value: number | null) => {
                     if (value === null) return 'N/A';
                     return `#${formatter.format(value)}`;
-                })(await getPlaceInLeaderboard(skillPointsDB, 'etoh', data).catch(() => undefined));
+                })(await getPlaceInLeaderboard(skillPointsDB, 'etoh', data).catch(() => null));
                 const spTotal =
                     `out of ${formatter.format(await getTotalInLeaderboard(skillPointsDB, 'etoh'))}`.replaceAll(
                         ' ',
@@ -460,7 +461,7 @@ export default function etohGen(app: Hono) {
                 const completedTowersRank = ((value: number | null) => {
                     if (value === null) return 'N/A';
                     return `#${formatter.format(value)}`;
-                })(await getPlaceInLeaderboard(towerCountDB, 'etoh', data).catch(() => undefined));
+                })(await getPlaceInLeaderboard(towerCountDB, 'etoh', data).catch(() => null));
                 const completedTowerTotal =
                     `out of ${formatter.format(await getTotalInLeaderboard(towerCountDB, 'etoh'))}`.replaceAll(
                         ' ',

@@ -6,6 +6,7 @@ import { getURL } from '../../dev';
 import { parseRobloxAccountV2 } from '../../login-auth';
 import { autocompleteUserSelection, getFocusedOptionName } from '../autocomplete';
 import { addRecent } from '../util';
+import { getTempToken } from '../../temp-tokens';
 
 export const command = new discord.SlashCommandBuilder()
     .setName('card')
@@ -71,6 +72,8 @@ export async function execute(interaction: discord.APIChatInputApplicationComman
             const mode = interaction.data.options[0].options[1].value as string;
             if (mode) url.searchParams.append('mode', mode);
         }
+
+        url.searchParams.append('rlb-token', getTempToken('rlb-token'));
 
         const image = await fetch(url.toString()).catch(() => null);
         if (image === null || image.status !== 200) {

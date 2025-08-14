@@ -10,9 +10,6 @@ import webUtils from './web-utils';
 import serveLeaderboards from './leaderboards';
 import { isDev, getURL, port, getURLHost, isBeta, getURLObj, usingCustomUrl, skipQWT } from './dev';
 import setupLoginAuth from './login-auth';
-import { rateLimiter } from 'hono-rate-limiter';
-import { getTempToken } from './temp-tokens';
-import { convert as timeConvert } from '@jacobhumston/tc.js';
 import { admin } from './admin';
 import { captchaManager } from './captcha';
 import { charts } from './chart';
@@ -35,7 +32,6 @@ import { setupAccountEndpoints } from './account-settings';
 import previewGen from './gens/preview';
 import listenForPackageLists from './packages';
 import { cleanUpTemp } from './files';
-import { getIP } from './ip';
 import embed from './embeddable';
 import gameRequests from './game-requests';
 import { mods } from './mods';
@@ -43,6 +39,7 @@ import { gitHash } from './git-hash';
 import listenForCustomSites from './custom-sites';
 import { referralsDB, updateReferralCount } from './db';
 import setupRefs from './refs';
+import { createRateLimitMiddleware } from './rate-limits';
 
 cleanUpTemp();
 cardImageCheck();
@@ -145,30 +142,14 @@ app.use(async (context, next) => {
 });
 
 app.use(
-    rateLimiter({
-        windowMs: timeConvert({ minutes: 1 }).milliseconds,
-        limit: 120,
-        standardHeaders: 'draft-6',
-        keyGenerator: (context) => {
-            return `${getIP(context)}::${context.req.path}`;
-        },
-        handler: async (context) => {
-            return context.json({ error: 'Rate limit exceeded. Please wait and try again.' }, 429) as any;
-        },
-        skip: async (context) => {
-            if (context.req.path === '/app/assets/default-roblox-profile.png') return true;
-            return (context.req.query('rlb-token') ?? '') === getTempToken('rlb-token');
-        }
-        /*
-        skipSuccessfulRequests: true,
-        requestWasSuccessful: async (context) => {
-            context.res.headers.forEach((value, key) => {
-                if (key.startsWith('ratelimit')) context.res.headers.set(`x-${key}`, value);
-            });
-            return false;
-        }
-        */
-    })
+    createRateLimitMiddleware(
+        { minutes: 1 },
+        120,
+        (context) =>
+            context.req.path === '/api/vars' ||
+            context.req.path === '/api/clear-site-cache' ||
+            context.req.path.startsWith('/app/assets/')
+    )
 );
 
 app.use(async (context, next) => {

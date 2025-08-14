@@ -19,9 +19,10 @@ import { parseRobloxAccount } from '../login-auth';
 import { towerStatsToken } from '../tokens';
 import { getAccountCardPhotoBackground } from '../account-settings';
 import { towerstatsCache } from '../cache';
+import { createRateLimitMiddleware } from '../rate-limits';
 
 export default function cscdGen(app: Hono) {
-    app.get('/cscd/:user', async (context) => {
+    app.get('/cscd/:user', createRateLimitMiddleware({ seconds: 10 }, 5), async (context) => {
         const providedUser: string = context.req.param('user').slice(0, 20);
         const data = await parseRobloxAccount(context);
         const formatter = new Intl.NumberFormat('en-US');
@@ -441,7 +442,7 @@ export default function cscdGen(app: Hono) {
                     const spRank = ((value: number | null) => {
                         if (value === null) return 'N/A';
                         return `#${formatter.format(value)}`;
-                    })(await getPlaceInLeaderboard(skillPointsDB, 'cscd', data).catch(() => undefined));
+                    })(await getPlaceInLeaderboard(skillPointsDB, 'cscd', data).catch(() => null));
                     const spTotal =
                         `out of ${formatter.format(await getTotalInLeaderboard(skillPointsDB, 'cscd'))}`.replaceAll(
                             ' ',
@@ -502,7 +503,7 @@ export default function cscdGen(app: Hono) {
                     const completedTowersRank = ((value: number | null) => {
                         if (value === null) return 'N/A';
                         return `#${formatter.format(value)}`;
-                    })(await getPlaceInLeaderboard(towerCountDB, 'cscd', data).catch(() => undefined));
+                    })(await getPlaceInLeaderboard(towerCountDB, 'cscd', data).catch(() => null));
                     const completedTowerTotal =
                         `out of ${formatter.format(await getTotalInLeaderboard(towerCountDB, 'cscd'))}`.replaceAll(
                             ' ',

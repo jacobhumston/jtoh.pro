@@ -12,6 +12,7 @@ import { v4 as uuid } from 'uuid';
 import { getJSForPage } from './js';
 //import { PurgeCSS } from 'purgecss';
 import * as esbuild from 'esbuild';
+import { htmlCache } from './cache';
 
 let cssCache: null | string = null;
 
@@ -133,11 +134,14 @@ export default async function serveStatic(app: Hono) {
             const pageId = pageIds[pageName] || uuid().split('-')[0];
             pageIds[pageName] = pageId;
 
-            let content = file.toString();
-            const templateDir = join(__dirname, 'web', 'app', 'templates');
-            content = replaceTemplates(content, templateDir);
+            if (htmlCache.has(pageId)) {
+                file = htmlCache.get(pageId) as typeof file;
+            } else {
+                let content = file.toString();
+                const templateDir = join(__dirname, 'web', 'app', 'templates');
+                content = replaceTemplates(content, templateDir);
 
-            /*
+                /*
             const purgeCSSResult = await new PurgeCSS().purge({
                 content: [{ extension: 'html', raw: content }],
                 css: [{ name: 'css', raw: getCSS() }],
@@ -145,22 +149,27 @@ export default async function serveStatic(app: Hono) {
             });
             */
 
-            const minifiedContent = minifyHTML.minify(content, {
-                quoteCharacter: "'",
-                collapseWhitespace: true,
-                removeComments: true,
-                removeAttributeQuotes: true
-            });
+                const minifiedContent = minifyHTML.minify(content, {
+                    quoteCharacter: "'",
+                    collapseWhitespace: true,
+                    removeComments: true,
+                    removeAttributeQuotes: true
+                });
 
-            const js = await getJSForPage(pageName);
+                const js = await getJSForPage(pageName);
 
-            file = Buffer.from(
-                minifiedContent
-                    .replaceAll('{{pageId}}', pageId)
-                    .replaceAll('{{currentYear}}', new Date().getFullYear().toString())
-                    .replace('<style template=styles></style>', () => `<style>${getCSS()}</style>`)
-                    .replace('<script template=js></script>', () => `<script>${js}</script>`)
-            );
+                file = Buffer.from(
+                    minifiedContent
+                        .replaceAll('{{pageId}}', pageId)
+                        .replaceAll('{{currentYear}}', new Date().getFullYear().toString())
+                        .replace('<style template=styles></style>', () => `<style>${getCSS()}</style>`)
+                        .replace('<script template=js></script>', () => `<script>${js}</script>`)
+                );
+
+                if (!isDev) {
+                    htmlCache.set(pageId, file);
+                }
+            }
         }
 
         if (fileExt === '.ts') fileExt = '.js';
