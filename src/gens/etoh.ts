@@ -22,7 +22,7 @@ import { towerstatsCache } from '../cache';
 import { createRateLimitMiddleware } from '../rate-limits';
 
 export default function etohGen(app: Hono) {
-    app.get('/:user', createRateLimitMiddleware({ minutes: 10 }, 5), async (context) => {
+    app.get('/:user', createRateLimitMiddleware({ seconds: 10 }, 5), async (context) => {
         const providedUser: string = context.req.param('user').slice(0, 20);
         const data = await parseRobloxAccount(context);
         const formatter = new Intl.NumberFormat('en-US');
