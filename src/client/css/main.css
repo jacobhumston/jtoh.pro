@@ -2156,7 +2156,7 @@ input[type='file']::file-selector-button:active {
 #documentContent {
     font-family: RobotoMono;
     background-color: var(--color-background-even-more-darker);
-    padding: 10px;
+    padding: 15px;
     border-radius: 10px;
 }
 
@@ -2171,9 +2171,104 @@ input[type='file']::file-selector-button:active {
 }
 
 #documentContent hr {
-    border-color: var(--color-background-darker);
+    border: none;
+    height: 2px;
+    background-color: var(--color-background-darker);
 }
 
 #documentContent li {
     margin-bottom: 10px;
+}
+
+#documentDate {
+    background-color: var(--color-background-darker);
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 25px;
+}
+
+#documentDate .materialSymbolsRounded {
+    vertical-align: text-top;
+    margin-right: 5px;
+}
+
+#documentContent p,
+#documentContent ul {
+    margin: 25px;
+}
+
+#documentContent h2 {
+    margin-left: 25px;
+    margin-right: 25px;
+}
+
+#documentSelector {
+    background-color: var(--color-background-even-more-darker);
+    padding: 15px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    padding-bottom: 5px;
+}
+
+#documentSelector a {
+    background-color: var(--color-background-darker);
+    margin-bottom: 10px;
+    padding: 5px;
+    display: inline-block;
+    border-radius: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-right: 5px;
+}
+
+#documentSelector a:hover {
+    background-color: var(--color-background);
+    padding-bottom: 3px;
+}
+
+#documentSectionSelector {
+    display: block;
+    background-color: var(--color-background-even-more-darker);
+    padding: 10px;
+    padding-right: 15px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    max-width: fit-content;
+}
+
+#documentSectionSelector a {
+    display: block;
+    font-size: medium;
+}
+
+#documentSectionSelector a[data-level='H2'] {
+    font-size: smaller;
+}
+
+#documentSectionSelector a[data-level='H3'] {
+    font-size: x-small;
+}
+
+#documentSectionSelector a:hover {
+    border: none;
+    color: var(--color-text);
+}
+
+#documentSectionSelector a[data-viewing='true'] {
+    color: var(--color-text-bold);
+}
+
+@media screen and (min-width: 1500px) {
+    #documentSectionSelector {
+        display: block;
+        position: fixed;
+        bottom: 0px;
+        left: 0px;
+        border-top-left-radius: 0px;
+        border-bottom-left-radius: 0px;
+        border-left: var(--color-text-bold) 5px solid;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
 }

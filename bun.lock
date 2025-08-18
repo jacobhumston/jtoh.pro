@@ -12,6 +12,7 @@
         "@isaacs/ttlcache": "^1.4.1",
         "@jacobhumston/lib": "^1.1.3",
         "@jacobhumston/tc.js": "^1.0.2",
+        "@jsfns/web": "^1.1.3",
         "@keyv/memcache": "^2.0.2",
         "@keyv/sqlite": "^4.0.5",
         "@napi-rs/canvas": "^0.1.77",
@@ -304,6 +305,10 @@
     "@jridgewell/trace-mapping": ["@jridgewell/trace-mapping@0.3.25", "", { "dependencies": { "@jridgewell/resolve-uri": "^3.1.0", "@jridgewell/sourcemap-codec": "^1.4.14" } }, "sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ=="],
 
     "@jsdevtools/ono": ["@jsdevtools/ono@7.1.3", "", {}, "sha512-4JQNk+3mVzK3xh2rqd6RB4J46qUR19azEHBneZyTZM+c456qOrbbM/5xcR8huNCCcbVt7+UmizG6GuUvPvKUYg=="],
+
+    "@jsfns/core": ["@jsfns/core@1.2.1", "", {}, "sha512-Xnp7g093/xKCGAVWt35Rlru6Xtm31C4H2Yv9/tFMj1LhMg17NiW9blsjKSsU3jz8+LlH+OqOkc4B+Nwl6hsepw=="],
+
+    "@jsfns/web": ["@jsfns/web@1.1.3", "", { "dependencies": { "@jsfns/core": "^1.2.1" } }, "sha512-kmZ2lrKkkArZhu/eS2nqhtROGUOpQCiJcQl5YxJybEIxPSZEIVs+PulhIkn3cSZNDgxRfw1kbBVBUEsOfUbS6w=="],
 
     "@jsonjoy.com/base64": ["@jsonjoy.com/base64@1.1.2", "", { "peerDependencies": { "tslib": "2" } }, "sha512-q6XAnWQDIMA3+FTiOYajoYqySkO+JSat0ytXGSuRdq9uXE7o92gzuQwQM14xaCRlBLGq3v5miDGC4vkVTn54xA=="],
 
