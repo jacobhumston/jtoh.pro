@@ -24,6 +24,12 @@
     font-display: swap;
 }
 
+@font-face {
+    font-family: 'RobotoMono';
+    src: url('/app/assets/RobotoMono.ttf') format('truetype');
+    font-display: swap;
+}
+
 :root {
     --font: 'Poppins', 'Twemoji', Arial, sans-serif;
     --altcha-border-width: 2px;
@@ -2145,4 +2151,29 @@ input[type='file']::file-selector-button:active {
 
 .anchorElementWithIcon .materialSymbolsRounded {
     vertical-align: text-bottom;
+}
+
+#documentContent {
+    font-family: RobotoMono;
+    background-color: var(--color-background-even-more-darker);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+#documentContent ul {
+    list-style-type: none;
+    text-indent: -4ch;
+}
+
+#documentContent ul[data-type='dot'] {
+    list-style-type: none;
+    text-indent: -2ch;
+}
+
+#documentContent hr {
+    border-color: var(--color-background-darker);
+}
+
+#documentContent li {
+    margin-bottom: 10px;
 }
