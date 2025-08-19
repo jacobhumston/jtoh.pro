@@ -2272,3 +2272,33 @@ input[type='file']::file-selector-button:active {
         overflow-y: auto;
     }
 }
+
+@media screen and (max-width: 800px) {
+    #documentContent h1 {
+        font-size: large;
+    }
+
+    #documentContent h2 {
+        font-size: medium;
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+
+    #documentContent p,
+    #documentContent ul,
+    #documentContent li,
+    #documentDate {
+        font-size: small;
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+
+    #documentContent {
+        background-color: transparent;
+        padding: 0px;
+    }
+
+    #documentDate .materialSymbolsRounded {
+        display: none;
+    }
+}
