@@ -52,7 +52,7 @@
         "fdir": "^6.5.0",
         "file-type": "^21.0.0",
         "fuse.js": "^7.1.0",
-        "google-closure-compiler": "^20250817.0.0",
+        "google-closure-compiler": "^20250818.0.0",
         "google-fonts-helper": "^3.7.3",
         "highlight.js": "^11.11.1",
         "hono": "^4.9.2",
