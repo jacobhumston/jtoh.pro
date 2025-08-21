@@ -5,7 +5,7 @@
       "name": "jtoh.pro",
       "dependencies": {
         "@date-fns/utc": "^2.1.1",
-        "@discordjs/rest": "^2.5.1",
+        "@discordjs/rest": "^2.6.0",
         "@highlightjs/cdn-assets": "^11.11.1",
         "@hono/zod-validator": "^0.7.2",
         "@hotwired/turbo": "^8.0.13",
@@ -44,7 +44,7 @@
         "cron": "^4.3.3",
         "css": "^3.0.0",
         "date-fns": "^4.1.0",
-        "discord.js": "^14.21.0",
+        "discord.js": "^14.22.0",
         "emoji-picker-element": "^1.26.3",
         "emoji-regex": "^10.4.0",
         "esbuild": "^0.25.9",
@@ -52,7 +52,7 @@
         "fdir": "^6.5.0",
         "file-type": "^21.0.0",
         "fuse.js": "^7.1.0",
-        "google-closure-compiler": "^20250818.0.0",
+        "google-closure-compiler": "^20250819.0.0",
         "google-fonts-helper": "^3.7.3",
         "highlight.js": "^11.11.1",
         "hono": "^4.9.2",
@@ -72,7 +72,7 @@
         "mime-types": "^3.0.1",
         "octokit": "^5.0.3",
         "prettier": "^3.6.2",
-        "puppeteer": "^24.16.2",
+        "puppeteer": "^24.17.0",
         "puppeteer-extra": "^3.3.6",
         "puppeteer-extra-plugin-stealth": "^2.11.2",
         "purgecss": "^7.0.2",
@@ -168,7 +168,7 @@
 
     "@discordjs/formatters": ["@discordjs/formatters@0.6.1", "", { "dependencies": { "discord-api-types": "^0.38.1" } }, "sha512-5cnX+tASiPCqCWtFcFslxBVUaCetB0thvM/JyavhbXInP1HJIEU+Qv/zMrnuwSsX3yWH2lVXNJZeDK3EiP4HHg=="],
 
-    "@discordjs/rest": ["@discordjs/rest@2.5.1", "", { "dependencies": { "@discordjs/collection": "^2.1.1", "@discordjs/util": "^1.1.1", "@sapphire/async-queue": "^1.5.3", "@sapphire/snowflake": "^3.5.3", "@vladfrangu/async_event_emitter": "^2.4.6", "discord-api-types": "^0.38.1", "magic-bytes.js": "^1.10.0", "tslib": "^2.6.3", "undici": "6.21.3" } }, "sha512-Tg9840IneBcbrAjcGaQzHUJWFNq1MMWZjTdjJ0WS/89IffaNKc++iOvffucPxQTF/gviO9+9r8kEPea1X5J2Dw=="],
+    "@discordjs/rest": ["@discordjs/rest@2.6.0", "", { "dependencies": { "@discordjs/collection": "^2.1.1", "@discordjs/util": "^1.1.1", "@sapphire/async-queue": "^1.5.3", "@sapphire/snowflake": "^3.5.3", "@vladfrangu/async_event_emitter": "^2.4.6", "discord-api-types": "^0.38.16", "magic-bytes.js": "^1.10.0", "tslib": "^2.6.3", "undici": "6.21.3" } }, "sha512-RDYrhmpB7mTvmCKcpj+pc5k7POKszS4E2O9TYc+U+Y4iaCP+r910QdO43qmpOja8LRr1RJ0b3U+CqVsnPqzf4w=="],
 
     "@discordjs/util": ["@discordjs/util@1.1.1", "", {}, "sha512-eddz6UnOBEB1oITPinyrB2Pttej49M9FZQY8NxgEvc3tq6ZICZ19m70RsmzRdDHk80O9NoYN/25AqJl8vPVf/g=="],
 
@@ -452,7 +452,7 @@
 
     "@pm2/pm2-version-check": ["@pm2/pm2-version-check@1.0.4", "", { "dependencies": { "debug": "^4.3.1" } }, "sha512-SXsM27SGH3yTWKc2fKR4SYNxsmnvuBQ9dd6QHtEWmiZ/VqaOYPAIlS8+vMcn27YLtAEBGvNRSh3TPNvtjZgfqA=="],
 
-    "@puppeteer/browsers": ["@puppeteer/browsers@2.10.6", "", { "dependencies": { "debug": "^4.4.1", "extract-zip": "^2.0.1", "progress": "^2.0.3", "proxy-agent": "^6.5.0", "semver": "^7.7.2", "tar-fs": "^3.1.0", "yargs": "^17.7.2" }, "bin": { "browsers": "lib/cjs/main-cli.js" } }, "sha512-pHUn6ZRt39bP3698HFQlu2ZHCkS/lPcpv7fVQcGBSzNNygw171UXAKrCUhy+TEMw4lEttOKDgNpb04hwUAJeiQ=="],
+    "@puppeteer/browsers": ["@puppeteer/browsers@2.10.7", "", { "dependencies": { "debug": "^4.4.1", "extract-zip": "^2.0.1", "progress": "^2.0.3", "proxy-agent": "^6.5.0", "semver": "^7.7.2", "tar-fs": "^3.1.0", "yargs": "^17.7.2" }, "bin": { "browsers": "lib/cjs/main-cli.js" } }, "sha512-wHWLkQWBjHtajZeqCB74nsa/X70KheyOhySYBRmVQDJiNj0zjZR/naPCvdWjMhcG1LmjaMV/9WtTo5mpe8qWLw=="],
 
     "@readme/better-ajv-errors": ["@readme/better-ajv-errors@2.3.2", "", { "dependencies": { "@babel/code-frame": "^7.22.5", "@babel/runtime": "^7.22.5", "@humanwhocodes/momoa": "^2.0.3", "jsonpointer": "^5.0.0", "leven": "^3.1.0", "picocolors": "^1.1.1" }, "peerDependencies": { "ajv": "4.11.8 - 8" } }, "sha512-T4GGnRAlY3C339NhoUpgJJFsMYko9vIgFAlhgV+/vEGFw66qEY4a4TRJIAZBcX/qT1pq5DvXSme+SQODHOoBrw=="],
 
@@ -774,7 +774,7 @@
 
     "chroma-js": ["chroma-js@2.6.0", "", {}, "sha512-BLHvCB9s8Z1EV4ethr6xnkl/P2YRFOGqfgvuMG/MyCbZPrTA+NeiByY6XvgF0zP4/2deU2CXnWyMa3zu1LqQ3A=="],
 
-    "chromium-bidi": ["chromium-bidi@7.3.1", "", { "dependencies": { "mitt": "^3.0.1", "zod": "^3.24.1" }, "peerDependencies": { "devtools-protocol": "*" } }, "sha512-i+BMGluhZZc4Jic9L1aHJBTfaopxmCqQxGklyMcqFx4fvF3nI4BJ3bCe1ad474nvYRIo/ZN/VrdA4eOaRZua4Q=="],
+    "chromium-bidi": ["chromium-bidi@8.0.0", "", { "dependencies": { "mitt": "^3.0.1", "zod": "^3.24.1" }, "peerDependencies": { "devtools-protocol": "*" } }, "sha512-d1VmE0FD7lxZQHzcDUCKZSNRtRwISXDsdg4HjdTR5+Ll5nQ/vzU12JeNmupD6VWffrPSlrnGhEWlLESKH3VO+g=="],
 
     "clean-css": ["clean-css@5.3.3", "", { "dependencies": { "source-map": "~0.6.0" } }, "sha512-D5J+kHaVb/wKSFcyyV75uCn8fiY4sV38XJoe4CUyGQ+mOU/fMVYUdH1hJC+CJQ5uY3EnW27SbJYS4X8BiLrAFg=="],
 
@@ -902,9 +902,9 @@
 
     "devtools-protocol": ["devtools-protocol@0.0.1475386", "", {}, "sha512-RQ809ykTfJ+dgj9bftdeL2vRVxASAuGU+I9LEx9Ij5TXU5HrgAQVmzi72VA+mkzscE12uzlRv5/tWWv9R9J1SA=="],
 
-    "discord-api-types": ["discord-api-types@0.38.3", "", {}, "sha512-vijevLh06Gtmex6BQzc9jRrGce6La0qnsF4bKwKM2L1ou0/sbJIOAkg7wz6YLLaodnUwQLljIhtrGxnkMjc1Ew=="],
+    "discord-api-types": ["discord-api-types@0.38.21", "", {}, "sha512-E6KtXUNjZVIYP1GMjmeRdAC1xRql9xtSahRwJYpP74/hJ6Q2i2oTp6ZbFG/FUN0WqtdW2igHDsJyF2u9hV8pHQ=="],
 
-    "discord.js": ["discord.js@14.21.0", "", { "dependencies": { "@discordjs/builders": "^1.11.2", "@discordjs/collection": "1.5.3", "@discordjs/formatters": "^0.6.1", "@discordjs/rest": "^2.5.1", "@discordjs/util": "^1.1.1", "@discordjs/ws": "^1.2.3", "@sapphire/snowflake": "3.5.3", "discord-api-types": "^0.38.1", "fast-deep-equal": "3.1.3", "lodash.snakecase": "4.1.1", "magic-bytes.js": "^1.10.0", "tslib": "^2.6.3", "undici": "6.21.3" } }, "sha512-U5w41cEmcnSfwKYlLv5RJjB8Joa+QJyRwIJz5i/eg+v2Qvv6EYpCRhN9I2Rlf0900LuqSDg8edakUATrDZQncQ=="],
+    "discord.js": ["discord.js@14.22.0", "", { "dependencies": { "@discordjs/builders": "^1.11.2", "@discordjs/collection": "1.5.3", "@discordjs/formatters": "^0.6.1", "@discordjs/rest": "^2.6.0", "@discordjs/util": "^1.1.1", "@discordjs/ws": "^1.2.3", "@sapphire/snowflake": "3.5.3", "discord-api-types": "^0.38.16", "fast-deep-equal": "3.1.3", "lodash.snakecase": "4.1.1", "magic-bytes.js": "^1.10.0", "tslib": "^2.6.3", "undici": "6.21.3" } }, "sha512-IDSeDdWSEA4DoOyspekbetcFKkEonJO09cxR+kqQQlTWd5CTm/3Z48I4Te+EL8uxn52s718FZ0rI2dLxRkTpwg=="],
 
     "dunder-proto": ["dunder-proto@1.0.1", "", { "dependencies": { "call-bind-apply-helpers": "^1.0.1", "es-errors": "^1.3.0", "gopd": "^1.2.0" } }, "sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A=="],
 
@@ -1094,17 +1094,17 @@
 
     "globals": ["globals@11.12.0", "", {}, "sha512-WOBp/EEGUiIsJSp7wcv/y6MO+lV9UoncWqxuFfm8eBwzWNgyfBd6Gz+IeKQ9jCmyhoH99g15M3T+QaVHFjizVA=="],
 
-    "google-closure-compiler": ["google-closure-compiler@20250818.0.0", "", { "dependencies": { "chalk": "5.x", "google-closure-compiler-java": "^20250818.0.0", "minimist": "1.x", "vinyl": "3.x", "vinyl-sourcemaps-apply": "^0.2.0" }, "optionalDependencies": { "google-closure-compiler-linux": "^20250818.0.0", "google-closure-compiler-linux-arm64": "^20250818.0.0", "google-closure-compiler-macos": "^20250818.0.0", "google-closure-compiler-windows": "^20250818.0.0" }, "bin": { "google-closure-compiler": "cli.js" } }, "sha512-IvvFi5tVo9O0e1+Xhq6oCqJ4I4/q1xrKGXspodr5EEN5WUyIed7siEi+0BKr71e7qAlPAC/Kta/4wkIGCmVNsQ=="],
+    "google-closure-compiler": ["google-closure-compiler@20250819.0.0", "", { "dependencies": { "chalk": "5.x", "google-closure-compiler-java": "^20250819.0.0", "minimist": "1.x", "vinyl": "3.x", "vinyl-sourcemaps-apply": "^0.2.0" }, "optionalDependencies": { "google-closure-compiler-linux": "^20250819.0.0", "google-closure-compiler-linux-arm64": "^20250819.0.0", "google-closure-compiler-macos": "^20250819.0.0", "google-closure-compiler-windows": "^20250819.0.0" }, "bin": { "google-closure-compiler": "cli.js" } }, "sha512-B7J/vYY+SA6gW+ZCgYbwHVB78BngrsVeWEbaEcAZNku4mjNdfpf6bAsxuZcZ1Ura4K77W+vkqH6nV68EUEGlhg=="],
 
-    "google-closure-compiler-java": ["google-closure-compiler-java@20250818.0.0", "", {}, "sha512-6aUnwhCcnkn55pfZnKIP6t7yO/5X6OHYZ96Gm7CCJw7tXyp8cih0AlATwq5ZsMY7im2ejOeMqu8g2WZr/0gsFQ=="],
+    "google-closure-compiler-java": ["google-closure-compiler-java@20250819.0.0", "", {}, "sha512-F8Fd9M8/dRrxDJio8EuCXiAEjhx2SC9w3cFlrcMruNXcjzxf0Mgge6dTaDnctc7OBRdzRWITdmTuZyDJGdRIVA=="],
 
-    "google-closure-compiler-linux": ["google-closure-compiler-linux@20250818.0.0", "", { "os": "linux", "cpu": [ "x32", "x64", ] }, "sha512-mpEBRoMVQvJbjgNt8gqxDiOYNfwjLgQfwJRK30ilpevB3fRjePB5jH7EIwy1ux6ZauLuPZJ/xiNDIjbwCHTfFQ=="],
+    "google-closure-compiler-linux": ["google-closure-compiler-linux@20250819.0.0", "", { "os": "linux", "cpu": [ "x32", "x64", ] }, "sha512-kfOclKt6NRCb2dth/ckt76H1whVgRnq6puAgm+hjJygSNfq3l3et/YnOywlFJKvj3tpJ7Mv2g2Tpx6PL507xQw=="],
 
-    "google-closure-compiler-linux-arm64": ["google-closure-compiler-linux-arm64@20250818.0.0", "", { "os": "linux", "cpu": "arm64" }, "sha512-Qa2HVlEkhEORlEtDgzJMI4yKX0VA6kyybyVUNb+txkhafKj6keYHTehAMqgUEOEtFgQQh1fBG6zZrQJ6p4iiDA=="],
+    "google-closure-compiler-linux-arm64": ["google-closure-compiler-linux-arm64@20250819.0.0", "", { "os": "linux", "cpu": "arm64" }, "sha512-BHcjAYCMYGxZ9Dl323hMnLQiBnhEwfhsvgk67kO3JAdAbetE67qPEN8gFvoKn60qxBbrdq36mwIDFJncyFdQVA=="],
 
-    "google-closure-compiler-macos": ["google-closure-compiler-macos@20250818.0.0", "", { "os": "darwin", "cpu": "arm64" }, "sha512-AZwkRhz6qmJY3cXj6mAOiUAoHXhgLMdr26LKUfS2edxKaNbz8lQEBv2Q322UyzABdKYXmMuqnFdS4gghhuhaGw=="],
+    "google-closure-compiler-macos": ["google-closure-compiler-macos@20250819.0.0", "", { "os": "darwin", "cpu": "arm64" }, "sha512-RchroCsJdTBD/CyFC78Y5G9HmpK9308BO1Do7/h0K5pjvzz6euQtxKS/qzX9hk602n+9qgPHyEujm77IizYiyQ=="],
 
-    "google-closure-compiler-windows": ["google-closure-compiler-windows@20250818.0.0", "", { "os": "win32", "cpu": [ "x32", "x64", ] }, "sha512-ltZ4bfwp2Pr/prJLgVN/O3Ulpu8M7Ni5W1BSCAfb/muagXOy07P+sZ4j+hL90k1uwr+NnH85Ix44AyH1Y7AjBQ=="],
+    "google-closure-compiler-windows": ["google-closure-compiler-windows@20250819.0.0", "", { "os": "win32", "cpu": [ "x32", "x64", ] }, "sha512-Q26GEJpb6BBvUmBu7/G4NsBoQeexE102TLwU6zROFv181kupBoW3fA2X5q9SaPOMc62y+kTvoUNo4kBw9ZN6HA=="],
 
     "google-fonts-helper": ["google-fonts-helper@3.7.3", "", { "dependencies": { "deepmerge": "^4.3.1", "hookable": "^5.5.3", "ofetch": "^1.4.1", "ufo": "^1.5.4" } }, "sha512-dENZeK6RMvkCOFoKbLbS+pyoDgpmk4U6BYmfXnztMar2d8SjEG6valxql/Lkyi7bu5F+3FTdE+gAEYSYZ5zzMA=="],
 
@@ -1586,9 +1586,9 @@
 
     "punycode.js": ["punycode.js@2.3.1", "", {}, "sha512-uxFIHU0YlHYhDQtV4R9J6a52SLx28BCjT+4ieh7IGbgwVJWO+km431c4yRlREUAsAmt/uMjQUyQHNEPf0M39CA=="],
 
-    "puppeteer": ["puppeteer@24.16.2", "", { "dependencies": { "@puppeteer/browsers": "2.10.6", "chromium-bidi": "7.3.1", "cosmiconfig": "^9.0.0", "devtools-protocol": "0.0.1475386", "puppeteer-core": "24.16.2", "typed-query-selector": "^2.12.0" }, "bin": { "puppeteer": "lib/cjs/puppeteer/node/cli.js" } }, "sha512-eNjKzwjITM4Lvho6iHb+VQamadUBgc8TsjAApsKi5N8DXipxAaAZWssBOFsrIOLo4eYWYj0Qk5gmr4wBSqzJWw=="],
+    "puppeteer": ["puppeteer@24.17.0", "", { "dependencies": { "@puppeteer/browsers": "2.10.7", "chromium-bidi": "8.0.0", "cosmiconfig": "^9.0.0", "devtools-protocol": "0.0.1475386", "puppeteer-core": "24.17.0", "typed-query-selector": "^2.12.0" }, "bin": { "puppeteer": "lib/cjs/puppeteer/node/cli.js" } }, "sha512-CGrmJ8WgilK3nyE73k+pbxHggETPpEvL6AQ9H5JSK1RgZRGMQVJ+iO3MocGm9yBQXQJ9U5xijyLvkYXFeb0/+g=="],
 
-    "puppeteer-core": ["puppeteer-core@24.16.2", "", { "dependencies": { "@puppeteer/browsers": "2.10.6", "chromium-bidi": "7.3.1", "debug": "^4.4.1", "devtools-protocol": "0.0.1475386", "typed-query-selector": "^2.12.0", "ws": "^8.18.3" } }, "sha512-areKSSQzpoHa5nCk3uD/o504yjrW5ws0N6jZfdFZ3a4H+Q7NBgvuDydjN5P87jN4Rj+eIpLcK3ELOThTtYuuxg=="],
+    "puppeteer-core": ["puppeteer-core@24.17.0", "", { "dependencies": { "@puppeteer/browsers": "2.10.7", "chromium-bidi": "8.0.0", "debug": "^4.4.1", "devtools-protocol": "0.0.1475386", "typed-query-selector": "^2.12.0", "ws": "^8.18.3" } }, "sha512-RYOBKFiF+3RdwIZTEacqNpD567gaFcBAOKTT7742FdB1icXudrPI7BlZbYTYWK2wgGQUXt9Zi1Yn+D5PmCs4CA=="],
 
     "puppeteer-extra": ["puppeteer-extra@3.3.6", "", { "dependencies": { "@types/debug": "^4.1.0", "debug": "^4.1.1", "deepmerge": "^4.2.2" }, "peerDependencies": { "@types/puppeteer": "*", "puppeteer": "*", "puppeteer-core": "*" }, "optionalPeers": ["@types/puppeteer", "puppeteer", "puppeteer-core"] }, "sha512-rsLBE/6mMxAjlLd06LuGacrukP2bqbzKCLzV1vrhHFavqQE/taQ2UXv3H5P0Ls7nsrASa+6x3bDbXHpqMwq+7A=="],
 
@@ -1979,6 +1979,14 @@
     "zod": ["zod@4.0.17", "", {}, "sha512-1PHjlYRevNxxdy2JZ8JcNAw7rX8V9P1AKkP+x/xZfxB0K5FYfuV+Ug6P/6NVSR2jHQ+FzDDoDHS04nYUsOIyLQ=="],
 
     "@asamuzakjp/css-color/lru-cache": ["lru-cache@10.4.3", "", {}, "sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ=="],
+
+    "@discordjs/builders/discord-api-types": ["discord-api-types@0.38.3", "", {}, "sha512-vijevLh06Gtmex6BQzc9jRrGce6La0qnsF4bKwKM2L1ou0/sbJIOAkg7wz6YLLaodnUwQLljIhtrGxnkMjc1Ew=="],
+
+    "@discordjs/formatters/discord-api-types": ["discord-api-types@0.38.3", "", {}, "sha512-vijevLh06Gtmex6BQzc9jRrGce6La0qnsF4bKwKM2L1ou0/sbJIOAkg7wz6YLLaodnUwQLljIhtrGxnkMjc1Ew=="],
+
+    "@discordjs/ws/@discordjs/rest": ["@discordjs/rest@2.5.1", "", { "dependencies": { "@discordjs/collection": "^2.1.1", "@discordjs/util": "^1.1.1", "@sapphire/async-queue": "^1.5.3", "@sapphire/snowflake": "^3.5.3", "@vladfrangu/async_event_emitter": "^2.4.6", "discord-api-types": "^0.38.1", "magic-bytes.js": "^1.10.0", "tslib": "^2.6.3", "undici": "6.21.3" } }, "sha512-Tg9840IneBcbrAjcGaQzHUJWFNq1MMWZjTdjJ0WS/89IffaNKc++iOvffucPxQTF/gviO9+9r8kEPea1X5J2Dw=="],
+
+    "@discordjs/ws/discord-api-types": ["discord-api-types@0.38.3", "", {}, "sha512-vijevLh06Gtmex6BQzc9jRrGce6La0qnsF4bKwKM2L1ou0/sbJIOAkg7wz6YLLaodnUwQLljIhtrGxnkMjc1Ew=="],
 
     "@isaacs/cliui/string-width": ["string-width@5.1.2", "", { "dependencies": { "eastasianwidth": "^0.2.0", "emoji-regex": "^9.2.2", "strip-ansi": "^7.0.1" } }, "sha512-HnLOCR3vjcY8beoNLtcjZ5/nxn2afmME6lhrDrebokqMap+XbeW8n9TXpPDOqdGK5qcI3oT0GKTW6wC7EMiVqA=="],
 
