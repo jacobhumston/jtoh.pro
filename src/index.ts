@@ -33,7 +33,6 @@ import previewGen from './gens/preview';
 import listenForPackageLists from './packages';
 import { cleanUpTemp } from './files';
 import embed from './embeddable';
-import gameRequests from './game-requests';
 import { mods } from './mods';
 import { gitHash } from './git-hash';
 import listenForCustomSites from './custom-sites';
@@ -193,7 +192,6 @@ handleRequestCount(app);
 setupAccountEndpoints(app);
 listenForPackageLists(app);
 embed(app);
-gameRequests(app);
 listenForCustomSites(app);
 setupRefs(app);
 
