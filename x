@@ -67,6 +67,7 @@ declare -A commands
     commands["cloc"]="cloc --exclude-list-file=.gitignore ."
     commands["bun"]="${dir_bun}"
     commands["install-cloudflared"]="install_cloudflared"
+    commands["cftunnel"]='cloudflared tunnel run --token "$(${dir_bun} run tools/get-token.ts cloudflareDevTunnel)"'
 
     # Aliases.
     commands["f"]=${commands["format"]}

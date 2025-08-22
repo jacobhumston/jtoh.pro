@@ -45,3 +45,4 @@ export const discordModLogWebhookUrl = env.discordModLogWebhookUrl as string;
 export const discordStaffNotificationsWebhookUrl = env.discordStaffNotificationsWebhookUrl as string;
 export const towerStatsVercelBypassToken = env.towerStatsVercelBypassToken as string;
 export const discordGeneralWebsiteLogsWebhookUrl = env.discordGeneralWebsiteLogsWebhookUrl as string;
+export const cloudflareDevTunnel = env.cloudflareDevTunnel as string;
