@@ -2337,3 +2337,18 @@ input[type='file']::file-selector-button:active {
     min-height: 100px;
     background-position: center center;
 }
+
+body[data-backgroundImageEToH='true'] {
+    background-image:
+        linear-gradient(to bottom, var(--color-background) 5%, rgba(0, 0, 0, 0.4) 70%, rgba(0, 0, 0, 0.1) 100%),
+        url('/app/assets/etoh-background-v2.webp');
+    background-size: cover;
+    background-attachment: fixed;
+    background-blend-mode: darken, normal;
+}
+
+body[data-backgroundImageEToH='true'] #container {
+    background-color: color-mix(in srgb, var(--color-background) 70%, transparent);
+    padding-top: 20px;
+    margin-bottom: 20px;
+}
