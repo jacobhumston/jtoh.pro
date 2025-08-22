@@ -19,8 +19,8 @@ fi
 # Check if the script is running as root (sudo).
 if [ "$EUID" -ne 0 ]; then
     echo -e "${RED}This script must be run as root or with sudo.${NO_COLOR}"
-    echo -e "${YELLOW}Attempting to execute as sudo...${NO_COLOR}"
-    sudo "$0" "$@"
+    echo -e "${YELLOW}Attempting to prompt sudo...${NO_COLOR}"
+    sudo su
     exit 1
 fi
 
@@ -59,8 +59,8 @@ declare -A commands
     commands["format-loop"]="${commands["format"]} && echo -e \"${YELLOW}Format loop enabled, press ENTER to format again. ${NO_COLOR}To exit, use ${GREEN}CTRL+C${NO_COLOR}\" && read && ./x format-loop"
 
     # Bun Commands
-    commands["bun-upgrade"]="${dir_bun} upgrade"
-    commands["bun-update"]="${dir_bun} update --latest && ${dir_bun} install"
+    commands["bun-upgrade"]="bun upgrade"
+    commands["bun-update"]="bun update --latest && bun install"
 
     # Other commands.
     commands["devtunnel"]="devtunnel host -p 80 --allow-anonymous"
