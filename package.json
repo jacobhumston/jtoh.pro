@@ -56,7 +56,7 @@
         "google-closure-compiler": "^20250819.0.0",
         "google-fonts-helper": "^3.7.3",
         "highlight.js": "^11.11.1",
-        "hono": "^4.9.2",
+        "hono": "^4.9.4",
         "hono-compress": "^0.7.0",
         "hono-rate-limiter": "^0.4.2",
         "html-minifier": "^4.0.0",
