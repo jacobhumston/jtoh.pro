@@ -28,8 +28,11 @@ export default function serveLeaderboards(app: Hono) {
 
         if (!gameNamesArray.includes(game)) return context.json({ error: 'Invalid game.' }, 400) as any;
 
-        let leaderboardData = await getOrderedDB(db, game).catch(() => []);
-        const lastRank = leaderboardData[leaderboardData.length - 1].rank + 1;
+        let leaderboardData = await getOrderedDB(db, game).catch((e) => {
+            console.error(e);
+            return [];
+        });
+        const lastRank = (leaderboardData[leaderboardData.length - 1] ?? { rank: 0 }).rank + 1;
 
         if (context.req.query('friendsOf')) {
             const mainUser = await parseRobloxAccountV2WithCache(context.req.query('friendsOf') ?? '', context);
@@ -41,7 +44,10 @@ export default function serveLeaderboards(app: Hono) {
                         friends.find((user) => user.id === item.user.id) !== undefined || item.user.id === mainUser.id
                 );
                 for (const friend of friends) {
-                    if (leaderboardData.find((user) => user.user.id === friend.id) === undefined) {
+                    if (
+                        leaderboardData.find((user) => user.user.id === friend.id) === undefined &&
+                        friend.name !== ''
+                    ) {
                         // @ts-expect-error
                         friend.thumbnail = '';
                         // @ts-expect-error

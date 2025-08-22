@@ -106,7 +106,7 @@ export async function execute(interaction: discord.APIChatInputApplicationComman
                 (item) => friends.find((user) => user.id === item.user.id) !== undefined || item.user.id === mainUser.id
             );
             for (const friend of friends) {
-                if (leaderboardData.find((user) => user.user.id === friend.id) === undefined) {
+                if (leaderboardData.find((user) => user.user.id === friend.id) === undefined && friend.name !== '') {
                     // @ts-expect-error
                     friend.thumbnail = '';
                     // @ts-expect-error

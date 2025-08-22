@@ -154,6 +154,7 @@ export async function getRobloxFriendsWithCache(
 
     let data = json.data;
     data = data.filter((user: any) => user.id !== -1);
+    //data = data.filter((user: any) => user.name !== '');
 
     robloxAPICache.set(`friends:${userId}`, data);
     return data as any;

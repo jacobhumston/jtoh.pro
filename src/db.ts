@@ -1,5 +1,6 @@
 import Keyv from 'keyv';
-import KeyvSqlite from '@keyv/sqlite';
+//import KeyvSqlite from '@keyv/sqlite';
+import KeyvSqlite from './bun-keyv';
 import fs from 'node:fs';
 import { UTCDate } from '@date-fns/utc';
 import type { RobloxUserResult } from './roblox';
@@ -58,6 +59,7 @@ export async function getOrderedDB(
     }
 
     if (!cached) {
+        /*
         // @ts-ignore-next-line
         for await (const [key, value] of db.iterator()) {
             const [gameKey, _] = key.split('-');
@@ -65,6 +67,9 @@ export async function getOrderedDB(
                 values.push(value);
             }
         }
+            */
+
+        values = await db.getMany([`${game}-*`]);
         leaderboardCache.set(getDBName(db) + game, values);
     }
 
