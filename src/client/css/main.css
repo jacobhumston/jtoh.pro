@@ -2352,3 +2352,11 @@ body[data-backgroundImageEToH='true'] #container {
     padding-top: 20px;
     margin-bottom: 20px;
 }
+
+noscript {
+    background-color: var(--color-error);
+    color: var(--color-background);
+    padding: 10px;
+    text-align: center;
+    display: block;
+}

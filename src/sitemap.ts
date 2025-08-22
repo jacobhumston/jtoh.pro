@@ -4,7 +4,7 @@ import stream from 'node:stream';
 import fs from 'node:fs';
 import { getURL } from './dev';
 
-function getLinks() {
+export function getSitemapLinks() {
     const links: Array<{ url: string; changefreq: string; priority: number }> = [];
     function readDir(dir: string, appendPath: string) {
         const files = fs.readdirSync(`${appendPath}/${dir}`);
@@ -31,7 +31,7 @@ export async function serveSitemap(app: Hono) {
     app.get('/sitemap.xml', async (context) => {
         const sitemapStream = new sitemap.SitemapStream({ hostname: getURL() });
         const data = await sitemap
-            .streamToPromise(stream.Readable.from(getLinks()).pipe(sitemapStream))
+            .streamToPromise(stream.Readable.from(getSitemapLinks()).pipe(sitemapStream))
             .then((data) => data.toString());
 
         context.header('Content-Type', 'application/xml');
@@ -40,7 +40,7 @@ export async function serveSitemap(app: Hono) {
 
     app.get('/sitemap.json', async (context) => {
         return context.json({
-            urlset: getLinks().map((obj) => ({ loc: getURL() + obj.url, ...obj, url: undefined }))
+            urlset: getSitemapLinks().map((obj) => ({ loc: getURL() + obj.url, ...obj, url: undefined }))
         });
     });
 }

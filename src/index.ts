@@ -20,7 +20,7 @@ import type { Serve } from 'bun';
 import { socket, socketListen } from './socket';
 //import { compress } from 'hono-compress';
 import { cors } from 'hono/cors';
-import { serveSitemap } from './sitemap';
+import { getSitemapLinks, serveSitemap } from './sitemap';
 import { csrf } from 'hono/csrf';
 import { secureHeaders } from 'hono/secure-headers';
 //import { badgesEndpoints } from './roblox-badges';
@@ -104,6 +104,36 @@ app.use(async (context, next) => {
         return await next();
     }
     return await secureHeaders()(context, next);
+});
+
+app.use(async (context, next) => {
+    const ua = context.req.header('User-Agent') ?? '';
+    if (ua.includes('Lynx') && context.req.path === '/app/') {
+        const links = getSitemapLinks();
+        const normalLinks = links.filter((link) => !link.url.includes('.'));
+        const otherLinks = links.filter((link) => link.url.includes('.'));
+        return context.html(`
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>jtoh.pro :[#]~</title>
+    </head>
+    <body>
+        <h1>Hello, Lynx user!</h1>
+        <p>My website uses way too many modern web features, however I've added all the urls below so you can still access them easier.</p>
+        <i>Note: Most features are broken on Lynx, especially any that require captchas (such as leaderboards).</i>
+        <ul>
+            ${normalLinks.map((link) => `<li><a href="${link.url}">${link.url}</a></li>`).join('')}
+        </ul>
+        <p><b>If you are not using the <a href="https://lynx.invisible-island.net/">Text Browser Lynx</a> then please let us know!<b></p>
+        <h2>Other Links/Assets can be found below</h2>
+        <ul>
+            ${otherLinks.map((link) => `<li><a href="${link.url}">${link.url}</a></li>`).join('')}
+        </ul>
+    </body>
+</html>`);
+    }
+    return await next();
 });
 
 //app.use(compress());
