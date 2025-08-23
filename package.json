@@ -20,7 +20,7 @@
         "@octokit/rest": "^22.0.0",
         "@schemastore/package": "^0.0.10",
         "@tensorflow/tfjs": "^4.22.0",
-        "@thumbmarkjs/thumbmarkjs": "^1.1.2",
+        "@thumbmarkjs/thumbmarkjs": "^1.2.0",
         "@types/bun": "^1.2.20",
         "@types/css": "^0.0.38",
         "@types/events": "^3.0.3",
@@ -89,7 +89,7 @@
         "ua-parser-js": "^2.0.4",
         "uuid": "^11.1.0",
         "winston": "^3.17.0",
-        "zod": "^4.0.17"
+        "zod": "^4.1.0"
     },
     "devDependencies": {
         "@types/archiver": "^6.0.3",
