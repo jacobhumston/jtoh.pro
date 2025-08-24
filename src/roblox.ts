@@ -14,6 +14,7 @@ export type BasicRobloxUserResult = {
     id: number;
     name: string;
     displayName: string;
+    verified?: boolean;
 };
 
 export interface RobloxUserResult extends BasicRobloxUserResult {

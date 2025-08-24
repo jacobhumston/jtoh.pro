@@ -9,7 +9,7 @@ import { verifyCaptcha } from './captcha';
 import { getTempToken } from './temp-tokens';
 import { encryptCode, decryptCode } from './util';
 import crypto from 'node:crypto';
-import type { BasicRobloxUserResult, RobloxUserResult } from './roblox';
+import type { RobloxUserResult } from './roblox';
 import { userIdToUser, userIdToThumbnail, usernameToUser } from './roblox';
 import jtohGroupMembers from '../etc/group-members/jtoh.json';
 import rvsGroupMembers from '../etc/group-members/rvs.json';
@@ -274,7 +274,7 @@ export async function parseRobloxAccountV2(
     providedUser: string,
     context?: Context
 ): Promise<RobloxUserResult | undefined> {
-    let user: BasicRobloxUserResult | undefined = undefined;
+    let user: any = undefined;
 
     if (!providedUser || providedUser.length < 1) return undefined;
 
@@ -306,15 +306,18 @@ export async function parseRobloxAccountV2(
     } else {
         user = await usernameToUser(providedUser).catch(() => undefined);
     }
+
     const data =
         user !== undefined
             ? {
                   id: user.id,
                   name: user.name,
                   displayName: user.displayName,
-                  thumbnail: await userIdToThumbnail(user.id).catch(() => undefined)
+                  thumbnail: await userIdToThumbnail(user.id).catch(() => undefined),
+                  verified: user.hasVerifiedBadge !== undefined ? user.hasVerifiedBadge : undefined
               }
             : undefined;
+
     return data;
 }
 

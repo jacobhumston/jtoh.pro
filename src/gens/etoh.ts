@@ -187,6 +187,14 @@ export default function etohGen(app: Hono) {
                     ctx.fillText(`⭐ ${data.displayName}`, 130, 40);
                 } else {
                     ctx.fillText(`${data.displayName}`, 130, 40);
+                    if (data.verified === true)
+                        ctx.drawImage(
+                            images.robloxVerifiedLogo,
+                            130 + ctx.measureText(data.displayName).width + 8,
+                            20,
+                            25,
+                            25
+                        );
                 }
 
                 ctx.fillStyle = '#bdbdbd';
