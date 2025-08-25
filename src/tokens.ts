@@ -1,24 +1,28 @@
 import { getEnvName } from './dev';
 import { InfisicalSDK } from '@infisical/sdk';
-import { env } from 'bun';
+import { env as _env } from 'bun';
 import logger from './logger';
 
 const client = new InfisicalSDK();
 
 await client.auth().universalAuth.login({
-    clientId: env.TOKEN_ID as string,
-    clientSecret: env.TOKEN_SECRET as string
+    clientId: _env.TOKEN_ID as string,
+    clientSecret: _env.TOKEN_SECRET as string
 });
 
 const secrets = await client.secrets().listSecrets({
     environment: getEnvName(),
     projectId: '55bdb45d-6e5a-497f-b8f4-7418bb351130',
-    attachToProcessEnv: true
+    attachToProcessEnv: false
 });
 
 if (!secrets) throw new Error('Failed to load secrets from Infisical');
 
-logger.info(`Successfully loaded ${secrets.secrets.length} secrets from Infisical`);
+const env = secrets.secrets
+    .map((s) => ({ [s.secretKey]: s.secretValue }))
+    .reduce((a, b) => ({ ...a, ...b }), { ..._env });
+
+logger.info(`Loaded ${Object.keys(env).length} secrets from Infisical!`);
 
 export const discordInteractionsPublicKey = env.discordInteractionsPublicKey as string;
 export const discordInteractionsApplicationId = env.discordInteractionsApplicationId as string;
