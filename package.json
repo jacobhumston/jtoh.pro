@@ -21,6 +21,7 @@
         "@schemastore/package": "^0.0.10",
         "@tensorflow/tfjs": "^4.22.0",
         "@thumbmarkjs/thumbmarkjs": "^1.2.0",
+        "@top-gg/sdk": "^3.1.6",
         "@types/bun": "^1.2.21",
         "@types/css": "^0.0.38",
         "@types/events": "^3.0.3",

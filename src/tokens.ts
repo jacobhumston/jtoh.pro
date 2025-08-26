@@ -50,3 +50,4 @@ export const discordStaffNotificationsWebhookUrl = env.discordStaffNotifications
 export const towerStatsVercelBypassToken = env.towerStatsVercelBypassToken as string;
 export const discordGeneralWebsiteLogsWebhookUrl = env.discordGeneralWebsiteLogsWebhookUrl as string;
 export const cloudflareDevTunnel = env.cloudflareDevTunnel as string;
+export const topggToken = (env.topggToken ?? '') as string;

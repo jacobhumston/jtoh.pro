@@ -51,6 +51,7 @@ declare -A commands
     commands["tools-populate"]="${dir_bun} run tools/populate.ts"
     commands["cli"]="${dir_bun} run src/cli/index.ts"
     commands["version"]="${dir_bun} -v"
+    commands["update-topgg"]="${dir_bun} run tools/update-topgg.ts"
 
     # Commands executed by bunx.
     commands["format"]="${dir_bunx} prettier ./ --write --cache"
