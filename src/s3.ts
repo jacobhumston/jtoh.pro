@@ -9,7 +9,8 @@ export const s3 = new S3Client({
     endpoint: 'https://9f0600f3ffb703aaf17e92ddb3d32e31.r2.cloudflarestorage.com'
 });
 
-export function createS3Path(path: string): string {
+export function createS3Path(path: string, prefix?: boolean): string {
+    if (prefix === true) return `${getEnvName()}/${path}`;
     return `/${getEnvName()}/${path}`;
 }
 

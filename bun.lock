@@ -41,7 +41,7 @@
         "chartjs-plugin-deferred": "^2.0.0",
         "clean-css": "^5.3.3",
         "color": "^5.0.0",
-        "color-name-list": "^11.24.0",
+        "color-name-list": "^11.24.1",
         "color-string": "^2.0.1",
         "cron": "^4.3.3",
         "css": "^3.0.0",
@@ -960,7 +960,7 @@
 
     "color-name": ["color-name@2.0.0", "", {}, "sha512-SbtvAMWvASO5TE2QP07jHBMXKafgdZz8Vrsrn96fiL+O92/FN/PLARzUW5sKt013fjAprK2d2iCn2hk2Xb5oow=="],
 
-    "color-name-list": ["color-name-list@11.24.0", "", {}, "sha512-2Lp8HSnertJZ1Rt2XTCzqi2UQujyYk+fLXtCWAXqGHeL2+5sSpQWeKtyrZ7/MTzjBY3+gywqAanwgcirIyWPzw=="],
+    "color-name-list": ["color-name-list@11.24.1", "", {}, "sha512-0JIFxYRYzdiXLDAGU7zA0jNMNAiaRluNZpQuRqPec2XT3U0/g+OZLnc4QISdbB98Y6Oam/I+9uCS7WN6KiOYkg=="],
 
     "color-string": ["color-string@2.0.1", "", { "dependencies": { "color-name": "^2.0.0" } }, "sha512-5z9FbYTZPAo8iKsNEqRNv+OlpBbDcoE+SY9GjLfDUHEfcNNV7tS9eSAlFHEaub/r5tBL9LtskAeq1l9SaoZ5tQ=="],
 

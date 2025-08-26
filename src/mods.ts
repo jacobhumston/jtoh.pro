@@ -185,8 +185,8 @@ export function mods(app: Hono) {
     });
 
     app.get('/api/mods/get-uploads', async function (context) {
-        const photos = await s3.list().catch(console.error);
+        const photos = await s3.list({ prefix: createS3Path('card-photos/', true) }).catch(console.error);
         if (!photos) return context.json({ error: 'Something went wrong.' }, 500);
-        return context.json({ uploads: photos.contents });
+        return context.json({ uploads: photos.contents ?? [] });
     });
 }

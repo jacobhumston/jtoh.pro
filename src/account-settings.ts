@@ -23,6 +23,18 @@ function getKeyName(account: LoggedInUser | BasicRobloxUserResult | RobloxUserRe
     return `_${account.id}`;
 }
 
+function parseCustomCardBackground(background: string) {
+    if (!background.startsWith('c:')) throw new Error('Invalid custom card background format.');
+    let id = background.slice(2);
+    let extension = 'png';
+    if (id.includes(':')) {
+        let split = id.split(':');
+        id = split[0];
+        extension = split[1];
+    }
+    return { id, extension };
+}
+
 export async function getAccountCardPhotoBackground(
     account: LoggedInUser | BasicRobloxUserResult | RobloxUserResult
 ): Promise<{ name: string; extension: string; webPath: string; custom: boolean } | null> {
@@ -30,12 +42,7 @@ export async function getAccountCardPhotoBackground(
     const name: string = cardBackground?.cardBackground ?? '';
 
     if (name.startsWith('c:')) {
-        let id = name.slice(2);
-        let extension = 'png';
-        if (id.includes(':')) {
-            id = id.split(':')[0];
-            extension = id.split(':')[1];
-        }
+        const { id, extension } = parseCustomCardBackground(name);
         return {
             name: `${id}`,
             extension: extension,
@@ -64,129 +71,142 @@ export function setupAccountEndpoints(app: Hono) {
         return context.json({ result: Object.values(getCardImages()) });
     });
 
-    app.post('/api/account/card-background/upload', createRateLimitMiddleware({ hours: 2 }, 5), async (context) => {
-        const captchaResult = await verifyContext(context);
-        if (captchaResult) return captchaResult;
+    app.post(
+        '/api/account/card-background/upload',
+        createRateLimitMiddleware({ hours: 2 }, 5, (c) => c.req.query('preview') === 'true'),
+        async (context) => {
+            const captchaResult = await verifyContext(context);
+            if (captchaResult) return captchaResult;
 
-        const user = await getSignedInRobloxUser(context);
-        if (!user) return context.json({ error: 'Not logged in.' }, 401);
+            const user = await getSignedInRobloxUser(context);
+            if (!user) return context.json({ error: 'Not logged in.' }, 401);
 
-        const punishments = await getPunishmentOfType(user.id, 'UploadCardBackgroundBan');
-        if (punishments) {
-            return context.json(
-                { error: 'You are not allowed to upload a card background. Reason: ' + punishments.reason },
-                400
-            );
-        }
+            const onlyPreview = context.req.query('preview') === 'true';
 
-        const currentCard = await getAccountCardPhotoBackground(user);
-        if (currentCard?.custom === true)
-            return context.json({ error: 'Please delete your current background before uploading another one.' }, 400);
+            const punishments = await getPunishmentOfType(user.id, 'UploadCardBackgroundBan');
+            if (punishments) {
+                return context.json(
+                    { error: 'You are not allowed to upload a card background. Reason: ' + punishments.reason },
+                    400
+                );
+            }
 
-        const body = await context.req.parseBody();
-        const file = body['file'];
+            const currentCard = await getAccountCardPhotoBackground(user);
+            if (currentCard?.custom === true && !onlyPreview) {
+                await s3.delete(createS3Path(`card-photos/${currentCard.name}.${currentCard.extension}`));
+                const queue: any[] = JSON.parse(fs.readFileSync(createUploadCardBackgroundsReviewQueueFile(), 'utf-8'));
+                fs.writeFileSync(
+                    createUploadCardBackgroundsReviewQueueFile(),
+                    JSON.stringify(queue.filter((item) => item.id !== currentCard.name))
+                );
+                const data = (await accountConfigDB.get(getKeyName(user))) ?? {};
+                delete data.cardBackground;
+                await accountConfigDB.set(getKeyName(user), data);
+            }
 
-        if (!file || typeof file === 'string') return context.json({ error: 'Invalid file.' }, 400);
+            const body = await context.req.parseBody();
+            const file = body['file'];
 
-        if (file.size > 2000000) return context.json({ error: 'File size exceeds 2MB limit.' }, 400);
+            if (!file || typeof file === 'string') return context.json({ error: 'Invalid file.' }, 400);
 
-        const type = await fileTypeFromBlob(file);
-        if (!type || type.mime !== 'image/png')
-            return context.json({ error: 'Invalid file type. Only PNG is allowed.' }, 400);
+            if (file.size > 15000000) return context.json({ error: 'Upload file size exceeds 15MB limit.' }, 400);
 
-        const sharpImage = sharp(await file.arrayBuffer());
-        sharpImage.resize({ width: 700, height: 300, fit: 'cover' });
+            const type = await fileTypeFromBlob(file);
+            if (
+                !type ||
+                (type.mime !== 'image/png' &&
+                    type.mime !== 'image/jpeg' &&
+                    type.mime !== 'image/webp' &&
+                    type.mime !== 'image/jpg')
+            )
+                return context.json(
+                    { error: 'Invalid file type. Only PNG, JPEG/JPG, and WEBP files are allowed.' },
+                    400
+                );
 
-        const buffer = await sharpImage.toBuffer();
-        const id = randomUUIDv7();
-        const path = createS3Path(`card-photos/${id}.png`);
-        await s3.write(path, buffer, { type: 'image/png' });
+            const sharpImage = sharp(await file.arrayBuffer());
+            sharpImage.resize({ width: 700, height: 300, fit: 'cover' });
+            sharpImage.toFormat('webp');
 
-        const data = (await accountConfigDB.get(getKeyName(user))) ?? {};
-        data.cardBackground = `c:${id}`;
-        await accountConfigDB.set(getKeyName(user), data);
+            const buffer = await sharpImage.toBuffer();
+            if (buffer.byteLength > 2000000)
+                return context.json(
+                    {
+                        error: `Final image size is bigger then 2MB. (${(buffer.byteLength / 1000000).toPrecision(2)}MB)`
+                    },
+                    400
+                ) as any;
 
-        const queue: any[] = JSON.parse(fs.readFileSync(createUploadCardBackgroundsReviewQueueFile(), 'utf-8'));
-        queue.push({
-            id,
-            url: getS3URL(`card-photos/${id}.png`),
-            uploaderId: user.id
-        });
-        fs.writeFileSync(createUploadCardBackgroundsReviewQueueFile(), JSON.stringify(queue));
+            if (onlyPreview) {
+                context.header('Cache-Control', 'no-store');
+                context.header('Content-Disposition', `inline; filename="preview.webp"`);
+                context.header('Content-Type', 'image/webp');
+                // @ts-expect-error
+                return context.body(buffer.buffer);
+            }
 
-        if (!isDev) {
-            new Promise(async () => {
-                const message = await discordStaffWebhook
-                    .send({
-                        content: `A new card background uploaded by **${user.username}** (\`${user.id}\`), please review this uploaded image when you are available to do so.\n\n*[Open Mod Panel - Card Uploads](https://jtoh.pro/redirect?url=https://jtoh.pro/app/mods/mod-panel?page=Card%20Uploads)*\n\n CC: @here`
-                    })
-                    .catch(console.error);
-                if (message) {
-                    const timer = setInterval(
-                        () => {
-                            const queue: any[] = JSON.parse(
-                                fs.readFileSync(createUploadCardBackgroundsReviewQueueFile(), 'utf-8')
-                            );
-                            if (queue.find((item) => item.id === id)) return;
-                            clearInterval(timer);
-                            if (queue.find((item) => item.uploaderId === user.id)) {
-                                discordStaffWebhook.deleteMessage(message.id).catch(console.error);
-                            } else {
-                                discordStaffWebhook
-                                    .editMessage(message.id, {
-                                        content: 'This notification has been handled, thank you!'
-                                    })
-                                    .catch(console.error);
-                            }
-                        },
-                        convertTo({ seconds: 5 }, 'milliseconds')
-                    );
+            const id = randomUUIDv7();
+            const path = createS3Path(`card-photos/${id}.webp`);
+            await s3.write(path, buffer, { type: 'image/webp' });
+
+            const data = (await accountConfigDB.get(getKeyName(user))) ?? {};
+            data.cardBackground = `c:${id}:webp`;
+            await accountConfigDB.set(getKeyName(user), data);
+
+            const queue: any[] = JSON.parse(fs.readFileSync(createUploadCardBackgroundsReviewQueueFile(), 'utf-8'));
+            queue.push({
+                id,
+                url: getS3URL(`card-photos/${id}.webp`),
+                uploaderId: user.id
+            });
+            fs.writeFileSync(createUploadCardBackgroundsReviewQueueFile(), JSON.stringify(queue));
+
+            if (!isDev) {
+                new Promise(async () => {
+                    const message = await discordStaffWebhook
+                        .send({
+                            content: `A new card background uploaded by **${user.username}** (\`${user.id}\`), please review this uploaded image when you are available to do so.\n\n*[Open Mod Panel - Card Uploads](https://jtoh.pro/redirect?url=https://jtoh.pro/app/mods/mod-panel?page=Card%20Uploads)*\n\n CC: @here`
+                        })
+                        .catch(console.error);
+                    if (message) {
+                        const timer = setInterval(
+                            () => {
+                                const queue: any[] = JSON.parse(
+                                    fs.readFileSync(createUploadCardBackgroundsReviewQueueFile(), 'utf-8')
+                                );
+                                if (queue.find((item) => item.id === id)) return;
+                                clearInterval(timer);
+                                if (queue.find((item) => item.uploaderId === user.id)) {
+                                    discordStaffWebhook.deleteMessage(message.id).catch(console.error);
+                                } else {
+                                    discordStaffWebhook
+                                        .editMessage(message.id, {
+                                            content: 'This notification has been handled, thank you!'
+                                        })
+                                        .catch(console.error);
+                                }
+                            },
+                            convertTo({ seconds: 5 }, 'milliseconds')
+                        );
+                    }
+                });
+            }
+
+            const parsed = parseCustomCardBackground(data.cardBackground);
+
+            return context.json({
+                result: {
+                    success: true,
+                    card: {
+                        name: `${parsed.id}`,
+                        extension: parsed.extension,
+                        webPath: getS3URL(`card-photos/${parsed.id}.${parsed.extension}`),
+                        custom: true
+                    }
                 }
             });
         }
-
-        return context.json({
-            result: {
-                success: true,
-                card: {
-                    name: `${id}`,
-                    extension: 'png',
-                    webPath: getS3URL(`card-photos/${id}.png`),
-                    custom: true
-                }
-            }
-        });
-    });
-
-    app.post('/api/account/card-background/pre-crop-upload', async (context) => {
-        const captchaResult = await verifyContext(context);
-        if (captchaResult) return captchaResult;
-
-        const user = await getSignedInRobloxUser(context);
-        if (!user) return context.json({ error: 'Not logged in.' }, 401);
-
-        const body = await context.req.parseBody();
-        const file = body['file'];
-
-        if (!file || typeof file === 'string') return context.json({ error: 'Invalid file.' }, 400);
-
-        if (file.size > 2000000) return context.json({ error: 'File size exceeds 2MB limit.' }, 400);
-
-        const type = await fileTypeFromBlob(file);
-        if (!type || type.mime !== 'image/png')
-            return context.json({ error: 'Invalid file type. Only PNG is allowed.' }, 400);
-
-        const sharpImage = sharp(await file.arrayBuffer());
-        sharpImage.resize({ width: 700, height: 300, fit: 'cover' });
-
-        const buffer = await sharpImage.toBuffer();
-        context.header('Content-Type', 'image/png');
-
-        //console.log('pre-crop done!', buffer.byteLength, 'bytes');
-
-        // @ts-expect-error
-        return context.body(buffer.buffer);
-    });
+    );
 
     app.post('/api/account/card-background/remove', async (context) => {
         const user = await getSignedInRobloxUser(context);
@@ -195,8 +215,8 @@ export function setupAccountEndpoints(app: Hono) {
         const data = (await accountConfigDB.get(getKeyName(user))) ?? {};
 
         if (data.cardBackground?.startsWith('c:')) {
-            const id = data.cardBackground.slice(2);
-            const path = createS3Path(`card-photos/${id}.png`);
+            const { id, extension } = parseCustomCardBackground(data.cardBackground);
+            const path = createS3Path(`card-photos/${id}.${extension}`);
             await s3.delete(path);
             const queue: any[] = JSON.parse(fs.readFileSync(createUploadCardBackgroundsReviewQueueFile(), 'utf-8'));
             fs.writeFileSync(

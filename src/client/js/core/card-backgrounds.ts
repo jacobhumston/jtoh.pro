@@ -61,7 +61,7 @@ export default async function () {
         createElement('div', {}, ['split', 'accountSettingsSplit']),
         createElement('p', {
             innerHTML:
-                'Upload a custom card background! Note that your image will automatically be resized to <code>700x300</code> if it is not already that size. Only PNG files are allowed at a maximum size of <code>2MB</code>. You can only upload 5 images every 2 hours!'
+                'Upload a custom card background! Note that your image will automatically be resized to <code>700x300</code> if it is not already that size. Only PNG, JPEG/JPG, and WEBP files are allowed at a maximum size of <code>15MB</code> uploaded and <code>2MB</code> cropped/converted. You can only upload 5 images every 2 hours, however you can preview as many as you want.'
         })
     ]);
 
@@ -88,17 +88,25 @@ export default async function () {
     uploadCardInput.addEventListener('change', async () => {
         if (uploadCardInput.files && uploadCardInput.files.length > 0) {
             const file = uploadCardInput.files[0];
-            if (file.type !== 'image/png') return;
-            if (file.size > 2000000) return;
+            //if (file.type !== 'image/png') return;
+            if (file.size > 15000000) return;
+
+            if (isDebounceActive('submitUploadCardButton')) return;
+            setDebounceActive('submitUploadCardButton');
+
+            const returnText = temporarilySetElementText(submitUploadCardButton, 'Loading preview...');
+
             const formData = new FormData();
             formData.append('file', file);
             const response = await fetch(
-                `/api/account/card-background/pre-crop-upload?captcha=${await getWebToken()}`,
+                `/api/account/card-background/upload?captcha=${await getWebToken()}&preview=true`,
                 {
                     method: 'POST',
                     body: formData
                 }
             ).catch(() => null);
+            returnText();
+            setDebounceInactive('submitUploadCardButton');
             if (!response || !response.ok) return;
             previewUploadCard.style.display = 'block';
             previewUploadCard.src = URL.createObjectURL(await response.blob());
@@ -118,8 +126,8 @@ export default async function () {
         }
 
         const file = uploadCardInput.files[0];
-        if (file.size > 2000000) {
-            createErrorPopup('File size exceeds the maximum limit of 2MB.', false);
+        if (file.size > 15000000) {
+            createErrorPopup('File size exceeds the maximum limit of 15MB.', false);
             setDebounceInactive('submitUploadCardButton');
             return;
         }

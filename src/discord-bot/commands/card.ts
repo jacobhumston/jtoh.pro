@@ -99,12 +99,16 @@ export async function execute(interaction: discord.APIChatInputApplicationComman
             container.addMediaGalleryComponents((media) =>
                 media.addItems((builder) => builder.setURL(`attachment://jtoh-pro-card-${user.name}.png`))
             );
+
+            const urlClone = new URL(url.toString());
+            urlClone.searchParams.delete('rlb-token');
+
             container.addActionRowComponents((row) =>
                 row.addComponents(
                     new discord.ButtonBuilder()
                         .setStyle(discord.ButtonStyle.Link)
                         .setLabel('Image URL')
-                        .setURL(url.toString()),
+                        .setURL(urlClone.toString()),
                     new discord.ButtonBuilder()
                         .setStyle(discord.ButtonStyle.Link)
                         .setLabel('Web Controls')

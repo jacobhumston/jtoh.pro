@@ -41,7 +41,7 @@
         "chartjs-plugin-deferred": "^2.0.0",
         "clean-css": "^5.3.3",
         "color": "^5.0.0",
-        "color-name-list": "^11.24.0",
+        "color-name-list": "^11.24.1",
         "color-string": "^2.0.1",
         "cron": "^4.3.3",
         "css": "^3.0.0",
