@@ -1,13 +1,13 @@
 import { getEnvName } from './dev';
 import { InfisicalSDK } from '@infisical/sdk';
-import { env as _env } from 'bun';
+import { env } from 'bun';
 import logger from './logger';
 
 const client = new InfisicalSDK();
 
 await client.auth().universalAuth.login({
-    clientId: _env.TOKEN_ID as string,
-    clientSecret: _env.TOKEN_SECRET as string
+    clientId: env.TOKEN_ID as string,
+    clientSecret: env.TOKEN_SECRET as string
 });
 
 const secrets = await client.secrets().listSecrets({
@@ -18,36 +18,36 @@ const secrets = await client.secrets().listSecrets({
 
 if (!secrets) throw new Error('Failed to load secrets from Infisical');
 
-const env = secrets.secrets
+const tokens: any = secrets.secrets
     .map((s) => ({ [s.secretKey]: s.secretValue }))
-    .reduce((a, b) => ({ ...a, ...b }), { ..._env });
+    .reduce((a, b) => ({ ...a, ...b }), {});
 
-logger.info(`Loaded ${Object.keys(env).length} secrets from Infisical!`);
+logger.info(`Loaded ${Object.keys(tokens).length} secrets from Infisical!`);
 
-export const discordInteractionsPublicKey = env.discordInteractionsPublicKey as string;
-export const discordInteractionsApplicationId = env.discordInteractionsApplicationId as string;
-export const discordInteractionsToken = env.discordInteractionsToken as string;
-export const robloxAuthClientId = env.robloxAuthClientId as string;
-export const robloxAuthSecret = env.robloxAuthSecret as string;
-export const theCatApiToken = env.theCatApiToken as string;
-export const cloudflareCaptchaSecret = env.cloudflareCaptchaSecret as string;
-export const robloxAdminUserId = parseInt(env.robloxAdminUserId as string) as number;
-export const donationsRobloxCloudToken = env.donationsRobloxCloudToken as string;
-export const towerStatsToken = env.towerStatsToken as string;
-export const imgurClientId = env.imgurClientId as string;
-export const imgurClientToken = env.imgurClientToken as string;
-export const proxyUrl = env.proxyUrl as string;
-export const cloudflareS3 = JSON.parse(env.cloudflareS3 as string);
-export const wheelOfNamesToken = env.wheelOfNamesToken as string;
-export const githubAppSecret = env.githubAppSecret as string;
-export const githubAppClientId = env.githubAppClientId as string;
-export const githubAppId = env.githubAppId as string;
-export const robloxAccountUsername = env.robloxAccountUsername as string;
-export const robloxAccountId = env.robloxAccountId as string;
-export const robloxAccountCookie = env.robloxAccountCookie as string;
-export const discordModLogWebhookUrl = env.discordModLogWebhookUrl as string;
-export const discordStaffNotificationsWebhookUrl = env.discordStaffNotificationsWebhookUrl as string;
-export const towerStatsVercelBypassToken = env.towerStatsVercelBypassToken as string;
-export const discordGeneralWebsiteLogsWebhookUrl = env.discordGeneralWebsiteLogsWebhookUrl as string;
-export const cloudflareDevTunnel = env.cloudflareDevTunnel as string;
-export const topggToken = (env.topggToken ?? '') as string;
+export const discordInteractionsPublicKey = tokens.discordInteractionsPublicKey as string;
+export const discordInteractionsApplicationId = tokens.discordInteractionsApplicationId as string;
+export const discordInteractionsToken = tokens.discordInteractionsToken as string;
+export const robloxAuthClientId = tokens.robloxAuthClientId as string;
+export const robloxAuthSecret = tokens.robloxAuthSecret as string;
+export const theCatApiToken = tokens.theCatApiToken as string;
+export const cloudflareCaptchaSecret = tokens.cloudflareCaptchaSecret as string;
+export const robloxAdminUserId = parseInt(tokens.robloxAdminUserId as string) as number;
+export const donationsRobloxCloudToken = tokens.donationsRobloxCloudToken as string;
+export const towerStatsToken = tokens.towerStatsToken as string;
+export const imgurClientId = tokens.imgurClientId as string;
+export const imgurClientToken = tokens.imgurClientToken as string;
+export const proxyUrl = tokens.proxyUrl as string;
+export const cloudflareS3 = JSON.parse(tokens.cloudflareS3 as string);
+export const wheelOfNamesToken = tokens.wheelOfNamesToken as string;
+export const githubAppSecret = tokens.githubAppSecret as string;
+export const githubAppClientId = tokens.githubAppClientId as string;
+export const githubAppId = tokens.githubAppId as string;
+export const robloxAccountUsername = tokens.robloxAccountUsername as string;
+export const robloxAccountId = tokens.robloxAccountId as string;
+export const robloxAccountCookie = tokens.robloxAccountCookie as string;
+export const discordModLogWebhookUrl = tokens.discordModLogWebhookUrl as string;
+export const discordStaffNotificationsWebhookUrl = tokens.discordStaffNotificationsWebhookUrl as string;
+export const towerStatsVercelBypassToken = tokens.towerStatsVercelBypassToken as string;
+export const discordGeneralWebsiteLogsWebhookUrl = tokens.discordGeneralWebsiteLogsWebhookUrl as string;
+export const cloudflareDevTunnel = tokens.cloudflareDevTunnel as string;
+export const topggToken = (tokens.topggToken ?? '') as string;
