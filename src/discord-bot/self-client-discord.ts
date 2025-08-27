@@ -1,7 +1,12 @@
 import { Client, TextChannel, Message } from 'discord.js-selfbot-v13';
-import { discordSelfBotToken } from './tokens';
+import { discordSelfBotToken } from '../tokens';
+import logger from '../logger';
 const client = new Client();
 const token = discordSelfBotToken;
+
+client.on('ready', (client) => {
+    logger.info(`Logged in as ${client.user.tag}`);
+});
 
 await client.login(token);
 
@@ -10,7 +15,7 @@ await client.login(token);
  * @param channelId The channel ID to create the collector on.
  * @param onmessage The callback to call when a message is collected.
  */
-export const createMessageCollector = async (
+export const createSelfClientMessageCollector = async (
     channelId: string,
     onmessage: (message: Message) => void | Promise<void>
 ) => {

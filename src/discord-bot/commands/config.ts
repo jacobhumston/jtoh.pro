@@ -72,6 +72,13 @@ export async function execute(interaction: discord.APIChatInputApplicationComman
         const command = interaction.data.options[0];
         if (command.name === 'download') {
             const storedData = (await discordBotConfigDB.get(`${getUserId(interaction)}`)) ?? {};
+            let storedServerData;
+            if (interaction.guild_id && interaction.member) {
+                const perms = new discord.PermissionsBitField(BigInt(interaction.member.permissions));
+                if (perms.has('Administrator')) {
+                    storedServerData = (await discordBotConfigDB.get(`guild-${interaction.guild_id}`)) ?? {};
+                }
+            }
 
             const fileName = `temp/archive-${randomUUIDv7()}.zip`;
             fs.writeFileSync(fileName, '');
@@ -85,6 +92,11 @@ export async function execute(interaction: discord.APIChatInputApplicationComman
             archive.append(JSON.stringify(storedData), {
                 name: 'data.json'
             });
+            if (storedServerData) {
+                archive.append(JSON.stringify(storedServerData), {
+                    name: `${interaction.guild_id}-data.json`
+                });
+            }
             archive.append(
                 `>> ACCOUNT DATA REQUEST @ ${getURLHost()} (jtoh.pro Discord Bot)
 Account data request for @${interaction.member ? interaction.member?.user.username : interaction.user?.username}.
@@ -93,6 +105,7 @@ The contents delivered should NOT be shared with anyone.
 
 >> FILE INFORMATION
 "data.json" - Data stored by the bot for your Discord account.
+"<id>-data.json" - Data stored by the bot for your Discord server. Run the download command again in a server you are an administrator in to receive this file.
 
 >> HAVE QUESTIONS?
 Shoot us an email at support@jtoh.pro
@@ -112,7 +125,6 @@ Shoot us an email at support@jtoh.pro
             const fileData = file.buffer.slice(file.byteOffset, file.byteOffset + file.byteLength) as any;
             fs.rmSync(fileName);
             form.set('files[0]', new Blob([fileData], { type: 'application/zip' }), 'jtoh-pro-discord-data.zip');
-
             container.addTextDisplayComponents((text) =>
                 text.setContent('Your data has been prepared and is ready for download.')
             );
@@ -122,6 +134,11 @@ Shoot us an email at support@jtoh.pro
                     '-# This data is unlikely to include any personal information, however it is recommended that you do not share this data with anyone.'
                 )
             );
+            if (storedServerData) {
+                container.addTextDisplayComponents((text) =>
+                    text.setContent('*Your data download includes data for this guild.*')
+                );
+            }
         } else {
             container.addTextDisplayComponents((text) => text.setContent('Unknown config command.'));
         }
