@@ -83,9 +83,11 @@ export default async function () {
                     searchRegex,
                     (match) => `<span class="highlight">${match}</span>`
                 );
-                author.innerHTML = `${getWebIconHTML('person')} <b>By:</b> <a href="https://roblox.com/users/${post.author.user.id}/profile/">${post.author.user.displayName.replaceAll(
-                    searchRegex,
-                    (match: any) => `<span class="highlight">${match}</span>`
+                author.innerHTML = `${getWebIconHTML('person')} <b>By:</b> <a href="https://roblox.com/users/${removeHTML(post.author.user.id)}/profile/">${removeHTML(
+                    post.author.user.displayName.replaceAll(
+                        searchRegex,
+                        (match: any) => `<span class="highlight">${match}</span>`
+                    )
                 )}</a>`;
             }
         }
