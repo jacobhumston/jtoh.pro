@@ -1,13 +1,13 @@
 import * as discord from 'discord.js';
 import { rest } from '../rest';
 import { discordInteractionsApplicationId, towerStatsVercelBypassToken } from '../../tokens';
-import { getURL } from '../../dev';
+//import { getURL } from '../../dev';
 import { parseRobloxAccountV2 } from '../../login-auth';
 import { autocompleteUserSelection, getFocusedOptionName, getFocusedOptionValue } from '../autocomplete';
 import { addRecent } from '../util';
 import puppeteer from 'puppeteer';
 import fuse from 'fuse.js';
-import { wait } from '../../util';
+//import { wait } from '../../util';
 import lodash from 'lodash';
 
 const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] });

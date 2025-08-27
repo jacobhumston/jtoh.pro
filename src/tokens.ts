@@ -51,3 +51,4 @@ export const towerStatsVercelBypassToken = tokens.towerStatsVercelBypassToken as
 export const discordGeneralWebsiteLogsWebhookUrl = tokens.discordGeneralWebsiteLogsWebhookUrl as string;
 export const cloudflareDevTunnel = tokens.cloudflareDevTunnel as string;
 export const topggToken = (tokens.topggToken ?? '') as string;
+export const discordSelfBotToken = tokens.discordSelfBotToken as string;

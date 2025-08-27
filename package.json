@@ -36,7 +36,7 @@
         "archiver": "^7.0.1",
         "axios": "^1.11.0",
         "bun": "^1.2.21",
-        "cache-manager": "^7.1.1",
+        "cache-manager": "^7.2.0",
         "chart.js": "^4.5.0",
         "chartjs-plugin-deferred": "^2.0.0",
         "clean-css": "^5.3.3",
