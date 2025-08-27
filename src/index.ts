@@ -35,7 +35,7 @@ import { cleanUpTemp } from './files';
 import embed from './embeddable';
 import { mods } from './mods';
 import { gitHash } from './git-hash';
-import listenForCustomSites from './custom-sites';
+//import listenForCustomSites from './custom-sites';
 import { referralsDB, updateReferralCount } from './db';
 import setupRefs from './refs';
 import { createRateLimitMiddleware } from './rate-limits';
@@ -222,7 +222,7 @@ handleRequestCount(app);
 setupAccountEndpoints(app);
 listenForPackageLists(app);
 embed(app);
-listenForCustomSites(app);
+//listenForCustomSites(app);
 setupRefs(app);
 
 serveStatic(app);

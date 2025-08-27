@@ -4,6 +4,7 @@ import { parseRobloxAccountV2WithCache } from './login-auth';
 import { customSitesDB } from './db';
 import { getURL, getURLHost } from './dev';
 import { getTempToken } from './temp-tokens';
+import DOMPurify from 'dompurify';
 
 export default async function listenForCustomSites(app: Hono) {
     app.get('/api/custom-sites/*', async (context) => {
@@ -50,7 +51,7 @@ export default async function listenForCustomSites(app: Hono) {
         if (siteData.claimed !== true) {
             const element = document.createElement('p');
             element.id = 'unclaimedCustomSiteNotice';
-            element.innerHTML = `This custom site has not been claimed yet by ${user.name}!`;
+            element.innerHTML = `This custom site has not been claimed yet by ${DOMPurify.sanitize(user.name)}!`;
             body.appendChild(element);
 
             const element1 = document.createElement('a');

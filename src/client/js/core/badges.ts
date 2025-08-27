@@ -1,3 +1,4 @@
+import { log } from '../libs/logger';
 import { getWebToken } from '../libs/security';
 import {
     addChild,
@@ -7,6 +8,7 @@ import {
     getElementByIdExpected,
     getWebIconHTML,
     getWebsocketURL,
+    removeHTML,
     waitForPageLoad
 } from '../libs/util';
 
@@ -56,6 +58,11 @@ export default async function () {
         const socket = new WebSocket(`${getWebsocketURL('badge-check-progress')}&resultId=${resultId}`);
 
         socket.addEventListener('message', (data) => {
+            if (data.origin !== window.location.origin) {
+                log('warn', `Blocked badge progress message from origin ${data.origin}`);
+                return;
+            }
+
             //console.log('MESSAGE', data.data);
             const parsed = JSON.parse(data.data);
             if (!parsed.progress) return;
@@ -65,7 +72,7 @@ export default async function () {
             let timePassed = ((Date.now() - timeStarted) / 1000).toFixed(2);
 
             badgeStatBar.style.display = 'block';
-            badgeStatBar.innerHTML = `${getWebIconHTML('award_star')} <b>${parsed.completed}</b>/<b>${parsed.total}</b> — ${getWebIconHTML('wifi')} <b>${parsed.requests.success}</b>/<b>${parsed.requests.retry}</b> — ${getWebIconHTML('timer')} <b>${timePassed}s</b>`;
+            badgeStatBar.innerHTML = `${getWebIconHTML('award_star')} <b>${removeHTML(parsed.completed)}</b>/<b>${removeHTML(parsed.total)}</b> — ${getWebIconHTML('wifi')} <b>${removeHTML(parsed.requests.success)}</b>/<b>${removeHTML(parsed.requests.retry)}</b> — ${getWebIconHTML('timer')} <b>${removeHTML(timePassed)}s</b>`;
         });
 
         socket.addEventListener('close', async () => {
@@ -145,7 +152,7 @@ export default async function () {
                         }
                         addClass(awardedOn, 'badgeAwardedOn');
 
-                        awardedOn.innerHTML = `${awardedOn.innerText}<br><a target="_blank" href="https://www.roblox.com/badges/${badge.id}">View on Roblox</a>`;
+                        awardedOn.innerHTML = `${awardedOn.innerText}<br><a target="_blank" href="https://www.roblox.com/badges/${removeHTML(badge.id)}">View on Roblox</a>`;
 
                         const image = createElement('img');
                         image.alt = badge.name;

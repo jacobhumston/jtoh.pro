@@ -1,5 +1,13 @@
 import { window } from '../libs/global';
-import { addChild, addClass, createElement, getElementById, getWebIconHTML, waitForPageLoad } from '../libs/util';
+import {
+    addChild,
+    addClass,
+    createElement,
+    getElementById,
+    getWebIconHTML,
+    removeHTML,
+    waitForPageLoad
+} from '../libs/util';
 
 export default async function () {
     await waitForPageLoad();
@@ -49,7 +57,7 @@ export default async function () {
             const title = createElement('h2', { innerText: post.title });
 
             const author = createElement('span', {
-                innerHTML: `${getWebIconHTML('person')} <b>By:</b> <a href="https://roblox.com/users/${post.author.user.id}/profile/">${post.author.user.displayName}</a>`
+                innerHTML: `${getWebIconHTML('person')} <b>By:</b> <a href="https://roblox.com/users/${removeHTML(post.author.user.id)}/profile/">${removeHTML(post.author.user.displayName)}</a>`
             });
 
             const created = createElement('span', {

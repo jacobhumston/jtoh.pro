@@ -1,5 +1,6 @@
 import { document, window } from './global';
 import { getDefaultLoggerStylesheet, log } from './logger';
+import DOMPurify from 'dompurify';
 
 /**
  * Add a class or multiple classes to an element.
@@ -475,4 +476,13 @@ export function addOpenIconToAnchorLinks() {
             addClass(a, 'anchorElementWithIcon');
         }
     }
+}
+
+/**
+ * Clean/remove HTML.
+ * @param dirty The dirty HTML to clean.
+ * @returns The cleaned HTML.
+ */
+export function removeHTML(dirty: string): string {
+    return DOMPurify.sanitize(dirty, { USE_PROFILES: { html: false } });
 }

@@ -1,6 +1,7 @@
 import { Terminal } from '@xterm/xterm';
 import { WebLinksAddon } from '@xterm/addon-web-links';
 import { waitForPageLoad, getElementById, getWebsocketURL } from '../libs/util';
+import { log } from '../libs/logger';
 
 export default async function () {
     await waitForPageLoad();
@@ -15,7 +16,13 @@ export default async function () {
     terminal.open(terminalContainer);
     terminal.onData((data) => websocket.send(data));
 
-    websocket.addEventListener('message', (event) => terminal.write(event.data));
+    websocket.addEventListener('message', (event) => {
+        if (event.origin !== window.location.origin) {
+            log('warn', `Blocked terminal message from origin ${event.origin}`);
+            return;
+        }
+        terminal.write(event.data);
+    });
 
     websocket.addEventListener('open', () => {
         terminalConnectedStatus.innerText = 'Terminal is currently connected!';

@@ -8,6 +8,7 @@ import {
     createElement,
     getElementById,
     getWebIconHTML,
+    removeHTML,
     waitForPageLoad,
     waitForWindowLoad
 } from '../libs/util';
@@ -134,19 +135,19 @@ export default async function () {
 
                 if (response.total.pages > 0) {
                     const userCount = createElement('span');
-                    userCount.innerHTML = `${getWebIconHTML('group')} <b>${formatter.format(response.total.users)}</b> users in this leaderboard.`;
+                    userCount.innerHTML = `${getWebIconHTML('group')} <b>${removeHTML(formatter.format(response.total.users))}</b> users in this leaderboard.`;
                     addClass(userCount, 'leaderboardUserCount');
                     addChild(div, userCount);
 
                     if (response.me) {
                         const myRank = createElement('span');
-                        myRank.innerHTML = `${getWebIconHTML('person')} You are ranked <b>#${formatter.format(response.me.rank)}</b>.`;
+                        myRank.innerHTML = `${getWebIconHTML('person')} You are ranked <b>#${removeHTML(formatter.format(response.me.rank))}</b>.`;
                         addClass(myRank, 'leaderboardMyRank');
                         addChild(div, myRank);
                     }
 
                     if (response.me && !friendsOf) {
-                        userCount.innerHTML = `${userCount.innerHTML} <a href="/app/leaderboards?type=${type}&other=${other}&page=1&friendsOf=${response.me.user.name}">View friends only leaderboard.</a>`;
+                        userCount.innerHTML = `${userCount.innerHTML} <a href="/app/leaderboards?type=${type}&other=${other}&page=1&friendsOf=${removeHTML(response.me.user.name)}">View friends only leaderboard.</a>`;
                     }
 
                     const pagination = createElement('div');
