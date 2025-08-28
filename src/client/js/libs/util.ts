@@ -505,11 +505,14 @@ export async function getBrowserFingerprint(): Promise<string> {
 export function newElementCreator(parentElement: HTMLElement) {
     return function addElement<T extends keyof HTMLElementTagNameMap>(
         tag: T,
+        childCreator?: (creator: typeof addElement) => typeof addElement,
         modify?: (element: HTMLElementTagNameMap[T], parent: typeof parentElement) => Promise<void> | void
     ) {
         const element = createElement(tag);
+        if (childCreator) childCreator(newElementCreator(element));
         if (modify) modify(element, parentElement);
         addChild(parentElement, element);
+        console.log(parentElement, element);
         return addElement;
     };
 }
