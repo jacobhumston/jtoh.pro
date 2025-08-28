@@ -76,7 +76,7 @@
         "mime-types": "^3.0.1",
         "octokit": "^5.0.3",
         "prettier": "^3.6.2",
-        "puppeteer": "^24.17.0",
+        "puppeteer": "^24.17.1",
         "puppeteer-extra": "^3.3.6",
         "puppeteer-extra-plugin-stealth": "^2.11.2",
         "purgecss": "^7.0.2",
@@ -94,7 +94,7 @@
         "uuid": "^11.1.0",
         "validate-color": "^2.2.4",
         "winston": "^3.17.0",
-        "zod": "^4.1.4"
+        "zod": "^4.1.5"
     },
     "devDependencies": {
         "@types/archiver": "^6.0.3",

@@ -497,4 +497,34 @@ export async function getBrowserFingerprint(): Promise<string> {
     return fingerprint.thumbmark;
 }
 
-//export function newElementCreator() {}
+/**
+ * Start a new element creator.
+ * @param parentElement The parent element.
+ * @returns The element creator.
+ */
+export function newElementCreator(parentElement: HTMLElement) {
+    return function addElement<T extends keyof HTMLElementTagNameMap>(
+        tag: T,
+        modify?: (element: HTMLElementTagNameMap[T], parent: typeof parentElement) => Promise<void> | void
+    ) {
+        const element = createElement(tag);
+        if (modify) modify(element, parentElement);
+        addChild(parentElement, element);
+        return addElement;
+    };
+}
+
+/**
+ * Takes `element` and sets it inner html to be `string` where each `"~{index}""` string match is replaced with `replacers[index]`.
+ * @param element The element.
+ * @param string The string.
+ * @param replacers The replacers.
+ */
+export function safeSetHTML(element: HTMLElement, string: string, replacers: string[]) {
+    let newString = string;
+    for (const index in replacers) {
+        newString = newString.replaceAll(`~{${index}}`, replacers[parseInt(index)]);
+    }
+    element.innerHTML = newString;
+    return;
+}
