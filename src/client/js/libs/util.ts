@@ -1,3 +1,4 @@
+import { getThumbmark } from '@thumbmarkjs/thumbmarkjs';
 import { document, window } from './global';
 import { getDefaultLoggerStylesheet, log } from './logger';
 import DOMPurify from 'dompurify';
@@ -486,3 +487,14 @@ export function addOpenIconToAnchorLinks() {
 export function removeHTML(dirty: string): string {
     return DOMPurify.sanitize(dirty, { USE_PROFILES: { html: false } });
 }
+
+/**
+ * Get browser fingerprint.
+ * @returns Browser fingerprint.
+ */
+export async function getBrowserFingerprint(): Promise<string> {
+    const fingerprint = await getThumbmark();
+    return fingerprint.thumbmark;
+}
+
+//export function newElementCreator() {}
