@@ -1,4 +1,5 @@
 import { log } from '../libs/logger';
+import { window } from '../libs/global';
 import { getWebToken } from '../libs/security';
 import {
     addChild,

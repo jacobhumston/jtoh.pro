@@ -497,24 +497,39 @@ export async function getBrowserFingerprint(): Promise<string> {
     return fingerprint.thumbmark;
 }
 
+/** An element creator. */
+type ElementCreator<P extends HTMLElement> = <T extends keyof HTMLElementTagNameMap>(
+    tag: T,
+    childCreator?: (creator: ElementCreator<HTMLElementTagNameMap[T]>) => ElementCreator<HTMLElementTagNameMap[T]>,
+    modify?: (element: HTMLElementTagNameMap[T], parent: P) => Promise<void> | void
+) => ElementCreator<P>;
+
 /**
  * Start a new element creator.
  * @param parentElement The parent element.
  * @returns The element creator.
  */
-export function newElementCreator(parentElement: HTMLElement) {
-    return function addElement<T extends keyof HTMLElementTagNameMap>(
+export function newElementCreator<P extends HTMLElement>(parentElement: P): ElementCreator<P> {
+    /**
+     * Add an element to the parent element.
+     * @param tag The tag of the element to create.
+     * @param childCreator A function that takes an element creator for the created element, allowing you to add children to it.
+     * @param modify A function that takes the created element and parent element, allowing you to modify the created element before it is added to the parent element. Note that it will not wait for async calls to finish.
+     * @returns The element creator for the parent element, allowing you to chain calls.
+     */
+    const addElement = (<T extends keyof HTMLElementTagNameMap>(
         tag: T,
-        childCreator?: (creator: typeof addElement) => typeof addElement,
-        modify?: (element: HTMLElementTagNameMap[T], parent: typeof parentElement) => Promise<void> | void
-    ) {
+        childCreator?: (creator: ElementCreator<HTMLElementTagNameMap[T]>) => ElementCreator<HTMLElementTagNameMap[T]>,
+        modify?: (element: HTMLElementTagNameMap[T], parent: P) => Promise<void> | void
+    ) => {
         const element = createElement(tag);
         if (childCreator) childCreator(newElementCreator(element));
         if (modify) modify(element, parentElement);
         addChild(parentElement, element);
-        console.log(parentElement, element);
-        return addElement;
-    };
+        return addElement as ElementCreator<P>;
+    }) as ElementCreator<P>;
+
+    return addElement;
 }
 
 /**

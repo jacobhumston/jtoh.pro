@@ -12,7 +12,7 @@ import { disableLogger, log } from './libs/logger';
 import { displayDevBanner, logConsolePasteWarning } from './libs/security';
 import { applyTheme, listenForThemSelection } from './libs/theme';
 import { checkForUpdates } from './libs/updater';
-import { addClass, addOpenIconToAnchorLinks, getPageFileName, hookFetchLogger, newElementCreator } from './libs/util';
+import { addClass, addOpenIconToAnchorLinks, getPageFileName, hookFetchLogger } from './libs/util';
 
 const url = new URL(document.location.href);
 
@@ -77,20 +77,3 @@ try {
 
 displayDevBanner();
 log('success', `Loaded in ${Math.round(window.performance.now() - startLoadTime)}ms`);
-
-const creator = newElementCreator(document.body);
-creator('a', (child) =>
-    child('a', (child) =>
-        child('abbr', undefined, (element) => {
-            element.className = 'ref';
-        })('audio')('area', (child) =>
-            child('article')('picture', undefined, (_, parent) => {
-                console.log(parent);
-            })
-        )
-    )('abbr')('div', (child) =>
-        child('p', undefined, (element) => {
-            element.innerText = 'child paragraph';
-        })
-    )
-);

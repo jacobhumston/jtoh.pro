@@ -1,3 +1,4 @@
+import { window } from '../libs/global';
 import { Terminal } from '@xterm/xterm';
 import { WebLinksAddon } from '@xterm/addon-web-links';
 import { waitForPageLoad, getElementById, getWebsocketURL } from '../libs/util';

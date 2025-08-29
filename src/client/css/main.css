@@ -126,7 +126,8 @@ button {
     border-radius: 5px;
 }
 
-input {
+input,
+textarea {
     background-color: var(--color-background-lighter);
     color: var(--color-text);
     border: none;
@@ -140,7 +141,8 @@ input {
     border-radius: 5px;
 }
 
-input:focus {
+input:focus,
+textarea:focus {
     outline: none;
 }
 
@@ -288,6 +290,7 @@ code {
 
 .interactionFlex button,
 .interactionFlex input,
+.interactionFlex textarea,
 .interactionFlex select {
     flex-grow: 1;
     display: inline-block;
@@ -2359,4 +2362,22 @@ noscript {
     padding: 10px;
     text-align: center;
     display: block;
+}
+
+#feedbackForm {
+    max-width: 500px;
+    padding: 10px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+#feedbackForm label {
+    width: 100%;
+    color: var(--color-text-bold);
+    margin-top: 10px;
+}
+
+#feedbackInput {
+    min-height: 300px;
+    text-align: left;
 }
