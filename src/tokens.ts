@@ -52,3 +52,4 @@ export const discordGeneralWebsiteLogsWebhookUrl = tokens.discordGeneralWebsiteL
 export const cloudflareDevTunnel = tokens.cloudflareDevTunnel as string;
 export const topggToken = (tokens.topggToken ?? '') as string;
 export const discordSelfBotToken = tokens.discordSelfBotToken as string;
+export const jacobsAssistantDiscordToken = tokens.JacobsAssistantDiscordToken as string;
