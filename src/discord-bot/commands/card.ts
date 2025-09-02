@@ -158,7 +158,7 @@ Available User Options:
             body: form,
             passThroughBody: true
         })
-        .catch(console.log);
+        .catch(() => {});
 }
 
 export async function autocomplete(

@@ -1,12 +1,10 @@
 import { _ } from '../libs/global';
 import { createErrorPopup } from '../libs/quick-elements';
 import { getWebToken } from '../libs/security';
-import { addClass, getBody, getElementByIdExpected, newElementCreator } from '../libs/util';
+import { addClass, getElementByIdExpected, newElementCreator, waitForElementById } from '../libs/util';
 
 export default async function () {
-    const body = await getBody();
-
-    newElementCreator(body)(
+    newElementCreator((await waitForElementById('feedbackFormContainer', {})) as HTMLElement)(
         'form',
         (addChild) =>
             addChild('label', _, (label) => {
@@ -34,7 +32,7 @@ export default async function () {
                 input.placeholder =
                     "Enter your feedback here. If you selected 'Other', please specify what you are providing feedback on.";
                 input.minLength = 100;
-                input.maxLength = 3000;
+                input.maxLength = 1000;
                 input.required = true;
                 input.id = 'feedbackInput';
                 input.name = 'feedback';

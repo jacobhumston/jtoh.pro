@@ -246,7 +246,7 @@ Shoot us an email at support@jtoh.pro
             body: form,
             passThroughBody: true
         })
-        .catch(console.log);
+        .catch(() => {});
 }
 
 export const ephemeral = true;

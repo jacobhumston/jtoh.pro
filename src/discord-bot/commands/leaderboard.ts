@@ -152,7 +152,7 @@ export async function execute(interaction: discord.APIChatInputApplicationComman
                 body: form,
                 passThroughBody: true
             })
-            .catch(console.log);
+            .catch(() => {});
         return;
     }
 
@@ -197,7 +197,7 @@ export async function execute(interaction: discord.APIChatInputApplicationComman
             body: form,
             passThroughBody: true
         })
-        .catch(console.log);
+        .catch(() => {});
 }
 
 export async function autocomplete(

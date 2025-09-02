@@ -26,7 +26,8 @@ export default function redirects(app: Hono) {
         { path: '/redirect', target: '/app/redirect' },
         { path: '/app/terms', target: '/app/docs/terms' },
         { path: '/app/privacy', target: '/app/docs/privacy' },
-        { path: '/app/cookie-policy', target: '/app/docs/cookies' }
+        { path: '/app/cookie-policy', target: '/app/docs/cookies' },
+        { path: '/feedback', target: '/app/feedback' }
     ];
 
     redirectRoutes.forEach((route) => {

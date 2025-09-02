@@ -1,10 +1,11 @@
 import * as discord from 'discord.js';
 import { rest } from '../rest';
 import { discordInteractionsApplicationId } from '../../tokens';
+import { getURL } from '../../dev';
 
 export const command = new discord.SlashCommandBuilder()
-    .setName('stats')
-    .setDescription('Get the jtoh.pro card request stats for a game.')
+    .setName('feedback')
+    .setDescription('Provide feedback for jtoh.pro!')
     .setContexts([
         discord.InteractionContextType.BotDM,
         discord.InteractionContextType.PrivateChannel,
@@ -17,13 +18,11 @@ export const command = new discord.SlashCommandBuilder()
 
 export async function execute(interaction: discord.APIChatInputApplicationCommandInteraction) {
     const form = new FormData();
-
-    if (!interaction.data.options) return;
-
-    if (interaction.data.options[0].type !== discord.ApplicationCommandOptionType.Subcommand) return;
-    if (interaction.data.options[0].options === undefined) return;
-
     const container = new discord.ContainerBuilder();
+
+    container.addTextDisplayComponents((text) =>
+        text.setContent(`**Provide Feedback**\nTo provide feedback, visit: ${getURL()}/feedback`)
+    );
 
     const payload: discord.RESTPostAPIInteractionFollowupJSONBody = {
         components: [container.toJSON()],

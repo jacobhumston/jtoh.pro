@@ -100,5 +100,5 @@ This Month : ${formatter.format(monthCount)}
             body: form,
             passThroughBody: true
         })
-        .catch(console.log);
+        .catch(() => {});
 }

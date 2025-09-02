@@ -39,6 +39,7 @@ import { gitHash } from './git-hash';
 import { referralsDB, updateReferralCount } from './db';
 import setupRefs from './refs';
 import { createRateLimitMiddleware } from './rate-limits';
+import { listenForFeedback } from './feedback';
 
 cleanUpTemp();
 cardImageCheck();
@@ -224,6 +225,7 @@ listenForPackageLists(app);
 embed(app);
 //listenForCustomSites(app);
 setupRefs(app);
+listenForFeedback(app);
 
 serveStatic(app);
 
