@@ -118,5 +118,10 @@
     "typescript.suggest.autoImports": true,
     "typescript.preferences.importModuleSpecifier": "relative",
     "typescript.preferences.includeCompletionsForModuleExports": true,
-    "postman.settings.dotenv-detection-notification-visibility": false
+    "postman.settings.dotenv-detection-notification-visibility": false,
+    "cSpell.enabledNotifications": {
+        "Average Word Length too Long": false,
+        "Lines too Long": false,
+        "Maximum Word Length Exceeded": false
+    }
 }

@@ -16,7 +16,7 @@ import { htmlCache } from './cache';
 
 let cssCache: null | string = null;
 
-function getCSS() {
+function getCSS(pagename: string): string {
     if (cssCache) return cssCache;
     const styles: string[] = [];
     for (const file of fs.readdirSync('src/client/css/')) {
@@ -24,6 +24,13 @@ function getCSS() {
             styles.push(fs.readFileSync(`src/client/css/${file}`).toString());
         }
     }
+    for (const file of fs.readdirSync('src/client/css/components/')) {
+        if (file.endsWith('.css')) {
+            styles.push(fs.readFileSync(`src/client/css/components/${file}`).toString());
+        }
+    }
+    if (fs.existsSync(`src/client/css/core/${pagename}.css`))
+        styles.push(fs.readFileSync(`src/client/css/core/${pagename}.css`).toString());
     const result = new cleanCSS({ level: 2 }).minify(styles.join('\n')).styles;
     if (!isDev) cssCache = result;
     return result;
@@ -162,7 +169,7 @@ export default async function serveStatic(app: Hono) {
                     minifiedContent
                         .replaceAll('{{pageId}}', pageId)
                         .replaceAll('{{currentYear}}', new Date().getFullYear().toString())
-                        .replace('<style template=styles></style>', () => `<style>${getCSS()}</style>`)
+                        .replace('<style template=styles></style>', () => `<style>${getCSS(pageName)}</style>`)
                         .replace('<script template=js></script>', () => `<script>${js}</script>`)
                 );
 

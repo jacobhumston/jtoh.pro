@@ -1,5 +1,5 @@
 import { document, window } from './global';
-import { isDebounceActive, setDebounceActive, setDebounceInactive } from './debounce';
+import { isDebounceActive } from './debounce';
 import { addClass, removeClass, getWebIconHTML, getElementById, waitForElementById } from './util';
 
 /** Theme types. */
@@ -62,26 +62,10 @@ export async function listenForThemSelection() {
         const loggedInDetails = getElementById('loggedInDetails');
         for (const theme of themes) {
             theme.dataset.enabled = enabled.toString();
-            let clickedGlassSecrete = 0;
             theme.addEventListener('click', () => {
                 if (isDebounceActive('themeChanger')) return;
                 const ThisTheme = (theme.dataset.theme ?? '') as Themes;
                 updateTheme(ThisTheme);
-                if (ThisTheme === 'themesLight') {
-                    if (clickedGlassSecrete < 6) {
-                        clickedGlassSecrete++;
-                    } else {
-                        updateTheme('themesGlass');
-                        clickedGlassSecrete = 0;
-                        setDebounceActive('themeChanger');
-                        setTimeout(() => {
-                            setDebounceInactive('themeChanger');
-                        }, 3000);
-                    }
-                    setTimeout(() => {
-                        clickedGlassSecrete--;
-                    }, 1000);
-                }
             });
         }
         if (enabled) {
