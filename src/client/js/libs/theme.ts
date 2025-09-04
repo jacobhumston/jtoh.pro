@@ -1,19 +1,9 @@
 import { document, window } from './global';
 import { isDebounceActive, setDebounceActive, setDebounceInactive } from './debounce';
 import { addClass, removeClass, getWebIconHTML, getElementById, waitForElementById } from './util';
-import { EventEmitter } from 'events';
 
 /** Theme types. */
 export type Themes = 'themesLight' | 'themesDark' | 'themesGlass';
-
-/** Theme events. */
-export interface ThemeEvents {
-    /** Emitted when themes are applied. */
-    applied: [theme: Themes];
-}
-
-/** Theme events. */
-export const themeEvents: EventEmitter = new EventEmitter();
 
 /**
  * Apply the theme based on the user's preference or the saved theme.
@@ -24,10 +14,8 @@ export function applyTheme() {
     const currentTheme = localStorage.getItem('theme') as Themes | null;
     if (!currentTheme) {
         addClass(root, 'themesDark');
-        themeEvents.emit('applied', 'themesDark');
     } else {
         addClass(root, currentTheme);
-        themeEvents.emit('applied', currentTheme);
     }
 }
 
