@@ -10,6 +10,8 @@
     overflow-x: hidden;
     white-space: nowrap;
     box-sizing: border-box;
+    display: flex;
+    border: solid 2px color-mix(in srgb, var(--accent) 60%, transparent);
 }
 
 #menuBar a {
@@ -20,6 +22,10 @@
     font-size: large;
     position: relative;
     display: inline-block;
+    transition-property: color;
+    transition-duration: 0.5s;
+    transition-timing-function: ease;
+    max-width: min-content;
 }
 
 .menuBarLine {
@@ -32,6 +38,9 @@
     background-color: var(--background-darker);
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
+    transition-property: width left background-color;
+    transition-duration: 0.5s;
+    transition-timing-function: ease;
 }
 
 .menuBarActive {
@@ -40,4 +49,74 @@
 
 .menuBarActive .menuBarLine {
     background-color: var(--accent);
+    left: calc(50% - 30px);
+    width: 60px;
+}
+
+#menuBar a:hover {
+    color: var(--accent);
+}
+
+#menuBar a:hover > .menuBarLine {
+    background-color: var(--accent);
+    left: calc(50% - 30px);
+    width: 60px;
+}
+
+#themeChanger {
+    background-color: transparent;
+    color: var(--text);
+    margin: 0px;
+    padding: 0px;
+    margin-right: 10px;
+    vertical-align: middle;
+    font-size: large;
+    display: inline-block;
+}
+
+#themeChanger:hover {
+    color: var(--accent);
+}
+
+#menuBarSecondary {
+    display: inline-flex;
+    text-align: right;
+    min-width: max-content;
+    flex-grow: 1;
+    justify-content: right;
+    align-items: center;
+    align-content: center;
+    vertical-align: middle;
+    margin-top: -5px;
+}
+
+#loggedInDetails {
+    display: inline-block;
+    text-align: left;
+    padding-right: 10px;
+    vertical-align: middle;
+}
+
+#loggedInIcon {
+    width: auto;
+    height: 2.5em;
+    background-color: var(--background-darker);
+    vertical-align: middle;
+    border-radius: 100%;
+    margin-left: 10px;
+    margin-right: 10px;
+    display: inline-block;
+}
+
+#loggedInName {
+    max-width: 15ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#loginButton {
+    display: inline-block;
+    margin-top: -5px;
 }

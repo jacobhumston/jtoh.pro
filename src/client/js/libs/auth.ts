@@ -7,7 +7,8 @@ import {
     createElement,
     addChild,
     addClass,
-    getWebIconHTML
+    getWebIconHTML,
+    insertChild
 } from './util';
 
 /** Original URL. */
@@ -114,27 +115,25 @@ export async function addAuthUI() {
         const menuBar = getElementById('menuBar');
         if (!menuBar) return;
 
-        const themeContainer = getElementById('themeContainer');
-        if (!themeContainer) return;
-
         const loggedInDetails = getElementById('loggedInDetails');
         if (!loggedInDetails) return;
 
-        const url = new URL(document.location.href);
+        const menuBarSecondary = getElementById('menuBarSecondary');
+        if (!menuBarSecondary) return;
 
-        if (!url.pathname.startsWith('/app/account/')) {
-            const settingsButton = createElement('button', {
-                id: 'settingsOpener',
-                innerHTML: `${getWebIconHTML('settings')} Settings`,
-                type: 'button'
-            });
+        //const url = new URL(document.location.href);
 
-            settingsButton.addEventListener('click', () => {
-                window.location.href = '/app/account/settings';
-            });
+        const settingsButton = createElement('button', {
+            id: 'settingsOpener',
+            innerHTML: `${getWebIconHTML('settings')} Settings`,
+            type: 'button'
+        });
 
-            themeContainer.insertBefore(settingsButton, loggedInDetails);
-        }
+        settingsButton.addEventListener('click', () => {
+            window.location.href = '/app/account/settings';
+        });
+
+        addChild(loggedInDetails, settingsButton);
 
         const icon = createElement('img', {
             src: user.user.thumbnail,
@@ -162,7 +161,8 @@ export async function addAuthUI() {
                 href: '/app/mods/mod-panel',
                 innerText: 'Mod Panel'
             });
-            addChild(menuBar, link);
+            addChild(link, createElement('div', { className: 'menuBarLine' }));
+            insertChild(menuBarSecondary, 'beforebegin', link);
         }
 
         if (user.admin === true) {
@@ -170,7 +170,8 @@ export async function addAuthUI() {
                 href: '/app/admin/admin-panel',
                 innerText: 'Admin Panel'
             });
-            addChild(menuBar, link);
+            addChild(link, createElement('div', { className: 'menuBarLine' }));
+            insertChild(menuBarSecondary, 'beforebegin', link);
         }
     } else {
         const button = createElement('button', {

@@ -28,3 +28,21 @@ a {
     color: var(--blue);
     text-decoration: none;
 }
+
+button {
+    background-color: var(--accent);
+    color: var(--text);
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: medium;
+    border-radius: 10px;
+    border: none;
+    transition: all 0.5s ease;
+}
+
+button:hover {
+    background-color: var(--text);
+    color: var(--background);
+    cursor: pointer;
+}
