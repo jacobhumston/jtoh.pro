@@ -50,7 +50,7 @@
         "discord.js": "^14.22.1",
         "discord.js-selfbot-v13": "^3.7.0",
         "dompurify": "^3.2.6",
-        "emoji-picker-element": "^1.26.3",
+        "emoji-picker-element": "^1.27.0",
         "emoji-regex": "^10.5.0",
         "esbuild": "^0.25.9",
         "events": "^3.3.0",
@@ -1180,7 +1180,7 @@
 
     "eastasianwidth": ["eastasianwidth@0.2.0", "", {}, "sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA=="],
 
-    "emoji-picker-element": ["emoji-picker-element@1.26.3", "", {}, "sha512-fOMG44d/3OqTe1pPqlu5H4ZtWg7gK4Le6Bt24JTKtDyce5+EO3Mo8WA95cKHbPSsSsg7ehM12M1x3Y6U6fgvTQ=="],
+    "emoji-picker-element": ["emoji-picker-element@1.27.0", "", {}, "sha512-CeN9g5/kq41+BfYPDpAbE2ejZRHbs1faFDmU9+E9wGA4JWLkok9zo1hwcAFnUhV4lPR3ZuLHiJxNG1mpjoF4TQ=="],
 
     "emoji-regex": ["emoji-regex@10.5.0", "", {}, "sha512-lb49vf1Xzfx080OKA0o6l8DQQpV+6Vg95zyCJX9VB/BqKYlhG7N4wgROUUHRA+ZPUefLnteQOad7z1kT2bV7bg=="],
 
