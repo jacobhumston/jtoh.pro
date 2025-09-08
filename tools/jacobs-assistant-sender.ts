@@ -14,24 +14,21 @@ await client.login(jacobsAssistantDiscordToken);
 client.user?.setStatus('dnd');
 client.user?.setActivity('(◠‿◠✿)', { type: discord.ActivityType.Custom });
 
-//const logChannel = (await client.channels.fetch('1276772986858373290')) as discord.TextChannel;
+const logChannel = (await client.channels.fetch('1276772986858373290')) as discord.TextChannel;
 const server = await client.guilds.fetch('1275534337625952428');
 
-/*
 client.on('guildMemberAdd', async (member) => {
     if (member.guild.id !== server.id) return;
 
-    const twoWeeksAgo = Date.now() - 14 * 24 * 60 * 60 * 1000;
-    if (member.user.createdAt.getTime() >= twoWeeksAgo) {
-        const timeOutTime = twoWeeksAgo - member.user.createdAt.getTime();
-        const res = await member.timeout(timeOutTime, 'New account').catch(() => null);
+    const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    if (member.user.createdAt.getTime() >= weekAgo) {
+        const res = await member.ban({ reason: 'new account' }).catch(() => null);
         if (res === null) return;
         logChannel
-            .send({ content: `Timeout applied to <@${member.id}> due to the account being new.` })
+            .send({ content: `Banned <@${member.id}> due to the account being new. ${member.id}` })
             .catch(() => null);
     }
 });
-*/
 
 const alreadySentTable: any = {};
 const sentMessagesAsUnverified: any = {};
