@@ -36,7 +36,7 @@ const sentMessagesAsUnverified: any = {};
 client.on('messageCreate', async (message) => {
     if (!message.guild || !message.member) return;
     if (message.guild.id !== server.id) return;
-    if (message.channel.id === '1276779640995713099') return;
+    if (message.channel.id === '1276779640995713099' || message.channel.id === '1276772986858373290') return;
     if (message.member.roles.cache.has('1412790450380738660')) return;
     // @ts-expect-error
     if (message.channel.parentId === '1285294306579583006') return;
