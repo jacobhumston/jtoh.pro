@@ -11,6 +11,9 @@ const client = new discord.Client({
 });
 await client.login(jacobsAssistantDiscordToken);
 
+client.user?.setStatus('dnd');
+client.user?.setActivity('(◠‿◠✿)', { type: discord.ActivityType.Custom });
+
 //const logChannel = (await client.channels.fetch('1276772986858373290')) as discord.TextChannel;
 const server = await client.guilds.fetch('1275534337625952428');
 
@@ -36,6 +39,31 @@ const sentMessagesAsUnverified: any = {};
 client.on('messageCreate', async (message) => {
     if (!message.guild || !message.member) return;
     if (message.guild.id !== server.id) return;
+
+    if (message.member.roles.cache.has('1285278619735818321')) {
+        if (message.content === '$$debug') {
+            let reply = 'Debug info:\n';
+            reply += `There are currently ${Object.keys(alreadySentTable).length} users in the alreadySentTable.\n`;
+            reply += `There are currently ${Object.keys(sentMessagesAsUnverified).length} users in the sentMessagesAsUnverified table.\n`;
+            let totalMessages = 0;
+            for (const key of Object.keys(sentMessagesAsUnverified)) {
+                totalMessages += sentMessagesAsUnverified[key];
+            }
+            reply += `A total of ${totalMessages} messages have been sent by unverified users.\n`;
+            reply += `Ping: ${Date.now() - message.createdTimestamp}ms\n`;
+            await message.reply(reply).catch(() => null);
+        } else if (message.content === '$$clean') {
+            for (const key of Object.keys(alreadySentTable)) {
+                delete alreadySentTable[key];
+            }
+            for (const key of Object.keys(sentMessagesAsUnverified)) {
+                delete sentMessagesAsUnverified[key];
+            }
+            await message.reply('Cleaned!').catch(() => null);
+        }
+        return;
+    }
+
     if (message.channel.id === '1276779640995713099' || message.channel.id === '1276772986858373290') return;
     if (message.member.roles.cache.has('1412790450380738660')) return;
     // @ts-expect-error
