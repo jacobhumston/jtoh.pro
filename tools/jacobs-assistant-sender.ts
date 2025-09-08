@@ -53,6 +53,7 @@ client.on('messageCreate', async (message) => {
                 )
                 .catch(() => null);
         }
+        return;
     }
     alreadySentTable[message.member.id] = true;
     message.channel
