@@ -31,6 +31,7 @@ client.on('guildMemberAdd', async (member) => {
 */
 
 const alreadySentTable: any = {};
+const sentMessagesAsUnverified: any = {};
 
 client.on('messageCreate', async (message) => {
     if (!message.guild || !message.member) return;
@@ -40,7 +41,19 @@ client.on('messageCreate', async (message) => {
     // @ts-expect-error
     if (message.channel.parentId === '1285294306579583006') return;
     await message.delete().catch(() => null);
-    if (alreadySentTable[message.member.id]) return;
+    if (alreadySentTable[message.member.id]) {
+        const messageCount: number = sentMessagesAsUnverified[message.member.id] ?? 0;
+        const newCount = messageCount + 1;
+        sentMessagesAsUnverified[message.member.id] = newCount;
+        if (messageCount > 2) {
+            await message.member.timeout(24 * 60 * 60 * 1000).catch(() => null);
+            await message.channel
+                .send(
+                    `<@${message.member.id}> to prevent abuse, you have been timed out for 24 hours.\n-# Note that sending a message again without verifying after your timeout expires will lead to being timed-out again.`
+                )
+                .catch(() => null);
+        }
+    }
     alreadySentTable[message.member.id] = true;
     message.channel
         .send(
