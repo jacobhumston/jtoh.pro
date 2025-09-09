@@ -31,7 +31,7 @@
         "@types/quicklink": "^2.3.4",
         "@xterm/addon-web-links": "^0.11.0",
         "@xterm/xterm": "^5.5.0",
-        "altcha": "^2.2.2",
+        "altcha": "^2.2.3",
         "altcha-lib": "^1.3.0",
         "api": "^6.1.3",
         "archiver": "^7.0.1",
@@ -41,9 +41,9 @@
         "chart.js": "^4.5.0",
         "chartjs-plugin-deferred": "^2.0.0",
         "clean-css": "^5.3.3",
-        "color": "^5.0.1",
+        "color": "^5.0.0",
         "color-name-list": "^11.24.2",
-        "color-string": "^2.1.1",
+        "color-string": "^2.1.0",
         "cron": "^4.3.3",
         "css": "^3.0.0",
         "date-fns": "^4.1.0",
@@ -70,15 +70,17 @@
         "inquirer": "^12.9.4",
         "jsdom": "^26.1.0",
         "jsonc-parser": "^3.3.1",
+        "kaokun": "^1.1.10",
         "keyv": "^5.5.0",
         "license-report": "^6.8.0",
         "lodash": "^4.17.21",
         "lru-cache": "^11.2.1",
         "markdown-it": "^14.1.0",
-        "memfs": "^4.38.2",
+        "memfs": "^4.38.3",
         "mime-types": "^3.0.1",
         "octokit": "^5.0.3",
         "prettier": "^3.6.2",
+        "pretty-seconds": "^3.0.1",
         "puppeteer": "^24.19.0",
         "puppeteer-extra": "^3.3.6",
         "puppeteer-extra-plugin-stealth": "^2.11.2",
@@ -95,7 +97,7 @@
         "terser": "^5.44.0",
         "tweetnacl": "^1.0.3",
         "ua-parser-js": "^2.0.4",
-        "uuid": "^12.0.0",
+        "uuid": "^13.0.0",
         "validate-color": "^2.2.4",
         "winston": "^3.17.0",
         "zod": "^4.1.5",
@@ -880,7 +882,7 @@
 
     "ajv-draft-04": ["ajv-draft-04@1.0.0", "", { "peerDependencies": { "ajv": "^8.5.0" }, "optionalPeers": ["ajv"] }, "sha512-mv00Te6nmYbRp5DCwclxtt7yV/joXJPGS7nM+97GdxvuttCOfgI3K4U25zboyeX0O+myI8ERluxQe5wljMmVIw=="],
 
-    "altcha": ["altcha@2.2.2", "", { "dependencies": { "@altcha/crypto": "^0.0.1" }, "optionalDependencies": { "@rollup/rollup-linux-x64-gnu": "4.18.0" } }, "sha512-NwUAar2Y8Xwo1gL6OrFd3AVlhyKxYFaqPJAJAbt1FTIoKyDx2X7NIHEuo2eqxnxME7K1QEsF6u16uq5whO0z8A=="],
+    "altcha": ["altcha@2.2.3", "", { "dependencies": { "@altcha/crypto": "^0.0.1" }, "optionalDependencies": { "@rollup/rollup-linux-x64-gnu": "4.18.0" } }, "sha512-LcGCNTOYtkcRthJgFU5ycgVE6ffcp3/WMSrAMri/UN+WcBEwfzb0RnUmhWee9VA52cHUL9ONeQsrE/zCkUoZiQ=="],
 
     "altcha-lib": ["altcha-lib@1.3.0", "", {}, "sha512-PpFg/JPuR+Jiud7Vs54XSDqDxvylcp+0oDa/i1ARxBA/iKDqLeNlO8PorQbfuDTMVLYRypAa/2VDK3nbBTAu5A=="],
 
@@ -1046,7 +1048,7 @@
 
     "code-block-writer": ["code-block-writer@11.0.3", "", {}, "sha512-NiujjUFB4SwScJq2bwbYUtXbZhBSlY6vYzm++3Q6oC+U+injTqfPYFK8wS9COOmb2lueqp0ZRB4nK1VYeHgNyw=="],
 
-    "color": ["color@5.0.1", "", { "dependencies": { "color-convert": "^3.0.1", "color-string": "^2.0.0" } }, "sha512-6ckzzlDXoHjQW/gDy7yfbxHhWFLQKgKmp8zZxTjCXY8XtlGBJ5Xz39PWiiUsUvG71p1jjH/qvjmptQ6hfxLN/A=="],
+    "color": ["color@5.0.0", "", { "dependencies": { "color-convert": "^3.0.1", "color-string": "^2.0.0" } }, "sha512-16BlyiuyLq3MLxpRWyOTiWsO3ii/eLQLJUQXBSNcxMBBSnyt1ee9YUdaozQp03ifwm5woztEZGDbk9RGVuCsdw=="],
 
     "color-convert": ["color-convert@3.0.1", "", { "dependencies": { "color-name": "^2.0.0" } }, "sha512-5kQah2eolfQV7HCrxtsBBArPfT5dwaKYMCXeMQsdRO7ihTO/cuNLGjd50ITCDn+ZU/YbS0Go64SjP9154eopxg=="],
 
@@ -1562,6 +1564,8 @@
 
     "jsonpointer": ["jsonpointer@5.0.1", "", {}, "sha512-p/nXbhSEcu3pZRdkW1OfJhpsVtW1gd4Wa1fnQc9YLiTfAjn0312eMKimbdIQzuZl9aa9xUGaRlP9T/CJE/ditQ=="],
 
+    "kaokun": ["kaokun@1.1.10", "", {}, "sha512-52Tok8eQb5+tDPJIh8yE/lgU1OJCNpcYciVBsGnxGdFXvaiutDNTbJjpCYLiFMw3ZdRuuZnShUm9FhHhOTo3TA=="],
+
     "keyv": ["keyv@5.5.0", "", { "dependencies": { "@keyv/serialize": "^1.1.0" } }, "sha512-QG7qR2tijh1ftOvClut4YKKg1iW6cx3GZsKoGyJPxHkGWK9oJhG9P3j5deP0QQOGDowBMVQFaP+Vm4NpGYvmIQ=="],
 
     "kind-of": ["kind-of@3.2.2", "", { "dependencies": { "is-buffer": "^1.1.5" } }, "sha512-NOW9QQXMoZGg/oqnVNoNTTIFEIid1627WCffUBJEdMxYApq7mNE7CpzucIPc+ZQg25Phej7IJSmX3hO+oblOtQ=="],
@@ -1628,7 +1632,7 @@
 
     "mdurl": ["mdurl@2.0.0", "", {}, "sha512-Lf+9+2r+Tdp5wXDXC4PcIBjTDtq4UKjCPMQhKIuzpJNW0b96kVqSwW0bT7FhRSfmAiFYgP+SCRvdrDozfh0U5w=="],
 
-    "memfs": ["memfs@4.38.2", "", { "dependencies": { "@jsonjoy.com/json-pack": "^1.11.0", "@jsonjoy.com/util": "^1.9.0", "glob-to-regex.js": "^1.0.1", "thingies": "^2.5.0", "tree-dump": "^1.0.3", "tslib": "^2.0.0" } }, "sha512-FpWsVHpAkoSh/LfY1BgAl72BVd374ooMRtDi2VqzBycX4XEfvC0XKACCe0C9VRZoYq5viuoyTv6lYXZ/Q7TrLQ=="],
+    "memfs": ["memfs@4.38.3", "", { "dependencies": { "@jsonjoy.com/json-pack": "^1.11.0", "@jsonjoy.com/util": "^1.9.0", "glob-to-regex.js": "^1.0.1", "thingies": "^2.5.0", "tree-dump": "^1.0.3", "tslib": "^2.0.0" } }, "sha512-2s0E1tj016MQL6Eo6en0rNJnEWppbTAytbK7P0VPLtB9zA0xU7B522A1A0Tyz9usEkkWrSEDxIa/N7SdJWWAYg=="],
 
     "memjs": ["memjs@1.3.2", "", {}, "sha512-qUEg2g8vxPe+zPn09KidjIStHPtoBO8Cttm8bgJFWWabbsjQ9Av9Ky+6UcvKx6ue0LLb/LEhtcyQpRyKfzeXcg=="],
 
@@ -1863,6 +1867,8 @@
     "prelude-ls": ["prelude-ls@1.1.2", "", {}, "sha512-ESF23V4SKG6lVSGZgYNpbsiaAkdab6ZgOxe52p7+Kid3W3u3bxR4Vfd/o21dmN7jSt0IwgZ4v5MUd26FEtXE9w=="],
 
     "prettier": ["prettier@3.6.2", "", { "bin": { "prettier": "bin/prettier.cjs" } }, "sha512-I7AIg5boAr5R0FFtJ6rCfD+LFsWHp81dolrFD8S79U9tb8Az2nGrJncnMSnys+bpQJfRUzqs9hnA81OAA3hCuQ=="],
+
+    "pretty-seconds": ["pretty-seconds@3.0.1", "", {}, "sha512-mHopAeXGtaJnm6yRlbY1NaYoMufDn6JMgzPtMu6tDOqeGxFirHb7rSfx0xRisjGcu9dmyJ76aw+JC5TKuMFHIA=="],
 
     "prism-media": ["prism-media@1.3.5", "", { "peerDependencies": { "@discordjs/opus": ">=0.8.0 <1.0.0", "ffmpeg-static": "^5.0.2 || ^4.2.7 || ^3.0.0 || ^2.4.0", "node-opus": "^0.3.3", "opusscript": "^0.0.8" }, "optionalPeers": ["@discordjs/opus", "ffmpeg-static", "node-opus", "opusscript"] }, "sha512-IQdl0Q01m4LrkN1EGIE9lphov5Hy7WWlH6ulf5QdGePLlPas9p2mhgddTEHrlaXYjjFToM1/rWuwF37VF4taaA=="],
 
@@ -2238,7 +2244,7 @@
 
     "util-deprecate": ["util-deprecate@1.0.2", "", {}, "sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw=="],
 
-    "uuid": ["uuid@12.0.0", "", { "bin": { "uuid": "dist/bin/uuid" } }, "sha512-USe1zesMYh4fjCA8ZH5+X5WIVD0J4V1Jksm1bFTVBX2F/cwSXt0RO5w/3UXbdLKmZX65MiWV+hwhSS8p6oBTGA=="],
+    "uuid": ["uuid@13.0.0", "", { "bin": { "uuid": "dist-node/bin/uuid" } }, "sha512-XQegIaBTVUjSHliKqcnFqYypAd4S+WCYt5NIeRs6w/UAry7z8Y9j5ZwRRL4kzq9U3sD6v+85er9FvkEaBpji2w=="],
 
     "validate-color": ["validate-color@2.2.4", "", {}, "sha512-Znolz+b6CwW6eBXYld7MFM3O7funcdyRfjKC/X9hqYV/0VcC5LB/L45mff7m3dIn9wdGdNOAQ/fybNuD5P/HDw=="],
 

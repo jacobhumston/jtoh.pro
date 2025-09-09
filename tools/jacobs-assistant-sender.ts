@@ -1,5 +1,9 @@
 import * as discord from 'discord.js';
 import { jacobsAssistantDiscordToken } from '../src/tokens';
+import * as kaokun from 'kaokun';
+// @ts-ignore
+import prettySeconds from 'pretty-seconds';
+import process from 'node:process';
 
 const client = new discord.Client({
     intents: [
@@ -11,14 +15,15 @@ const client = new discord.Client({
 });
 await client.login(jacobsAssistantDiscordToken);
 
-client.user?.setStatus('dnd');
-client.user?.setActivity('(◠‿◠✿)', { type: discord.ActivityType.Custom });
-
 const logChannel = (await client.channels.fetch('1276772986858373290')) as discord.TextChannel;
 const server = await client.guilds.fetch('1275534337625952428');
 
+let joinCheckEnabled: boolean = true;
+
 client.on('guildMemberAdd', async (member) => {
     if (member.guild.id !== server.id) return;
+
+    if (!joinCheckEnabled) return;
 
     const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
     if (member.user.createdAt.getTime() >= weekAgo) {
@@ -39,16 +44,22 @@ client.on('messageCreate', async (message) => {
 
     if (message.member.roles.cache.has('1285278619735818321')) {
         if (message.content === '$$debug') {
-            let reply = 'Debug info:\n';
-            reply += `There are currently ${Object.keys(alreadySentTable).length} users in the alreadySentTable.\n`;
-            reply += `There are currently ${Object.keys(sentMessagesAsUnverified).length} users in the sentMessagesAsUnverified table.\n`;
-            let totalMessages = 0;
-            for (const key of Object.keys(sentMessagesAsUnverified)) {
-                totalMessages += sentMessagesAsUnverified[key];
-            }
-            reply += `A total of ${totalMessages} messages have been sent by unverified users.\n`;
-            reply += `Ping: ${Date.now() - message.createdTimestamp}ms\n`;
-            await message.reply(reply).catch(() => null);
+            const container = new discord.ContainerBuilder();
+            container.addTextDisplayComponents((text) => text.setContent('**Debug Info**'));
+            container.addTextDisplayComponents((text) =>
+                text.setContent(`\`\`\`ts
+>         joinCheckEnabled : ${joinCheckEnabled}
+>         alreadySentTable : Array<${Object.keys(alreadySentTable).length}>
+> sentMessagesAsUnverified : Array<${Object.keys(sentMessagesAsUnverified).length}>
+>               (i)   ping : ${client.ws.ping.toPrecision(2)}ms
+>               (i)   user : ${client.user?.username} (${client.user?.id})
+>               (i) uptime : ${prettySeconds(process.uptime())}
+\`\`\``)
+            );
+
+            await message
+                .reply({ flags: discord.MessageFlags.IsComponentsV2, components: [container] })
+                .catch(() => null);
         } else if (message.content === '$$clean') {
             for (const key of Object.keys(alreadySentTable)) {
                 delete alreadySentTable[key];
@@ -57,8 +68,20 @@ client.on('messageCreate', async (message) => {
                 delete sentMessagesAsUnverified[key];
             }
             await message.reply('Cleaned!').catch(() => null);
+        } else if (message.content === '$$toggle-jc') {
+            joinCheckEnabled = !joinCheckEnabled;
+            await message.reply('Join check has been toggled! New Value: `' + joinCheckEnabled.toString() + '`');
+        } else if (message.content === '$$help') {
+            await message
+                .reply(
+                    `Commands: 
+* \`$$help\` - Help command.
+* \`$$clean\` - Clean tables.
+* \`$$debug\` - Debug information. (View config.)
+* \`$$toggle-jc\` - Toggle join check. (If \`false\`, account age check will be disabled.)`
+                )
+                .catch(() => null);
         }
-        return;
     }
 
     if (message.channel.id === '1276779640995713099' || message.channel.id === '1276772986858373290') return;
@@ -87,3 +110,15 @@ client.on('messageCreate', async (message) => {
         )
         .catch(() => null);
 });
+
+function updateStatus() {
+    try {
+        client.user?.setStatus('idle');
+        client.user?.setActivity(`${kaokun.happy(undefined, 8)}`, { type: discord.ActivityType.Custom });
+    } catch {
+        // no
+    }
+}
+
+updateStatus();
+setInterval(updateStatus, 10 * 60 * 1000);
