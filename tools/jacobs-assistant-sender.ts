@@ -17,6 +17,7 @@ await client.login(jacobsAssistantDiscordToken);
 
 const logChannel = (await client.channels.fetch('1276772986858373290')) as discord.TextChannel;
 const server = await client.guilds.fetch('1275534337625952428');
+const unverifiedChannel = (await await client.channels.fetch('1414822254868434974')) as discord.TextChannel;
 
 let joinCheckEnabled: boolean = true;
 
@@ -104,9 +105,9 @@ client.on('messageCreate', async (message) => {
         return;
     }
     alreadySentTable[message.member.id] = true;
-    message.channel
+    unverifiedChannel
         .send(
-            `Hey <@${message.member.id}>! Thank you for joining us! Before you can send messages, please run </verify:1014483275626070066> to verify yourself. \n-# If you are having trouble, make a ticket in <#1285295502811861083>.`
+            `Hey <@${message.member.id}>! Thank you for joining us! Before you can send messages, please run </verify:1014483275626070066> to verify yourself. \n-# If you are having trouble, see: https://www.towerstats.com/blog#post/how-to-verify`
         )
         .catch(() => null);
 });
