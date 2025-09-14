@@ -33,6 +33,12 @@ client.on('guildMemberAdd', async (member) => {
         logChannel
             .send({ content: `Banned <@${member.id}> due to the account being new. ${member.id}` })
             .catch(() => null);
+    } else {
+        unverifiedChannel
+            .send(
+                `<@${member.id}> Welcome to the server! The server is currently in "read only" mode for you. Sent messages will get automatically deleted.\n\n**To gain access to the server, please verify yourself using the </verify:1014483275626070066> command!**`
+            )
+            .catch(() => null);
     }
 });
 
@@ -42,6 +48,15 @@ const sentMessagesAsUnverified: any = {};
 client.on('messageCreate', async (message) => {
     if (!message.guild || !message.member) return;
     if (message.guild.id !== server.id) return;
+    if (message.author.id === '1411544863446405220') return;
+
+    if (message.author.bot && message.channel.id === unverifiedChannel.id && message.interactionMetadata) {
+        const user = message.interactionMetadata.user.id;
+        message.reply({
+            content: `<@${user}> The command you tried to verify with is the wrong one! \n\n⬇️ **Click this to use the correct command!**\n# </verify:1014483275626070066>`
+        }).catch;
+        return;
+    }
 
     if (message.member.roles.cache.has('1285278619735818321')) {
         if (message.content === '$$debug') {
@@ -107,7 +122,7 @@ client.on('messageCreate', async (message) => {
     alreadySentTable[message.member.id] = true;
     unverifiedChannel
         .send(
-            `Hey <@${message.member.id}>! Thank you for joining us! Before you can send messages, please run </verify:1014483275626070066> to verify yourself. \n-# If you are having trouble, see: https://www.towerstats.com/blog#post/how-to-verify`
+            `Hey <@${message.member.id}>! Before you can send messages, please run </verify:1014483275626070066> to verify yourself. \n-# If you are having trouble, see: https://www.towerstats.com/blog#post/how-to-verify`
         )
         .catch(() => null);
 });
