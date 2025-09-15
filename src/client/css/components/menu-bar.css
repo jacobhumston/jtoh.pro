@@ -26,6 +26,11 @@
     transition-duration: 0.5s;
     transition-timing-function: ease;
     max-width: min-content;
+    color: var(--color-text);
+}
+
+#menuBar a .materialSymbolsRounded {
+    color: var(--accent);
 }
 
 .menuBarLine {
@@ -35,7 +40,7 @@
     width: 30px;
     height: 4px;
     left: calc(50% - 15px);
-    background-color: var(--background-darker);
+    background-color: transparent;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     transition-property: width left background-color;
@@ -43,8 +48,9 @@
     transition-timing-function: ease;
 }
 
-.menuBarActive {
-    color: var(--accent);
+.menuBarActive,
+.menuBarActive .materialSymbolsRounded {
+    color: var(--accent) !important;
 }
 
 .menuBarActive .menuBarLine {

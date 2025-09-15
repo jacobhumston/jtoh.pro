@@ -18,7 +18,7 @@ export default async function () {
     terminal.onData((data) => websocket.send(data));
 
     websocket.addEventListener('message', (event) => {
-        if (event.origin !== window.location.origin) {
+        if (new URL(event.origin).hostname !== new URL(window.location.origin).hostname) {
             log('warn', `Blocked terminal message from origin ${event.origin}`);
             return;
         }

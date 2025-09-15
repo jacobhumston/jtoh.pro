@@ -1,0 +1,8 @@
+.towerstatsUrl {
+    color: var(--yellow);
+    transition: color 0.5s;
+}
+
+.towerstatsUrl:hover {
+    color: var(--blue);
+}
