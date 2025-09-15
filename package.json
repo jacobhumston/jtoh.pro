@@ -42,7 +42,7 @@
         "chartjs-plugin-deferred": "^2.0.0",
         "clean-css": "^5.3.3",
         "color": "^5.0.2",
-        "color-name-list": "^11.26.0",
+        "color-name-list": "^12.1.0",
         "color-string": "^2.1.2",
         "cron": "^4.3.3",
         "css": "^3.0.0",
@@ -81,7 +81,7 @@
         "octokit": "^5.0.3",
         "prettier": "^3.6.2",
         "pretty-seconds": "^3.0.1",
-        "puppeteer": "^24.20.0",
+        "puppeteer": "^24.21.0",
         "puppeteer-extra": "^3.3.6",
         "puppeteer-extra-plugin-stealth": "^2.11.2",
         "purgecss": "^7.0.2",
@@ -116,7 +116,7 @@
         "@types/terminal-kit": "^2.5.7",
         "@types/uuid": "^10.0.0",
         "depcheck": "^1.4.7",
-        "pm2": "^6.0.10",
+        "pm2": "^6.0.11",
         "typescript": "^5.9.2"
     },
     "trustedDependencies": [
