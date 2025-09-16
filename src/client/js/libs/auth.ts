@@ -1,15 +1,6 @@
 import { document, window } from './global';
 import { createErrorPopup } from './quick-elements';
-import {
-    getElementById,
-    getPageFileName,
-    waitForElementById,
-    createElement,
-    addChild,
-    addClass,
-    getWebIconHTML,
-    insertChild
-} from './util';
+import { createElement, addChild, getWebIconHTML, insertChild, waitForElementById } from './util';
 
 /** Original URL. */
 const originalLocation = document.location.href;
@@ -107,33 +98,16 @@ export async function isLoggedIn() {
  * Add auth UI elements to the page.
  */
 export async function addAuthUI() {
-    const loggedInDetails = await waitForElementById('loggedInDetails', { timeout: 2000, interval: 1 });
-    if (!loggedInDetails) return;
-
     const user = await getLoggedInUser();
+
+    const menuBar = await waitForElementById('menuBar', { timeout: 10000, interval: 1 });
+    if (!menuBar) return;
+
+    const menuBarSecondary = await waitForElementById('menuBarSecondary', { timeout: 10000, interval: 1 });
+    if (!menuBarSecondary) return;
+
     if (user.user) {
-        const menuBar = getElementById('menuBar');
-        if (!menuBar) return;
-
-        const loggedInDetails = getElementById('loggedInDetails');
-        if (!loggedInDetails) return;
-
-        const menuBarSecondary = getElementById('menuBarSecondary');
-        if (!menuBarSecondary) return;
-
         //const url = new URL(document.location.href);
-
-        const settingsButton = createElement('button', {
-            id: 'settingsOpener',
-            innerHTML: `${getWebIconHTML('settings')} Settings`,
-            type: 'button'
-        });
-
-        settingsButton.addEventListener('click', () => {
-            window.location.href = '/app/account/settings';
-        });
-
-        addChild(loggedInDetails, settingsButton);
 
         const icon = createElement('img', {
             src: user.user.thumbnail,
@@ -147,14 +121,20 @@ export async function addAuthUI() {
             }
         };
 
-        const name = createElement('span', {
-            innerText: user.user.name,
-            id: 'loggedInName'
+        addChild(menuBarSecondary, icon);
+
+        const settingsButton = createElement('button', {
+            id: 'settingsOpener',
+            innerHTML: `${getWebIconHTML('settings')} Settings`,
+            type: 'button'
         });
 
-        addChild(loggedInDetails, [icon, name]);
+        settingsButton.addEventListener('click', () => {
+            window.location.href = '/app/account/settings';
+        });
 
-        addClass(loggedInDetails, 'loggedIn');
+        addChild(menuBarSecondary, settingsButton);
+        //addClass(loggedInDetails, 'loggedIn');
 
         if (user.mod === true) {
             const link = createElement('a', {
@@ -184,9 +164,9 @@ export async function addAuthUI() {
             window.location.href = '/login';
         });
 
-        addChild(loggedInDetails, button);
+        addChild(menuBarSecondary, button);
 
-        if (getPageFileName() === 'captcha') loggedInDetails.innerHTML = '';
+        //if (getPageFileName() === 'captcha') loggedInDetails.innerHTML = '';
     }
 }
 

@@ -8,7 +8,7 @@
 
 #container h1:first-of-type {
     color: var(--accent);
-    font-size: xxx-large;
+    font-size: xx-large;
     border-bottom: solid 2px color-mix(in srgb, var(--accent) 60%, transparent);
     padding-bottom: 10px;
     text-align: center;

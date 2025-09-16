@@ -75,5 +75,5 @@ code {
 .materialSymbolsRounded {
     vertical-align: text-bottom;
     font-family: var(--icon-font);
-    font-size: calc(1em + 5px);
+    font-size: calc(1em + 0.25em);
 }

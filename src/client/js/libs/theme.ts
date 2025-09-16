@@ -20,6 +20,16 @@ export function applyTheme() {
 }
 
 /**
+ * Get the browser's preferred theme.
+ * @returns The browsers preferred theme.
+ */
+export function getBrowserDefaultTheme(): Themes {
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (prefersDark) return 'themesDark';
+    else return 'themesLight';
+}
+
+/**
  * Update the theme based on the user's selection.
  * @param theme The theme to update to.
  */
@@ -35,6 +45,7 @@ export function updateTheme(theme: Themes) {
 
 /**
  * Get the current theme.
+ * This will default to the browser's default theme if one is not already set.
  * @returns The current theme.
  */
 export function getTheme(): Themes {
@@ -42,7 +53,7 @@ export function getTheme(): Themes {
     if (localStorage.getItem('theme')) {
         return localStorage.getItem('theme') as Themes;
     }
-    return 'themesDark';
+    return getBrowserDefaultTheme();
 }
 
 /**

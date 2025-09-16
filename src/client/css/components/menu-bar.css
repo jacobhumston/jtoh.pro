@@ -74,7 +74,6 @@
     color: var(--text);
     margin: 0px;
     padding: 0px;
-    margin-right: 10px;
     vertical-align: middle;
     font-size: large;
     display: inline-block;
@@ -93,36 +92,24 @@
     align-items: center;
     align-content: center;
     vertical-align: middle;
-    margin-top: -5px;
-}
-
-#loggedInDetails {
-    display: inline-block;
-    text-align: left;
-    padding-right: 10px;
-    vertical-align: middle;
+    margin-top: -10px;
 }
 
 #loggedInIcon {
     width: auto;
-    height: 2.5em;
-    background-color: var(--background-darker);
+    height: 3ch;
     vertical-align: middle;
-    border-radius: 100%;
+    background-color: var(--background-darker);
+    border-radius: 50%;
+    display: inline-block;
     margin-left: 10px;
     margin-right: 10px;
-    display: inline-block;
 }
 
-#loggedInName {
-    max-width: 15ch;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: inline-block;
-    vertical-align: middle;
-}
-
-#loginButton {
-    display: inline-block;
-    margin-top: -5px;
+.menuBarSquareMode {
+    margin: 0px !important;
+    border-radius: 0px !important;
+    border-left: none !important;
+    border-top: none !important;
+    border-right: none !important;
 }
