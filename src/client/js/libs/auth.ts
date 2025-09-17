@@ -106,6 +106,9 @@ export async function addAuthUI() {
     const menuBarSecondary = await waitForElementById('menuBarSecondary', { timeout: 10000, interval: 1 });
     if (!menuBarSecondary) return;
 
+    const menuBarLinks = await waitForElementById('menuBarLinks', { timeout: 10000, interval: 1 });
+    if (!menuBarLinks) return;
+
     if (user.user) {
         //const url = new URL(document.location.href);
 
@@ -142,7 +145,7 @@ export async function addAuthUI() {
                 innerText: 'Mod Panel'
             });
             addChild(link, createElement('div', { className: 'menuBarLine' }));
-            insertChild(menuBarSecondary, 'beforebegin', link);
+            insertChild(menuBarLinks, 'beforeend', link);
         }
 
         if (user.admin === true) {
@@ -151,7 +154,7 @@ export async function addAuthUI() {
                 innerText: 'Admin Panel'
             });
             addChild(link, createElement('div', { className: 'menuBarLine' }));
-            insertChild(menuBarSecondary, 'beforebegin', link);
+            insertChild(menuBarLinks, 'beforeend', link);
         }
     } else {
         const button = createElement('button', {

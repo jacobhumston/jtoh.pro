@@ -477,6 +477,15 @@ export function addOpenIconToAnchorLinks() {
             addClass(a, 'anchorElementWithIcon');
         }
     }
+
+    const materialIcons = document.getElementsByClassName('materialSymbolsRounded');
+    for (const icon of materialIcons) {
+        if (icon.innerHTML === 'open_in_new') {
+            addClass(icon as HTMLElement, 'openInNewIcon');
+        } else {
+            addClass(icon as HTMLElement, 'notOpenInNewIcon');
+        }
+    }
 }
 
 /**
