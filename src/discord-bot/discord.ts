@@ -186,6 +186,19 @@ export default function discordInteractions(app: Hono) {
                 );
                 generalLogsWebhook.send({ embeds: [embed] }).catch(logger.info);
             }
+            if (event.type === discord.ApplicationWebhookEventType.EntitlementCreate) {
+                const eventData = event.data;
+                const embed = new discord.EmbedBuilder();
+                embed.setColor('Random');
+                embed.setTitle('Entitlement Created');
+                embed.addFields(
+                    { name: 'User ID', value: `\`${eventData.user_id ?? 'None'}\``, inline: true },
+                    { name: 'Guild ID', value: `\`${eventData.guild_id ?? 'None'}\``, inline: true },
+                    { name: 'Type', value: `\`${discord.EntitlementType[eventData.type]}\``, inline: true }
+                );
+                embed.setDescription(`Raw JSON\n\`\`\`json\n${JSON.stringify(eventData, null, 4)}\n\`\`\``);
+                generalLogsWebhook.send({ embeds: [embed] }).catch(logger.info);
+            }
         }
 
         return new Response(null, { status: 204 });
