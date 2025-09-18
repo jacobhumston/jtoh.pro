@@ -87,6 +87,20 @@ client.on('messageCreate', async (message) => {
         } else if (message.content === '$$toggle-jc') {
             joinCheckEnabled = !joinCheckEnabled;
             await message.reply('Join check has been toggled! New Value: `' + joinCheckEnabled.toString() + '`');
+        } else if (message.content === '$$unverified') {
+            const allMembers = await server.members.fetch();
+            const unverified = allMembers.filter((m) => !m.roles.cache.has('1412790450380738660'));
+            const ids = unverified.map((m) => m.id);
+            await message
+                .reply({
+                    content: ids.join(' '),
+                    embeds: [
+                        new discord.EmbedBuilder()
+                            .setTitle('Mentions')
+                            .setDescription(ids.map((id) => `<@${id}>`).join(' '))
+                    ]
+                })
+                .catch(() => null);
         } else if (message.content === '$$help') {
             await message
                 .reply(
@@ -94,7 +108,8 @@ client.on('messageCreate', async (message) => {
 * \`$$help\` - Help command.
 * \`$$clean\` - Clean tables.
 * \`$$debug\` - Debug information. (View config.)
-* \`$$toggle-jc\` - Toggle join check. (If \`false\`, account age check will be disabled.)`
+* \`$$toggle-jc\` - Toggle join check. (If \`false\`, account age check will be disabled.)
+* \`$$unverified\` - List all unverified members.`
                 )
                 .catch(() => null);
         }
