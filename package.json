@@ -42,7 +42,7 @@
         "chartjs-plugin-deferred": "^2.0.0",
         "clean-css": "^5.3.3",
         "color": "^5.0.2",
-        "color-name-list": "^12.1.0",
+        "color-name-list": "^13.1.0",
         "color-string": "^2.1.2",
         "cron": "^4.3.3",
         "css": "^3.0.0",
@@ -76,7 +76,7 @@
         "lodash": "^4.17.21",
         "lru-cache": "^11.2.1",
         "markdown-it": "^14.1.0",
-        "memfs": "^4.42.0",
+        "memfs": "^4.43.0",
         "mime-types": "^3.0.1",
         "octokit": "^5.0.3",
         "prettier": "^3.6.2",
@@ -95,13 +95,13 @@
         "sxcu.api": "^2.0.7",
         "terminal-kit": "^3.1.2",
         "terser": "^5.44.0",
-        "towerstats.js": "^0.0.2-alpha",
+        "towerstats.js": "^1.0.0",
         "tweetnacl": "^1.0.3",
         "ua-parser-js": "^2.0.5",
         "uuid": "^13.0.0",
         "validate-color": "^2.2.4",
         "winston": "^3.17.0",
-        "zod": "^4.1.9"
+        "zod": "^4.1.11"
     },
     "devDependencies": {
         "@types/archiver": "^6.0.3",

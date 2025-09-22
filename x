@@ -78,6 +78,7 @@ declare -A commands
     commands["v"]=${commands["version"]}   
     commands["c"]="${commands["bun-upgrade"]} && ${commands["bun-update"]} && ${commands["format"]}" 
     commands["nd"]="${commands["start"]} --url https://dev.jtoh.pro --skipQWT"
+    commands["l"]="${commands["start"]} --skipQWT"
 
 # Help function.
 print_help() {
