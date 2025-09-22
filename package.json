@@ -37,7 +37,7 @@
         "archiver": "^7.0.1",
         "axios": "^1.12.2",
         "bun": "^1.2.22",
-        "cache-manager": "^7.2.0",
+        "cache-manager": "^7.2.2",
         "chart.js": "^4.5.0",
         "chartjs-plugin-deferred": "^2.0.0",
         "clean-css": "^5.3.3",
@@ -117,7 +117,7 @@
         "@types/terminal-kit": "^2.5.7",
         "@types/uuid": "^11.0.0",
         "depcheck": "^1.4.7",
-        "pm2": "^6.0.11",
+        "pm2": "^6.0.13",
         "typescript": "^5.9.2"
     },
     "trustedDependencies": [
