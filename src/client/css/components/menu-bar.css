@@ -123,17 +123,19 @@
     left: -13px;
     top: -7px;
     z-index: 1;
-    color: var(--background);
+    color: transparent;
     /*
     transition-property: color;
     transition-duration: 0.5s;
     transition-timing-function: ease;
     */
+    -webkit-text-stroke: 2px var(--accent);
 }
 
 #menuBar a .menuBarTextContent {
     z-index: 2;
     position: relative;
+    background-color: color-mix(in srgb, var(--background-lighter) 80%, transparent);
 }
 
 /*
@@ -150,4 +152,8 @@
     overflow-x: hidden;
     overflow-y: hidden;
     display: inline;
+}
+
+#menuBar a:first-of-type {
+    margin-left: 10px;
 }
