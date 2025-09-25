@@ -13,6 +13,14 @@
     display: flex;
     border: solid 2px color-mix(in srgb, var(--accent) 60%, transparent);
     overflow-y: hidden;
+    max-width: 1400px;
+}
+
+@media screen and (width > 1400px) {
+    #menuBar {
+        margin-left: auto;
+        margin-right: auto;
+    }
 }
 
 #menuBar a {
@@ -51,6 +59,11 @@
 
 .menuBarActive {
     color: var(--accent) !important;
+    font-weight: bold;
+}
+
+.menuBarActive .materialSymbolsRounded {
+    font-weight: normal;
 }
 
 .menuBarActive .menuBarLine {
@@ -113,6 +126,7 @@
     border-left: none !important;
     border-top: none !important;
     border-right: none !important;
+    max-width: none !important;
 }
 
 #menuBar a .notOpenInNewIcon {
@@ -135,7 +149,10 @@
 #menuBar a .menuBarTextContent {
     z-index: 2;
     position: relative;
-    background-color: color-mix(in srgb, var(--background-lighter) 80%, transparent);
+    background-color: color-mix(in srgb, var(--background-lighter) 100%, transparent);
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 10px;
 }
 
 /*
@@ -156,10 +173,6 @@
 
 #menuBar a:first-of-type {
     margin-left: 15px;
-}
-
-#menuBar a:has(.menuBarActive):hover {
-    pointer-events: none;
 }
 
 #menuBar a:has(.notOpenInNewIcon) {
