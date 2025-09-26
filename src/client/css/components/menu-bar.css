@@ -178,3 +178,16 @@
 #menuBar a:has(.notOpenInNewIcon) {
     margin-right: 10px;
 }
+
+#menuBarExtraToggle {
+    background-color: transparent;
+    padding: 0px;
+    margin: 0px;
+    font-size: x-large;
+    margin-top: -6px;
+    margin-right: 5px;
+}
+
+#menuBarExtraToggle:hover {
+    color: var(--accent);
+}
