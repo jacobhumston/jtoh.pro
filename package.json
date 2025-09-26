@@ -98,6 +98,7 @@
         "towerstats.js": "^1.0.0",
         "tweetnacl": "^1.0.3",
         "ua-parser-js": "^2.0.5",
+        "underscore": "^1.13.7",
         "uuid": "^13.0.0",
         "validate-color": "^2.2.4",
         "winston": "^3.17.0",

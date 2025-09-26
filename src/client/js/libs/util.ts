@@ -555,3 +555,50 @@ export function safeSetHTML(element: HTMLElement, string: string, replacers: str
     element.innerHTML = newString;
     return;
 }
+
+/**
+ * Check if an element is overflowing from its parent.
+ * @param element The element to check
+ * @returns The result.
+ */
+export function checkOverflow(element: HTMLElement) {
+    if (!element.parentElement) throw 'Child has no parent.';
+    const parentRect = element.parentElement.getBoundingClientRect();
+    const childRect = element.getBoundingClientRect();
+
+    const overflows = {
+        top: childRect.top < parentRect.top,
+        bottom: childRect.bottom > parentRect.bottom,
+        left: childRect.left < parentRect.left,
+        right: childRect.right > parentRect.right,
+        any: false
+    };
+
+    // Check if any direction is overflowing
+    overflows.any = overflows.top || overflows.bottom || overflows.left || overflows.right;
+
+    return overflows;
+}
+
+/**
+ * Wait for important fonts.
+ */
+export async function waitForFonts(): Promise<void> {
+    const fonts = ['Poppins', 'MaterialSymbolsRounded'];
+    return new Promise((resolve) => {
+        let loop: any;
+        loop = setInterval(() => {
+            const results = fonts.map((font) => {
+                try {
+                    return document.fonts.check(`16px ${font}`);
+                } catch {
+                    return false;
+                }
+            });
+            if (!results.includes(false)) {
+                clearInterval(loop);
+                resolve();
+            }
+        }, 10);
+    });
+}

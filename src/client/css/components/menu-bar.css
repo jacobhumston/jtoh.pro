@@ -184,10 +184,78 @@
     padding: 0px;
     margin: 0px;
     font-size: x-large;
-    margin-top: -6px;
+    margin-top: -5px;
     margin-right: 5px;
 }
 
 #menuBarExtraToggle:hover {
     color: var(--accent);
+}
+
+#menuBarDropdown {
+    background-color: var(--background-lighter);
+    margin-left: 20px;
+    margin-right: 20px;
+    border: solid 2px color-mix(in srgb, var(--accent) 60%, transparent);
+    border-radius: 15px;
+    margin-top: -12px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    max-width: 1400px;
+}
+
+#menuBarDropdown a {
+    display: block;
+    border-bottom: solid 1px color-mix(in srgb, var(--text-darker) 60%, transparent);
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: large;
+    color: var(--color-text);
+}
+
+#menuBarDropdown a .materialSymbolsRounded {
+    color: var(--accent);
+}
+
+#menuBarDropdown a:last-child {
+    border: none;
+}
+
+.menuBarDropdownOpened {
+    border-bottom-left-radius: 0px !important;
+    border-bottom-right-radius: 0px !important;
+}
+
+@media screen and (width < 800px) {
+    #menuBar {
+        margin: 0px;
+        border-radius: 0px;
+        border-left: none;
+        border-top: none;
+        border-right: none;
+        max-width: none;
+    }
+
+    #menuBarDropdown {
+        border-radius: 0px;
+        border-left: none;
+        border-right: none;
+        border-top: none;
+        margin: 0px;
+    }
+}
+
+#menuBarDropdown a:hover {
+    color: var(--accent);
+    transition: color 0.5s;
+}
+
+@media screen and (width > 1400px) {
+    #menuBarDropdown {
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 10px;
+        border-radius: 15px;
+    }
 }

@@ -4,6 +4,7 @@
     margin-left: auto;
     margin-right: auto;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
 #container h1:first-of-type {

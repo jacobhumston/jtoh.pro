@@ -26,6 +26,8 @@ export type LoggedInUser = {
 
 let user: null | LoggedInUser = null;
 
+let authUiDone = false;
+
 /**
  * Get user via auth API.
  */
@@ -171,6 +173,8 @@ export async function addAuthUI() {
 
         //if (getPageFileName() === 'captcha') loggedInDetails.innerHTML = '';
     }
+
+    authUiDone = true;
 }
 
 /**
@@ -194,4 +198,20 @@ export function handleLoginRedirect() {
             window.history.replaceState({}, '', url.href);
         }
     }
+}
+
+/**
+ * Wait for auth ui.
+ * @returns A promise that resolves once auth ui is done.
+ */
+export function waitForAuthUI(): Promise<void> {
+    return new Promise((resolve) => {
+        let loop: any;
+        loop = setInterval(() => {
+            if (authUiDone) {
+                clearInterval(loop);
+                resolve();
+            }
+        }, 10);
+    });
 }
