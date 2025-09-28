@@ -124,7 +124,10 @@ export default function cscdGen(app: Hono) {
                 cached ??
                 (await fetch(`https://api.towerstats.com/api/cscd`, {
                     method: 'POST',
-                    body: JSON.stringify({ id: data.id, apiKey: towerStatsToken })
+                    body: JSON.stringify({ id: data.id }),
+                    headers: {
+                        apiKey: towerStatsToken
+                    }
                 })
                     .then((res) => {
                         loadTime = (Date.now() - loadTime) / 1000;

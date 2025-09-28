@@ -124,7 +124,10 @@ export default function etohGen(app: Hono) {
                 cached ??
                 (await fetch(`https://api.towerstats.com/api/etoh`, {
                     method: 'POST',
-                    body: JSON.stringify({ id: data.id, apiKey: towerStatsToken })
+                    body: JSON.stringify({ id: data.id }),
+                    headers: {
+                        apiKey: towerStatsToken
+                    }
                 })
                     .then((res) => {
                         loadTime = (Date.now() - loadTime) / 1000;
