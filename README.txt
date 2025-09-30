@@ -17,7 +17,6 @@ Install software dependencies.
 =========================================================
 sudo apt update
 sudo apt install git unzip gh
-sudo su
 curl -fsSL https://bun.sh/install | bash
 =========================================================
 

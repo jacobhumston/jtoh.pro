@@ -1,0 +1,16 @@
+{
+    "references": ["./src/client/tsconfig.json", "./src/server/tsconfig.json", "./src/shared/tsconfig.json"],
+    "compilerOptions": {
+        "moduleResolution": "bundler",
+        "moduleDetection": "force",
+        "allowImportingTsExtensions": true,
+        "verbatimModuleSyntax": true,
+        "noEmit": true,
+        "strict": true,
+        "noFallthroughCasesInSwitch": true,
+        "allowJs": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noPropertyAccessFromIndexSignature": false
+    }
+}
