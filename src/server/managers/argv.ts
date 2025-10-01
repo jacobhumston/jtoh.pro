@@ -9,7 +9,7 @@
  */
 
 // remove the unneeded arguments
-const args = process.argv.splice(2);
+const args = [...process.argv].splice(2);
 
 /** An expected argument. */
 export type ExpectedArg<T extends 'string' | 'number' | 'boolean' = 'string' | 'number' | 'boolean'> = {
