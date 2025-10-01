@@ -4,7 +4,6 @@
  *
  * Authored by Jacob Humston
  */
-
 import { existsSync, mkdirSync } from 'node:fs';
 import { cwd } from 'node:process';
 

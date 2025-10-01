@@ -4,15 +4,16 @@
  *
  * Authored by Jacob Humston
  */
-
+import { build } from 'bun';
 import type { Hono } from 'hono';
-import { createPath, safelyGetPath } from './files';
-import { existsSync, rmSync, readdirSync, symlinkSync } from 'node:fs';
-import { parse } from 'node:path';
-import { replaceEmptyString } from '../../shared/common-utils';
 import { stream } from 'hono/streaming';
 import mime from 'mime';
-import { build } from 'bun';
+
+import { existsSync, rmSync, readdirSync, symlinkSync } from 'node:fs';
+import { parse } from 'node:path';
+
+import { replaceEmptyString } from '../../shared/common-utils';
+import { createPath, safelyGetPath } from './files';
 
 /** Path used to store static assets. */
 export const staticPath = safelyGetPath('static');

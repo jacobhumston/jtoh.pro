@@ -1,12 +1,13 @@
 {
     "scripts": {
-        "format": "bunx prettier --write .",
+        "format": "bunx prettier --cache --write .",
         "start": "bun run src/server/index.ts",
         "port-access": "sudo setcap CAP_NET_BIND_SERVICE=+eip $(which bun)"
     },
     "dependencies": {
         "@infisical/sdk": "^4.0.6",
         "@napi-rs/canvas": "^0.1.80",
+        "@trivago/prettier-plugin-sort-imports": "^5.2.2",
         "@types/bun": "^1.2.23",
         "@types/node": "^24.6.1",
         "altcha": "^2.2.4",
