@@ -5,6 +5,7 @@
  */
 import { Hono } from 'hono';
 
+import { serverPort, isDev, serverURL } from './config';
 import { buildWebPages, serveStatic } from './managers/web';
 
 const app = new Hono({ strict: true });
@@ -14,4 +15,5 @@ const app = new Hono({ strict: true });
 await buildWebPages();
 serveStatic(app);
 
-export default { fetch: app.fetch, port: 80 } as Bun.Serve;
+console.log(serverPort, serverURL, isDev);
+export default { fetch: app.fetch, port: serverPort } as Bun.Serve;
