@@ -5,10 +5,11 @@
  */
 
 import { Hono } from 'hono';
-import { serveStatic } from './managers/web';
+import { buildWebPages, serveStatic } from './managers/web';
 
 const app = new Hono({ strict: true });
 
+await buildWebPages();
 serveStatic(app);
 
 export default { fetch: app.fetch, port: 80 } as Bun.Serve;

@@ -6,13 +6,13 @@
  */
 
 import type { Hono } from 'hono';
-import { safelyGetPath } from './files';
-import { existsSync, rmSync, createReadStream } from 'node:fs';
+import { createPath, safelyGetPath } from './files';
+import { existsSync, rmSync, readdirSync, symlinkSync } from 'node:fs';
 import { parse } from 'node:path';
 import { replaceEmptyString } from '../../shared/common-utils';
 import { stream } from 'hono/streaming';
-import { makeByteReadableStreamFromNodeReadable } from 'node-readable-to-web-readable-stream';
 import mime from 'mime';
+import { build } from 'bun';
 
 /** Path used to store static assets. */
 export const staticPath = safelyGetPath('static');
@@ -22,7 +22,7 @@ export const staticPath = safelyGetPath('static');
  */
 export function clearStatic() {
     rmSync(staticPath, { recursive: true, force: true });
-    safelyGetPath('static'); // we still need the path afterwards
+    createPath('static'); // we still need the path afterwards
 }
 
 /**
@@ -42,8 +42,49 @@ export function serveStatic(app: Hono) {
         context.res.headers.set('Content-Type', mime.getType(ext) ?? 'application/octet-stream'); // application/octet-stream seems to be a good backup
 
         return stream(context, async (stream) => {
-            const fileStream = createReadStream(filePath);
-            await stream.pipe(makeByteReadableStreamFromNodeReadable(fileStream));
+            const file = Bun.file(filePath);
+            await stream.pipe(file.stream());
         });
     });
+}
+
+/**
+ * Build web pages. This will either build the html file
+ * or create a symlink for other assets.
+ */
+export async function buildWebPages() {
+    clearStatic();
+
+    for (const file of readdirSync('src/client/pages/', { recursive: true, withFileTypes: true })) {
+        if (file.isFile()) {
+            let path = file.parentPath.replace('src/client/pages/', '');
+            if (path === 'src/client/pages') path = '';
+            else path = `${path}/`;
+            const destinationPath = `static/${path}`;
+            createPath(destinationPath);
+
+            // TODO: change some of these options once dev mode is supported
+            if (file.name.endsWith('.html')) {
+                await build({
+                    entrypoints: [`${file.parentPath}/${file.name}`],
+                    outdir: destinationPath,
+                    splitting: true,
+                    sourcemap: 'linked',
+                    minify: true,
+                    footer: `// Copyright of jtoh.pro, All Rights Reserved.\n//* Compiled ${new Date().toISOString()}`
+                });
+            } else {
+                symlinkSync(safelyGetPath(`${file.parentPath}/${file.name}`), `${destinationPath}${file.name}`);
+            }
+        }
+    }
+
+    for (const file of readdirSync('src/client/assets/', { recursive: true, withFileTypes: true })) {
+        let path = file.parentPath.replace('src/client/assets/', '');
+        if (path === 'src/client/assets') path = '';
+        else path = `${path}/`;
+        const destinationPath = `static/assets/${path}`;
+        createPath(destinationPath);
+        symlinkSync(safelyGetPath(`${file.parentPath}/${file.name}`), `${destinationPath}${file.name}`);
+    }
 }

@@ -31,3 +31,13 @@ export function safelyGetPath(path: string) {
 export function safelyGetPathMulti(paths: Array<string>) {
     return paths.map((path) => safelyGetPath(path));
 }
+
+/**
+ * Create a path/folder if it doesn't already exist.
+ * @param path The path to create.
+ */
+export function createPath(path: string): void {
+    if (path.startsWith('/')) throw new Error('Path should not start with a /');
+    if (!existsSync(path)) mkdirSync(path, { recursive: true });
+    return;
+}
