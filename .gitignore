@@ -67,4 +67,5 @@ cdn
 src/web/app/admin/heaps/
 .api/
 .backups/
-temporary
+temporary/
+static/

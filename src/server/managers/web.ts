@@ -30,15 +30,16 @@ export function clearStatic() {
  * @param app The server application.
  */
 export function serveStatic(app: Hono) {
-    app.get('', async (context) => {
-        const path = parse(context.req.path);
+    app.get('/*', async (context) => {
+        const reqPath = context.req.path.endsWith('/') ? `${context.req.path}/index.html` : context.req.path;
+        const path = parse(reqPath);
         const name = replaceEmptyString(path.name, 'index');
-        const dir = path.dir;
+        const dir = path.dir.endsWith('/') ? path.dir : `${path.dir}/`;
         const ext = replaceEmptyString(path.ext, '.html');
-        const filePath = `${staticPath}${dir}/${name}${ext}`;
+        const filePath = `${staticPath}${dir}${name}${ext}`;
 
         if (!existsSync(filePath)) return context.status(404);
-        context.res.headers.set('Content-Type', mime.getType(ext) ?? 'application/octet-stream');
+        context.res.headers.set('Content-Type', mime.getType(ext) ?? 'application/octet-stream'); // application/octet-stream seems to be a good backup
 
         return stream(context, async (stream) => {
             const fileStream = createReadStream(filePath);
