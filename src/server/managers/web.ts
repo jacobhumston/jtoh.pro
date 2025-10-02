@@ -18,6 +18,7 @@ import { parse } from 'node:path';
 
 import { replaceEmptyString } from '../../shared/common-utils';
 import { isDev } from '../config';
+import { log } from '../modules/logger';
 import { getCLIArgument } from './argv';
 import { createPath, getFileHash, safelyGetPath } from './files';
 
@@ -70,6 +71,7 @@ export async function buildFrontend() {
             templates[file.name.split('.')[0]] = content;
         }
     }
+    log('debug', '(build) Loaded templates.');
 
     // entrypoints
     const buildEntrypoints: string[] = [];
@@ -92,6 +94,7 @@ export async function buildFrontend() {
             }
         }
     }
+    log('debug', '(build) Gathered entry points and symlinks.');
 
     // bun build
     await build({
@@ -131,6 +134,7 @@ export async function buildFrontend() {
             }
         ]
     });
+    log('debug', '(build) Built files w/ plugins.');
 
     // create asset symlinks
     for (const file of readdirSync('src/client/assets/', { recursive: true, withFileTypes: true })) {
@@ -141,6 +145,7 @@ export async function buildFrontend() {
         createPath(destinationPath);
         symlinkSync(safelyGetPath(`${file.parentPath}/${file.name}`), `${destinationPath}${file.name}`);
     }
+    log('debug', '(build) Asset symlinks created.');
 
     // minify (in prod)
     if (!isDev) {
@@ -172,6 +177,7 @@ export async function buildFrontend() {
                 // not going to minify css due to it already being minified pretty well by bun
             }
         }
+        log('debug', '(build) Files minified.');
     }
 
     // putting this behind an arg cause it "could" be slow
@@ -209,5 +215,6 @@ export async function buildFrontend() {
 
         // to be more efficient, replace duplicate files with symlinks
         await link();
+        log('debug', '(build) Duplicate build files converted to symlinks.');
     }
 }

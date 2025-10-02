@@ -23,5 +23,5 @@ export const serverURL: URL = (await getCLIArgument('url', 'url', true)) ?? new 
 /** Config options as an object. */
 const config = { serverPort, isDev, serverURL };
 
-// make the object the default export for convince
+// make the object the default export for convenience
 export default config;

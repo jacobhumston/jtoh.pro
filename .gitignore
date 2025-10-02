@@ -69,3 +69,4 @@ src/web/app/admin/heaps/
 .backups/
 temporary/
 static/
+current-log
