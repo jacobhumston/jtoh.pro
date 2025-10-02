@@ -5,14 +5,16 @@
  * Authored by Jacob Humston
  */
 import { build } from 'bun';
+import Handlebars from 'handlebars';
 import type { Hono } from 'hono';
 import { stream } from 'hono/streaming';
 import mime from 'mime';
 
-import { existsSync, rmSync, readdirSync, symlinkSync } from 'node:fs';
+import { existsSync, rmSync, readdirSync, symlinkSync, readFileSync } from 'node:fs';
 import { parse } from 'node:path';
 
 import { replaceEmptyString } from '../../shared/common-utils';
+import { isDev } from '../config';
 import { createPath, safelyGetPath } from './files';
 
 /** Path used to store static assets. */
@@ -56,6 +58,20 @@ export function serveStatic(app: Hono) {
 export async function buildWebPages() {
     clearStatic();
 
+    // load templates
+    const templates: { [key: string]: string } = {};
+    for (const file of readdirSync('src/client/templates', { recursive: true, withFileTypes: true })) {
+        if (file.isFile()) {
+            const content = readFileSync(`${file.parentPath}/${file.name}`, 'utf8');
+            templates[file.name.split('.')[0]] = content;
+        }
+    }
+
+    // entrypoints
+    const buildEntrypoints: string[] = [];
+
+    // add entry points
+    // this will also add handle symlinks in case we need to add files to the same directory as a page
     for (const file of readdirSync('src/client/pages/', { recursive: true, withFileTypes: true })) {
         if (file.isFile()) {
             let path = file.parentPath.replace('src/client/pages/', '');
@@ -64,22 +80,45 @@ export async function buildWebPages() {
             const destinationPath = `static/${path}`;
             createPath(destinationPath);
 
-            // TODO: change some of these options once dev mode is supported
+            // build (or symlink)
             if (file.name.endsWith('.html')) {
-                await build({
-                    entrypoints: [`${file.parentPath}/${file.name}`],
-                    outdir: destinationPath,
-                    splitting: true,
-                    sourcemap: 'linked',
-                    minify: true,
-                    footer: `// Copyright of jtoh.pro, All Rights Reserved.\n//* Compiled ${new Date().toISOString()}`
-                });
+                buildEntrypoints.push(`${file.parentPath}/${file.name}`);
             } else {
                 symlinkSync(safelyGetPath(`${file.parentPath}/${file.name}`), `${destinationPath}${file.name}`);
             }
         }
     }
 
+    // bun build
+    await build({
+        entrypoints: buildEntrypoints,
+        outdir: safelyGetPath('static'),
+        splitting: true,
+        sourcemap: isDev ? 'linked' : 'none',
+        minify: !isDev,
+        footer: `\n\n// Copyright of jtoh.pro, All Rights Reserved.\n// * Compiled ${new Date().toISOString()}`,
+        target: 'browser',
+        naming: {
+            asset: '[dir]/[name].[hash].[ext]',
+            chunk: '[dir]/[name].[hash].[ext]',
+            entry: '[dir]/[name].[ext]'
+        },
+        plugins: [
+            {
+                // handlebars plugin
+                name: 'Template Parser',
+                setup: function (build: Bun.PluginBuilder): void | Promise<void> {
+                    build.onLoad({ filter: /\.html$/i }, (args) => {
+                        const fileContent = readFileSync(args.path, 'utf8');
+                        const template = Handlebars.compile(fileContent);
+                        return { contents: template(templates) };
+                    });
+                }
+            }
+        ]
+    });
+
+    // create asset symlinks
     for (const file of readdirSync('src/client/assets/', { recursive: true, withFileTypes: true })) {
         let path = file.parentPath.replace('src/client/assets/', '');
         if (path === 'src/client/assets') path = '';

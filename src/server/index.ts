@@ -15,5 +15,4 @@ const app = new Hono({ strict: true });
 await buildWebPages();
 serveStatic(app);
 
-console.log(config);
 export default { fetch: app.fetch, port: config.serverPort } as Bun.Serve;
