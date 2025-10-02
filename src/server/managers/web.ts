@@ -9,6 +9,7 @@ import Handlebars from 'handlebars';
 import type { Hono } from 'hono';
 import { stream } from 'hono/streaming';
 import mime from 'mime';
+import * as sass from 'sass';
 
 import { existsSync, rmSync, readdirSync, symlinkSync, readFileSync } from 'node:fs';
 import { parse } from 'node:path';
@@ -71,7 +72,7 @@ export async function buildWebPages() {
     const buildEntrypoints: string[] = [];
 
     // add entry points
-    // this will also add handle symlinks in case we need to add files to the same directory as a page
+    // this will also handle symlinks in case we need to add files to the same directory as a page
     for (const file of readdirSync('src/client/pages/', { recursive: true, withFileTypes: true })) {
         if (file.isFile()) {
             let path = file.parentPath.replace('src/client/pages/', '');
@@ -106,12 +107,22 @@ export async function buildWebPages() {
         plugins: [
             {
                 // handlebars plugin
-                name: 'Template Parser',
+                name: 'Template Compiler',
                 setup: function (build: Bun.PluginBuilder): void | Promise<void> {
                     build.onLoad({ filter: /\.html$/i }, (args) => {
                         const fileContent = readFileSync(args.path, 'utf8');
                         const template = Handlebars.compile(fileContent);
                         return { contents: template(templates) };
+                    });
+                }
+            },
+            {
+                // sass plugin
+                name: 'Sass Compiler',
+                setup: function (build: Bun.PluginBuilder): void | Promise<void> {
+                    build.onLoad({ filter: /\.scss$/i }, (args) => {
+                        const compiled = sass.compile(args.path);
+                        return { contents: compiled.css, loader: 'css' };
                     });
                 }
             }
