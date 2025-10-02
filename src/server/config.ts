@@ -1,46 +1,28 @@
 /**
  * This is a simple script to handle config options.
- * Uses parseArgs to create nicely exported variables.
+ * Uses getCLIArgument to create nicely exported variables.
  *
  * Authored by Jacob Humston
  */
-import { createExpectedArg, minMaxValidator, parseArgs } from './managers/argv';
+import { getCLIArgument, utilCLIValidators } from './managers/argv';
 
-/** Parsed configuration options from the CLI. */
-export const config = await parseArgs([
-    createExpectedArg({
-        name: 'port',
-        type: 'number',
-        optional: false,
-        validator: (value) => minMaxValidator(value, 80, 5000)
-    }),
-    createExpectedArg({
-        name: 'dev',
-        type: 'boolean',
-        optional: false
-    }),
-    createExpectedArg({
-        name: 'url',
-        type: 'string',
-        optional: true,
-        validator: (value) => {
-            new URL(value);
-        }
-    })
-]);
-
-/** Port that the server should run on. */
-export const serverPort: number = config[0].value;
+/** Port that the server should run on. Defaults to port 80. */
+export const serverPort: number =
+    (await getCLIArgument('serverPort', 'integer', true, utilCLIValidators.range(80, 6000))) ?? 80;
 
 /**
  * Whether this server is in development mode or not.
  * Enabling this just adds some useful development tooling.
+ * Defaults to true.
  */
-export const isDev: boolean = config[1].value;
+export const isDev: boolean = (await getCLIArgument('isDev', 'boolean', true)) ?? true;
 
-/**
- * URL of the server.
- * Will default to localhost if not provided.
- */
+/** URL that can be used to access the website. Defaults to localhost */
 export const serverURL: URL =
-    config[2].value === null ? new URL(`http://localhost:${serverPort}`) : new URL(config[2].value);
+    (await getCLIArgument('serverURL', 'url', true)) ?? new URL(`http://localhost:${serverPort}`);
+
+/** Config options as an object. */
+const config = { serverPort, isDev, serverURL };
+
+// make the object the default export for convince
+export default config;
