@@ -4,7 +4,8 @@
  *
  * Authored by Jacob Humston
  */
-import { existsSync, mkdirSync } from 'node:fs';
+import { createHash, type BinaryToTextEncoding } from 'node:crypto';
+import { existsSync, mkdirSync, createReadStream } from 'node:fs';
 import { cwd } from 'node:process';
 
 /**
@@ -18,7 +19,10 @@ export function safelyGetPath(path: string) {
     // This error is only thrown because 'project//path' looks ugly and I want
     // to keep the file paths somewhat consistent.
     if (path.startsWith('/')) throw new Error('Path should not start with a /');
-    if (!existsSync(path)) mkdirSync(path, { recursive: true });
+    if (!existsSync(path)) {
+        // no need to make a directory if the path lookup is a file
+        if (!path.includes('.')) mkdirSync(path, { recursive: true });
+    }
     return `${cwd()}/${path}`;
 }
 
@@ -39,4 +43,34 @@ export function createPath(path: string): void {
     if (path.startsWith('/')) throw new Error('Path should not start with a /');
     if (!existsSync(path)) mkdirSync(path, { recursive: true });
     return;
+}
+
+/**
+ * Get the hash of a file.
+ * @param filePath The path to hash.
+ * @param algorithm The algorithm to use.
+ * @param encoding Encoding to use.
+ * @returns The hash.
+ */
+export function getFileHash(
+    filePath: string,
+    algorithm = 'sha256',
+    encoding: BinaryToTextEncoding = 'hex'
+): Promise<string> {
+    return new Promise((resolve, reject) => {
+        const hash = createHash(algorithm);
+        const stream = createReadStream(filePath);
+
+        stream.on('error', (err) => {
+            reject(err);
+        });
+
+        stream.on('data', (chunk) => {
+            hash.update(chunk);
+        });
+
+        stream.on('end', () => {
+            resolve(hash.digest(encoding));
+        });
+    });
 }

@@ -11,13 +11,15 @@ import { stream } from 'hono/streaming';
 import { minify } from 'html-minifier-next';
 import mime from 'mime';
 import * as sass from 'sass';
+import { minify as jsMinify } from 'terser';
 
 import { existsSync, rmSync, readdirSync, symlinkSync, readFileSync, writeFileSync } from 'node:fs';
 import { parse } from 'node:path';
 
 import { replaceEmptyString } from '../../shared/common-utils';
 import { isDev } from '../config';
-import { createPath, safelyGetPath } from './files';
+import { getCLIArgument } from './argv';
+import { createPath, getFileHash, safelyGetPath } from './files';
 
 /** Path used to store static assets. */
 export const staticPath = safelyGetPath('static');
@@ -54,11 +56,11 @@ export function serveStatic(app: Hono) {
 }
 
 /**
- * Build web pages. This will either build the html file
- * or create a symlink for other assets.
+ * This function compiles the entire frontend! So it
+ * may be a bit slow, especially when minifying everything.
  */
-export async function buildWebPages() {
-    clearStatic();
+export async function buildFrontend() {
+    clearStatic(); // clean the static folder
 
     // load templates
     const templates: { [key: string]: string } = {};
@@ -140,21 +142,72 @@ export async function buildWebPages() {
         symlinkSync(safelyGetPath(`${file.parentPath}/${file.name}`), `${destinationPath}${file.name}`);
     }
 
-    // minify html (in prod)
+    // minify (in prod)
     if (!isDev) {
         for (const file of readdirSync('static/', { recursive: true, withFileTypes: true })) {
-            if (file.isFile() && file.name.endsWith('.html')) {
-                const path = `${file.parentPath}/${file.name}`;
-                const content = readFileSync(path, 'utf8');
-                const minified = await minify(content, {
-                    minifyCSS: true,
-                    minifyJS: true,
-                    removeComments: true,
-                    removeAttributeQuotes: true,
-                    collapseWhitespace: true
-                });
-                writeFileSync(path, minified);
+            if (file.isFile()) {
+                // minify html
+                if (file.name.endsWith('.html')) {
+                    const path = `${file.parentPath}/${file.name}`;
+                    const content = readFileSync(path, 'utf8');
+                    const minified = await minify(content, {
+                        minifyCSS: { level: 2 },
+                        minifyJS: { compress: { passes: 3 }, mangle: true },
+                        removeComments: true,
+                        removeAttributeQuotes: true,
+                        collapseWhitespace: true
+                    });
+                    writeFileSync(path, minified);
+                    // minify js
+                } else if (file.name.endsWith('.js')) {
+                    const path = `${file.parentPath}/${file.name}`;
+                    const content = readFileSync(path, 'utf8');
+                    const minified = await jsMinify(content, {
+                        compress: { passes: 3 },
+                        mangle: true,
+                        format: { comments: true }
+                    });
+                    writeFileSync(path, minified.code ?? '');
+                }
+                // not going to minify css due to it already being minified pretty well by bun
             }
         }
+    }
+
+    // putting this behind an arg cause it "could" be slow
+    // default will be true for now!
+    if (((await getCLIArgument('linkBuild', 'boolean', true)) ?? true) === true) {
+        const hashTable: { [key: string]: string } = {}; // TODO: possibly use a cache in the future, but this works fine for now
+
+        /**
+         * Link duplicate files together.
+         */
+        async function link() {
+            let linked = false;
+            for (const file of readdirSync('static/', { recursive: true, withFileTypes: true })) {
+                if (linked === true) break;
+                if (file.isSymbolicLink() || !file.isFile()) continue;
+                for (const file2 of readdirSync('static/', { recursive: true, withFileTypes: true })) {
+                    if (file2.isSymbolicLink() || !file2.isFile()) continue;
+                    const path = safelyGetPath(`${file.parentPath}/${file.name}`);
+                    const path2 = safelyGetPath(`${file2.parentPath}/${file2.name}`);
+                    if (path === path2) continue;
+                    const hash = hashTable[path] ?? (await getFileHash(path));
+                    const hash2 = hashTable[path2] ?? (await getFileHash(path2));
+                    hashTable[path] = hash;
+                    hashTable[path2] = hash2;
+                    if (hash === hash2) {
+                        rmSync(path2, { force: true });
+                        symlinkSync(path, path2);
+                        linked = true;
+                        break;
+                    }
+                }
+            }
+            if (linked === true) return await link();
+        }
+
+        // to be more efficient, replace duplicate files with symlinks
+        await link();
     }
 }
