@@ -8,10 +8,11 @@ import { build } from 'bun';
 import Handlebars from 'handlebars';
 import type { Hono } from 'hono';
 import { stream } from 'hono/streaming';
+import { minify } from 'html-minifier-next';
 import mime from 'mime';
 import * as sass from 'sass';
 
-import { existsSync, rmSync, readdirSync, symlinkSync, readFileSync } from 'node:fs';
+import { existsSync, rmSync, readdirSync, symlinkSync, readFileSync, writeFileSync } from 'node:fs';
 import { parse } from 'node:path';
 
 import { replaceEmptyString } from '../../shared/common-utils';
@@ -137,5 +138,23 @@ export async function buildWebPages() {
         const destinationPath = `static/assets/${path}`;
         createPath(destinationPath);
         symlinkSync(safelyGetPath(`${file.parentPath}/${file.name}`), `${destinationPath}${file.name}`);
+    }
+
+    // minify html (in prod)
+    if (!isDev) {
+        for (const file of readdirSync('static/', { recursive: true, withFileTypes: true })) {
+            if (file.isFile() && file.name.endsWith('.html')) {
+                const path = `${file.parentPath}/${file.name}`;
+                const content = readFileSync(path, 'utf8');
+                const minified = await minify(content, {
+                    minifyCSS: true,
+                    minifyJS: true,
+                    removeComments: true,
+                    removeAttributeQuotes: true,
+                    collapseWhitespace: true
+                });
+                writeFileSync(path, minified);
+            }
+        }
     }
 }
