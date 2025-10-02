@@ -12,11 +12,12 @@ import { safelyGetPath } from '../managers/files';
 
 // create log file
 const logsFolder = safelyGetPath('logs');
-const logFile = createWriteStream(`${logsFolder}/${new Date().toISOString()}`, { flags: 'w' });
+const logFileName = `${logsFolder}/${new Date().toISOString()}`;
+const logFile = createWriteStream(logFileName, { flags: 'w' });
 
 // create a symlink for convenience
 rmSync(`${logsFolder}/../current-log`, { force: true });
-symlinkSync(`${logsFolder}/${new Date().toISOString()}`, `${logsFolder}/../current-log`);
+symlinkSync(logFileName, `${logsFolder}/../current-log`);
 
 /**
  * Delete logs that are older then three hours.
