@@ -63,8 +63,8 @@ export async function getCLIArgument<T extends keyof CLIArgumentTypeMap, O exten
     // parse boolean
     if (type === 'boolean') {
         if (argValue.toLowerCase() === 'true') result = true;
-        if (argValue.toLowerCase() === 'false') result = false;
-        throw new Error(`${name} expected a boolean.`);
+        else if (argValue.toLowerCase() === 'false') result = false;
+        else throw new Error(`${name} expected a boolean.`);
     }
 
     // parse url
