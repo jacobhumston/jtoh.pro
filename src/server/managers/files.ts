@@ -54,7 +54,7 @@ export function createPath(path: string): void {
  */
 export function getFileHash(
     filePath: string,
-    algorithm = 'sha256',
+    algorithm: string = 'sha256',
     encoding: BinaryToTextEncoding = 'hex'
 ): Promise<string> {
     return new Promise((resolve, reject) => {

@@ -30,7 +30,7 @@ export function cleanUpLogs() {
     }
 }
 
-/** Available logs. */
+/** Available log types. */
 export type LogType = 'info' | 'warn' | 'error' | 'success' | 'debug' | 'critical';
 
 /**
@@ -61,10 +61,10 @@ function closeLogFile(): Promise<void> {
 
 /**
  * Handle process shutdown.
- * @param e Passed event.
+ * @param error Passed event/error.
  */
-async function handleShutdown(e: any) {
-    if (e) log('critical', e);
+async function handleShutdown(error: any) {
+    if (error) log('critical', error);
 
     try {
         await closeLogFile();
