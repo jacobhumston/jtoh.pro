@@ -70,3 +70,4 @@ src/web/app/admin/heaps/
 temporary/
 static/
 current-log
+*.log
