@@ -12,19 +12,19 @@ import { safelyGetPath } from '../managers/files';
 
 // create log file
 const logsFolder = safelyGetPath('logs');
-const logFileName = `${logsFolder}/${new Date().toISOString()}`;
+const logFileName = `${logsFolder}/${new Date().toISOString()}.log`;
 const logFile = createWriteStream(logFileName, { flags: 'w' });
 
 // create a symlink for convenience
-rmSync(`${logsFolder}/../current-log`, { force: true });
-symlinkSync(logFileName, `${logsFolder}/../current-log`);
+rmSync(`${logsFolder}/../current-log.log`, { force: true });
+symlinkSync(logFileName, `${logsFolder}/../current-log.log`);
 
 /**
  * Delete logs that are older then three hours.
  */
 export function cleanUpLogs() {
     for (const file of readdirSync(logsFolder)) {
-        const date = new Date(file);
+        const date = new Date(file.split('.log')[0]);
         const now = new Date();
         if ((now.getTime() - date.getTime()) / (1000 * 60 * 60) > 3) rmSync(`${logsFolder}/${file}`);
     }
