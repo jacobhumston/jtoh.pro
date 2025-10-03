@@ -103,7 +103,7 @@ export async function buildFrontend() {
         splitting: true,
         sourcemap: isDev ? 'linked' : 'none',
         minify: !isDev,
-        footer: `\n\n// Copyright of jtoh.pro, All Rights Reserved.\n// * Compiled ${new Date().toISOString()}`,
+        footer: `\n\n// Copyright of jtoh.pro, All Rights Reserved.`,
         target: 'browser',
         naming: {
             asset: '[dir]/[name].[hash].[ext]',
