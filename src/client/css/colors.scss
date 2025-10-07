@@ -1,0 +1,42 @@
+/* Special Colors */
+$red: #ff5959;
+$green: #41d256;
+$blue: #66b5ff;
+$yellow: #ffe945;
+
+/* Themed colors. */
+$dark-accent: #9a71f8;
+$light-accent: #c8afff;
+$dark-text: #ffffff;
+$light-text: #151515;
+$dark-text-darker: #a9a9a9;
+$light-text-darker: #a6a6a6;
+$dark-background: #171717;
+$light-background: #f8f8f8;
+$dark-background-darker: #1b1b1b;
+$light-background-darker: #dedede;
+$dark-background-lighter: #262626;
+$light-background-lighter: #ffffff;
+
+:root {
+    --accent: #{$light-accent};
+    --text: #{$light-text};
+    --text-darker: #{$light-text-darker};
+    --background: #{$light-background};
+    --background-darker: #{$light-background-darker};
+    --background-lighter: #{$light-background-lighter};
+}
+
+[dark] {
+    --accent: #{$dark-accent};
+    --text: #{$dark-text};
+    --text-darker: #{$dark-text-darker};
+    --background: #{$dark-background};
+    --background-darker: #{$dark-background-darker};
+    --background-lighter: #{$dark-background-lighter};
+}
+
+body {
+    background-color: var(--background);
+    color: var(--text);
+}

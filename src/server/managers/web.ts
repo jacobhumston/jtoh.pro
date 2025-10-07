@@ -110,6 +110,7 @@ export async function buildFrontend() {
             chunk: '[dir]/[name].[hash].[ext]',
             entry: '[dir]/[name].[ext]'
         },
+        external: ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.svg', '*.webp', '*.mp4', '*.mp3'],
         plugins: [
             {
                 // handlebars plugin
@@ -138,6 +139,7 @@ export async function buildFrontend() {
 
     // create asset symlinks
     for (const file of readdirSync('src/client/assets/', { recursive: true, withFileTypes: true })) {
+        if (!file.isFile()) continue;
         let path = file.parentPath.replace('src/client/assets/', '');
         if (path === 'src/client/assets') path = '';
         else path = `${path}/`;
