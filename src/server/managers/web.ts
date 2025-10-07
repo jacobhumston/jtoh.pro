@@ -12,14 +12,14 @@ import { minify } from 'html-minifier-next';
 import mime from 'mime';
 import * as sass from 'sass';
 import { minify as jsMinify } from 'terser';
+import { v4 as uuid } from 'uuid';
 
-import { existsSync, rmSync, readdirSync, symlinkSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, rmSync, readdirSync, symlinkSync, readFileSync, writeFileSync, renameSync } from 'node:fs';
 import { parse } from 'node:path';
 
 import { replaceEmptyString } from '../../shared/common-utils';
 import { isDev } from '../config';
 import { log } from '../modules/logger';
-import { getCLIArgument } from './argv';
 import { createPath, getFileHash, safelyGetPath } from './files';
 
 /** Path used to store static assets. */
@@ -147,6 +147,82 @@ export async function buildFrontend() {
     }
     log('debug', '(build) Asset symlinks created.');
 
+    // remove duplicate files and replace their references with the orginal
+    // also renames files if in production mode
+    // TODO: replace some of the maps with caches (maybe)
+    // note that this segment runs under the assumption that all non-symbolic link files are text based
+    // and that it's iterating top to bottom
+    {
+        // create name map
+        const nameMap: Map<string, string> = new Map();
+        for (const file of readdirSync('static', { recursive: true, withFileTypes: true })) {
+            if (!file.isFile() || file.isSymbolicLink() || file.name.endsWith('.html')) continue;
+            if (isDev) nameMap.set(file.name, file.name);
+            else
+                nameMap.set(
+                    file.name,
+                    `${uuid().split('-')[0]}.${file.name.split('.').findLast((v) => typeof v === 'string')}`
+                );
+        }
+
+        // replace duplicate files
+        const refrenceMap: Map<string, { new: string; layers: number }> = new Map();
+        const hashMap: Map<string, string> = new Map();
+        for (const file of readdirSync('static', { recursive: true, withFileTypes: true })) {
+            const filePath = `${file.parentPath}/${file.name}`;
+            if (!file.isFile() || file.isSymbolicLink() || file.name.endsWith('.html')) continue;
+            if (!existsSync(filePath)) continue;
+
+            const fileHash = hashMap.get(filePath) ?? (await getFileHash(filePath));
+            hashMap.set(filePath, fileHash);
+
+            // run through other files
+            for (const file2 of readdirSync('static', { recursive: true, withFileTypes: true })) {
+                const file2Path = `${file2.parentPath}/${file2.name}`;
+                if (!file2.isFile() || file2.isSymbolicLink() || file2.name.endsWith('.html') || filePath === file2Path)
+                    continue;
+
+                const file2Hash = hashMap.get(file2Path) ?? (await getFileHash(file2Path));
+                hashMap.set(file2Path, file2Hash);
+
+                if (fileHash !== file2Hash) continue;
+                rmSync(file2Path, { force: true });
+
+                // paths will always have at least 1 separator, so it is safe to subtract 2
+                refrenceMap.set(file2.name, {
+                    new: nameMap.get(file.name) ?? file.name,
+                    layers: file2Path.split('/').length - 2
+                });
+            }
+
+            // rename file
+            renameSync(filePath, filePath.replace(file.name, nameMap.get(file.name) ?? file.name));
+        }
+
+        // update references and file names
+        // this will load the entire file into memory at once
+        for (const file of readdirSync('static', { recursive: true, withFileTypes: true })) {
+            if (!file.isFile() || file.isSymbolicLink()) continue;
+            const filePath = `${file.parentPath}/${file.name}`;
+
+            let content = readFileSync(filePath, 'utf-8');
+            for (const [name, data] of refrenceMap) {
+                // update layers to be relevant to the current file
+                data.layers = data.layers - (data.layers - (filePath.split('/').length - 2));
+                if (data.layers === 0) content = content.replace(`./${name}`, `./${data.new}`);
+                else content = content.replace(`./${name}`, `${'../'.repeat(data.layers)}${data.new}`);
+            }
+            for (const [old, value] of nameMap) {
+                content = content.replace(old, value);
+            }
+            writeFileSync(filePath, content, 'utf8');
+        }
+    }
+    log(
+        'debug',
+        `(build) Duplicate files removed and their references updated.${isDev ? '' : ' (File names minified as well.)'}`
+    );
+
     // minify (in prod)
     if (!isDev) {
         for (const file of readdirSync('static/', { recursive: true, withFileTypes: true })) {
@@ -178,43 +254,5 @@ export async function buildFrontend() {
             }
         }
         log('debug', '(build) Files minified.');
-    }
-
-    // putting this behind an arg cause it "could" be slow
-    // default will be true for now!
-    if (((await getCLIArgument('linkBuild', 'boolean', true)) ?? true) === true) {
-        const hashTable: { [key: string]: string } = {}; // TODO: possibly use a cache in the future, but this works fine for now
-
-        /**
-         * Link duplicate files together.
-         */
-        async function link() {
-            let linked = false;
-            for (const file of readdirSync('static/', { recursive: true, withFileTypes: true })) {
-                if (linked === true) break;
-                if (file.isSymbolicLink() || !file.isFile()) continue;
-                for (const file2 of readdirSync('static/', { recursive: true, withFileTypes: true })) {
-                    if (file2.isSymbolicLink() || !file2.isFile()) continue;
-                    const path = safelyGetPath(`${file.parentPath}/${file.name}`);
-                    const path2 = safelyGetPath(`${file2.parentPath}/${file2.name}`);
-                    if (path === path2) continue;
-                    const hash = hashTable[path] ?? (await getFileHash(path));
-                    const hash2 = hashTable[path2] ?? (await getFileHash(path2));
-                    hashTable[path] = hash;
-                    hashTable[path2] = hash2;
-                    if (hash === hash2) {
-                        rmSync(path2, { force: true });
-                        symlinkSync(path, path2);
-                        linked = true;
-                        break;
-                    }
-                }
-            }
-            if (linked === true) return await link();
-        }
-
-        // to be more efficient, replace duplicate files with symlinks
-        await link();
-        log('debug', '(build) Duplicate build files converted to symlinks.');
     }
 }
