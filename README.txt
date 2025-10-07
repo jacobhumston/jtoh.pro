@@ -16,12 +16,14 @@ Created by Jacob Humston
 Install software dependencies.
 =========================================================
 sudo apt update
-sudo apt install git unzip gh
+sudo apt install git unzip
 curl -fsSL https://bun.sh/install | bash
+source ~/.bashrc
 =========================================================
 
-Setup git, as well as authentication with GitHub.
+To setup git, as well as authentication with GitHub.
 =========================================================
+sudo apt install gh
 gh auth login
 gh auth setup-git
 git config --global user.email "name@example.com"
