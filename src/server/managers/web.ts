@@ -103,7 +103,7 @@ export async function buildFrontend() {
         splitting: true,
         sourcemap: isDev ? 'linked' : 'none',
         minify: !isDev,
-        footer: `\n\n// Copyright of jtoh.pro, All Rights Reserved.`,
+        footer: `\n\n// @copyright Copyright of jtoh.pro, All Rights Reserved. (c)${new Date().getFullYear()}`,
         target: 'browser',
         naming: {
             asset: '[dir]/[name].[hash].[ext]',
@@ -245,8 +245,7 @@ export async function buildFrontend() {
                     const content = readFileSync(path, 'utf8');
                     const minified = await jsMinify(content, {
                         compress: { passes: 3 },
-                        mangle: true,
-                        format: { comments: true }
+                        mangle: true
                     });
                     writeFileSync(path, minified.code ?? '');
                 }
