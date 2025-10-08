@@ -20,7 +20,6 @@ import { parse } from 'node:path';
 
 import { replaceEmptyString } from '../../shared/common-utils';
 import { isDev } from '../config';
-//import { log } from '../modules/logger';
 import { createPath, getFileHash, safelyGetPath } from './files';
 
 /** Path used to store static assets. */
