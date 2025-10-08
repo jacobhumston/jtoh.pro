@@ -6,7 +6,9 @@
 import { Hono } from 'hono';
 
 import config from './config';
-import { buildFrontend, serveStatic } from './managers/web';
+import { getBooleanArg } from './managers/argv';
+import './managers/database';
+import { buildFrontend, hotReloadFrontend, serveStatic } from './managers/web';
 import { cleanUpLogs, log } from './modules/logger';
 
 // create the hono application
@@ -19,6 +21,12 @@ cleanUpLogs();
 // this should always be the last step as this also handles 404s
 await buildFrontend();
 serveStatic(app);
+
+// hot reloading for development
+if ((await getBooleanArg('hot-build')) === true) {
+    hotReloadFrontend();
+    log('info', 'Hot reloading enabled for the frontend.');
+}
 
 // export server options for bun
 export default { fetch: app.fetch, port: config.serverPort } as Bun.Serve;

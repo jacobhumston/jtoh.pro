@@ -98,3 +98,13 @@ export const utilCLIValidators = {
         };
     }
 };
+
+/**
+ * A small wrapper around `getCLIArgument` that gets a boolean argument.
+ * The default value if not provided is `false`.
+ * @param name Name of the cli argument.
+ * @returns The provided value or `false`.
+ */
+export async function getBooleanArg(name: string) {
+    return (await getCLIArgument(name, 'boolean', true)) ?? false;
+}

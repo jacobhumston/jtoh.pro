@@ -5,6 +5,7 @@
  * Authored by Jacob Humston
  */
 import { build } from 'bun';
+import chokidar from 'chokidar';
 import Handlebars from 'handlebars';
 import type { Hono } from 'hono';
 import { stream } from 'hono/streaming';
@@ -19,7 +20,7 @@ import { parse } from 'node:path';
 
 import { replaceEmptyString } from '../../shared/common-utils';
 import { isDev } from '../config';
-import { log } from '../modules/logger';
+//import { log } from '../modules/logger';
 import { createPath, getFileHash, safelyGetPath } from './files';
 
 /** Path used to store static assets. */
@@ -71,7 +72,7 @@ export async function buildFrontend() {
             templates[file.name.split('.')[0]] = content;
         }
     }
-    log('debug', '(build) Loaded templates.');
+    //log('debug', '(build) Loaded templates.');
 
     // entrypoints
     const buildEntrypoints: string[] = [];
@@ -94,7 +95,20 @@ export async function buildFrontend() {
             }
         }
     }
-    log('debug', '(build) Gathered entry points and symlinks.');
+    //log('debug', '(build) Gathered entry points and symlinks.');
+
+    // create symlinks for root files
+    for (const file of readdirSync('src/client/root/', { recursive: true, withFileTypes: true })) {
+        if (file.isFile()) {
+            let path = file.parentPath.replace('src/client/root/', '');
+            if (path === 'src/client/root') path = '';
+            else path = `${path}/`;
+            const destinationPath = `static/${path}`;
+            createPath(destinationPath);
+            symlinkSync(safelyGetPath(`${file.parentPath}/${file.name}`), `${destinationPath}${file.name}`);
+        }
+    }
+    //log('debug', '(build) Symlinks created for root files.');
 
     // bun build
     await build({
@@ -110,7 +124,7 @@ export async function buildFrontend() {
             chunk: '[dir]/[name].[hash].[ext]',
             entry: '[dir]/[name].[ext]'
         },
-        external: ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.svg', '*.webp', '*.mp4', '*.mp3'],
+        external: ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.svg', '*.webp', '*.mp4', '*.mp3', '*.webmanifest'],
         plugins: [
             {
                 // handlebars plugin
@@ -135,7 +149,7 @@ export async function buildFrontend() {
             }
         ]
     });
-    log('debug', '(build) Built files w/ plugins.');
+    //log('debug', '(build) Built files w/ plugins.');
 
     // create asset symlinks
     for (const file of readdirSync('src/client/assets/', { recursive: true, withFileTypes: true })) {
@@ -147,7 +161,7 @@ export async function buildFrontend() {
         createPath(destinationPath);
         symlinkSync(safelyGetPath(`${file.parentPath}/${file.name}`), `${destinationPath}${file.name}`);
     }
-    log('debug', '(build) Asset symlinks created.');
+    //log('debug', '(build) Asset symlinks created.');
 
     // remove duplicate files and replace their references with the orginal
     // also renames files if in production mode
@@ -202,7 +216,7 @@ export async function buildFrontend() {
         }
 
         // update references and file names
-        // this will load the entire file into memory at once
+        // this will load the entire file into memory at once :(
         for (const file of readdirSync('static', { recursive: true, withFileTypes: true })) {
             if (!file.isFile() || file.isSymbolicLink()) continue;
             const filePath = `${file.parentPath}/${file.name}`;
@@ -220,10 +234,10 @@ export async function buildFrontend() {
             writeFileSync(filePath, content, 'utf8');
         }
     }
-    log(
-        'debug',
-        `(build) Duplicate files removed and their references updated.${isDev ? '' : ' (File names minified as well.)'}`
-    );
+    //log(
+    //    'debug',
+    //    `(build) Duplicate files removed and their references updated.${isDev ? '' : ' (File names minified as well.)'}`
+    //);
 
     // minify (in prod)
     if (!isDev) {
@@ -254,6 +268,23 @@ export async function buildFrontend() {
                 // not going to minify css due to it already being minified pretty well by bun
             }
         }
-        log('debug', '(build) Files minified.');
+        //log('debug', '(build) Files minified.');
     }
+}
+
+/**
+ * Development function that rebuilds the frontend on file changes in `src/client/`.
+ */
+export function hotReloadFrontend() {
+    let rebuild = false;
+    setInterval(async () => {
+        if (rebuild === true) {
+            rebuild = false;
+            await buildFrontend();
+        }
+    }, 1000);
+
+    chokidar.watch('src/client/').on('all', () => {
+        rebuild = true;
+    });
 }
