@@ -124,7 +124,7 @@ export async function buildFrontend() {
             chunk: '[dir]/[name].[hash].[ext]',
             entry: '[dir]/[name].[ext]'
         },
-        external: ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.svg', '*.webp', '*.mp4', '*.mp3', '*.webmanifest'],
+        external: ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.svg', '*.webp', '*.mp4', '*.mp3', '*.webmanifest', '*.ttf'],
         plugins: [
             {
                 // handlebars plugin
