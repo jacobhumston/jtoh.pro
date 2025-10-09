@@ -6,6 +6,7 @@
     },
     "type": "module",
     "dependencies": {
+        "@hono/zod-openapi": "^1.1.3",
         "@infisical/sdk": "^4.0.6",
         "@napi-rs/canvas": "^0.1.80",
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
@@ -37,6 +38,8 @@
         "zod": "^4.1.12"
     },
     "trustedDependencies": [
-        "@parcel/watcher"
+        "@parcel/watcher",
+        "esbuild",
+        "sharp"
     ]
 }
