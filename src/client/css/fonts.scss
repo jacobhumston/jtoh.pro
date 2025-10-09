@@ -24,11 +24,6 @@
 }
 
 @font-face {
-    font-family: 'NotoSerif';
-    src: url('/assets/fonts/Noto-Serif.ttf');
-}
-
-@font-face {
     font-family: 'Poppins';
     src: url('/assets/fonts/Poppins.ttf');
 }
@@ -36,4 +31,32 @@
 @font-face {
     font-family: 'Twemoji';
     src: url('/assets/fonts/Twemoji.ttf');
+}
+
+body,
+input,
+button,
+textarea {
+    font-family: Poppins, Arial, Twemoji;
+    font-size: medium;
+}
+
+code {
+    font-family:
+        JetbrainsMono, 'SF Mono', 'Segoe UI Mono', 'Roboto Mono', 'Ubuntu Mono', 'Droid Sans Mono', 'Monaco',
+        'Consolas', 'Lucida Console', monospace;
+    font-size: medium;
+}
+
+.cursiveFont {
+    font-family: EduNSWActCursive, 'Brush Script MT', 'Lucida Handwriting', cursive;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: ArchivoBlack, 'Raleway Bold', Helvetica, Arial, sans-serif;
 }

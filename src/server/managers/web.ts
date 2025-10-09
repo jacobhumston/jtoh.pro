@@ -279,7 +279,9 @@ export function hotReloadFrontend() {
     setInterval(async () => {
         if (rebuild === true) {
             rebuild = false;
-            await buildFrontend();
+            await buildFrontend().catch(() => {
+                rebuild = true;
+            });
         }
     }, 1000);
 

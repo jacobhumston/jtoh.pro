@@ -21,6 +21,7 @@
         "discord-api-types": "^0.38.29",
         "dressed": "^1.9.1",
         "handlebars": "^4.7.8",
+        "highlight.js": "^11.11.1",
         "hono": "^4.9.10",
         "hono-rate-limiter": "^0.4.2",
         "html-minifier-next": "^2.1.6",
