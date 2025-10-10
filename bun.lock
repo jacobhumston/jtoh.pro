@@ -6,6 +6,7 @@
         "@hono/zod-openapi": "^1.1.3",
         "@infisical/sdk": "^4.0.6",
         "@napi-rs/canvas": "^0.1.80",
+        "@rybbit/node": "^1.0.0",
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
         "@types/bun": "^1.2.23",
         "@types/html-minifier-next": "^2.1.0",
@@ -348,6 +349,8 @@
     "@pm2/pm2-version-check": ["@pm2/pm2-version-check@1.0.4", "", { "dependencies": { "debug": "^4.3.1" } }, "sha512-SXsM27SGH3yTWKc2fKR4SYNxsmnvuBQ9dd6QHtEWmiZ/VqaOYPAIlS8+vMcn27YLtAEBGvNRSh3TPNvtjZgfqA=="],
 
     "@rollup/rollup-linux-x64-gnu": ["@rollup/rollup-linux-x64-gnu@4.18.0", "", { "os": "linux", "cpu": "x64" }, "sha512-xuglR2rBVHA5UsI8h8UbX4VJ470PtGCf5Vpswh7p2ukaqBGFTnsfzxUBetoWBWymHMxbIG0Cmx7Y9qDZzr648w=="],
+
+    "@rybbit/node": ["@rybbit/node@1.0.0", "", {}, "sha512-EO2839Vfd3wj8RpSGukoemTS0bQy9tsKk7rrLlJcePpFthwjuJ2WQ/oQ+Gl8o9w3zYBmeqKolT0UmL/J7pU6PQ=="],
 
     "@smithy/abort-controller": ["@smithy/abort-controller@3.1.9", "", { "dependencies": { "@smithy/types": "^3.7.2", "tslib": "^2.6.2" } }, "sha512-yiW0WI30zj8ZKoSYNx90no7ugVn3khlyH/z5W8qtKBtVE6awRALbhSG+2SAHA1r6bO/6M9utxYKVZ3PCJ1rWxw=="],
 
