@@ -4,6 +4,8 @@
  * Authored by Jacob Humston
  */
 import { OpenAPIHono } from '@hono/zod-openapi';
+import { Scalar } from '@scalar/hono-api-reference';
+import { readdirSync } from 'fs';
 
 import config from './config';
 import { getBooleanArg } from './managers/argv';
@@ -16,6 +18,24 @@ const app = new OpenAPIHono({ strict: true });
 
 // log cleanup
 cleanUpLogs();
+
+// use Scalar middleware for api docs
+// we also need to expose the spec information
+app.doc31('/api/spec', {
+    openapi: '3.1.0',
+    info: { title: 'jtoh.pro API', version: '1', contact: { email: 'support@jtoh.pro' } }
+});
+app.use('/api', Scalar({ url: '/api/spec', showToolbar: 'never' }));
+
+// call the handler method for each route
+for (const route of readdirSync('src/server/routes/', { recursive: true, withFileTypes: true })) {
+    if (!route.isFile()) continue;
+    // no error handling for missing handlers as we want that issue to crash the application
+    const file: { handler: (app: OpenAPIHono) => Promise<any> | any } = await import(
+        `${route.parentPath.replace('src/server/', './')}/${route.name}`
+    );
+    file.handler(app);
+}
 
 // build and serve pages/assets/etc
 // this should always be the last step as this also handles 404s

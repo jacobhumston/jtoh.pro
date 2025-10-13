@@ -35,6 +35,7 @@ export function clearStatic() {
 
 /**
  * Serve static files from the static directory.
+ * This function also handles 404s. As such, should always be called last.
  * @param app The server application.
  */
 export function serveStatic(app: OpenAPIHono) {
@@ -44,15 +45,22 @@ export function serveStatic(app: OpenAPIHono) {
         const name = replaceEmptyString(path.name, 'index');
         const dir = path.dir.endsWith('/') ? path.dir : `${path.dir}/`;
         const ext = replaceEmptyString(path.ext, '.html');
-        const filePath = `${staticPath}${dir}${name}${ext}`;
+        let filePath = `${staticPath}${dir}${name}${ext}`;
 
-        if (!existsSync(filePath)) return context.status(404);
+        if (!existsSync(filePath)) {
+            if (context.req.path.startsWith('/api/')) return context.json({ error: 'Unknown path requested.' }, 404);
+            else filePath = `${staticPath}/404.html`;
+        }
         context.res.headers.set('Content-Type', mime.getType(ext) ?? 'application/octet-stream'); // application/octet-stream seems to be a good backup
 
         return stream(context, async (stream) => {
             const file = Bun.file(filePath);
             await stream.pipe(file.stream());
         });
+    });
+
+    app.notFound((context) => {
+        return context.json({ error: 'Unknown path requested.' }, 404);
     });
 }
 
