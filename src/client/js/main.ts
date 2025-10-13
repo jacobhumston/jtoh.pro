@@ -4,9 +4,7 @@
  *
  * Authored by Jacob Humston
  */
-import { highlightCodeBlocksOnLoad } from './utils/code-blocks';
 import { disableConsoleLogIfNotLocalhost } from './utils/logger';
 
 // run some utility functions
 disableConsoleLogIfNotLocalhost();
-highlightCodeBlocksOnLoad();

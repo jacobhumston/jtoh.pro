@@ -4,10 +4,10 @@
  *
  * Authored by Jacob Humston
  */
+import type { OpenAPIHono } from '@hono/zod-openapi';
 import { build } from 'bun';
 import chokidar from 'chokidar';
 import Handlebars from 'handlebars';
-import type { Hono } from 'hono';
 import { stream } from 'hono/streaming';
 import { minify } from 'html-minifier-next';
 import mime from 'mime';
@@ -37,7 +37,7 @@ export function clearStatic() {
  * Serve static files from the static directory.
  * @param app The server application.
  */
-export function serveStatic(app: Hono) {
+export function serveStatic(app: OpenAPIHono) {
     app.get('/*', async (context) => {
         const reqPath = context.req.path.endsWith('/') ? `${context.req.path}/index.html` : context.req.path;
         const path = parse(reqPath);

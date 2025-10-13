@@ -3,7 +3,7 @@
  *
  * Authored by Jacob Humston
  */
-import { Hono } from 'hono';
+import { OpenAPIHono } from '@hono/zod-openapi';
 
 import config from './config';
 import { getBooleanArg } from './managers/argv';
@@ -12,7 +12,7 @@ import { buildFrontend, hotReloadFrontend, serveStatic } from './managers/web';
 import { cleanUpLogs, log } from './modules/logger';
 
 // create the hono application
-const app = new Hono({ strict: true });
+const app = new OpenAPIHono({ strict: true });
 
 // log cleanup
 cleanUpLogs();
@@ -23,13 +23,11 @@ await buildFrontend();
 serveStatic(app);
 
 // hot reloading for development
-if ((await getBooleanArg('hot-build')) === true) {
-    hotReloadFrontend();
-    log('info', 'Hot reloading enabled for the frontend.');
-}
+if ((await getBooleanArg('hot-build')) === true)
+    (hotReloadFrontend(), log('info', 'Hot reloading enabled for the frontend.'));
 
 // export server options for bun
-export default { fetch: app.fetch, port: config.serverPort } as Bun.Serve;
+export default { fetch: app.fetch, port: config.serverPort } satisfies Bun.Serve.Options<any>;
 
 // log config for convenience
 log('info', `Server started with the following config: ${JSON.stringify(config)}`);
