@@ -5,11 +5,12 @@
  */
 import { OpenAPIHono } from '@hono/zod-openapi';
 import { Scalar } from '@scalar/hono-api-reference';
-import { readdirSync } from 'fs';
+import { secureHeaders } from 'hono/secure-headers';
+
+import { readdirSync } from 'node:fs';
 
 import config from './config';
 import { getBooleanArg } from './managers/argv';
-import './managers/database';
 import { buildFrontend, hotReloadFrontend, serveStatic } from './managers/web';
 import { cleanUpLogs, log } from './modules/logger';
 
@@ -19,11 +20,14 @@ const app = new OpenAPIHono({ strict: true });
 // log cleanup
 cleanUpLogs();
 
+// utility middlewares
+app.use(secureHeaders());
+
 // use Scalar middleware for api docs
 // we also need to expose the spec information
 app.doc31('/api/spec', {
     openapi: '3.1.0',
-    info: { title: 'jtoh.pro API', version: '1', contact: { email: 'support@jtoh.pro' } }
+    info: { title: 'jtoh.pro API', version: '1', contact: { email: 'support@jtoh.pro', name: 'jtoh.pro Support' } }
 });
 app.use('/api', Scalar({ url: '/api/spec', showToolbar: 'never' }));
 
