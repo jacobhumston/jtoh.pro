@@ -25,7 +25,7 @@ const route = createRoute({
                         .openapi({ description: 'Ping Schema' })
                 }
             },
-            description: 'The current ping.'
+            description: 'Ping results.'
         },
         500: {
             content: {

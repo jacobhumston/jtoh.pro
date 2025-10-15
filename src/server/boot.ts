@@ -7,6 +7,7 @@ import { OpenAPIHono, z } from '@hono/zod-openapi';
 import { Scalar } from '@scalar/hono-api-reference';
 import { $ } from 'bun';
 import { secureHeaders } from 'hono/secure-headers';
+import { compile } from 'sass';
 
 import { readdirSync } from 'node:fs';
 
@@ -41,7 +42,18 @@ app.doc31('/api/spec', {
         contact: { email: 'support@jtoh.pro', name: 'jtoh.pro Support' }
     }
 });
-app.use('/api', Scalar({ url: '/api/spec', showToolbar: 'never', hideClientButton: true }));
+app.use(
+    '/api',
+    Scalar({
+        url: '/api/spec',
+        showToolbar: 'never',
+        hideClientButton: true,
+        customCss: compile('src/client/css/api.scss').css,
+        pageTitle: 'jtoh.pro API Reference',
+        withDefaultFonts: false,
+        hideDarkModeToggle: true
+    })
+);
 
 // call the handler method for each route
 for (const route of readdirSync('src/server/routes/', { recursive: true, withFileTypes: true })) {
