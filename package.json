@@ -28,6 +28,7 @@
         "hono-rate-limiter": "^0.4.2",
         "html-minifier-next": "^2.1.8",
         "mime": "^4.1.0",
+        "ping": "^1.0.0",
         "pm2": "^6.0.13",
         "prettier": "^3.6.2",
         "sass": "^1.93.2",

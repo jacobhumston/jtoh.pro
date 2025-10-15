@@ -16,7 +16,7 @@ Created by Jacob Humston
 Install software dependencies.
 =========================================================
 sudo apt update
-sudo apt install git unzip
+sudo apt install git unzip iputils-ping
 curl -fsSL https://bun.sh/install | bash
 source ~/.bashrc
 =========================================================

@@ -3,8 +3,9 @@
  *
  * Authored by Jacob Humston
  */
-import { OpenAPIHono } from '@hono/zod-openapi';
+import { OpenAPIHono, z } from '@hono/zod-openapi';
 import { Scalar } from '@scalar/hono-api-reference';
+import { $ } from 'bun';
 import { secureHeaders } from 'hono/secure-headers';
 
 import { readdirSync } from 'node:fs';
@@ -15,7 +16,14 @@ import { buildFrontend, hotReloadFrontend, serveStatic } from './managers/web';
 import { cleanUpLogs, log } from './modules/logger';
 
 // create the hono application
-const app = new OpenAPIHono({ strict: true });
+const app = new OpenAPIHono({
+    strict: true,
+    defaultHook: (result, context) => {
+        if (!result.success) {
+            return context.json({ error: z.formatError(result as any)._errors.join('\n') }, 400);
+        }
+    }
+});
 
 // log cleanup
 cleanUpLogs();
@@ -27,9 +35,13 @@ app.use(secureHeaders());
 // we also need to expose the spec information
 app.doc31('/api/spec', {
     openapi: '3.1.0',
-    info: { title: 'jtoh.pro API', version: '1', contact: { email: 'support@jtoh.pro', name: 'jtoh.pro Support' } }
+    info: {
+        title: 'jtoh.pro API',
+        version: `${(await $`git rev-parse --short HEAD`.text()).replace('\n', '')}`,
+        contact: { email: 'support@jtoh.pro', name: 'jtoh.pro Support' }
+    }
 });
-app.use('/api', Scalar({ url: '/api/spec', showToolbar: 'never' }));
+app.use('/api', Scalar({ url: '/api/spec', showToolbar: 'never', hideClientButton: true }));
 
 // call the handler method for each route
 for (const route of readdirSync('src/server/routes/', { recursive: true, withFileTypes: true })) {
@@ -45,6 +57,12 @@ for (const route of readdirSync('src/server/routes/', { recursive: true, withFil
 // this should always be the last step as this also handles 404s
 await buildFrontend();
 serveStatic(app);
+
+// last resort, errors...
+app.onError((error, context) => {
+    log('error', error);
+    return context.json({ error: 'Internal server error.' }, 500);
+});
 
 // hot reloading for development
 if ((await getBooleanArg('hot-build')) === true)

@@ -1,27 +1,29 @@
 /**
- * Simple route that exposes the current version.
- * The version is the git hash of the commit that the current local repo is on.
+ * This route handle's captcha requests.
+ * It is important to note that captchas are validated in each
+ * route that requires them individually.
  *
  * Authored by Jacob Humston
  */
 import { createRoute, OpenAPIHono } from '@hono/zod-openapi';
-import { $ } from 'bun';
 
-import { errorSchema, versionSchema } from '../../shared/schemas/general';
+import { captchaSchema } from '../../shared/schemas/captcha';
+import { errorSchema } from '../../shared/schemas/general';
+import { createCaptcha } from '../modules/captcha';
 
 /** Route for this endpoint. */
 const route = createRoute({
     method: 'get',
-    path: '/api/version',
-    description: 'Get the current version of jtoh.pro',
+    path: '/api/captcha',
+    description: 'Get a captcha challenge.',
     responses: {
         200: {
             content: {
                 'application/json': {
-                    schema: versionSchema
+                    schema: captchaSchema
                 }
             },
-            description: 'The current version.'
+            description: 'The captcha challenge.'
         },
         500: {
             content: {
@@ -36,8 +38,7 @@ const route = createRoute({
 
 /** Handle fpr this endpoint. */
 export async function handler(app: OpenAPIHono) {
-    const version = (await $`git rev-parse --short HEAD`.text()).replace('\n', '');
-    app.openapi(route, (context) => {
-        return context.json({ version: version }, 200);
+    app.openapi(route, async (context) => {
+        return context.json(await createCaptcha(), 200);
     });
 }

@@ -26,7 +26,8 @@ const databases = {
     auth: getDatabase('auth'),
     cache: getDatabase('cache'),
     config: getDatabase('config'),
-    leaderboards: getDatabase('leaderboards')
+    leaderboards: getDatabase('leaderboards'),
+    captchas: getDatabase('captchas')
 };
 
 /** Type the represents a valid database name. */
