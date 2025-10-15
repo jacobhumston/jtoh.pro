@@ -82,7 +82,7 @@ export class DatabaseClient {
      * @param value The value to store.
      */
     async set<T>(key: string, value: T): Promise<void> {
-        const serializedValue = typeof value === 'string' ? value : JSON.stringify(value);
+        const serializedValue = JSON.stringify(value);
         await this
             .#database`INSERT OR REPLACE INTO ${this.#database(this.#namespace)} (key, value) VALUES (${key}, ${serializedValue})`;
     }
