@@ -50,3 +50,9 @@ If the gh package isn't found, here's the fix.
 	&& sudo apt update \
 	&& sudo apt install gh -y
 ==========================================================
+
+If the ping API is always returning 'unknown', try:
+==========================================================
+sudo setcap cap_net_raw+ep $(which ping)
+==========================================================
+
