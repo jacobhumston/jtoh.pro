@@ -56,7 +56,10 @@ app.use(
 );
 
 // call the handler method for each route
-for (const route of readdirSync('src/server/routes/', { recursive: true, withFileTypes: true })) {
+// do this alphabetically, so the api docs are sorted nicely :)
+for (const route of readdirSync('src/server/routes/', { recursive: true, withFileTypes: true }).sort((a, b) =>
+    a.name.localeCompare(b.name)
+)) {
     if (!route.isFile()) continue;
     // no error handling for missing handlers as we want that issue to crash the application
     const file: { handler: (app: OpenAPIHono) => Promise<any> | any } = await import(
