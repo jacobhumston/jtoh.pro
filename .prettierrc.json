@@ -7,6 +7,6 @@
     "useTabs": false,
     "endOfLine": "auto",
     "plugins": ["@trivago/prettier-plugin-sort-imports"],
-    "importOrder": ["<THIRD_PARTY_MODULES>", "node:.+", "^[./]", "bun:.+"],
+    "importOrder": ["<THIRD_PARTY_MODULES>", "^bun$|bun:.+|node:.+", "^[./]"],
     "importOrderSeparation": true
 }

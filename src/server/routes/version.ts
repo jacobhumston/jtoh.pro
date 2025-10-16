@@ -5,6 +5,7 @@
  * Authored by Jacob Humston
  */
 import { createRoute, OpenAPIHono } from '@hono/zod-openapi';
+
 import { $ } from 'bun';
 
 import { errorSchema, versionSchema } from '../../shared/schemas/general';

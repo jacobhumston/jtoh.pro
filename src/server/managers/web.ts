@@ -5,7 +5,6 @@
  * Authored by Jacob Humston
  */
 import type { OpenAPIHono } from '@hono/zod-openapi';
-import { build } from 'bun';
 import chokidar from 'chokidar';
 import Handlebars from 'handlebars';
 import { stream } from 'hono/streaming';
@@ -15,6 +14,7 @@ import * as sass from 'sass';
 import { minify as jsMinify } from 'terser';
 import { v4 as uuid } from 'uuid';
 
+import { build } from 'bun';
 import { existsSync, rmSync, readdirSync, symlinkSync, readFileSync, writeFileSync, renameSync } from 'node:fs';
 import { parse } from 'node:path';
 

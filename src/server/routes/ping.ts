@@ -3,10 +3,11 @@
  *
  * Authored by Jacob Humston
  */
-import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi';
+import { createRoute, OpenAPIHono } from '@hono/zod-openapi';
 import ping from 'ping';
 
 import { errorSchema } from '../../shared/schemas/general';
+import { pingSchema } from '../../shared/schemas/ping';
 
 /** Route for this endpoint. */
 const route = createRoute({
@@ -17,12 +18,7 @@ const route = createRoute({
         200: {
             content: {
                 'application/json': {
-                    schema: z
-                        .object({
-                            cloudflare: z.number().openapi({ description: 'Ping (in ms) to cloudflare.' }),
-                            google: z.number().openapi({ description: 'Ping (in ms) to google.' })
-                        })
-                        .openapi({ description: 'Ping Schema' })
+                    schema: pingSchema
                 }
             },
             description: 'Ping results.'

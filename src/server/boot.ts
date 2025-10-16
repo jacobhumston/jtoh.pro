@@ -5,10 +5,10 @@
  */
 import { OpenAPIHono, z } from '@hono/zod-openapi';
 import { Scalar } from '@scalar/hono-api-reference';
-import { $ } from 'bun';
 import { secureHeaders } from 'hono/secure-headers';
 import { compile } from 'sass';
 
+import { $ } from 'bun';
 import { readdirSync } from 'node:fs';
 
 import config from './config';
