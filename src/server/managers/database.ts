@@ -48,7 +48,7 @@ async function createTable(db: SQL, name: string) {
 }
 
 /** Class to interact with a database. */
-export class DatabaseClient {
+export class DatabaseClient<Q = any> {
     /** This database client's database. */
     #database: SQL;
     /** The namespace (table name) for this client. */
@@ -70,7 +70,7 @@ export class DatabaseClient {
      * @param key The key to retrieve.
      * @returns The value or null if not found.
      */
-    async get<T>(key: string): Promise<T | null> {
+    async get<T = Q>(key: string): Promise<T | null> {
         const result = await this.#database`SELECT value FROM ${this.#database(this.#namespace)} WHERE key = ${key}`;
         if (result.length === 0) return null;
 
@@ -82,7 +82,7 @@ export class DatabaseClient {
      * @param key The key to set.
      * @param value The value to store.
      */
-    async set<T>(key: string, value: T): Promise<void> {
+    async set<T = Q>(key: string, value: T): Promise<void> {
         const serializedValue = JSON.stringify(value);
         await this
             .#database`INSERT OR REPLACE INTO ${this.#database(this.#namespace)} (key, value) VALUES (${key}, ${serializedValue})`;
@@ -102,7 +102,7 @@ export class DatabaseClient {
      * Get all key-value pairs.
      * @returns An object with all key-value pairs.
      */
-    async all<T>(): Promise<Record<string, T>> {
+    async all<T = Q>(): Promise<Record<string, T>> {
         const rows = await this.#database`SELECT key, value FROM ${this.#database(this.#namespace)}`;
         const result: Record<string, T> = {};
 

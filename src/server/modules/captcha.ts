@@ -5,6 +5,7 @@
  */
 import { createChallenge, verifySolution } from 'altcha-lib';
 import { randomBytes } from 'crypto';
+import type { Context } from 'hono';
 
 import { DatabaseClient } from '../managers/database';
 
@@ -12,7 +13,8 @@ import { DatabaseClient } from '../managers/database';
 const hmac = randomBytes(255).toString();
 
 // we need to store already verified captchas
-const database = new DatabaseClient('captchas', 'verified');
+// note that the type is an empty object, as we only need the keys existence
+const database = new DatabaseClient<{}>('captchas', 'verified');
 
 /**
  * Create a captcha challenge.
@@ -37,4 +39,15 @@ export async function verifyCaptcha(captcha: string) {
         }
     }
     return result;
+}
+
+/**
+ * Verify a captcha challenge from a request context.
+ * This function is a request wrapper for {@linkcode verifyCaptcha}.
+ * @param context The request context.
+ * @returns A boolean indicating whether the challenge succeeded or not.
+ */
+export async function verifyCaptchaFromContext(context: Context) {
+    const captcha = context.req.header('captcha') ?? '';
+    return await verifyCaptcha(captcha);
 }

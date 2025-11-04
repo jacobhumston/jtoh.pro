@@ -32,6 +32,23 @@ cleanUpLogs();
 // utility middlewares
 app.use(secureHeaders());
 
+// build and serve pages/assets/etc
+await buildFrontend();
+serveStatic(app);
+
+// call the handler method for each route
+// do this alphabetically, so the api docs are sorted nicely :)
+for (const route of readdirSync('src/server/routes/', { recursive: true, withFileTypes: true }).sort((a, b) =>
+    a.name.localeCompare(b.name)
+)) {
+    if (!route.isFile()) continue;
+    // no error handling for missing handlers as we want that issue to crash the application
+    const file: { handler: (app: OpenAPIHono) => Promise<any> | any } = await import(
+        `${route.parentPath.replace('src/server/', './')}/${route.name}`
+    );
+    file.handler(app);
+}
+
 // use Scalar middleware for api docs
 // we also need to expose the spec information
 app.doc31('/api/spec', {
@@ -55,23 +72,6 @@ app.use(
     })
 );
 
-// call the handler method for each route
-// do this alphabetically, so the api docs are sorted nicely :)
-for (const route of readdirSync('src/server/routes/', { recursive: true, withFileTypes: true }).sort((a, b) =>
-    a.name.localeCompare(b.name)
-)) {
-    if (!route.isFile()) continue;
-    // no error handling for missing handlers as we want that issue to crash the application
-    const file: { handler: (app: OpenAPIHono) => Promise<any> | any } = await import(
-        `${route.parentPath.replace('src/server/', './')}/${route.name}`
-    );
-    file.handler(app);
-}
-
-// build and serve pages/assets/etc
-// this should always be the last step as this also handles 404s
-await buildFrontend();
-serveStatic(app);
 
 // last resort, errors...
 app.onError((error, context) => {
