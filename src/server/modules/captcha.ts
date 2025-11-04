@@ -3,6 +3,7 @@
  *
  * Authored by Jacob Humston
  */
+import { convertTo } from '@jacobhumston/tc.js';
 import { createChallenge, verifySolution } from 'altcha-lib';
 import { randomBytes } from 'crypto';
 import type { Context } from 'hono';
@@ -21,7 +22,11 @@ const database = new DatabaseClient<{}>('captchas', 'verified');
  * @returns The captcha challenge.
  */
 export async function createCaptcha() {
-    return await createChallenge({ hmacKey: hmac, maxNumber: 500000, expires: new Date(Date.now() + 10 * 60 * 1000) });
+    return await createChallenge({
+        hmacKey: hmac,
+        maxNumber: 500000,
+        expires: new Date(Date.now() + convertTo({ minutes: 10 }, 'milliseconds'))
+    });
 }
 
 /**

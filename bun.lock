@@ -5,6 +5,7 @@
       "dependencies": {
         "@hono/zod-openapi": "^1.1.4",
         "@infisical/sdk": "^4.0.6",
+        "@jacobhumston/tc.js": "^1.0.2",
         "@napi-rs/canvas": "^0.1.81",
         "@rybbit/node": "^1.0.0",
         "@scalar/hono-api-reference": "^0.9.23",
@@ -243,6 +244,8 @@
     "@infisical/sdk": ["@infisical/sdk@4.0.6", "", { "dependencies": { "@aws-crypto/sha256-js": "^5.2.0", "@aws-sdk/credential-providers": "3.600.0", "@aws-sdk/protocol-http": "^3.370.0", "@aws-sdk/signature-v4": "^3.370.0", "axios": "^1.11.0", "typescript": "^5.5.4", "zod": "^3.23.8" } }, "sha512-aK/oQj0prIx8jTybcwQfPYow3/KsBGPbHCyK8zCIWGvUjHzYU2is34AWjRvxQ6GhZFpW1LaXfgxgrmbWrsgWZA=="],
 
     "@isaacs/cliui": ["@isaacs/cliui@8.0.2", "", { "dependencies": { "string-width": "^5.1.2", "string-width-cjs": "npm:string-width@^4.2.0", "strip-ansi": "^7.0.1", "strip-ansi-cjs": "npm:strip-ansi@^6.0.1", "wrap-ansi": "^8.1.0", "wrap-ansi-cjs": "npm:wrap-ansi@^7.0.0" } }, "sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA=="],
+
+    "@jacobhumston/tc.js": ["@jacobhumston/tc.js@1.0.2", "", {}, "sha512-75ZGk9+8Oo73MiHletc0b768v69s6G+PL9pJ3kwfx6ZGTxE1H+GFda5QWY0gWRUNuiC3Fkh+iSQ6VaTeaMx6gA=="],
 
     "@jridgewell/gen-mapping": ["@jridgewell/gen-mapping@0.3.13", "", { "dependencies": { "@jridgewell/sourcemap-codec": "^1.5.0", "@jridgewell/trace-mapping": "^0.3.24" } }, "sha512-2kkt/7niJ6MgEPxF0bYdQ6etZaA+fQvDcLKckhy1yIQOzaoKjBBjSj63/aLVjYE3qhRt5dvM+uUyfCg6UKCBbA=="],
 

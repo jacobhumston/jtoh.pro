@@ -5,6 +5,8 @@
  *
  * Authored by Jacob Humston
  */
+import { convertTo } from '@jacobhumston/tc.js';
+
 import { createWriteStream, readdirSync, rmSync, symlinkSync } from 'node:fs';
 import process from 'node:process';
 
@@ -26,7 +28,8 @@ export function cleanUpLogs() {
     for (const file of readdirSync(logsFolder)) {
         const date = new Date(file.split('.log')[0]);
         const now = new Date();
-        if ((now.getTime() - date.getTime()) / (1000 * 60 * 60) > 3) rmSync(`${logsFolder}/${file}`);
+        if ((now.getTime() - date.getTime()) / convertTo({ hours: 1 }, 'milliseconds') > 3)
+            rmSync(`${logsFolder}/${file}`);
     }
 }
 
@@ -39,7 +42,7 @@ export type LogType = 'info' | 'warn' | 'error' | 'success' | 'debug' | 'critica
 export function log(type: LogType, message: any) {
     console.log(`[${type.toUpperCase()}]:`, message);
     logFile.write(
-        `\n${type.toUpperCase()}${' '.repeat('critical'.length - type.length)} | ${Bun.inspect(message).replaceAll('\n', `\n${' '.repeat('critical'.length)} | `)}`,
+        `${type.toUpperCase()}${' '.repeat('critical'.length - type.length)} |${' '.repeat(4)}${Bun.inspect(message).replaceAll('\n', `\n${' '.repeat('critical'.length)} |${' '.repeat(4)}`)}\n`,
         'utf8'
     );
 }
