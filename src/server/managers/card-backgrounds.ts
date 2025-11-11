@@ -1,6 +1,6 @@
 /**
  * This file handles card backgrounds.
- * That includes pre-created cards and custom cards that can be uploaded by users.
+ * That includes pre-created card backgrounds and custom card background that can be uploaded by users.
  *
  * Authored by Jacob Humston
  */
