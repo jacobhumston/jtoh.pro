@@ -71,3 +71,4 @@ temporary/
 static/
 current-log
 *.log
+*.cpuprofile
