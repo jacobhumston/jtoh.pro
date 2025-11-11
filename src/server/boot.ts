@@ -15,6 +15,7 @@ import config from './config';
 import { getBooleanArg } from './managers/argv';
 import { buildFrontend, hotReloadFrontend, serveStatic } from './managers/web';
 import { cleanUpLogs, log } from './modules/logger';
+import './modules/secrets';
 
 // create the hono application
 const app = new OpenAPIHono({

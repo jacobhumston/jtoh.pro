@@ -247,7 +247,7 @@ export async function buildFrontend() {
                     const path = `${file.parentPath}/${file.name}`;
                     const content = readFileSync(path, 'utf8');
                     const minified = await minify(content, {
-                        minifyCSS: { level: 2 },
+                        minifyCSS: true,
                         minifyJS: { compress: { passes: 3 }, mangle: true },
                         removeComments: true,
                         removeAttributeQuotes: true,

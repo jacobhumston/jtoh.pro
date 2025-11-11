@@ -23,11 +23,18 @@ function getDatabase(name: string) {
 
 // an object of all of our databases
 const databases = {
+    /** Authentication database. */
     auth: getDatabase('auth'),
+    /** Cache database. */
     cache: getDatabase('cache'),
+    /** Database used for user configuration. */
     config: getDatabase('config'),
+    /** Database for leaderboards. */
     leaderboards: getDatabase('leaderboards'),
-    captchas: getDatabase('captchas')
+    /** Database for captchas. */
+    captchas: getDatabase('captchas'),
+    /** Database for server secrets. */
+    secrets: getDatabase('secrets')
 };
 
 /** Type the represents a valid database name. */
