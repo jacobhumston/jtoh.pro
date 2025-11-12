@@ -34,7 +34,7 @@ const route = createRoute({
     }
 });
 
-/** Handle fpr this endpoint. */
+/** Handle for this endpoint. */
 export async function handler(app: OpenAPIHono) {
     app.openapi(route, async (context) => {
         const cloudflare = (await ping.promise.probe('1.1.1.1', { extra: ['-c', '1'] })).time;

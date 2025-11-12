@@ -11,15 +11,12 @@ export const cardBackgroundSchema = z
         id: z.string().openapi({ description: 'Identification string of this card background.' }),
         isCustom: z.boolean().openapi({ description: 'If true, this card is custom and was uploaded by a user.' }),
         url: z.url().openapi({ description: 'URL to access this card background.' }),
-        category: z
-            .string()
-            .openapi({
-                description:
-                    'Category that this card background belongs to. This will always be "User Uploaded" when "isCustom" is true.'
-            })
+        category: z.string().openapi({
+            description:
+                'Category that this card background belongs to. This will always be "User Uploaded" when "isCustom" is true.'
+        })
     })
     .openapi({ description: 'Card Background Schema' });
 
 /** `cardBackgroundSchema` type. */
 export type CardBackgroundSchema = z.infer<typeof cardBackgroundSchema>;
-

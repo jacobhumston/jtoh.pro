@@ -36,7 +36,7 @@ const route = createRoute({
     }
 });
 
-/** Handle fpr this endpoint. */
+/** Handle for this endpoint. */
 export async function handler(app: OpenAPIHono) {
     app.openapi(route, async (context) => {
         return context.json(await createCaptcha(), 200);

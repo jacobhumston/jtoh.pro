@@ -35,7 +35,7 @@ const route = createRoute({
     }
 });
 
-/** Handle fpr this endpoint. */
+/** Handle for this endpoint. */
 export async function handler(app: OpenAPIHono) {
     const version = (await $`git rev-parse --short HEAD`.text()).replace('\n', '');
     app.openapi(route, (context) => {
