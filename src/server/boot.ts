@@ -12,6 +12,7 @@ import { $ } from 'bun';
 import { readdirSync } from 'node:fs';
 
 import config from './config';
+import { bootDiscordBot } from './discord/bot';
 import { getBooleanArg } from './managers/argv';
 import { buildFrontend, hotReloadFrontend, serveStatic } from './managers/web';
 import { cleanUpLogs, log } from './modules/logger';
@@ -49,6 +50,9 @@ for (const route of readdirSync('src/server/routes/', { recursive: true, withFil
     );
     file.handler(app);
 }
+
+// boot up the Discord bot
+await bootDiscordBot(app);
 
 // use Scalar middleware for api docs
 // we also need to expose the spec information

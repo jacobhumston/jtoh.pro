@@ -54,4 +54,3 @@ export function getCardBackgrounds(): Array<CardBackgroundSchema> {
 export function getCardBackgroundByID(id: string): CardBackgroundSchema | null {
     return cardBackgroundImages.find((background) => background.id === id) ?? null;
 }
-
