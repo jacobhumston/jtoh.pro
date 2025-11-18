@@ -5,6 +5,7 @@
  */
 import type { OpenAPIHono } from '@hono/zod-openapi';
 import build from 'dressed/build';
+
 import { rmSync } from 'node:fs';
 
 import handleDiscordRequests from './requests';
@@ -15,7 +16,7 @@ import handleDiscordRequests from './requests';
  */
 export async function bootDiscordBot(app: OpenAPIHono) {
     // compile commands
-    const buildResults = await build({ build: { root: 'src/server/discord/' }});
+    const buildResults = await build({ build: { root: 'src/server/discord/' } });
 
     // delete '.dressed' directory
     rmSync('.dressed', { force: true, recursive: true });

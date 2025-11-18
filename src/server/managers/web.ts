@@ -48,6 +48,8 @@ export function serveStatic(app: OpenAPIHono) {
 
         if (!existsSync(filePath)) return await next();
         context.res.headers.set('Content-Type', mime.getType(ext) ?? 'application/octet-stream'); // application/octet-stream seems to be a good backup
+        if (!isDev) context.res.headers.set('Cache-Control', 'max-age=604800');
+        else context.res.headers.set('Cache-Control', 'no-store');
 
         return stream(context, async (stream) => {
             const file = Bun.file(filePath);
