@@ -80,10 +80,34 @@ export class DatabaseClient<Q = any> {
      * @returns The value or null if not found.
      */
     async get<T = Q>(key: string): Promise<T | null> {
-        const result = await this.#database`SELECT value FROM ${this.#database(this.#namespace)} WHERE key = ${key}`;
+        const result = await this
+            .#database`SELECT value FROM ${this.#database(this.#namespace)} WHERE key = ${this.#database(key)}`;
         if (result.length === 0) return null;
 
         return JSON.parse(result[0].value);
+    }
+
+    /**
+     * Get multiple values by keys.
+     * @param keys The keys to retrieve.
+     * @returns An object with key-value pairs, will missing values being null.
+     */
+    async getMultiple<T = Q>(keys: string[]): Promise<Record<string, T | null>> {
+        if (keys.length === 0) return {};
+
+        const result = await this
+            .#database`SELECT key, value FROM ${this.#database(this.#namespace)} WHERE key IN ${this.#database(keys)}`;
+        const output: Record<string, T | null> = {};
+
+        for (const key of keys) {
+            output[key] = null;
+        }
+
+        for (const row of result) {
+            output[row.key] = JSON.parse(row.value);
+        }
+
+        return output;
     }
 
     /**
@@ -94,7 +118,7 @@ export class DatabaseClient<Q = any> {
     async set<T = Q>(key: string, value: T): Promise<void> {
         const serializedValue = JSON.stringify(value);
         await this
-            .#database`INSERT OR REPLACE INTO ${this.#database(this.#namespace)} (key, value) VALUES (${key}, ${serializedValue})`;
+            .#database`INSERT OR REPLACE INTO ${this.#database(this.#namespace)} (key, value) VALUES (${this.#database(key)}, ${serializedValue})`;
     }
 
     /**
@@ -103,7 +127,8 @@ export class DatabaseClient<Q = any> {
      * @returns Whether the key was deleted.
      */
     async delete(key: string): Promise<boolean> {
-        const result = await this.#database`DELETE FROM ${this.#database(this.#namespace)} WHERE key = ${key}`;
+        const result = await this
+            .#database`DELETE FROM ${this.#database(this.#namespace)} WHERE key = ${this.#database(key)}`;
         return result.changes > 0;
     }
 
@@ -129,7 +154,7 @@ export class DatabaseClient<Q = any> {
      */
     async exists(key: string): Promise<boolean> {
         const result = await this
-            .#database`SELECT 1 FROM ${this.#database(this.#namespace)} WHERE key = ${key} LIMIT 1`;
+            .#database`SELECT 1 FROM ${this.#database(this.#namespace)} WHERE key = ${this.#database(key)} LIMIT 1`;
         return result.length > 0;
     }
 }

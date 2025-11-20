@@ -40,6 +40,27 @@ export class Cache<Q = any> extends DatabaseClient<Q> {
     }
 
     /**
+     * Get multiple items in the cache.
+     * @param keys List of items to get.
+     * @returns Key-value pairs of results, where value can be null if the key is expired or doesn't exist.
+     */
+    async getMultiple<T = Q>(keys: string[]): Promise<Record<string, T | null>> {
+        const result = await super.getMultiple<CacheType<T>>(keys);
+        const parsedResults: Record<string, T | null> = {};
+        for (const [key, value] of Object.entries(result)) {
+            if (value === null) {
+                parsedResults[key] = null;
+            } else if (value.expires) {
+                if (Date.now() < value.expires) parsedResults[key] = value.data;
+                else parsedResults[key] = null;
+            } else {
+                parsedResults[key] = value.data;
+            }
+        }
+        return parsedResults;
+    }
+
+    /**
      * Set an item's value in the cache.
      * @param key The key to set.
      * @param value The value to store.

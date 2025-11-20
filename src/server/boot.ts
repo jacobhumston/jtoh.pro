@@ -68,7 +68,7 @@ app.use(
     '/api',
     Scalar({
         url: '/api/spec',
-        showToolbar: 'never',
+        showDeveloperTools: 'never',
         hideClientButton: true,
         customCss: compile('src/client/css/api.scss').css,
         pageTitle: 'jtoh.pro API Reference',
