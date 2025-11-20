@@ -60,12 +60,13 @@ app.doc31('/api/spec', {
     openapi: '3.1.0',
     info: {
         title: 'jtoh.pro API',
+        description: 'API documentation for the jtoh.pro client.',
         version: `${(await $`git rev-parse --short HEAD`.text()).replace('\n', '')}`,
         contact: { email: 'support@jtoh.pro', name: 'jtoh.pro Support' }
     }
 });
 app.use(
-    '/api',
+    '/api/html',
     Scalar({
         url: '/api/spec',
         showDeveloperTools: 'never',

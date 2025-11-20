@@ -65,11 +65,19 @@ export class Cache<Q = any> extends DatabaseClient<Q> {
      * @param key The key to set.
      * @param value The value to store.
      * @param expires An optional expiration time.
+     * @param keepOldExpired If true, the perviously set expiration date on this key will be used if one is present.
      */
-    async set<T = Q>(key: string, value: T, expires?: AvailableConversions): Promise<void> {
+    async set<T = Q>(key: string, value: T, expires?: AvailableConversions, keepOldExpired?: boolean): Promise<void> {
+        let previousExpired = null;
+        if (keepOldExpired == true) {
+            const expires = await this.expires(key);
+            if (expires instanceof Date && Date.now() < expires.getTime()) {
+                previousExpired = expires.getTime();
+            }
+        }
         await super.set<CacheType<T>>(key, {
             data: value,
-            expires: expires ? Date.now() + convertTo(expires, 'milliseconds') : undefined
+            expires: previousExpired ?? (expires ? Date.now() + convertTo(expires, 'milliseconds') : undefined)
         });
     }
 

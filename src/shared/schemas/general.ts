@@ -24,3 +24,12 @@ export const versionSchema = z
 
 /** `versionSchema` type. */
 export type VersionSchema = z.infer<typeof versionSchema>;
+
+/** Schema that represents a rate limit error. */
+export const rateLimitErrorSchema = z.object({
+    error: z.string().openapi({ description: 'The error message.' }),
+    reset: z.iso.datetime().openapi({ description: 'Date that this rate limit will reset.' })
+});
+
+/** `rateLimitErrorSchema` type. */
+export type RateLimitErrorSchema = z.infer<typeof rateLimitErrorSchema>;

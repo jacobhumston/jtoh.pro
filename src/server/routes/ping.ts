@@ -6,8 +6,9 @@
 import { createRoute, OpenAPIHono } from '@hono/zod-openapi';
 import ping from 'ping';
 
-import { errorSchema } from '../../shared/schemas/general';
+import { errorSchema, rateLimitErrorSchema } from '../../shared/schemas/general';
 import { pingSchema } from '../../shared/schemas/ping';
+import rateLimitMiddleware from '../modules/ratelimits';
 
 /** Route for this endpoint. */
 const route = createRoute({
@@ -23,6 +24,14 @@ const route = createRoute({
             },
             description: 'Ping results.'
         },
+        429: {
+            content: {
+                'application/json': {
+                    schema: rateLimitErrorSchema
+                }
+            },
+            description: 'Rate limit error.'
+        },
         500: {
             content: {
                 'application/json': {
@@ -31,7 +40,8 @@ const route = createRoute({
             },
             description: 'Internal server error.'
         }
-    }
+    },
+    middleware: rateLimitMiddleware({ pool: 3, reset: { seconds: 10 } })
 });
 
 /** Handle for this endpoint. */

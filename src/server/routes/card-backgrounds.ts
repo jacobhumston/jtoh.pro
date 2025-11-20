@@ -7,7 +7,7 @@
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi';
 
 import { cardBackgroundSchema } from '../../shared/schemas/cards';
-import { errorSchema } from '../../shared/schemas/general';
+import { errorSchema, rateLimitErrorSchema } from '../../shared/schemas/general';
 import { getCardBackgrounds } from '../managers/card-backgrounds';
 
 const getCardBackgroundsRoute = createRoute({
@@ -22,6 +22,14 @@ const getCardBackgroundsRoute = createRoute({
                 }
             },
             description: 'List of card backgrounds.'
+        },
+        429: {
+            content: {
+                'application/json': {
+                    schema: rateLimitErrorSchema
+                }
+            },
+            description: 'Rate limit error.'
         },
         500: {
             content: {

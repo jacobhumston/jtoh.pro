@@ -8,7 +8,7 @@
 import { createRoute, OpenAPIHono } from '@hono/zod-openapi';
 
 import { captchaSchema } from '../../shared/schemas/captcha';
-import { errorSchema } from '../../shared/schemas/general';
+import { errorSchema, rateLimitErrorSchema } from '../../shared/schemas/general';
 import { createCaptcha } from '../modules/captcha';
 
 /** Route for this endpoint. */
@@ -24,6 +24,14 @@ const route = createRoute({
                 }
             },
             description: 'The captcha challenge.'
+        },
+        429: {
+            content: {
+                'application/json': {
+                    schema: rateLimitErrorSchema
+                }
+            },
+            description: 'Rate limit error.'
         },
         500: {
             content: {

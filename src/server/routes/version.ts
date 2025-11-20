@@ -8,7 +8,7 @@ import { createRoute, OpenAPIHono } from '@hono/zod-openapi';
 
 import { $ } from 'bun';
 
-import { errorSchema, versionSchema } from '../../shared/schemas/general';
+import { errorSchema, rateLimitErrorSchema, versionSchema } from '../../shared/schemas/general';
 
 /** Route for this endpoint. */
 const route = createRoute({
@@ -23,6 +23,14 @@ const route = createRoute({
                 }
             },
             description: 'The current version.'
+        },
+        429: {
+            content: {
+                'application/json': {
+                    schema: rateLimitErrorSchema
+                }
+            },
+            description: 'Rate limit error.'
         },
         500: {
             content: {

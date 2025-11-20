@@ -34,9 +34,7 @@ const databases = {
     /** Database for captchas. */
     captchas: getDatabase('captchas'),
     /** Database for server secrets. */
-    secrets: getDatabase('secrets'),
-    /** Database for rate limits. */
-    rateLimits: getDatabase('rateLimits')
+    secrets: getDatabase('secrets')
 };
 
 /** Type the represents a valid database name. */
