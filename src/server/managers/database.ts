@@ -165,9 +165,9 @@ export class DatabaseClient<Q = any> {
  * @param name The name of the table.
  */
 async function createOrderedTable(db: SQL, name: string) {
-    await db`CREATE TABLE IF NOT EXISTS ${db(name)} ( key TEXT PRIMARY KEY, value REAL NOT NULL )`;
-    // Create index on value column for efficient ordering
-    await db`CREATE INDEX IF NOT EXISTS ${db(`idx_${name}_value`)} ON ${db(name)} (value DESC)`;
+    await db`CREATE TABLE IF NOT EXISTS ${db(name)} ( key TEXT PRIMARY KEY, value REAL NOT NULL, tiebreaker REAL DEFAULT 0 )`;
+    // Create composite index for efficient ordering with tiebreaker
+    await db`CREATE INDEX IF NOT EXISTS ${db(`idx_${name}_value_tiebreaker`)} ON ${db(name)} (value DESC, tiebreaker DESC)`;
 }
 
 /** Class to interact with an ordered database where values are numbers. */
@@ -189,48 +189,49 @@ export class OrderedDatabaseClient {
     }
 
     /**
-     * Get a value by key.
+     * Get a value and tiebreaker by key.
      * @param key The key to retrieve.
-     * @returns The value or null if not found.
+     * @returns Object with value and tiebreaker, or null if not found.
      */
-    async get(key: string): Promise<number | null> {
+    async get(key: string): Promise<{ value: number; tiebreaker: number } | null> {
         const result = await this
-            .#database`SELECT value FROM ${this.#database(this.#namespace)} WHERE key = ${this.#database(key)}`;
+            .#database`SELECT value, tiebreaker FROM ${this.#database(this.#namespace)} WHERE key = ${this.#database(key)}`;
         if (result.length === 0) return null;
-        return result[0].value;
+        return { value: result[0].value, tiebreaker: result[0].tiebreaker || 0 };
     }
 
     /**
-     * Get multiple values by keys.
+     * Get multiple values and tiebreakers by keys.
      * @param keys The keys to retrieve.
      * @returns An object with key-value pairs, with missing values being null.
      */
-    async getMultiple(keys: string[]): Promise<Record<string, number | null>> {
+    async getMultiple(keys: string[]): Promise<Record<string, { value: number; tiebreaker: number } | null>> {
         if (keys.length === 0) return {};
 
         const result = await this
-            .#database`SELECT key, value FROM ${this.#database(this.#namespace)} WHERE key IN ${this.#database(keys)}`;
-        const output: Record<string, number | null> = {};
+            .#database`SELECT key, value, tiebreaker FROM ${this.#database(this.#namespace)} WHERE key IN ${this.#database(keys)}`;
+        const output: Record<string, { value: number; tiebreaker: number } | null> = {};
 
         for (const key of keys) {
             output[key] = null;
         }
 
         for (const row of result) {
-            output[row.key] = row.value;
+            output[row.key] = { value: row.value, tiebreaker: row.tiebreaker || 0 };
         }
 
         return output;
     }
 
     /**
-     * Set a value by key.
+     * Set a value by key with optional tiebreaker.
      * @param key The key to set.
      * @param value The numeric value to store.
+     * @param tiebreaker Optional tiebreaker value (defaults to 0).
      */
-    async set(key: string, value: number): Promise<void> {
+    async set(key: string, value: number, tiebreaker: number = 0): Promise<void> {
         await this
-            .#database`INSERT OR REPLACE INTO ${this.#database(this.#namespace)} (key, value) VALUES (${this.#database(key)}, ${value})`;
+            .#database`INSERT OR REPLACE INTO ${this.#database(this.#namespace)} (key, value, tiebreaker) VALUES (${this.#database(key)}, ${value}, ${tiebreaker})`;
     }
 
     /**
@@ -245,15 +246,15 @@ export class OrderedDatabaseClient {
     }
 
     /**
-     * Get all key-value pairs.
-     * @returns An object with all key-value pairs.
+     * Get all key-value-tiebreaker entries.
+     * @returns An object with all key-value-tiebreaker entries.
      */
-    async all(): Promise<Record<string, number>> {
-        const rows = await this.#database`SELECT key, value FROM ${this.#database(this.#namespace)}`;
-        const result: Record<string, number> = {};
+    async all(): Promise<Record<string, { value: number; tiebreaker: number }>> {
+        const rows = await this.#database`SELECT key, value, tiebreaker FROM ${this.#database(this.#namespace)}`;
+        const result: Record<string, { value: number; tiebreaker: number }> = {};
 
         for (const row of rows) {
-            result[row.key] = row.value;
+            result[row.key] = { value: row.value, tiebreaker: row.tiebreaker || 0 };
         }
 
         return result;
@@ -275,13 +276,13 @@ export class OrderedDatabaseClient {
      * @param start The starting position (1-based, inclusive).
      * @param end The ending position (1-based, inclusive).
      * @param descending Whether to sort in descending order (true) or ascending (false).
-     * @returns Array of key-value pairs in the specified range and order, including all ties.
+     * @returns Array of key-value-tiebreaker entries in the specified range and order, including all ties.
      */
     async getOrdered(
         start: number,
         end: number,
         descending: boolean = true
-    ): Promise<Array<{ key: string; value: number }>> {
+    ): Promise<Array<{ key: string; value: number; tiebreaker: number }>> {
         if (start < 1 || end < start) {
             throw new Error('Invalid range: start must be >= 1 and end must be >= start');
         }
@@ -291,19 +292,19 @@ export class OrderedDatabaseClient {
         let allData;
         if (descending) {
             allData = await this.#database`
-                SELECT key, value,
-                       DENSE_RANK() OVER (ORDER BY value DESC) as dense_rank,
-                       ROW_NUMBER() OVER (ORDER BY value DESC, key ASC) as row_num
+                SELECT key, value, tiebreaker,
+                       DENSE_RANK() OVER (ORDER BY value DESC, tiebreaker DESC) as dense_rank,
+                       ROW_NUMBER() OVER (ORDER BY value DESC, tiebreaker DESC, key ASC) as row_num
                 FROM ${this.#database(this.#namespace)}
-                ORDER BY value DESC, key ASC
+                ORDER BY value DESC, tiebreaker DESC, key ASC
             `;
         } else {
             allData = await this.#database`
-                SELECT key, value,
-                       DENSE_RANK() OVER (ORDER BY value ASC) as dense_rank,
-                       ROW_NUMBER() OVER (ORDER BY value ASC, key ASC) as row_num
+                SELECT key, value, tiebreaker,
+                       DENSE_RANK() OVER (ORDER BY value ASC, tiebreaker ASC) as dense_rank,
+                       ROW_NUMBER() OVER (ORDER BY value ASC, tiebreaker ASC, key ASC) as row_num
                 FROM ${this.#database(this.#namespace)}
-                ORDER BY value ASC, key ASC
+                ORDER BY value ASC, tiebreaker ASC, key ASC
             `;
         }
 
@@ -324,37 +325,40 @@ export class OrderedDatabaseClient {
         if (startRank === null) {
             return allData
                 .filter((row: any) => row.row_num >= start)
-                .map((row: any) => ({ key: row.key, value: row.value }));
+                .map((row: any) => ({ key: row.key, value: row.value, tiebreaker: row.tiebreaker || 0 }));
         }
 
         if (endRank === null) {
             return allData
                 .filter((row: any) => row.dense_rank >= startRank)
-                .map((row: any) => ({ key: row.key, value: row.value }));
+                .map((row: any) => ({ key: row.key, value: row.value, tiebreaker: row.tiebreaker || 0 }));
         }
 
         // Return all entries whose dense rank falls within our range
         // This includes all ties at both boundaries
         return allData
             .filter((row: any) => row.dense_rank >= startRank && row.dense_rank <= endRank)
-            .map((row: any) => ({ key: row.key, value: row.value }));
+            .map((row: any) => ({ key: row.key, value: row.value, tiebreaker: row.tiebreaker || 0 }));
     }
 
     /**
      * Get the top N entries, including all ties.
      * @param n The number of entries to retrieve.
      * @param descending Whether to sort in descending order (true) or ascending (false).
-     * @returns Array of the top N key-value pairs, including all ties.
+     * @returns Array of the top N key-value-tiebreaker entries, including all ties.
      */
-    async getTop(n: number, descending: boolean = true): Promise<Array<{ key: string; value: number }>> {
+    async getTop(
+        n: number,
+        descending: boolean = true
+    ): Promise<Array<{ key: string; value: number; tiebreaker: number }>> {
         return this.getOrdered(1, n, descending);
     }
 
     /**
-     * Get the rank of a specific key, accounting for ties.
+     * Get the rank of a specific key, accounting for ties and tiebreakers.
      * @param key The key to find the rank for.
      * @param descending Whether to rank in descending order (true) or ascending (false).
-     * @returns The rank (1-based) of the key, or null if not found. Tied entries get the same rank.
+     * @returns The rank (1-based) of the key, or null if not found. Entries are ranked by value, then tiebreaker.
      */
     async getRank(key: string, descending: boolean = true): Promise<number | null> {
         let result;
@@ -362,7 +366,7 @@ export class OrderedDatabaseClient {
             result = await this.#database`
                 SELECT rank FROM (
                     SELECT key, 
-                           DENSE_RANK() OVER (ORDER BY value DESC) as rank
+                           DENSE_RANK() OVER (ORDER BY value DESC, tiebreaker DESC) as rank
                     FROM ${this.#database(this.#namespace)}
                 ) ranked
                 WHERE key = ${this.#database(key)}
@@ -371,7 +375,7 @@ export class OrderedDatabaseClient {
             result = await this.#database`
                 SELECT rank FROM (
                     SELECT key, 
-                           DENSE_RANK() OVER (ORDER BY value ASC) as rank
+                           DENSE_RANK() OVER (ORDER BY value ASC, tiebreaker ASC) as rank
                     FROM ${this.#database(this.#namespace)}
                 ) ranked
                 WHERE key = ${this.#database(key)}
