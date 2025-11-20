@@ -5,8 +5,8 @@
  */
 import { convertTo, type AvailableConversions } from '@jacobhumston/tc.js';
 
-import { createTask } from './tasks';
 import { DatabaseClient } from './database';
+import { createTask } from './tasks';
 
 /** Array of caches, indexed by their namespaces. Used by the sweeper. */
 const caches: Record<string, Cache> = {};
