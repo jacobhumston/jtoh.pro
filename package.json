@@ -30,6 +30,7 @@
         "discord-api-types": "^0.38.34",
         "dressed": "^1.10.1",
         "handlebars": "^4.7.8",
+        "hello": "^0.6.2",
         "highlight.js": "^11.11.1",
         "hono": "^4.10.6",
         "hono-rate-limiter": "^0.4.2",
@@ -59,5 +60,8 @@
     ],
     "patchedDependencies": {
         "@tldraw/editor@4.2.0": "patches/@tldraw%2Feditor@4.2.0.patch"
+    },
+    "devDependencies": {
+        "@socketsecurity/bun-security-scanner": "^1.1.1"
     }
 }
