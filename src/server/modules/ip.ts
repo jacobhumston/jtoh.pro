@@ -7,6 +7,7 @@ import type { Context } from 'hono';
 import { getConnInfo } from 'hono/bun';
 
 import { isDev } from '../config';
+import { log } from './logger';
 
 /**
  * Get the IP address of a request using the request context.
@@ -15,6 +16,8 @@ import { isDev } from '../config';
  */
 export function getIPFromContext(context: Context): string {
     const connectionInfo = getConnInfo(context);
+    if (!connectionInfo.remote.address && !context.req.header('CF-Connecting-IP'))
+        log('critical', `IP missing? ${JSON.stringify(context)}`);
     if (isDev) {
         return connectionInfo.remote.address ?? 'NOIP';
     } else {

@@ -989,7 +989,7 @@
 
     "jittered-fractional-indexing": ["jittered-fractional-indexing@1.0.0", "", { "dependencies": { "fractional-indexing": "^3.2.0" } }, "sha512-sCFp83Upn1UzNgqSpWabWfkFtBwIjH+QyyJxLCGRamsIwOCs0Fx0yYxva9/NYV/iMLlUN3/xZY8/ZdYIwIlJ5g=="],
 
-    "jose": ["jose@github:panva/jose#d681315", {}, "panva-jose-d681315"],
+    "jose": ["jose@github:panva/jose#c5e285e", {}, "panva-jose-c5e285e"],
 
     "js-git": ["js-git@0.7.8", "", { "dependencies": { "bodec": "^0.1.0", "culvert": "^0.1.2", "git-sha1": "^0.1.2", "pako": "^0.2.5" } }, "sha512-+E5ZH/HeRnoc/LW0AmAyhU+mNcWBzAKE+30+IDMLSLbbK+Tdt02AdkOKq9u15rlJsDEGFqtgckc8ZM59LhhiUA=="],
 
