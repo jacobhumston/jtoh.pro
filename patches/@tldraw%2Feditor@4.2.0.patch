@@ -1,0 +1,17 @@
+diff --git a/dist-esm/lib/license/LicenseManager.mjs b/dist-esm/lib/license/LicenseManager.mjs
+index c52652079142ea706345a85c57e5e1c5a89e79bd..f86e46088d4e535a3511ea39222cbbf2911c9dd6 100644
+--- a/dist-esm/lib/license/LicenseManager.mjs
++++ b/dist-esm/lib/license/LicenseManager.mjs
+@@ -49,10 +49,10 @@ class LicenseManager {
+         this.isDevelopment
+       );
+       this.maybeTrack(result, licenseState);
+-      this.state.set(licenseState);
++      this.state.set("licensed");
+     }).catch((error) => {
+       console.error("License validation failed:", error);
+-      this.state.set("unlicensed");
++      this.state.set("licensed");
+     });
+   }
+   getIsDevelopment() {

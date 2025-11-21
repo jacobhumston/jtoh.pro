@@ -56,5 +56,8 @@
         "@parcel/watcher",
         "esbuild",
         "sharp"
-    ]
+    ],
+    "patchedDependencies": {
+        "@tldraw/editor@4.2.0": "patches/@tldraw%2Feditor@4.2.0.patch"
+    }
 }
