@@ -8,6 +8,7 @@ import build from 'dressed/build';
 
 import { rmSync } from 'node:fs';
 
+import apiTokens from '../modules/tokens';
 import handleDiscordRequests from './requests';
 
 /**
@@ -16,14 +17,22 @@ import handleDiscordRequests from './requests';
  */
 export async function bootDiscordBot(app: OpenAPIHono) {
     // compile commands
-    const buildResults = await build({ build: { root: 'src/server/discord/' } });
+    const buildResults = await build({
+        build: { root: 'src/server/discord/' },
+        requests: {
+            env: {
+                DISCORD_APP_ID: apiTokens.discordInteractionsApplicationId,
+                DISCORD_PUBLIC_KEY: apiTokens.discordInteractionsPublicKey,
+                DISCORD_TOKEN: apiTokens.discordInteractionsToken
+            }
+        }
+    });
 
     // delete '.dressed' directory
     rmSync('.dressed', { force: true, recursive: true });
 
     // clear console
-    console.clear();
+    //console.clear();
 
     // handle requests
-    handleDiscordRequests(app, buildResults);
 }

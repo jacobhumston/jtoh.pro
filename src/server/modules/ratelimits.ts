@@ -23,11 +23,13 @@ export default function rateLimitMiddleware(options: {
     reset: AvailableConversions;
     /** Should the rate limit be path path based? Default is `true`. */
     prefixPath?: boolean;
+    /** Add a custom prefix for this rate limit. */
+    customPrefix?: string;
 }) {
     return createMiddleware(async (context, next) => {
         if (options.prefixPath === undefined) options.prefixPath = true;
         const ip = getIPFromContext(context);
-        const key = `${options.prefixPath ? context.req.path + '++' : ''}${ip}`;
+        const key = btoa(`${options.customPrefix ?? ''}${options.prefixPath ? context.req.path + '/' : ''}${ip}`);
         const data = (await cache.get(key)) ?? { used: 0 };
         if (data.used >= options.pool) {
             return context.json({ error: 'Rate limit exceeded.', reset: await cache.expires(key) }, 429);

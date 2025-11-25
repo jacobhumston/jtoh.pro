@@ -3,7 +3,8 @@
         "format": "bunx prettier --cache --write .",
         "start": "bun run src/server/boot.ts",
         "port-access": "sudo setcap CAP_NET_BIND_SERVICE=+eip $(which bun)",
-        "update-api-types": "bun run tools/update-api-types.ts"
+        "update-api-types": "bun run tools/update-api-types.ts",
+        "tunnel": "./tools/tunnel"
     },
     "type": "module",
     "dependencies": {

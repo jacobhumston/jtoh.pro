@@ -6,7 +6,6 @@
 import type { Context } from 'hono';
 import { getConnInfo } from 'hono/bun';
 
-import { isDev } from '../config';
 import { log } from './logger';
 
 /**
@@ -18,9 +17,5 @@ export function getIPFromContext(context: Context): string {
     const connectionInfo = getConnInfo(context);
     if (!connectionInfo.remote.address && !context.req.header('CF-Connecting-IP'))
         log('critical', `IP missing? ${JSON.stringify(context)}`);
-    if (isDev) {
-        return connectionInfo.remote.address ?? 'NOIP';
-    } else {
-        return context.req.header('CF-Connecting-IP') ?? connectionInfo.remote.address ?? 'NOIP';
-    }
+    return context.req.header('CF-Connecting-IP') ?? connectionInfo.remote.address ?? 'NOIP';
 }

@@ -5,6 +5,7 @@
  */
 import { OpenAPIHono, z } from '@hono/zod-openapi';
 import { Scalar } from '@scalar/hono-api-reference';
+import { compress } from 'hono/compress';
 import { secureHeaders } from 'hono/secure-headers';
 import { compile } from 'sass';
 
@@ -12,10 +13,11 @@ import { $ } from 'bun';
 import { readdirSync } from 'node:fs';
 
 import config from './config';
-//import { bootDiscordBot } from './discord/bot';
+import { bootDiscordBot } from './discord/bot';
 import { getBooleanArg } from './managers/argv';
 import { buildFrontend, hotReloadFrontend, serveStatic } from './managers/web';
 import { cleanUpLogs, log } from './modules/logger';
+import rateLimitMiddleware from './modules/ratelimits';
 import './modules/secrets';
 
 // create the hono application
@@ -31,8 +33,12 @@ const app = new OpenAPIHono({
 // log cleanup
 cleanUpLogs();
 
+// global rate limit
+app.use(rateLimitMiddleware({ pool: 120, reset: { minutes: 1 }, customPrefix: 'global' }));
+
 // utility middlewares
 app.use(secureHeaders());
+app.use(compress());
 
 // build and serve pages/assets/etc
 await buildFrontend();
@@ -52,7 +58,7 @@ for (const route of readdirSync('src/server/routes/', { recursive: true, withFil
 }
 
 // boot up the Discord bot
-//await bootDiscordBot(app);
+await bootDiscordBot(app);
 
 // use Scalar middleware for api docs
 // we also need to expose the spec information
