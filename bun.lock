@@ -61,6 +61,7 @@
     "@parcel/watcher",
   ],
   "patchedDependencies": {
+    "dressed@1.10.1": "patches/dressed@1.10.1.patch",
     "@tldraw/editor@4.2.0": "patches/@tldraw%2Feditor@4.2.0.patch",
   },
   "packages": {

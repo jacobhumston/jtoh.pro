@@ -60,7 +60,8 @@
         "sharp"
     ],
     "patchedDependencies": {
-        "@tldraw/editor@4.2.0": "patches/@tldraw%2Feditor@4.2.0.patch"
+        "@tldraw/editor@4.2.0": "patches/@tldraw%2Feditor@4.2.0.patch",
+        "dressed@1.10.1": "patches/dressed@1.10.1.patch"
     },
     "devDependencies": {
         "@socketsecurity/bun-security-scanner": "^1.1.1"
