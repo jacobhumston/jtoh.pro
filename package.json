@@ -1,12 +1,4 @@
 {
-    "scripts": {
-        "format": "bunx prettier --cache --write .",
-        "start": "bun run src/server/boot.ts",
-        "port-access": "sudo setcap CAP_NET_BIND_SERVICE=+eip $(which bun)",
-        "update-api-types": "bun run tools/update-api-types.ts",
-        "tunnel": "./tools/tunnel"
-    },
-    "type": "module",
     "dependencies": {
         "@hono/zod-openapi": "^1.1.5",
         "@infisical/sdk": "^4.0.6",
@@ -14,6 +6,7 @@
         "@napi-rs/canvas": "^0.1.82",
         "@r2wc/react-to-web-component": "^2.1.0",
         "@rybbit/node": "^1.0.0",
+        "@scalar/api-reference": "^1.40.0",
         "@scalar/hono-api-reference": "^0.9.25",
         "@tldraw/assets": "^4.2.0",
         "@tldraw/tldraw": "^4.2.0",
@@ -54,16 +47,21 @@
         "uuid": "^13.0.0",
         "zod": "^4.1.12"
     },
+    "patchedDependencies": {
+        "@tldraw/editor@4.2.0": "patches/@tldraw%2Feditor@4.2.0.patch",
+        "dressed@1.10.1": "patches/dressed@1.10.1.patch"
+    },
+    "scripts": {
+        "format": "bunx prettier --cache --write .",
+        "start": "bun run src/server/boot.ts",
+        "port-access": "sudo setcap CAP_NET_BIND_SERVICE=+eip $(which bun)",
+        "update-api-types": "bun run tools/update-api-types.ts",
+        "tunnel": "./tools/tunnel"
+    },
     "trustedDependencies": [
         "@parcel/watcher",
         "esbuild",
         "sharp"
     ],
-    "patchedDependencies": {
-        "@tldraw/editor@4.2.0": "patches/@tldraw%2Feditor@4.2.0.patch",
-        "dressed@1.10.1": "patches/dressed@1.10.1.patch"
-    },
-    "devDependencies": {
-        "@socketsecurity/bun-security-scanner": "^1.1.1"
-    }
+    "type": "module"
 }

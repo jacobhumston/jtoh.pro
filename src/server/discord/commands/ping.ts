@@ -6,7 +6,8 @@
 import type { CommandConfig, CommandInteraction } from 'dressed';
 
 export const config = {
-    description: 'Checks the API latency'
+    description: 'Pong!',
+    type: 'ChatInput'
 } satisfies CommandConfig;
 
 export default async function (interaction: CommandInteraction<typeof config>) {

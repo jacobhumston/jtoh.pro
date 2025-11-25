@@ -10,6 +10,7 @@ import Handlebars from 'handlebars';
 import { stream } from 'hono/streaming';
 import { minify } from 'html-minifier-next';
 import mime from 'mime';
+import * as prettier from 'prettier';
 import * as sass from 'sass';
 import { minify as jsMinify } from 'terser';
 import { v4 as uuid } from 'uuid';
@@ -20,6 +21,8 @@ import { parse } from 'node:path';
 
 import { replaceEmptyString } from '../../shared/common-utils';
 import { isDev } from '../config';
+import { log } from '../modules/logger';
+import { getBooleanArg } from './argv';
 import { createPath, getFileHash, safelyGetPath } from './files';
 
 /** Path used to store static assets. */
@@ -270,6 +273,22 @@ export async function buildFrontend() {
             }
         }
         //log('debug', '(build) Files minified.');
+    }
+
+    // optionally format code at the end
+    // requires '--prettyBuild true' to be passed
+    // not recommended outside of testing
+    if ((await getBooleanArg('prettyBuild')) === true) {
+        log('info', 'Pretty build enabled, this may take a moment...');
+        const config = JSON.parse(readFileSync('.prettierrc.json', 'utf8'));
+        for (const file of readdirSync('static', { recursive: true, withFileTypes: true })) {
+            if (!file.isFile() || file.isSymbolicLink()) continue;
+            const filePath = `${file.parentPath}/${file.name}`;
+            if (!file.name.endsWith('.js') && !file.name.endsWith('.css') && !file.name.endsWith('.html')) continue;
+            let content = readFileSync(filePath, 'utf-8');
+            content = await prettier.format(content, Object.assign(config, { filepath: filePath }));
+            writeFileSync(filePath, content, 'utf8');
+        }
     }
 }
 

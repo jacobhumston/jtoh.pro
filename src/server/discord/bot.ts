@@ -33,9 +33,25 @@ export async function bootDiscordBot(app: OpenAPIHono) {
 
     // install commands
     // note that we replace uid to prevent the cache from always updating
-    if (JSON.stringify(buildResults.commands.map((c) => (c.uid = ''))) !== (await botCache.get('commands'))) {
+    if (
+        JSON.stringify(
+            buildResults.commands.map((c) => {
+                c.uid = '';
+                return c;
+            })
+        ) !== (await botCache.get('commands'))
+    ) {
+        await botCache.set(
+            'commands',
+            JSON.stringify(
+                buildResults.commands.map((c) => {
+                    c.uid = '';
+                    return c;
+                })
+            )
+        );
+
         await installCommands(buildResults.commands);
-        await botCache.set('commands', JSON.stringify(buildResults.commands.map((c) => (c.uid = ''))));
         log('success', 'Successfully installed Discord bot commands.');
     }
 

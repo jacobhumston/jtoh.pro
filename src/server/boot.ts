@@ -4,10 +4,8 @@
  * Authored by Jacob Humston
  */
 import { OpenAPIHono, z } from '@hono/zod-openapi';
-import { Scalar } from '@scalar/hono-api-reference';
 import { compress } from 'hono/compress';
 import { secureHeaders } from 'hono/secure-headers';
-import { compile } from 'sass';
 
 import { $ } from 'bun';
 import { readdirSync } from 'node:fs';
@@ -71,18 +69,6 @@ app.doc31('/api/spec', {
         contact: { email: 'support@jtoh.pro', name: 'jtoh.pro Support' }
     }
 });
-app.use(
-    '/api/html',
-    Scalar({
-        url: '/api/spec',
-        showDeveloperTools: 'never',
-        hideClientButton: true,
-        customCss: compile('src/client/css/api.scss').css,
-        pageTitle: 'jtoh.pro API Reference',
-        withDefaultFonts: false,
-        hideDarkModeToggle: true
-    })
-);
 
 // last resort, errors...
 app.onError((error, context) => {
