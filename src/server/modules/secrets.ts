@@ -7,11 +7,10 @@
 import { CryptrAsync } from 'cryptr';
 import { read } from 'read';
 
-import { isDev } from '../config';
 import { DatabaseClient } from '../managers/database';
 import { log } from './logger';
 
-const secretsDatabase = new DatabaseClient('secrets', isDev ? 'dev' : 'prod');
+const secretsDatabase = new DatabaseClient('secrets', 'sec');
 
 // Get the server passphrase.
 let passphrase = await read({ prompt: 'Please provide the server passphrase:', silent: true, replace: '*' });
