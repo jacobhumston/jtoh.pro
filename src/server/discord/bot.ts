@@ -9,6 +9,8 @@ import { handleRequest, installCommands } from 'dressed/server';
 
 import { rmSync } from 'node:fs';
 
+import { isDev } from '../config';
+import { getBooleanArg } from '../managers/argv';
 import { Cache } from '../managers/cache';
 import { log } from '../modules/logger';
 import apiTokens from '../modules/tokens';
@@ -33,26 +35,33 @@ export async function bootDiscordBot(app: OpenAPIHono) {
 
     // install commands
     // note that we replace uid to prevent the cache from always updating
-    if (
-        JSON.stringify(
-            buildResults.commands.map((c) => {
-                c.uid = '';
-                return c;
-            })
-        ) !== (await botCache.get('commands'))
-    ) {
-        await botCache.set(
-            'commands',
+    if (!isDev && (await getBooleanArg('publishDiscordCommands')) === false) {
+        log(
+            'warn',
+            'Not publishing Discord commands due to being prod. Pass the --publishDiscordCommands flag to bypass.'
+        );
+    } else {
+        if (
             JSON.stringify(
                 buildResults.commands.map((c) => {
                     c.uid = '';
                     return c;
                 })
-            )
-        );
+            ) !== (await botCache.get('commands'))
+        ) {
+            await botCache.set(
+                'commands',
+                JSON.stringify(
+                    buildResults.commands.map((c) => {
+                        c.uid = '';
+                        return c;
+                    })
+                )
+            );
 
-        await installCommands(buildResults.commands);
-        log('success', 'Successfully installed Discord bot commands.');
+            await installCommands(buildResults.commands);
+            log('success', 'Successfully installed Discord bot commands.');
+        }
     }
 
     // delete '.dressed' directory
