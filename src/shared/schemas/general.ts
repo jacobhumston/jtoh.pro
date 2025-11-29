@@ -33,3 +33,12 @@ export const rateLimitErrorSchema = z.object({
 
 /** `rateLimitErrorSchema` type. */
 export type RateLimitErrorSchema = z.infer<typeof rateLimitErrorSchema>;
+
+/** Schema that represents a client update response. */
+export const clientUpdateSchema = z.object({
+    update: z.boolean().openapi({ description: 'A boolean indicating if the client needs updated or not.' }),
+    version: z.string().openapi({ description: 'The current version for refrence.' })
+});
+
+/** `clientUpdateSchema` type. */
+export type ClientUpdateSchema = z.infer<typeof clientUpdateSchema>;

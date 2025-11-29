@@ -1,3 +1,4 @@
+/// <reference path="../../../../node_modules/@scalar/api-reference/dist/standalone/lib/register-globals.d.ts" />
 /**
  * Generate API documentation.
  *
@@ -5,8 +6,7 @@
  */
 import '../../../../node_modules/@scalar/api-reference/dist/browser/standalone.js';
 
-// @ts-ignore
-Scalar.createApiReference('#docs', {
+window.Scalar.createApiReference('#docs', {
     url: '/api/spec',
     showDeveloperTools: 'never',
     hideClientButton: true,

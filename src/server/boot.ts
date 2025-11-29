@@ -7,10 +7,9 @@ import { OpenAPIHono, z } from '@hono/zod-openapi';
 import { compress } from 'hono/compress';
 import { secureHeaders } from 'hono/secure-headers';
 
-import { $ } from 'bun';
 import { readdirSync } from 'node:fs';
 
-import config from './config';
+import config, { version } from './config';
 import { bootDiscordBot } from './discord/bot';
 import { getBooleanArg } from './managers/argv';
 import { buildFrontend, hotReloadFrontend, serveStatic } from './managers/web';
@@ -23,7 +22,7 @@ const app = new OpenAPIHono({
     strict: true,
     defaultHook: (result, context) => {
         if (!result.success) {
-            return context.json({ error: z.formatError(result as any)._errors.join('\n') }, 400);
+            return context.json({ error: z.prettifyError(result.error) }, 400);
         }
     }
 });
@@ -65,7 +64,7 @@ app.doc31('/api/spec', {
     info: {
         title: 'jtoh.pro API',
         description: 'API documentation for the jtoh.pro client.',
-        version: `${(await $`git rev-parse --short HEAD`.text()).replace('\n', '')}`,
+        version: version,
         contact: { email: 'support@jtoh.pro', name: 'jtoh.pro Support' }
     }
 });

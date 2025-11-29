@@ -37,6 +37,23 @@ export interface paths {
                         };
                     };
                 };
+                /** @description Rate limit error. */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        'application/json': {
+                            /** @description The error message. */
+                            error: string;
+                            /**
+                             * Format: date-time
+                             * @description Date that this rate limit will reset.
+                             */
+                            reset: string;
+                        };
+                    };
+                };
                 /** @description Internal server error. */
                 500: {
                     headers: {
@@ -97,6 +114,23 @@ export interface paths {
                         }[];
                     };
                 };
+                /** @description Rate limit error. */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        'application/json': {
+                            /** @description The error message. */
+                            error: string;
+                            /**
+                             * Format: date-time
+                             * @description Date that this rate limit will reset.
+                             */
+                            reset: string;
+                        };
+                    };
+                };
                 /** @description Internal server error. */
                 500: {
                     headers: {
@@ -150,6 +184,109 @@ export interface paths {
                         };
                     };
                 };
+                /** @description Rate limit error. */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        'application/json': {
+                            /** @description The error message. */
+                            error: string;
+                            /**
+                             * Format: date-time
+                             * @description Date that this rate limit will reset.
+                             */
+                            reset: string;
+                        };
+                    };
+                };
+                /** @description Internal server error. */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        'application/json': {
+                            /** @description The error message. */
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    '/api/update': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Update the client's browser cache, if needed. */
+        get: {
+            parameters: {
+                query: {
+                    /** @description The current client's version. */
+                    clientVersion: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description A response indicating whether the client needs updated or not. */
+                200: {
+                    headers: {
+                        'clear-site-data'?: 'cache';
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        'application/json': {
+                            /** @description A boolean indicating if the client needs updated or not. */
+                            update: boolean;
+                            /** @description The current version for refrence. */
+                            version: string;
+                        };
+                    };
+                };
+                /** @description Invalid request error. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        'application/json': {
+                            /** @description The error message. */
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Rate limit error. */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        'application/json': {
+                            /** @description The error message. */
+                            error: string;
+                            /**
+                             * Format: date-time
+                             * @description Date that this rate limit will reset.
+                             */
+                            reset: string;
+                        };
+                    };
+                };
                 /** @description Internal server error. */
                 500: {
                     headers: {
@@ -198,6 +335,23 @@ export interface paths {
                         'application/json': {
                             /** @description The current version. */
                             version: string;
+                        };
+                    };
+                };
+                /** @description Rate limit error. */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        'application/json': {
+                            /** @description The error message. */
+                            error: string;
+                            /**
+                             * Format: date-time
+                             * @description Date that this rate limit will reset.
+                             */
+                            reset: string;
                         };
                     };
                 };

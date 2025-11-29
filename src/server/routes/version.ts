@@ -6,9 +6,8 @@
  */
 import { createRoute, OpenAPIHono } from '@hono/zod-openapi';
 
-import { $ } from 'bun';
-
 import { errorSchema, rateLimitErrorSchema, versionSchema } from '../../shared/schemas/general';
+import { version } from '../config';
 
 /** Route for this endpoint. */
 const route = createRoute({
@@ -45,8 +44,7 @@ const route = createRoute({
 
 /** Handle for this endpoint. */
 export async function handler(app: OpenAPIHono) {
-    const version = (await $`git rev-parse --short HEAD`.text()).replace('\n', '');
     app.openapi(route, (context) => {
-        return context.json({ version: version }, 200);
+        return context.json({ version }, 200);
     });
 }

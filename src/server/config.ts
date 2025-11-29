@@ -4,6 +4,8 @@
  *
  * Authored by Jacob Humston
  */
+import { $ } from 'bun';
+
 import { getCLIArgument, utilCLIValidators } from './managers/argv';
 
 /** Port that the server should run on. Defaults to port 80. */
@@ -20,8 +22,11 @@ export const isDev: boolean = (await getCLIArgument('dev', 'boolean', true)) ?? 
 /** URL that can be used to access the website. Defaults to localhost */
 export const serverURL: URL = (await getCLIArgument('url', 'url', true)) ?? new URL(`http://localhost:${serverPort}`);
 
+/** Current version of the server. This config option cannot be set. */
+export const version: string = (await $`git rev-parse --short HEAD`.text()).replace('\n', '');
+
 /** Config options as an object. */
-const config = { serverPort, isDev, serverURL };
+const config = { serverPort, isDev, serverURL, version };
 
 // make the object the default export for convenience
 export default config;
