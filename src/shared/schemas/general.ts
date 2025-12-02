@@ -26,19 +26,23 @@ export const versionSchema = z
 export type VersionSchema = z.infer<typeof versionSchema>;
 
 /** Schema that represents a rate limit error. */
-export const rateLimitErrorSchema = z.object({
-    error: z.string().openapi({ description: 'The error message.' }),
-    reset: z.iso.datetime().openapi({ description: 'Date that this rate limit will reset.' })
-});
+export const rateLimitErrorSchema = z
+    .object({
+        error: z.string().openapi({ description: 'The error message.' }),
+        reset: z.iso.datetime().openapi({ description: 'Date that this rate limit will reset.' })
+    })
+    .openapi({ description: 'Rate Limit Error Schema' });
 
 /** `rateLimitErrorSchema` type. */
 export type RateLimitErrorSchema = z.infer<typeof rateLimitErrorSchema>;
 
 /** Schema that represents a client update response. */
-export const clientUpdateSchema = z.object({
-    update: z.boolean().openapi({ description: 'A boolean indicating if the client needs updated or not.' }),
-    version: z.string().openapi({ description: 'The current version for refrence.' })
-});
+export const clientUpdateSchema = z
+    .object({
+        update: z.boolean().openapi({ description: 'A boolean indicating if the client needs updated or not.' }),
+        version: z.string().openapi({ description: 'The current version for refrence.' })
+    })
+    .openapi({ description: 'Client Update Schema' });
 
 /** `clientUpdateSchema` type. */
 export type ClientUpdateSchema = z.infer<typeof clientUpdateSchema>;

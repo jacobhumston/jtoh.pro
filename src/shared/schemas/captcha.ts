@@ -18,3 +18,13 @@ export const captchaSchema = z
 
 /** `captchaSchema` type. */
 export type CaptchaSchema = z.infer<typeof captchaSchema>;
+
+/** Schema that represents a captcha error. */
+export const captchaErrorSchema = z
+    .object({
+        error: z.string().openapi({ description: 'The error message.' })
+    })
+    .openapi({ description: 'Captcha Error Schema' });
+
+/** `captchaErrorSchema` type. */
+export type CaptchaErrorSchema = z.infer<typeof captchaErrorSchema>;

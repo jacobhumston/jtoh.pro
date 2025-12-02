@@ -27,7 +27,7 @@ const route = createRoute({
             },
             description: 'A response indicating whether the client needs updated or not.',
             headers: z.object({
-                'clear-site-data': z.literal('cache').optional()
+                'clear-site-data': z.literal('"cache"').optional()
             })
         },
         400: {
@@ -62,7 +62,7 @@ export async function handler(app: OpenAPIHono) {
     app.openapi(route, (context) => {
         const { clientVersion } = context.req.query();
         const update = !(clientVersion === version);
-        if (update) context.res.headers.set('Clear-Site-Data', 'cache');
+        if (update) context.res.headers.set('Clear-Site-Data', '"cache"');
         return context.json({ version, update }, 200);
     });
 }

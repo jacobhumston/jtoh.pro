@@ -76,6 +76,77 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    '/api/captcha/verify': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description A utility endpoint to test captcha verification. Unlike other endpoints that require a captcha, this one does not error if the captcha fails. */
+        get: {
+            parameters: {
+                query?: never;
+                header: {
+                    /** @description The captcha solution. */
+                    captcha: string;
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Captcha response. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        'application/json': {
+                            /** @description Whether the captcha was successful or not. */
+                            success: boolean;
+                        };
+                    };
+                };
+                /** @description Rate limit error. */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        'application/json': {
+                            /** @description The error message. */
+                            error: string;
+                            /**
+                             * Format: date-time
+                             * @description Date that this rate limit will reset.
+                             */
+                            reset: string;
+                        };
+                    };
+                };
+                /** @description Internal server error. */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        'application/json': {
+                            /** @description The error message. */
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     '/api/cards/backgrounds': {
         parameters: {
             query?: never;
@@ -246,7 +317,7 @@ export interface paths {
                 /** @description A response indicating whether the client needs updated or not. */
                 200: {
                     headers: {
-                        'clear-site-data'?: 'cache';
+                        'clear-site-data'?: '"cache"';
                         [name: string]: unknown;
                     };
                     content: {

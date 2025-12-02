@@ -7,7 +7,11 @@ import { convertTo } from '@jacobhumston/tc.js';
 import { createChallenge, verifySolution } from 'altcha-lib';
 import { randomBytes } from 'crypto';
 import type { Context } from 'hono';
+import { setCookie } from 'hono/cookie';
+import { createMiddleware } from 'hono/factory';
 
+import { serverURL } from '../config';
+import { Cache } from '../managers/cache';
 import { DatabaseClient } from '../managers/database';
 
 // hmac
@@ -16,6 +20,12 @@ const hmac = randomBytes(255).toString();
 // we need to store already verified captchas
 // note that the type is an empty object, as we only need the keys existence
 const database = new DatabaseClient<{}>('captchas', 'verified');
+const captchaBypassCache = new Cache<{}>('captcha-bypasses');
+
+// clear old captchas
+for (const captcha of Object.keys(await database.all())) {
+    await database.delete(captcha);
+}
 
 /**
  * Create a captcha challenge.
@@ -31,6 +41,7 @@ export async function createCaptcha() {
 
 /**
  * Verify a captcha challenge.
+ * **NOTE:** This function will NOT check if the user can bypass the captcha. Use {@linkcode verifyCaptchaFromContext} instead.
  * @param captcha The captcha token.
  * @returns A boolean indicating whether the challenge succeeded or not.
  */
@@ -48,11 +59,43 @@ export async function verifyCaptcha(captcha: string) {
 
 /**
  * Verify a captcha challenge from a request context.
- * This function is a request wrapper for {@linkcode verifyCaptcha}.
+ * This function will also check if the user is able to bypass the captcha.
  * @param context The request context.
  * @returns A boolean indicating whether the challenge succeeded or not.
  */
 export async function verifyCaptchaFromContext(context: Context) {
     const captcha = context.req.header('captcha') ?? '';
-    return await verifyCaptcha(captcha);
+    if ((await isCaptchaBypassExpired(captcha)) === false) true;
+    const result = await verifyCaptcha(captcha);
+    if (result === true) {
+        const bypassToken = randomBytes(255).toString();
+        await captchaBypassCache.set(bypassToken, {});
+        setCookie(context, 'captcha-bypass', bypassToken, {
+            expires: (await captchaBypassCache.expires(bypassToken)) as Date,
+            domain: serverURL.hostname,
+            secure: true
+        });
+    }
+    return result;
 }
+
+/**
+ * Check if a captcha bypass token has expired or not.
+ * @param bypass The bypass token.
+ * @returns A boolean indicating if the token has expired.
+ */
+export async function isCaptchaBypassExpired(bypass: string) {
+    const result = await captchaBypassCache.expires(bypass);
+    if (result instanceof Date) return Date.now() > result.getTime();
+    else return true; // bypass tokens should never have "never" as their expiration date
+}
+
+/** Captcha middleware, which can be used on routes that need extra security. */
+export const captchaMiddleware = createMiddleware(async (context, next) => {
+    const result = await verifyCaptchaFromContext(context);
+    if (result === false) {
+        if (!context.req.header('captcha')) return context.json({ error: 'Missing captcha.' }, 422) as any;
+        else return context.json({ error: 'Invalid captcha.' }, 429) as any;
+    }
+    return await next();
+});
