@@ -36,7 +36,7 @@
         "openapi-typescript": "^7.10.1",
         "ping": "^1.0.0",
         "pm2": "^6.0.14",
-        "prettier": "^3.7.3",
+        "prettier": "^3.7.4",
         "read": "^5.0.1",
         "sass": "^1.94.2",
         "sharp": "^0.34.5",
