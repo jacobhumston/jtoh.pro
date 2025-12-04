@@ -57,9 +57,11 @@ const testRoute = createRoute({
         200: {
             content: {
                 'application/json': {
-                    schema: z.object({
-                        success: z.boolean().openapi({ description: 'Whether the captcha was successful or not.' })
-                    })
+                    schema: z
+                        .object({
+                            success: z.boolean().openapi({ description: 'Whether the captcha was successful or not.' })
+                        })
+                        .openapi('CaptchaSuccessSchema')
                 }
             },
             description: 'Captcha response.'

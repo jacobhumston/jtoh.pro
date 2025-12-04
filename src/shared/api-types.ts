@@ -27,14 +27,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        'application/json': {
-                            /** @enum {string} */
-                            algorithm: 'SHA-1' | 'SHA-256' | 'SHA-512';
-                            challenge: string;
-                            maxnumber?: number;
-                            salt: string;
-                            signature: string;
-                        };
+                        'application/json': components['schemas']['CaptchaSchema'];
                     };
                 };
                 /** @description Rate limit error. */
@@ -43,15 +36,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        'application/json': {
-                            /** @description The error message. */
-                            error: string;
-                            /**
-                             * Format: date-time
-                             * @description Date that this rate limit will reset.
-                             */
-                            reset: string;
-                        };
+                        'application/json': components['schemas']['RateLimitErrorSchema'];
                     };
                 };
                 /** @description Internal server error. */
@@ -60,10 +45,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        'application/json': {
-                            /** @description The error message. */
-                            error: string;
-                        };
+                        'application/json': components['schemas']['ErrorSchema'];
                     };
                 };
             };
@@ -102,10 +84,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        'application/json': {
-                            /** @description Whether the captcha was successful or not. */
-                            success: boolean;
-                        };
+                        'application/json': components['schemas']['CaptchaSuccessSchema'];
                     };
                 };
                 /** @description Rate limit error. */
@@ -114,15 +93,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        'application/json': {
-                            /** @description The error message. */
-                            error: string;
-                            /**
-                             * Format: date-time
-                             * @description Date that this rate limit will reset.
-                             */
-                            reset: string;
-                        };
+                        'application/json': components['schemas']['RateLimitErrorSchema'];
                     };
                 };
                 /** @description Internal server error. */
@@ -131,10 +102,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        'application/json': {
-                            /** @description The error message. */
-                            error: string;
-                        };
+                        'application/json': components['schemas']['ErrorSchema'];
                     };
                 };
             };
@@ -170,19 +138,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        'application/json': {
-                            /** @description Identification string of this card background. */
-                            id: string;
-                            /** @description If true, this card is custom and was uploaded by a user. */
-                            isCustom: boolean;
-                            /**
-                             * Format: uri
-                             * @description URL to access this card background.
-                             */
-                            url: string;
-                            /** @description Category that this card background belongs to. This will always be "User Uploaded" when "isCustom" is true. */
-                            category: string;
-                        }[];
+                        'application/json': components['schemas']['CardBackgroundSchema'][];
                     };
                 };
                 /** @description Rate limit error. */
@@ -191,15 +147,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        'application/json': {
-                            /** @description The error message. */
-                            error: string;
-                            /**
-                             * Format: date-time
-                             * @description Date that this rate limit will reset.
-                             */
-                            reset: string;
-                        };
+                        'application/json': components['schemas']['RateLimitErrorSchema'];
                     };
                 };
                 /** @description Internal server error. */
@@ -208,10 +156,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        'application/json': {
-                            /** @description The error message. */
-                            error: string;
-                        };
+                        'application/json': components['schemas']['ErrorSchema'];
                     };
                 };
             };
@@ -247,12 +192,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        'application/json': {
-                            /** @description Ping (in ms) to cloudflare. */
-                            cloudflare: number;
-                            /** @description Ping (in ms) to google. */
-                            google: number;
-                        };
+                        'application/json': components['schemas']['PingSchema'];
                     };
                 };
                 /** @description Rate limit error. */
@@ -261,15 +201,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        'application/json': {
-                            /** @description The error message. */
-                            error: string;
-                            /**
-                             * Format: date-time
-                             * @description Date that this rate limit will reset.
-                             */
-                            reset: string;
-                        };
+                        'application/json': components['schemas']['RateLimitErrorSchema'];
                     };
                 };
                 /** @description Internal server error. */
@@ -278,10 +210,61 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        'application/json': {
-                            /** @description The error message. */
-                            error: string;
-                        };
+                        'application/json': components['schemas']['ErrorSchema'];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    '/api/admin/tasks': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get a list of the current server tasks. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description List of tasks. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        'application/json': components['schemas']['TasksSchema'];
+                    };
+                };
+                /** @description Rate limit error. */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        'application/json': components['schemas']['RateLimitErrorSchema'];
+                    };
+                };
+                /** @description Internal server error. */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        'application/json': components['schemas']['ErrorSchema'];
                     };
                 };
             };
@@ -317,16 +300,11 @@ export interface paths {
                 /** @description A response indicating whether the client needs updated or not. */
                 200: {
                     headers: {
-                        'clear-site-data'?: '"cache"';
+                        'Clear-Site-Data'?: 'cache';
                         [name: string]: unknown;
                     };
                     content: {
-                        'application/json': {
-                            /** @description A boolean indicating if the client needs updated or not. */
-                            update: boolean;
-                            /** @description The current version for refrence. */
-                            version: string;
-                        };
+                        'application/json': components['schemas']['ClientUpdateSchema'];
                     };
                 };
                 /** @description Invalid request error. */
@@ -335,10 +313,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        'application/json': {
-                            /** @description The error message. */
-                            error: string;
-                        };
+                        'application/json': components['schemas']['ErrorSchema'];
                     };
                 };
                 /** @description Rate limit error. */
@@ -347,15 +322,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        'application/json': {
-                            /** @description The error message. */
-                            error: string;
-                            /**
-                             * Format: date-time
-                             * @description Date that this rate limit will reset.
-                             */
-                            reset: string;
-                        };
+                        'application/json': components['schemas']['RateLimitErrorSchema'];
                     };
                 };
                 /** @description Internal server error. */
@@ -364,10 +331,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        'application/json': {
-                            /** @description The error message. */
-                            error: string;
-                        };
+                        'application/json': components['schemas']['ErrorSchema'];
                     };
                 };
             };
@@ -403,10 +367,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        'application/json': {
-                            /** @description The current version. */
-                            version: string;
-                        };
+                        'application/json': components['schemas']['VersionSchema'];
                     };
                 };
                 /** @description Rate limit error. */
@@ -415,15 +376,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        'application/json': {
-                            /** @description The error message. */
-                            error: string;
-                            /**
-                             * Format: date-time
-                             * @description Date that this rate limit will reset.
-                             */
-                            reset: string;
-                        };
+                        'application/json': components['schemas']['RateLimitErrorSchema'];
                     };
                 };
                 /** @description Internal server error. */
@@ -432,10 +385,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        'application/json': {
-                            /** @description The error message. */
-                            error: string;
-                        };
+                        'application/json': components['schemas']['ErrorSchema'];
                     };
                 };
             };
@@ -451,7 +401,88 @@ export interface paths {
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: never;
+    schemas: {
+        CaptchaSchema: {
+            /** @enum {string} */
+            algorithm: 'SHA-1' | 'SHA-256' | 'SHA-512';
+            challenge: string;
+            maxnumber?: number;
+            salt: string;
+            signature: string;
+        };
+        RateLimitErrorSchema: {
+            /** @description The error message. */
+            error: string;
+            /**
+             * Format: date-time
+             * @description Date that this rate limit will reset.
+             */
+            reset: string;
+        };
+        ErrorSchema: {
+            /** @description The error message. */
+            error: string;
+        };
+        CaptchaSuccessSchema: {
+            /** @description Whether the captcha was successful or not. */
+            success: boolean;
+        };
+        CardBackgroundSchema: {
+            /** @description Identification string of this card background. */
+            id: string;
+            /** @description If true, this card is custom and was uploaded by a user. */
+            isCustom: boolean;
+            /**
+             * Format: uri
+             * @description URL to access this card background.
+             */
+            url: string;
+            /** @description Category that this card background belongs to. This will always be "User Uploaded" when "isCustom" is true. */
+            category: string;
+        };
+        PingSchema: {
+            /** @description Ping (in ms) to cloudflare. */
+            cloudflare: number;
+            /** @description Ping (in ms) to google. */
+            google: number;
+        };
+        TasksSchema: {
+            /** @description A list of tasks. */
+            tasks: {
+                /** @description Name of this task. */
+                name: string;
+                /** @description Description of this task. */
+                description: string;
+                /**
+                 * Format: uuid
+                 * @description ID of this task.
+                 */
+                id: string;
+                /** @description A boolean indicating whether this task is temporary or not. */
+                temporary: boolean;
+                /**
+                 * Format: date-time
+                 * @description The next date that this task will run on.
+                 */
+                nextRun: string | null;
+                /**
+                 * Format: date-time
+                 * @description The last date that this task was run on.
+                 */
+                lastRun: string | null;
+            }[];
+        };
+        ClientUpdateSchema: {
+            /** @description A boolean indicating if the client needs updated or not. */
+            update: boolean;
+            /** @description The current version for refrence. */
+            version: string;
+        };
+        VersionSchema: {
+            /** @description The current version. */
+            version: string;
+        };
+    };
     responses: never;
     parameters: never;
     requestBodies: never;

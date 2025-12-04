@@ -10,7 +10,7 @@ export const errorSchema = z
     .object({
         error: z.string().openapi({ description: 'The error message.' })
     })
-    .openapi({ description: 'Error Schema' });
+    .openapi('ErrorSchema');
 
 /** `errorSchema` type. */
 export type ErrorSchema = z.infer<typeof errorSchema>;
@@ -20,7 +20,7 @@ export const versionSchema = z
     .object({
         version: z.string().openapi({ description: 'The current version.' })
     })
-    .openapi({ description: 'Version Schema' });
+    .openapi('VersionSchema');
 
 /** `versionSchema` type. */
 export type VersionSchema = z.infer<typeof versionSchema>;
@@ -31,7 +31,7 @@ export const rateLimitErrorSchema = z
         error: z.string().openapi({ description: 'The error message.' }),
         reset: z.iso.datetime().openapi({ description: 'Date that this rate limit will reset.' })
     })
-    .openapi({ description: 'Rate Limit Error Schema' });
+    .openapi('RateLimitErrorSchema');
 
 /** `rateLimitErrorSchema` type. */
 export type RateLimitErrorSchema = z.infer<typeof rateLimitErrorSchema>;
@@ -42,7 +42,7 @@ export const clientUpdateSchema = z
         update: z.boolean().openapi({ description: 'A boolean indicating if the client needs updated or not.' }),
         version: z.string().openapi({ description: 'The current version for refrence.' })
     })
-    .openapi({ description: 'Client Update Schema' });
+    .openapi('ClientUpdateSchema');
 
 /** `clientUpdateSchema` type. */
 export type ClientUpdateSchema = z.infer<typeof clientUpdateSchema>;

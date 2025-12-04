@@ -14,7 +14,7 @@ export const captchaSchema = z
         salt: z.string(),
         signature: z.string()
     })
-    .openapi({ description: 'Captcha Schema' });
+    .openapi('CaptchaSchema');
 
 /** `captchaSchema` type. */
 export type CaptchaSchema = z.infer<typeof captchaSchema>;
@@ -24,7 +24,7 @@ export const captchaErrorSchema = z
     .object({
         error: z.string().openapi({ description: 'The error message.' })
     })
-    .openapi({ description: 'Captcha Error Schema' });
+    .openapi('CaptchaErrorSchema');
 
 /** `captchaErrorSchema` type. */
 export type CaptchaErrorSchema = z.infer<typeof captchaErrorSchema>;

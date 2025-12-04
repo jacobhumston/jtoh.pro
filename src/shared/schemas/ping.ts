@@ -11,7 +11,7 @@ export const pingSchema = z
         cloudflare: z.number().openapi({ description: 'Ping (in ms) to cloudflare.' }),
         google: z.number().openapi({ description: 'Ping (in ms) to google.' })
     })
-    .openapi({ description: 'Ping Schema' });
+    .openapi('PingSchema');
 
 /** `pongSchema` type. */
 export type PingSchema = z.infer<typeof pingSchema>;

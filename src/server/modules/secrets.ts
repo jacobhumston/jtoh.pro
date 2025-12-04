@@ -34,4 +34,3 @@ export const encrypt = cryptr.encrypt;
 
 /** Decrypt a string. */
 export const decrypt = cryptr.decrypt;
-

@@ -16,7 +16,7 @@ export const cardBackgroundSchema = z
                 'Category that this card background belongs to. This will always be "User Uploaded" when "isCustom" is true.'
         })
     })
-    .openapi({ description: 'Card Background Schema' });
+    .openapi('CardBackgroundSchema');
 
 /** `cardBackgroundSchema` type. */
 export type CardBackgroundSchema = z.infer<typeof cardBackgroundSchema>;

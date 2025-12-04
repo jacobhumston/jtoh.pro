@@ -27,7 +27,7 @@ const route = createRoute({
             },
             description: 'A response indicating whether the client needs updated or not.',
             headers: z.object({
-                'clear-site-data': z.literal('"cache"').optional()
+                'Clear-Site-Data': z.literal('cache').optional()
             })
         },
         400: {
