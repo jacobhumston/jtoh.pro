@@ -57,6 +57,8 @@ const topggToken = (tokens.topggToken ?? '') as string;
 const discordSelfBotToken = tokens.discordSelfBotToken as string;
 const jacobsAssistantDiscordToken = tokens.JacobsAssistantDiscordToken as string;
 const discordFeedbackWebhook = tokens.discordFeedbackWebhook as string;
+const emailAddress = tokens.emailAddress as string;
+const emailPassword = tokens.emailPassword as string;
 
 const apiTokens = {
     discordInteractionsPublicKey,
@@ -85,7 +87,9 @@ const apiTokens = {
     topggToken,
     discordSelfBotToken,
     jacobsAssistantDiscordToken,
-    discordFeedbackWebhook
+    discordFeedbackWebhook,
+    emailAddress,
+    emailPassword
 };
 
 /** API tokens. */
