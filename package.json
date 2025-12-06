@@ -58,7 +58,7 @@
         "file-type": "^21.0.0",
         "filenamify": "^7.0.0",
         "fuse.js": "^7.1.0",
-        "google-closure-compiler": "^20250924.0.0",
+        "google-closure-compiler": "^20251111.0.0",
         "google-fonts-helper": "^3.7.3",
         "highlight.js": "^11.11.1",
         "hono": "^4.9.9",
