@@ -11,7 +11,7 @@
         "@hotwired/turbo": "^8.0.18",
         "@infisical/sdk": "^4.0.6",
         "@inquirer/prompts": "^7.8.6",
-        "@isaacs/ttlcache": "^1.4.1",
+        "@isaacs/ttlcache": "^2.1.1",
         "@jacobhumston/lib": "^1.1.3",
         "@jacobhumston/tc.js": "^1.0.2",
         "@jsfns/web": "^1.1.3",
