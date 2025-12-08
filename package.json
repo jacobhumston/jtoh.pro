@@ -46,6 +46,7 @@
         "sharp": "^0.34.5",
         "sitemap": "^9.0.0",
         "terser": "^5.44.1",
+        "towerstats.js": "^1.0.3",
         "tweetnacl": "^1.0.3",
         "typescript": "^5.9.3",
         "ua-parser-js": "^2.0.6",

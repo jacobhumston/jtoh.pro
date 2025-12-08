@@ -50,6 +50,7 @@
         "sharp": "^0.34.5",
         "sitemap": "^9.0.0",
         "terser": "^5.44.1",
+        "towerstats.js": "^1.0.3",
         "tweetnacl": "^1.0.3",
         "typescript": "^5.9.3",
         "ua-parser-js": "^2.0.6",
@@ -1936,6 +1937,8 @@
     "to-regex-range": ["to-regex-range@5.0.1", "", { "dependencies": { "is-number": "^7.0.0" } }, "sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ=="],
 
     "tough-cookie": ["tough-cookie@2.5.0", "", { "dependencies": { "psl": "^1.1.28", "punycode": "^2.1.1" } }, "sha512-nlLsUzgm1kfLXSXfRZMc1KLAugd4hqJHDTvc2hDIwS3mZAfMEuMbc03SujMF+GEcpaX/qboeycw6iO8JwVv2+g=="],
+
+    "towerstats.js": ["towerstats.js@1.0.3", "", {}, "sha512-woNyZcBSYoY4DzL31fTArhXt8mY8EL6FvpcWvBkeN9X1+A57MTKettRjLZBLR23gXtCNk0zWfs5e5Nlf/iQuPQ=="],
 
     "tr46": ["tr46@0.0.3", "", {}, "sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw=="],
 
