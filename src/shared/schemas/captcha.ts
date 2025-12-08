@@ -28,3 +28,13 @@ export const captchaErrorSchema = z
 
 /** `captchaErrorSchema` type. */
 export type CaptchaErrorSchema = z.infer<typeof captchaErrorSchema>;
+
+/** Schema that represents a captcha success response. */
+export const captchaSuccessSchema = z
+    .object({
+        success: z.boolean().openapi({ description: 'Whether the captcha was successful or not.' })
+    })
+    .openapi('CaptchaSuccessSchema');
+
+/** `captchaSuccessSchema` type. */
+export type CaptchaSuccessSchema = z.infer<typeof captchaSuccessSchema>;

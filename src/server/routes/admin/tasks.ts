@@ -3,9 +3,9 @@
  *
  * Authored by Jacob Humston
  */
-import { createRoute, OpenAPIHono } from '@hono/zod-openapi';
+import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi';
 
-import { tasksSchema, type TasksSchema } from '../../../shared/schemas/admin';
+import { taskSchema, type TaskSchema } from '../../../shared/schemas/admin';
 import { errorSchema, rateLimitErrorSchema } from '../../../shared/schemas/general';
 import { getTasks } from '../../managers/tasks';
 
@@ -18,7 +18,7 @@ const route = createRoute({
         200: {
             content: {
                 'application/json': {
-                    schema: tasksSchema
+                    schema: z.array(taskSchema)
                 }
             },
             description: 'List of tasks.'
@@ -45,7 +45,7 @@ const route = createRoute({
 /** Handle for this endpoint. */
 export async function handler(app: OpenAPIHono) {
     app.openapi(route, (context) => {
-        const tasks: TasksSchema['tasks'] = [];
+        const tasks: Array<TaskSchema> = [];
         const currentTasks = getTasks();
 
         for (const task of currentTasks) {
@@ -59,6 +59,6 @@ export async function handler(app: OpenAPIHono) {
             });
         }
 
-        return context.json({ tasks }, 200);
+        return context.json(tasks, 200);
     });
 }

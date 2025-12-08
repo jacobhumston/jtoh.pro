@@ -7,7 +7,7 @@
  */
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi';
 
-import { captchaSchema } from '../../shared/schemas/captcha';
+import { captchaSchema, captchaSuccessSchema } from '../../shared/schemas/captcha';
 import { errorSchema, rateLimitErrorSchema } from '../../shared/schemas/general';
 import { createCaptcha, verifyCaptchaFromContext } from '../modules/captcha';
 
@@ -57,11 +57,7 @@ const testRoute = createRoute({
         200: {
             content: {
                 'application/json': {
-                    schema: z
-                        .object({
-                            success: z.boolean().openapi({ description: 'Whether the captcha was successful or not.' })
-                        })
-                        .openapi('CaptchaSuccessSchema')
+                    schema: captchaSuccessSchema
                 }
             },
             description: 'Captcha response.'
