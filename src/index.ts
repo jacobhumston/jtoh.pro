@@ -312,7 +312,7 @@ export default {
     fetch: app.fetch,
     idleTimeout: 180,
     websocket: socket as any
-} satisfies Serve;
+} satisfies Serve.Options<{ name: string }>;
 
 if (!skipQWT) quickWebTest();
 else logger.info('Quick Web Test skipped.');

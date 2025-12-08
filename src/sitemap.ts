@@ -1,5 +1,5 @@
 import type { Hono } from 'hono';
-import sitemap from 'sitemap';
+import * as sitemap from 'sitemap';
 import stream from 'node:stream';
 import fs from 'node:fs';
 import { getURL } from './dev';

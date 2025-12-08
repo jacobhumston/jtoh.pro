@@ -26,7 +26,7 @@ export function cardImageCheck() {
     }
 
     for (const image of Object.values(cardImages)) {
-        if (image.extension !== 'png' && image.extension !== 'jpg') {
+        if (image.extension !== 'png' && image.extension !== 'jpg' && image.extension !== 'webp') {
             logger.warn(`Invalid card image extension: ${image.extension}`);
         }
     }

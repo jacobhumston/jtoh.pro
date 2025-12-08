@@ -1,16 +1,17 @@
 import * as discord from 'discord.js';
 import { rest } from '../rest';
-import { discordInteractionsApplicationId } from '../../tokens';
+import { discordInteractionsApplicationId, towerStatsToken } from '../../tokens';
 import { fullNamesArray, gameNamesArray, type gameNames } from '../../shared/gamelist';
-import { UTCDate } from '@date-fns/utc';
-import { isAfter, isToday, parse, startOfMonth, startOfWeek, startOfYear } from 'date-fns';
-import { statsDB } from '../../db';
-import { getURL } from '../../dev';
-import { v4 } from 'uuid';
+import { parseRobloxAccountV2 } from '../../login-auth';
+import { autocompleteUserSelection, getFocusedOptionName } from '../autocomplete';
+import { addRecent } from '../util';
+import { towerstatsCache } from '../../cache';
+import type { TowerDataCSCD, TowerDataEToH } from '../../type';
+import { userIdToThumbnailFull } from '../../roblox';
 
 export const command = new discord.SlashCommandBuilder()
     .setName('stats')
-    .setDescription('Get the jtoh.pro card request stats for a game.')
+    .setDescription('Get a stats for a specific user.')
     .setContexts([
         discord.InteractionContextType.BotDM,
         discord.InteractionContextType.PrivateChannel,
@@ -23,10 +24,47 @@ export const command = new discord.SlashCommandBuilder()
 
 gameNamesArray.forEach((game, index) => {
     command.addSubcommand((subcommand) => {
-        subcommand.setName(game).setDescription(`Get the jtoh.pro stats for ${fullNamesArray[index]} card requests.`);
+        subcommand
+            .setName(game)
+            .setDescription(`Get stats for ${fullNamesArray[index]}.`)
+            .addStringOption((option) =>
+                option
+                    .setName('user')
+                    .setDescription('The user to get the stats for.')
+                    .setRequired(true)
+                    .setAutocomplete(true)
+            );
+        if (game === 'cscd')
+            subcommand.addStringOption((option) =>
+                option
+                    .setName('mode')
+                    .setDescription('The mode to get the stats for.')
+                    .setRequired(true)
+                    .setChoices([
+                        { name: 'All Jumps', value: 'aj' },
+                        { name: 'Legit', value: 'legit' }
+                    ])
+            );
         return subcommand;
     });
 });
+
+const emojis: Record<string, string> = {
+    '1': '<:easy:1447440529196580944>',
+    '2': '<:medium:1447440528156135667>',
+    '3': '<:hard:1447440527258681395>',
+    '4': '<:difficult:1447440526302253126>',
+    '5': '<:challenging:1447440525065191525>',
+    '6': '<:intense:1447440524243112067>',
+    '7': '<:remorseless:1447440523043541042>',
+    '8': '<:insane:1447440522120531978>',
+    '9': '<:extreme:1447440520912830536>',
+    '10': '<:terrifying:1447440519503544330>',
+    '11': '<:catastrophic:1447440518459162695>',
+    '12': '<:horrific:1447442337214103562>',
+    '13': '<:unreal:1447442336387825664>',
+    '14': '<:nil:1447442334785470514>'
+};
 
 export async function execute(interaction: discord.APIChatInputApplicationCommandInteraction) {
     const form = new FormData();
@@ -37,57 +75,162 @@ export async function execute(interaction: discord.APIChatInputApplicationComman
     if (interaction.data.options[0].options === undefined) return;
 
     const game = interaction.data.options[0].name;
+    const username = interaction.data.options[0].options[0].value;
+
     const fullGameName = fullNamesArray[gameNamesArray.indexOf(game as gameNames)];
 
     const container = new discord.ContainerBuilder();
+    const user = await parseRobloxAccountV2(username as string);
 
-    container.addTextDisplayComponents((text) => text.setContent(`**Card Request Stats for ${fullGameName}**`));
+    if (user) {
+        await addRecent(interaction, user.name);
+        if (game === 'etoh') {
+            const cached = towerstatsCache.get(`${user.id}-etoh`);
+            let towerStats: TowerDataEToH | undefined =
+                cached ??
+                (await fetch(`https://api.towerstats.com/api/etoh`, {
+                    method: 'POST',
+                    body: JSON.stringify({ id: user.id }),
+                    headers: {
+                        apiKey: towerStatsToken
+                    }
+                })
+                    .then((res) => {
+                        if (res.ok) return res.json();
+                        return undefined;
+                    })
+                    .catch(() => undefined));
 
-    const now = new UTCDate();
-    const startOfCurrentMonth = startOfMonth(now);
-    const startOfCurrentWeek = startOfWeek(now);
-    const startOfCurrentYear = startOfYear(now);
+            if (towerStats !== undefined && (towerStats.error as any) !== undefined) {
+                towerStats = undefined;
+            }
 
-    let todayCount = 0;
-    let monthCount = 0;
-    let weekCount = 0;
-    let yearCount = 0;
-    let totalCount = 0;
+            if (towerStats !== undefined && cached === undefined) {
+                towerstatsCache.set(`${user.id}-etoh`, towerStats);
+            }
 
-    // @ts-ignore-next-line
-    for await (const [key, value] of statsDB[game].iterator()) {
-        const date = parse(key, 'MM-dd-yyyy', new UTCDate());
+            const thumb = (await userIdToThumbnailFull(user.id).catch(() => null)) ?? '';
 
-        if (isToday(date)) todayCount += value;
+            if (towerStats === undefined) {
+                container.addTextDisplayComponents((text) =>
+                    text.setContent(`*Failed to load ${user.name}'s stats for ${fullGameName}*`)
+                );
+            } else {
+                container.addSectionComponents((section) => {
+                    section.addTextDisplayComponents((text) =>
+                        text.setContent(`### ${user.name}'s stats for ${fullGameName}`)
+                    );
+                    section.addTextDisplayComponents((text) =>
+                        text.setContent(`Hardest Completion: ${emojis[towerStats.hardest_raw_difficulty.toFixed(0).toString()] ?? ''} **${towerStats.hardest_tower ?? 'None'}**
+Total Progress: **${towerStats.completed_towers} / ${towerStats.total_towers}**
+Completed Areas: ${towerStats.completed_areas.length > 0 ? towerStats.completed_areas.map((a) => `**${a}**`).join(', ') : '**None**'}`)
+                    );
+                    return section.setThumbnailAccessory((thumbnail) => thumbnail.setURL(thumb));
+                });
 
-        if (isAfter(date, startOfCurrentMonth) || isToday(date)) monthCount += value;
+                container.addSeparatorComponents((sep) => sep.setSpacing(discord.SeparatorSpacingSize.Small));
 
-        if (isAfter(date, startOfCurrentWeek) || isToday(date)) weekCount += value;
+                container.addTextDisplayComponents((text) => {
+                    let string = `Difficulty Progress:`;
+                    const difficultyOrder = [];
+                    for (const [key, string] of Object.entries(towerStats.difficulties)) {
+                        difficultyOrder[parseInt(key) - 1] = string;
+                    }
+                    for (const [index, value] of difficultyOrder.entries()) {
+                        if (towerStats.difficulty_progress[value] === undefined) continue;
+                        const emoji = emojis[(index + 1).toString()];
+                        const progress = towerStats.difficulty_progress[value];
+                        string = `${string}\n* ${emoji} ${towerStats.difficulties[(index + 1).toString()]}: **${progress[0]} / ${progress[1]}** (%${Math.floor((progress[0] / progress[1]) * 100)})`;
+                    }
+                    return text.setContent(string);
+                });
+            }
+        } else if (game === 'cscd') {
+            const mode = interaction.data.options[0].options[1].value as 'aj' | 'legit';
 
-        if (isAfter(date, startOfCurrentYear) || isToday(date)) yearCount += value;
+            const cached = towerstatsCache.get(`${user.id}-cscd`);
+            let towerStats: TowerDataCSCD | undefined =
+                cached ??
+                (await fetch(`https://api.towerstats.com/api/cscd`, {
+                    method: 'POST',
+                    body: JSON.stringify({ id: user.id }),
+                    headers: {
+                        apiKey: towerStatsToken
+                    }
+                })
+                    .then((res) => {
+                        if (res.ok) return res.json();
+                        return undefined;
+                    })
+                    .catch(() => undefined));
 
-        totalCount += value;
+            if (towerStats !== undefined && (towerStats.error as any) !== undefined) {
+                towerStats = undefined;
+            }
+
+            if (towerStats !== undefined && cached === undefined) {
+                towerstatsCache.set(`${user.id}-cscd`, towerStats);
+            }
+
+            const thumb = (await userIdToThumbnailFull(user.id).catch(() => null)) ?? '';
+
+            if (towerStats === undefined) {
+                container.addTextDisplayComponents((text) =>
+                    text.setContent(`*Failed to load ${user.name}'s stats for ${fullGameName}*`)
+                );
+            } else {
+                container.addSectionComponents((section) => {
+                    section.addTextDisplayComponents((text) =>
+                        text.setContent(`### ${user.name}'s stats for ${fullGameName}`)
+                    );
+                    section.addTextDisplayComponents((text) =>
+                        text.setContent(`Mode: **${mode === 'aj' ? 'All Jumps' : 'Legit'}**
+Hardest Completion: ${emojis[towerStats.hardest_raw_difficulty[mode].toFixed(0).toString()] ?? ''} **${towerStats.hardest_tower[mode] ?? 'None'}**
+Total Progress: **${towerStats.completed_towers[mode]} / ${towerStats.total_towers}**
+Completed Areas: ${towerStats.completed_areas.length > 0 ? towerStats.completed_areas.map((a) => `**${a}**`).join(', ') : '**None**'}`)
+                    );
+                    return section.setThumbnailAccessory((thumbnail) => thumbnail.setURL(thumb));
+                });
+
+                container.addSeparatorComponents((sep) => sep.setSpacing(discord.SeparatorSpacingSize.Small));
+
+                container.addTextDisplayComponents((text) => {
+                    let string = `Difficulty Progress:`;
+                    const difficultyOrder = [];
+                    for (const [key, string] of Object.entries(towerStats.difficulties)) {
+                        difficultyOrder[parseInt(key) - 1] = string;
+                    }
+                    for (const [index, value] of difficultyOrder.entries()) {
+                        if (towerStats.difficulty_progress[mode][value] === undefined) continue;
+                        const emoji = emojis[(index + 1).toString()];
+                        const progress = towerStats.difficulty_progress[mode][value];
+                        string = `${string}\n* ${emoji} ${towerStats.difficulties[(index + 1).toString()]}: **${progress[0]} / ${progress[1]}** (%${Math.floor((progress[0] / progress[1]) * 100)})`;
+                    }
+                    return text.setContent(string);
+                });
+            }
+        }
+    } else {
+        container.addTextDisplayComponents((text) => {
+            text.setContent(`**The user you requested does not exist.** Please try again.
+
+Available User Options: 
+- \`{Roblox Username}\`
+- \`!{Roblox User ID}\`
+-# *(Do not include the brackets.)*
+                `);
+            return text;
+        });
+
+        container.addActionRowComponents((row) =>
+            row.addComponents(
+                new discord.ButtonBuilder()
+                    .setStyle(discord.ButtonStyle.Link)
+                    .setLabel('Need Help?')
+                    .setURL(`https://discord.jtoh.pro`)
+            )
+        );
     }
-
-    const formatter = new Intl.NumberFormat();
-
-    container.addTextDisplayComponents((text) =>
-        text.setContent(
-            `\`\`\`ts
-     Today : ${formatter.format(todayCount)}
- This Week : ${formatter.format(weekCount)}
-This Month : ${formatter.format(monthCount)}
- This Year : ${formatter.format(yearCount)}
-     Total : ${formatter.format(totalCount)}
-\`\`\``
-        )
-    );
-
-    container.addMediaGalleryComponents((gallery) =>
-        gallery.addItems((item) =>
-            item.setURL(`${getURL()}/api/charts/card-requests/${game}?width=500&height=250&nocache=${v4()}`)
-        )
-    );
 
     const payload: discord.RESTPostAPIInteractionFollowupJSONBody = {
         components: [container.toJSON()],
@@ -101,4 +244,12 @@ This Month : ${formatter.format(monthCount)}
             passThroughBody: true
         })
         .catch(console.log);
+}
+
+export async function autocomplete(
+    interaction: discord.APIApplicationCommandAutocompleteInteraction
+): Promise<discord.APICommandAutocompleteInteractionResponseCallbackData> {
+    const focusedOptionName = getFocusedOptionName(interaction);
+    if (focusedOptionName !== 'user') return { choices: [] };
+    return await autocompleteUserSelection(interaction);
 }

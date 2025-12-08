@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import type { Command } from './types';
 
-export async function getCommands(): Command[] {
+export async function getCommands(): Promise<Command[]> {
     const files = fs.readdirSync('./src/cli/cmd');
     const newFiles = [];
 
