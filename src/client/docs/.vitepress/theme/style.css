@@ -1,0 +1,19 @@
+/**
+ * Custom styles for vitepress docs.
+ *
+ * Authored by Jacob Humston
+ */
+
+:root {
+    --vp-home-hero-name-color: #9a71f8;
+    --vp-button-brand-bg: #9a71f8;
+}
+
+strong {
+    color: #9a71f8;
+}
+
+::marker {
+    background-color: #9a71f8;
+    color: #9a71f8;
+}

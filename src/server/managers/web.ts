@@ -290,6 +290,18 @@ export async function buildFrontend() {
             writeFileSync(filePath, content, 'utf8');
         }
     }
+
+    // create symlinks for doc files
+    for (const file of readdirSync('src/client/docs/.vitepress/dist/', { recursive: true, withFileTypes: true })) {
+        if (file.isFile()) {
+            let path = file.parentPath.replace('src/client/docs/.vitepress/dist/', '');
+            if (path === 'src/client/docs/.vitepress/dist') path = '';
+            else path = `${path}/`;
+            const destinationPath = `static/docs/${path}`;
+            createPath(destinationPath);
+            symlinkSync(safelyGetPath(`${file.parentPath}/${file.name}`), `${destinationPath}${file.name}`);
+        }
+    }
 }
 
 /**

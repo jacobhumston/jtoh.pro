@@ -72,3 +72,5 @@ static/
 current-log
 *.log
 *.cpuprofile
+src/client/docs/.vitepress/dist 
+src/client/docs/.vitepress/cache
