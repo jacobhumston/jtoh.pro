@@ -121,8 +121,8 @@ export async function execute(interaction: discord.APIChatInputApplicationComman
                         text.setContent(`### ${user.name}'s stats for ${fullGameName}`)
                     );
                     section.addTextDisplayComponents((text) =>
-                        text.setContent(`Hardest Completion: ${emojis[towerStats.hardest_raw_difficulty.toFixed(0).toString()] ?? ''} **${towerStats.hardest_tower ?? 'None'}**
-Total Progress: **${towerStats.completed_towers} / ${towerStats.total_towers}**
+                        text.setContent(`Hardest Completion: ${emojis[Math.floor(towerStats.hardest_raw_difficulty).toString()] ?? ''} **${towerStats.hardest_tower ?? 'None'}**
+Total Progress: **${towerStats.completed_towers} / ${towerStats.total_towers}** (${Math.floor((towerStats.completed_towers / towerStats.total_towers) * 100)}%)
 Completed Areas: ${towerStats.completed_areas.length > 0 ? towerStats.completed_areas.map((a) => `**${a}**`).join(', ') : '**None**'}`)
                     );
                     return section.setThumbnailAccessory((thumbnail) => thumbnail.setURL(thumb));
@@ -140,7 +140,7 @@ Completed Areas: ${towerStats.completed_areas.length > 0 ? towerStats.completed_
                         if (towerStats.difficulty_progress[value] === undefined) continue;
                         const emoji = emojis[(index + 1).toString()];
                         const progress = towerStats.difficulty_progress[value];
-                        string = `${string}\n* ${emoji} ${towerStats.difficulties[(index + 1).toString()]}: **${progress[0]} / ${progress[1]}** (%${Math.floor((progress[0] / progress[1]) * 100)})`;
+                        string = `${string}\n* ${emoji} ${towerStats.difficulties[(index + 1).toString()]}: **${progress[0]} / ${progress[1]}** (${Math.floor((progress[0] / progress[1]) * 100)}%)`;
                     }
                     return text.setContent(string);
                 });
@@ -185,8 +185,8 @@ Completed Areas: ${towerStats.completed_areas.length > 0 ? towerStats.completed_
                     );
                     section.addTextDisplayComponents((text) =>
                         text.setContent(`Mode: **${mode === 'aj' ? 'All Jumps' : 'Legit'}**
-Hardest Completion: ${emojis[towerStats.hardest_raw_difficulty[mode].toFixed(0).toString()] ?? ''} **${towerStats.hardest_tower[mode] ?? 'None'}**
-Total Progress: **${towerStats.completed_towers[mode]} / ${towerStats.total_towers}**
+Hardest Completion: ${emojis[Math.floor(towerStats.hardest_raw_difficulty[mode]).toString()] ?? ''} **${towerStats.hardest_tower[mode] ?? 'None'}**
+Total Progress: **${towerStats.completed_towers[mode]} / ${towerStats.total_towers}** (${Math.floor((towerStats.completed_towers[mode] / towerStats.total_towers) * 100)}%)
 Completed Areas: ${towerStats.completed_areas.length > 0 ? towerStats.completed_areas.map((a) => `**${a}**`).join(', ') : '**None**'}`)
                     );
                     return section.setThumbnailAccessory((thumbnail) => thumbnail.setURL(thumb));
@@ -204,7 +204,7 @@ Completed Areas: ${towerStats.completed_areas.length > 0 ? towerStats.completed_
                         if (towerStats.difficulty_progress[mode][value] === undefined) continue;
                         const emoji = emojis[(index + 1).toString()];
                         const progress = towerStats.difficulty_progress[mode][value];
-                        string = `${string}\n* ${emoji} ${towerStats.difficulties[(index + 1).toString()]}: **${progress[0]} / ${progress[1]}** (%${Math.floor((progress[0] / progress[1]) * 100)})`;
+                        string = `${string}\n* ${emoji} ${towerStats.difficulties[(index + 1).toString()]}: **${progress[0]} / ${progress[1]}** (${Math.floor((progress[0] / progress[1]) * 100)}%)`;
                     }
                     return text.setContent(string);
                 });
