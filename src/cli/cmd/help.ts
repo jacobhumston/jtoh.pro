@@ -7,7 +7,7 @@ export default {
     description: 'Prints a helpful message.',
     args: [],
     execute: async () => {
-        const commands = getCommands();
+        const commands = await getCommands();
         logger.info('Welcome to the jtoh.pro CLI!');
         logger.info('Available commands:');
         commands.forEach((cmd) => {

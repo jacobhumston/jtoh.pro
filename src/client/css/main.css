@@ -2313,6 +2313,7 @@ input[type='file']::file-selector-button:active {
     box-sizing: border-box;
     padding-bottom: 15px;
     margin-bottom: 30px;
+    display: none;
 }
 
 .adSegment h2 {

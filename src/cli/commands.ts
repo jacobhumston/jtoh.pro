@@ -1,7 +1,18 @@
 import fs from 'node:fs';
 import type { Command } from './types';
 
-export function getCommands(): Command[] {
+export async  function getCommands(): Command[] {
     const files = fs.readdirSync('./src/cli/cmd');
-    return files.filter((file) => !file.startsWith('_')).map((file) => require(`./cmd/${file}`).default);
+	const newFiles = []
+
+try {  
+  for (const file of files) {
+	const v = await import(`./cmd/${file}`);
+     newFiles.push(v.default)
+}
+} catch (e) {
+ console.log(e)
+}
+console.log(files)
+return newFiles
 }
