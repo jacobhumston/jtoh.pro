@@ -42,15 +42,15 @@ if (!command) {
     process.exit(0);
 }
 
-console.log('test1')
+console.log('test1');
 
 const commands = await getCommands();
 const cmd = commands.find((c) => c.name === command);
 if (cmd) {
-   console.log('command executing!')
-	 await cmd.execute(parts.slice(sliceIndex), cookie);
+    console.log('command executing!');
+    await cmd.execute(parts.slice(sliceIndex), cookie);
 } else {
-  console.log('no command... :(')
-	  logger.error(`Command "${command}" not found! Use "help" for a list of commands.`);
+    console.log('no command... :(');
+    logger.error(`Command "${command}" not found! Use "help" for a list of commands.`);
     process.exit(0);
 }
