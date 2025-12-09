@@ -17,7 +17,7 @@ import { v4 as uuid } from 'uuid';
 
 import { build } from 'bun';
 import { existsSync, rmSync, readdirSync, symlinkSync, readFileSync, writeFileSync, renameSync } from 'node:fs';
-import { parse } from 'node:path';
+import { basename, parse } from 'node:path';
 
 import { replaceEmptyString } from '../../shared/common-utils';
 import { isDev } from '../config';
@@ -221,12 +221,10 @@ export async function buildFrontend() {
             
             // Keep the first file, remove the rest
             const [keepFile, ...duplicateFiles] = filePaths;
-            const keepFileNameParts = keepFile.split('/');
-            const fileName = keepFileNameParts[keepFileNameParts.length - 1];
+            const fileName = basename(keepFile);
             
             for (const duplicateFile of duplicateFiles) {
-                const dupFileNameParts = duplicateFile.split('/');
-                const dupFileName = dupFileNameParts[dupFileNameParts.length - 1];
+                const dupFileName = basename(duplicateFile);
                 rmSync(duplicateFile, { force: true });
                 
                 // paths will always have at least 1 separator, so it is safe to subtract 2
@@ -240,8 +238,7 @@ export async function buildFrontend() {
         // Rename remaining files
         for (const filePath of files) {
             if (!existsSync(filePath)) continue; // Skip deleted duplicates
-            const fileNameParts = filePath.split('/');
-            const fileName = fileNameParts[fileNameParts.length - 1];
+            const fileName = basename(filePath);
             const newName = nameMap.get(fileName);
             if (newName && newName !== fileName) {
                 renameSync(filePath, filePath.replace(fileName, newName));
