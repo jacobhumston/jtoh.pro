@@ -193,8 +193,7 @@ export async function buildFrontend() {
         // First pass: compute all file hashes in parallel
         const files = readdirSync('static', { recursive: true, withFileTypes: true })
             .filter(file => file.isFile() && !file.isSymbolicLink() && !file.name.endsWith('.html'))
-            .map(file => `${file.parentPath}/${file.name}`)
-            .filter(filePath => existsSync(filePath));
+            .map(file => `${file.parentPath}/${file.name}`);
         
         // Compute hashes in parallel for better performance
         const hashPromises = files.map(async (filePath) => {
@@ -215,6 +214,9 @@ export async function buildFrontend() {
             }
         }
         
+        // Track files to delete for efficient renaming later
+        const deletedFiles = new Set<string>();
+        
         // Second pass: identify duplicates and remove them
         for (const [hash, filePaths] of hashToFiles) {
             if (filePaths.length <= 1) continue;
@@ -226,6 +228,7 @@ export async function buildFrontend() {
             for (const duplicateFile of duplicateFiles) {
                 const dupFileName = basename(duplicateFile);
                 rmSync(duplicateFile, { force: true });
+                deletedFiles.add(duplicateFile);
                 
                 // paths will always have at least 1 separator, so it is safe to subtract 2
                 refrenceMap.set(dupFileName, {
@@ -235,9 +238,9 @@ export async function buildFrontend() {
             }
         }
         
-        // Rename remaining files
+        // Rename remaining files (skip deleted duplicates)
         for (const filePath of files) {
-            if (!existsSync(filePath)) continue; // Skip deleted duplicates
+            if (deletedFiles.has(filePath)) continue;
             const fileName = basename(filePath);
             const newName = nameMap.get(fileName);
             if (newName && newName !== fileName) {
