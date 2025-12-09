@@ -47,8 +47,13 @@ const route = createRoute({
 /** Handle for this endpoint. */
 export async function handler(app: OpenAPIHono) {
     app.openapi(route, async (context) => {
-        const cloudflare = (await ping.promise.probe('1.1.1.1', { extra: ['-c', '1'] })).time;
-        const google = (await ping.promise.probe('8.8.8.8', { extra: ['-c', '1'] })).time;
+        // Run pings in parallel for better performance
+        const [cloudflareResult, googleResult] = await Promise.all([
+            ping.promise.probe('1.1.1.1', { extra: ['-c', '1'] }),
+            ping.promise.probe('8.8.8.8', { extra: ['-c', '1'] })
+        ]);
+        const cloudflare = cloudflareResult.time;
+        const google = googleResult.time;
         // @ts-expect-error
         if (google === 'unknown' || cloudflare === 'unknown')
             return context.json({ error: 'Failed to ping servers.' }, 500);

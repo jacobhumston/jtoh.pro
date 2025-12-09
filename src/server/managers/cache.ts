@@ -35,8 +35,11 @@ export class Cache<Q = any> extends DatabaseClient<Q> {
      */
     async get<T = Q>(key: string): Promise<T | null> {
         const result = await super.get<CacheType<T>>(key);
-        if (result) return result.expires ? (Date.now() > result.expires ? null : result.data) : result.data;
-        else return null;
+        if (!result) return null;
+        if (!result.expires) return result.data;
+        // Cache current time to avoid multiple system calls
+        const now = Date.now();
+        return now > result.expires ? null : result.data;
     }
 
     /**
@@ -47,12 +50,13 @@ export class Cache<Q = any> extends DatabaseClient<Q> {
     async getMultiple<T = Q>(keys: string[]): Promise<Record<string, T | null>> {
         const result = await super.getMultiple<CacheType<T>>(keys);
         const parsedResults: Record<string, T | null> = {};
+        // Cache current time to avoid repeated system calls
+        const now = Date.now();
         for (const [key, value] of Object.entries(result)) {
             if (value === null) {
                 parsedResults[key] = null;
             } else if (value.expires) {
-                if (Date.now() < value.expires) parsedResults[key] = value.data;
-                else parsedResults[key] = null;
+                parsedResults[key] = now < value.expires ? value.data : null;
             } else {
                 parsedResults[key] = value.data;
             }
@@ -70,9 +74,11 @@ export class Cache<Q = any> extends DatabaseClient<Q> {
     async set<T = Q>(key: string, value: T, expires?: AvailableConversions, keepOldExpired?: boolean): Promise<void> {
         let previousExpired = null;
         if (keepOldExpired == true) {
-            const expires = await this.expires(key);
-            if (expires instanceof Date && Date.now() < expires.getTime()) {
-                previousExpired = expires.getTime();
+            const expiresDate = await this.expires(key);
+            // Cache current time to avoid multiple system calls
+            const now = Date.now();
+            if (expiresDate instanceof Date && now < expiresDate.getTime()) {
+                previousExpired = expiresDate.getTime();
             }
         }
         await super.set<CacheType<T>>(key, {
@@ -88,9 +94,11 @@ export class Cache<Q = any> extends DatabaseClient<Q> {
     async all<T = Q>(): Promise<Record<string, T>> {
         const result = await super.all<CacheType<T>>();
         const parsedResults: Record<string, T> = {};
+        // Cache current time to avoid repeated system calls
+        const now = Date.now();
         for (const [key, value] of Object.entries(result)) {
             if (value.expires) {
-                if (Date.now() < value.expires) parsedResults[key] = value.data;
+                if (now < value.expires) parsedResults[key] = value.data;
             } else {
                 parsedResults[key] = value.data;
             }
@@ -134,11 +142,13 @@ export class Cache<Q = any> extends DatabaseClient<Q> {
 
 // Create the cache sweeper
 createTask(`Cache Sweeper`, 'Sweeps caches every 5 minutes.', { minutes: 5 }, async function () {
+    // Cache current time to avoid repeated system calls
+    const now = Date.now();
     for (const cache of Object.values(caches)) {
         const result = await cache.rawAll();
         for (const [key, value] of Object.entries(result)) {
-            if (value.expires) {
-                if (Date.now() > value.expires) await cache.delete(key);
+            if (value.expires && now > value.expires) {
+                await cache.delete(key);
             }
         }
     }

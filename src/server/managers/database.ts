@@ -155,6 +155,14 @@ export class DatabaseClient<Q = any> {
             .#database`SELECT 1 FROM ${this.#database(this.#namespace)} WHERE key = ${this.#database(key)} LIMIT 1`;
         return result.length > 0;
     }
+
+    /**
+     * Clear all entries in this namespace.
+     * More efficient than deleting keys individually.
+     */
+    async clear(): Promise<void> {
+        await this.#database`DELETE FROM ${this.#database(this.#namespace)}`;
+    }
 }
 
 /**

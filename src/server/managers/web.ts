@@ -169,7 +169,6 @@ export async function buildFrontend() {
 
     // remove duplicate files and replace their references with the orginal
     // also renames files if in production mode
-    // TODO: replace some of the maps with caches (maybe)
     // note that this segment runs under the assumption that all non-symbolic link files are text based
     // and that it's iterating top to bottom
     {
@@ -186,37 +185,62 @@ export async function buildFrontend() {
         }
 
         // replace duplicate files
+        // Optimized: compute all hashes first, then find duplicates in O(n) instead of O(n²)
         const refrenceMap: Map<string, { new: string; layers: number }> = new Map();
         const hashMap: Map<string, string> = new Map();
-        for (const file of readdirSync('static', { recursive: true, withFileTypes: true })) {
-            const filePath = `${file.parentPath}/${file.name}`;
-            if (!file.isFile() || file.isSymbolicLink() || file.name.endsWith('.html')) continue;
-            if (!existsSync(filePath)) continue;
-
-            const fileHash = hashMap.get(filePath) ?? (await getFileHash(filePath));
-            hashMap.set(filePath, fileHash);
-
-            // run through other files
-            for (const file2 of readdirSync('static', { recursive: true, withFileTypes: true })) {
-                const file2Path = `${file2.parentPath}/${file2.name}`;
-                if (!file2.isFile() || file2.isSymbolicLink() || file2.name.endsWith('.html') || filePath === file2Path)
-                    continue;
-
-                const file2Hash = hashMap.get(file2Path) ?? (await getFileHash(file2Path));
-                hashMap.set(file2Path, file2Hash);
-
-                if (fileHash !== file2Hash) continue;
-                rmSync(file2Path, { force: true });
-
+        const hashToFiles: Map<string, string[]> = new Map();
+        
+        // First pass: compute all file hashes in parallel
+        const files = readdirSync('static', { recursive: true, withFileTypes: true })
+            .filter(file => file.isFile() && !file.isSymbolicLink() && !file.name.endsWith('.html'))
+            .map(file => `${file.parentPath}/${file.name}`)
+            .filter(filePath => existsSync(filePath));
+        
+        // Compute hashes in parallel for better performance
+        const hashPromises = files.map(async (filePath) => {
+            const hash = await getFileHash(filePath);
+            return { filePath, hash };
+        });
+        
+        const fileHashes = await Promise.all(hashPromises);
+        
+        // Build hash maps
+        for (const { filePath, hash } of fileHashes) {
+            hashMap.set(filePath, hash);
+            if (!hashToFiles.has(hash)) {
+                hashToFiles.set(hash, []);
+            }
+            hashToFiles.get(hash)!.push(filePath);
+        }
+        
+        // Second pass: identify duplicates and remove them
+        for (const [hash, filePaths] of hashToFiles) {
+            if (filePaths.length <= 1) continue;
+            
+            // Keep the first file, remove the rest
+            const [keepFile, ...duplicateFiles] = filePaths;
+            const fileName = keepFile.split('/').pop()!;
+            
+            for (const duplicateFile of duplicateFiles) {
+                const dupFileName = duplicateFile.split('/').pop()!;
+                rmSync(duplicateFile, { force: true });
+                
                 // paths will always have at least 1 separator, so it is safe to subtract 2
-                refrenceMap.set(file2.name, {
-                    new: nameMap.get(file.name) ?? file.name,
-                    layers: file2Path.split('/').length - 2
+                refrenceMap.set(dupFileName, {
+                    new: nameMap.get(fileName) ?? fileName,
+                    layers: duplicateFile.split('/').length - 2
                 });
             }
-
-            // rename file
-            renameSync(filePath, filePath.replace(file.name, nameMap.get(file.name) ?? file.name));
+        }
+        
+        // Rename remaining files
+        for (const filePath of files) {
+            if (!existsSync(filePath)) continue; // Skip deleted duplicates
+            const fileName = filePath.split('/').pop()!;
+            const newName = nameMap.get(fileName);
+            if (newName && newName !== fileName) {
+                renameSync(filePath, filePath.replace(fileName, newName));
+            }
         }
 
         // update references and file names
@@ -306,19 +330,32 @@ export async function buildFrontend() {
 
 /**
  * Development function that rebuilds the frontend on file changes in `src/client/`.
+ * Uses debouncing to avoid rebuilding too frequently.
  */
 export function hotReloadFrontend() {
-    let rebuild = false;
-    setInterval(async () => {
-        if (rebuild === true) {
-            rebuild = false;
-            await buildFrontend().catch(() => {
-                rebuild = true;
-            });
-        }
-    }, 1000);
+    let rebuildTimer: Timer | null = null;
+    let isRebuilding = false;
 
-    chokidar.watch('src/client/').on('all', () => {
-        rebuild = true;
-    });
+    const triggerRebuild = () => {
+        // Clear any pending rebuild
+        if (rebuildTimer) {
+            clearTimeout(rebuildTimer);
+        }
+        
+        // Debounce: wait 1 second after the last change before rebuilding
+        rebuildTimer = setTimeout(async () => {
+            if (isRebuilding) return;
+            
+            isRebuilding = true;
+            try {
+                await buildFrontend();
+            } catch (error) {
+                log('error', 'Hot reload build failed:', error);
+            } finally {
+                isRebuilding = false;
+            }
+        }, 1000);
+    };
+
+    chokidar.watch('src/client/').on('all', triggerRebuild);
 }

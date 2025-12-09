@@ -22,10 +22,8 @@ const hmac = randomBytes(255).toString();
 const database = new DatabaseClient<{}>('captchas', 'verified');
 const captchaBypassCache = new Cache<{}>('captcha-bypasses');
 
-// clear old captchas
-for (const captcha of Object.keys(await database.all())) {
-    await database.delete(captcha);
-}
+// clear old captchas - using clear() is much more efficient than iterating and deleting
+await database.clear();
 
 /**
  * Create a captcha challenge.
