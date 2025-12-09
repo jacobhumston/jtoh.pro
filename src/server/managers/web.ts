@@ -207,10 +207,12 @@ export async function buildFrontend() {
         // Build hash maps
         for (const { filePath, hash } of fileHashes) {
             hashMap.set(filePath, hash);
-            if (!hashToFiles.has(hash)) {
-                hashToFiles.set(hash, []);
+            const existingFiles = hashToFiles.get(hash);
+            if (existingFiles) {
+                existingFiles.push(filePath);
+            } else {
+                hashToFiles.set(hash, [filePath]);
             }
-            hashToFiles.get(hash)!.push(filePath);
         }
         
         // Second pass: identify duplicates and remove them
@@ -219,10 +221,12 @@ export async function buildFrontend() {
             
             // Keep the first file, remove the rest
             const [keepFile, ...duplicateFiles] = filePaths;
-            const fileName = keepFile.split('/').pop()!;
+            const keepFileNameParts = keepFile.split('/');
+            const fileName = keepFileNameParts[keepFileNameParts.length - 1];
             
             for (const duplicateFile of duplicateFiles) {
-                const dupFileName = duplicateFile.split('/').pop()!;
+                const dupFileNameParts = duplicateFile.split('/');
+                const dupFileName = dupFileNameParts[dupFileNameParts.length - 1];
                 rmSync(duplicateFile, { force: true });
                 
                 // paths will always have at least 1 separator, so it is safe to subtract 2
@@ -236,7 +240,8 @@ export async function buildFrontend() {
         // Rename remaining files
         for (const filePath of files) {
             if (!existsSync(filePath)) continue; // Skip deleted duplicates
-            const fileName = filePath.split('/').pop()!;
+            const fileNameParts = filePath.split('/');
+            const fileName = fileNameParts[fileNameParts.length - 1];
             const newName = nameMap.get(fileName);
             if (newName && newName !== fileName) {
                 renameSync(filePath, filePath.replace(fileName, newName));
