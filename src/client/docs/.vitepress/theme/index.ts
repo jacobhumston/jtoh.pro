@@ -5,6 +5,7 @@
  */
 import { VPCarbon } from 'vitepress-carbon';
 
+// @ts-expect-error
 import './style.css';
 
 export default VPCarbon;
