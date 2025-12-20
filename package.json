@@ -67,7 +67,7 @@
         "html-minifier": "^4.0.0",
         "https-proxy-agent": "^7.0.6",
         "imgur": "^2.5.0",
-        "inquirer": "^12.9.6",
+        "inquirer": "^13.0.1",
         "jsdom": "^27.0.0",
         "jsonc-parser": "^3.3.1",
         "kaokun": "^1.1.10",
