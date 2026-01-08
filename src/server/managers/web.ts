@@ -120,8 +120,8 @@ export async function buildFrontend() {
         outdir: safelyGetPath('static'),
         root: 'src/client/pages',
         splitting: true,
-        sourcemap: isDev ? 'linked' : 'none',
-        minify: !isDev,
+        sourcemap: (isDev && !(await getBooleanArg('minifyBuild'))) === false ? 'linked' : 'none',
+        minify: !isDev || (await getBooleanArg('minifyBuild')),
         footer: `\n\n// @copyright Copyright of jtoh.pro, All Rights Reserved. (c)${new Date().getFullYear()}`,
         target: 'browser',
         naming: {
