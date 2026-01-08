@@ -6,9 +6,9 @@
  */
 import { readdirSync } from 'node:fs';
 
-import type { CardBackgroundSchema } from '../../shared/schemas/cards';
-import { serverURL } from '../config';
-import { safelyGetPath } from './files';
+import type { CardBackgroundSchema } from '@schemas/cards';
+import { serverURL } from '@server/config';
+import { safelyGetPath } from '@server/managers/files';
 
 const cardBackgroundImages: Array<CardBackgroundSchema> = [];
 

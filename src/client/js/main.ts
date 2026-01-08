@@ -4,8 +4,8 @@
  *
  * Authored by Jacob Humston
  */
-import { disableConsoleLogIfNotLocalhost } from './utils/logger';
-import { checkForUpdates } from './utils/update';
+import { disableConsoleLogIfNotLocalhost } from '@client/utils/logger';
+import { checkForUpdates } from '@client/utils/update';
 
 // run some utility functions
 disableConsoleLogIfNotLocalhost();

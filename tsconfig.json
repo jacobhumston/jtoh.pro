@@ -17,7 +17,15 @@
         "noUnusedParameters": true,
         "noPropertyAccessFromIndexSignature": false,
         "target": "esnext",
-        "module": "esnext"
+        "module": "esnext",
+        "paths": {
+            "@shared/*": ["./src/shared/*"],
+            "@client/*": ["./src/client/js/*"],
+            "@server/*": ["./src/server/*"],
+            "@node_modules/*": ["./node_modules/*"],
+            "@discord/*": ["./src/server/discord/*"],
+            "@schemas/*": ["./src/shared/schemas/*"]
+        }
     },
     "exclude": ["static/"]
 }

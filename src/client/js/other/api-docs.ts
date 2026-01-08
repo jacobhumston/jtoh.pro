@@ -4,7 +4,7 @@
  *
  * Authored by Jacob Humston
  */
-import '../../../../node_modules/@scalar/api-reference/dist/browser/standalone.js';
+import '@node_modules/@scalar/api-reference/dist/browser/standalone.js';
 
 window.Scalar.createApiReference('#docs', {
     url: '/api/spec',

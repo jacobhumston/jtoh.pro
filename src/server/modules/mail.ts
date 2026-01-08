@@ -5,7 +5,7 @@
  */
 import nodemailer from 'nodemailer';
 
-import apiTokens from './tokens';
+import apiTokens from '@server/modules/tokens';
 
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',

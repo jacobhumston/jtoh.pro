@@ -6,7 +6,7 @@
 import type { Context } from 'hono';
 import { getConnInfo } from 'hono/bun';
 
-import { log } from './logger';
+import { log } from '@server/modules/logger';
 
 /**
  * Get the IP address of a request using the request context.

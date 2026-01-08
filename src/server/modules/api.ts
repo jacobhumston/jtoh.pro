@@ -3,8 +3,8 @@
  */
 import createClient from 'openapi-fetch';
 
-import type { paths } from '../../shared/api-types';
-import { serverURL } from '../config';
+import { serverURL } from '@server/config';
+import type { paths } from '@shared/api-types';
 
 /** API Client */
 export const client = createClient<paths>({ baseUrl: serverURL.href });

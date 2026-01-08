@@ -6,8 +6,8 @@
  */
 import { createRoute, OpenAPIHono } from '@hono/zod-openapi';
 
-import { errorSchema, rateLimitErrorSchema, versionSchema } from '../../shared/schemas/general';
-import { version } from '../config';
+import { errorSchema, rateLimitErrorSchema, versionSchema } from '@schemas/general';
+import { version } from '@server/config';
 
 /** Route for this endpoint. */
 const route = createRoute({

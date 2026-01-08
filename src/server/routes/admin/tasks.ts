@@ -5,9 +5,9 @@
  */
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi';
 
-import { taskSchema, type TaskSchema } from '../../../shared/schemas/admin';
-import { errorSchema, rateLimitErrorSchema } from '../../../shared/schemas/general';
-import { getTasks } from '../../managers/tasks';
+import { taskSchema, type TaskSchema } from '@schemas/admin';
+import { errorSchema, rateLimitErrorSchema } from '@schemas/general';
+import { getTasks } from '@server/managers/tasks';
 
 /** Route for this endpoint. */
 const route = createRoute({

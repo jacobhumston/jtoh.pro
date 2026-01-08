@@ -9,6 +9,7 @@ import chokidar from 'chokidar';
 import Handlebars from 'handlebars';
 import { stream } from 'hono/streaming';
 import { minify } from 'html-minifier-next';
+import MarkdownIt from 'markdown-it';
 import mime from 'mime';
 import * as prettier from 'prettier';
 import * as sass from 'sass';
@@ -19,11 +20,11 @@ import { build } from 'bun';
 import { existsSync, rmSync, readdirSync, symlinkSync, readFileSync, writeFileSync, renameSync } from 'node:fs';
 import { parse } from 'node:path';
 
-import { replaceEmptyString } from '../../shared/common-utils';
-import { isDev } from '../config';
-import { log } from '../modules/logger';
-import { getBooleanArg } from './argv';
-import { createPath, getFileHash, safelyGetPath } from './files';
+import { isDev } from '@server/config';
+import { getBooleanArg } from '@server/managers/argv';
+import { createPath, getFileHash, safelyGetPath } from '@server/managers/files';
+import { log } from '@server/modules/logger';
+import { replaceEmptyString } from '@shared/common-utils';
 
 /** Path used to store static assets. */
 export const staticPath = safelyGetPath('static');
@@ -76,7 +77,6 @@ export async function buildFrontend() {
             templates[file.name.split('.')[0]] = content;
         }
     }
-    //log('debug', '(build) Loaded templates.');
 
     // entrypoints
     const buildEntrypoints: string[] = [];
@@ -92,14 +92,13 @@ export async function buildFrontend() {
             createPath(destinationPath);
 
             // build (or symlink)
-            if (file.name.endsWith('.html')) {
+            if (file.name.endsWith('.html') || file.name.endsWith('.md')) {
                 buildEntrypoints.push(`${file.parentPath}/${file.name}`);
             } else {
                 symlinkSync(safelyGetPath(`${file.parentPath}/${file.name}`), `${destinationPath}${file.name}`);
             }
         }
     }
-    //log('debug', '(build) Gathered entry points and symlinks.');
 
     // create symlinks for root files
     for (const file of readdirSync('src/client/root/', { recursive: true, withFileTypes: true })) {
@@ -112,12 +111,14 @@ export async function buildFrontend() {
             symlinkSync(safelyGetPath(`${file.parentPath}/${file.name}`), `${destinationPath}${file.name}`);
         }
     }
-    //log('debug', '(build) Symlinks created for root files.');
 
     // bun build
+    const markdown = MarkdownIt();
+    const markdownTemplate = readFileSync('src/client/templates/markdown.html', 'utf8');
     await build({
         entrypoints: buildEntrypoints,
         outdir: safelyGetPath('static'),
+        root: 'src/client/pages',
         splitting: true,
         sourcemap: isDev ? 'linked' : 'none',
         minify: !isDev,
@@ -130,6 +131,21 @@ export async function buildFrontend() {
         },
         external: ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.svg', '*.webp', '*.mp4', '*.mp3', '*.webmanifest', '*.ttf'],
         plugins: [
+            {
+                // markdown files
+                name: 'Markdown Compiler',
+                setup: function (build: Bun.PluginBuilder): void | Promise<void> {
+                    build.onLoad({ filter: /\.md$/i }, (args) => {
+                        const fileContent = readFileSync(args.path, 'utf8');
+                        return {
+                            contents: Handlebars.compile(
+                                markdownTemplate.replace('CONTENT', markdown.render(fileContent))
+                            )(templates),
+                            loader: 'html'
+                        };
+                    });
+                }
+            },
             {
                 // handlebars plugin
                 name: 'Template Compiler',
@@ -153,7 +169,6 @@ export async function buildFrontend() {
             }
         ]
     });
-    //log('debug', '(build) Built files w/ plugins.');
 
     // create asset symlinks
     for (const file of readdirSync('src/client/assets/', { recursive: true, withFileTypes: true })) {
@@ -165,11 +180,9 @@ export async function buildFrontend() {
         createPath(destinationPath);
         symlinkSync(safelyGetPath(`${file.parentPath}/${file.name}`), `${destinationPath}${file.name}`);
     }
-    //log('debug', '(build) Asset symlinks created.');
 
     // remove duplicate files and replace their references with the orginal
     // also renames files if in production mode
-    // TODO: replace some of the maps with caches (maybe)
     // note that this segment runs under the assumption that all non-symbolic link files are text based
     // and that it's iterating top to bottom
     {
@@ -238,25 +251,10 @@ export async function buildFrontend() {
             writeFileSync(filePath, content, 'utf8');
         }
     }
-    //log(
-    //    'debug',
-    //    `(build) Duplicate files removed and their references updated.${isDev ? '' : ' (File names minified as well.)'}`
-    //);
-
-    // create symlinks for doc files
-    for (const file of readdirSync('src/client/docs/.vitepress/dist/', { recursive: true, withFileTypes: true })) {
-        if (file.isFile()) {
-            let path = file.parentPath.replace('src/client/docs/.vitepress/dist/', '');
-            if (path === 'src/client/docs/.vitepress/dist') path = '';
-            else path = `${path}/`;
-            const destinationPath = `static/docs/${path}`;
-            createPath(destinationPath);
-            symlinkSync(safelyGetPath(`${file.parentPath}/${file.name}`), `${destinationPath}${file.name}`);
-        }
-    }
 
     // minify (in prod)
-    if (!isDev) {
+    if (!isDev || (await getBooleanArg('minifyBuild')) === true) {
+        log('info', 'Minifying build enabled, this may take a moment...');
         for (const file of readdirSync('static/', { recursive: true, withFileTypes: true })) {
             if (file.isFile()) {
                 // minify html
@@ -284,7 +282,6 @@ export async function buildFrontend() {
                 // not going to minify css due to it already being minified pretty well by bun
             }
         }
-        //log('debug', '(build) Files minified.');
     }
 
     // optionally format code at the end
@@ -297,8 +294,12 @@ export async function buildFrontend() {
             if (!file.isFile() || file.isSymbolicLink()) continue;
             const filePath = `${file.parentPath}/${file.name}`;
             if (!file.name.endsWith('.js') && !file.name.endsWith('.css') && !file.name.endsWith('.html')) continue;
-            let content = readFileSync(filePath, 'utf-8');
-            content = await prettier.format(content, Object.assign(config, { filepath: filePath }));
+            let content: string | null = readFileSync(filePath, 'utf-8');
+            content = await prettier.format(content, Object.assign(config, { filepath: filePath })).catch(() => null);
+            if (content === null) {
+                log('error', `Failed to format ${filePath}`);
+                continue;
+            }
             writeFileSync(filePath, content, 'utf8');
         }
     }

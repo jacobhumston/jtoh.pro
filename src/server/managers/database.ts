@@ -7,7 +7,7 @@
  */
 import { SQL } from 'bun';
 
-import { createPath } from './files';
+import { createPath } from '@server/managers/files';
 
 // it is important that this path exists before we do anything
 createPath('db');

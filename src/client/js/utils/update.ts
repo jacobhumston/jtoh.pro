@@ -3,7 +3,7 @@
  *
  * Authored by Jacob Humston
  */
-import { client } from '../modules/api';
+import { client } from '@client/modules/api';
 
 /**
  * Check for updates, and update the client if needed.

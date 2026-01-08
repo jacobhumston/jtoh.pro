@@ -7,6 +7,11 @@
     "useTabs": false,
     "endOfLine": "auto",
     "plugins": ["@trivago/prettier-plugin-sort-imports"],
-    "importOrder": ["<THIRD_PARTY_MODULES>", "^bun$|bun:.+|node:.+", "^[./]"],
+    "importOrder": [
+        "<THIRD_PARTY_MODULES>",
+        "^bun$|bun:.+|node:.+",
+        "^@(server|client|shared|discord|schemas)/",
+        "^[./]"
+    ],
     "importOrderSeparation": true
 }

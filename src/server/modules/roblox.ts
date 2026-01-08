@@ -3,12 +3,10 @@
  *
  * Authored by Jacob Humston
  */
-import noblox from 'noblox.js';
 import * as emoji from 'node-emoji';
-
-import { Cache } from '../managers/cache';
-
-const robloxCache = new Cache('roblox');
+import { fetchApi, isAnyErrorResponse } from 'rozod';
+import { getUsersAvatar3d } from 'rozod/lib/endpoints/thumbnailsv1';
+import { getUsersUserid, postUsernamesUsers } from 'rozod/lib/endpoints/usersv1';
 
 /**
  * Get a Roblox avatar's 3d details.
@@ -16,10 +14,8 @@ const robloxCache = new Cache('roblox');
  * @returns Avatar 3d details.
  */
 export async function getAvatar3d(userId: number) {
-    const result = await fetch(`https://thumbnails.roblox.com/v1/users/avatar-3d?userId=${userId}`)
-        .then((res) => res.json())
-        .catch(() => null);
-    if (!result) return null;
+    const result = await fetchApi(getUsersAvatar3d, { userId });
+    if (isAnyErrorResponse(result)) return;
     if (result.imageUrl === null) return null;
 
     const avatar = (await fetch(result.imageUrl)
@@ -60,9 +56,11 @@ export function getRobloxCDNUrlFromHash(hash: string) {
  * @param input The input to parse.
  * @returns The parsed result, or null if an error occurred.
  */
-export async function parseRobloxAccountInput(input: string | number): Promise<noblox.UserInfo | null> {
+export async function parseRobloxAccountInput(
+    input: string | number
+): Promise<ReturnType<typeof fetchApi<typeof getUsersUserid>> | null> {
     // parse numbers
-    if (typeof input === 'number') return await noblox.getUserInfo(input).catch(() => null);
+    if (typeof input === 'number') return await fetchApi(getUsersUserid, { userId: input }).catch(() => null);
     // parse strings
     if (typeof input === 'string') {
         const parsedString = emoji.strip(input, { preserveSpaces: false }).replaceAll(' ', '');
@@ -71,10 +69,14 @@ export async function parseRobloxAccountInput(input: string | number): Promise<n
             ? // parse user id strings (starts with "!")
               parseInt(parsedString.split('!')[1])
             : // parse usernames
-              await noblox.getIdFromUsername(parsedString).catch(() => null);
-        return result === null ? null : noblox.getUserInfo(result).catch(() => null);
+              await fetchApi(postUsernamesUsers, { body: { usernames: [input], excludeBannedUsers: false } }).catch(
+                  () => null
+              );
+        return result === null
+            ? null
+            : await fetchApi(getUsersUserid, {
+                  userId: typeof result === 'object' ? (result as any).data[0].id : result
+              }).catch(() => null);
     }
     return null;
 }
-
-export { noblox as robloxApi };

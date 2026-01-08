@@ -10,7 +10,7 @@ import { convertTo } from '@jacobhumston/tc.js';
 import { createWriteStream, readdirSync, rmSync, symlinkSync } from 'node:fs';
 import process from 'node:process';
 
-import { safelyGetPath } from '../managers/files';
+import { safelyGetPath } from '@server/managers/files';
 
 // create log file
 const logsFolder = safelyGetPath('logs');

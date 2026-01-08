@@ -7,8 +7,8 @@
 import { CryptrAsync } from 'cryptr';
 import { read } from 'read';
 
-import { DatabaseClient } from '../managers/database';
-import { log } from './logger';
+import { DatabaseClient } from '@server/managers/database';
+import { log } from '@server/modules/logger';
 
 const secretsDatabase = new DatabaseClient('secrets', 'sec');
 

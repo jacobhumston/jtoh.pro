@@ -1,0 +1,10 @@
+diff --git a/dist/main.mjs b/dist/main.mjs
+index c80955559bb385b76c7a5e82560e4d0bfcba7249..b864781c1f53af3e5f12eb8ca1ff3d76c412f992 100644
+--- a/dist/main.mjs
++++ b/dist/main.mjs
+@@ -1,4 +1,4 @@
+ /** 📦 @alwatr/hash-string v5.2.27 */
+-__dev_mode__: console.debug("📦 @alwatr/hash-string v5.2.27");
++//__dev_mode__: console.debug("📦 @alwatr/hash-string v5.2.27");
+ function nanoHash(str,prefix,repeat=1){if(repeat<1){throw new Error("The repeat parameter must be greater than or equal to 1")}let hash1=3735928559;let hash2=1103547991;if(typeof str==="number"){str=str.toString()}const len=str.length;for(let i=0;i<len;i++){const char=str.charCodeAt(i);hash1=Math.imul(hash1^char,2654435761);hash2=Math.imul(hash2^char,1597334677)}hash1=Math.imul(hash1^hash1>>>16,2246822507)^Math.imul(hash2^hash2>>>13,3266489909);hash2=Math.imul(hash2^hash2>>>16,2246822507)^Math.imul(hash1^hash1>>>13,3266489909);const result=prefix+(hash1>>>0).toString(36)+(hash2>>>0).toString(36);if(repeat===1){return result}else{return nanoHash(result,prefix,repeat-1)}}export{nanoHash};
+ //# sourceMappingURL=main.mjs.map

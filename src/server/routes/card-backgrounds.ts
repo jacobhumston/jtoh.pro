@@ -6,9 +6,9 @@
  */
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi';
 
-import { cardBackgroundSchema } from '../../shared/schemas/cards';
-import { errorSchema, rateLimitErrorSchema } from '../../shared/schemas/general';
-import { getCardBackgrounds } from '../managers/card-backgrounds';
+import { cardBackgroundSchema } from '@schemas/cards';
+import { errorSchema, rateLimitErrorSchema } from '@schemas/general';
+import { getCardBackgrounds } from '@server/managers/card-backgrounds';
 
 const getCardBackgroundsRoute = createRoute({
     method: 'get',

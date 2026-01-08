@@ -6,9 +6,9 @@
 import { createRoute, OpenAPIHono } from '@hono/zod-openapi';
 import ping from 'ping';
 
-import { errorSchema, rateLimitErrorSchema } from '../../shared/schemas/general';
-import { pingSchema } from '../../shared/schemas/ping';
-import rateLimitMiddleware from '../modules/ratelimits';
+import { errorSchema, rateLimitErrorSchema } from '@schemas/general';
+import { pingSchema } from '@schemas/ping';
+import rateLimitMiddleware from '@server/modules/ratelimits';
 
 /** Route for this endpoint. */
 const route = createRoute({

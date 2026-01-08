@@ -6,7 +6,7 @@
  */
 import { $ } from 'bun';
 
-import { getCLIArgument, utilCLIValidators } from './managers/argv';
+import { getCLIArgument, utilCLIValidators } from '@server/managers/argv';
 
 /** Port that the server should run on. Defaults to port 80. */
 export const serverPort: number =

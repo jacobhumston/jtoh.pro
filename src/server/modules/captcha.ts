@@ -10,9 +10,9 @@ import type { Context } from 'hono';
 import { setCookie } from 'hono/cookie';
 import { createMiddleware } from 'hono/factory';
 
-import { serverURL } from '../config';
-import { Cache } from '../managers/cache';
-import { DatabaseClient } from '../managers/database';
+import { serverURL } from '@server/config';
+import { Cache } from '@server/managers/cache';
+import { DatabaseClient } from '@server/managers/database';
 
 // hmac
 const hmac = randomBytes(255).toString();

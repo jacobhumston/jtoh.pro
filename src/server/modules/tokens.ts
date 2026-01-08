@@ -8,7 +8,7 @@ import { InfisicalSDK } from '@infisical/sdk';
 
 import { env } from 'bun';
 
-import { isDev } from '../config';
+import { isDev } from '@server/config';
 
 const client = new InfisicalSDK();
 

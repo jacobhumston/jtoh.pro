@@ -3,10 +3,11 @@
  *
  * Authored by Jacob Humston
  */
+import { nanoHash } from '@alwatr/hash-string';
 import { convertTo, type AvailableConversions } from '@jacobhumston/tc.js';
 
-import { DatabaseClient } from './database';
-import { createTask } from './tasks';
+import { DatabaseClient } from '@server/managers/database';
+import { createTask } from '@server/managers/tasks';
 
 /** Array of caches, indexed by their namespaces. Used by the sweeper. */
 const caches: Record<string, Cache> = {};
@@ -143,3 +144,27 @@ createTask(`Cache Sweeper`, 'Sweeps caches every 5 minutes.', { minutes: 5 }, as
         }
     }
 });
+
+/**
+ * Create a cache wrapper around a method.
+ * This should only be used for async methods that return json data, such as api calls.
+ * @param namespace The namespace for this cache.
+ * @param method The method to cache.
+ * @param expires Expiration time for this cache.
+ * @returns A wrapper around the provided method that enables caching.
+ */
+export function cacheMethod<F extends (...args: any[]) => any>(
+    namespace: string,
+    method: F,
+    expires?: AvailableConversions
+) {
+    const cache = new Cache<ReturnType<F>>(namespace);
+    return async function (...args: Parameters<F>): Promise<Awaited<ReturnType<F>>> {
+        const key = nanoHash(JSON.stringify(args), 'cache');
+        const cached = await cache.get(key);
+        if (cached !== null) return cached;
+        const result = await method(...args);
+        if (result !== null && result !== undefined) await cache.set(key, result, expires);
+        return result;
+    };
+}

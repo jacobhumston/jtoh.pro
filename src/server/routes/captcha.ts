@@ -7,9 +7,9 @@
  */
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi';
 
-import { captchaSchema, captchaSuccessSchema } from '../../shared/schemas/captcha';
-import { errorSchema, rateLimitErrorSchema } from '../../shared/schemas/general';
-import { createCaptcha, verifyCaptchaFromContext } from '../modules/captcha';
+import { captchaSchema, captchaSuccessSchema } from '@schemas/captcha';
+import { errorSchema, rateLimitErrorSchema } from '@schemas/general';
+import { createCaptcha, verifyCaptchaFromContext } from '@server/modules/captcha';
 
 /** Route for the main endpoint. */
 const route = createRoute({

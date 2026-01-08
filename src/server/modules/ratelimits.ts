@@ -6,8 +6,8 @@
 import type { AvailableConversions } from '@jacobhumston/tc.js';
 import { createMiddleware } from 'hono/factory';
 
-import { Cache } from '../managers/cache';
-import { getIPFromContext } from './ip';
+import { Cache } from '@server/managers/cache';
+import { getIPFromContext } from '@server/modules/ip';
 
 const cache = new Cache<{ used: number }>('rate-limits');
 
