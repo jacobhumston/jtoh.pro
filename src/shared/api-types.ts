@@ -246,7 +246,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        'application/json': components['schemas']['TasksSchema'];
+                        'application/json': components['schemas']['TaskSchema'][];
                     };
                 };
                 /** @description Rate limit error. */
@@ -446,31 +446,28 @@ export interface components {
             /** @description Ping (in ms) to google. */
             google: number;
         };
-        TasksSchema: {
-            /** @description A list of tasks. */
-            tasks: {
-                /** @description Name of this task. */
-                name: string;
-                /** @description Description of this task. */
-                description: string;
-                /**
-                 * Format: uuid
-                 * @description ID of this task.
-                 */
-                id: string;
-                /** @description A boolean indicating whether this task is temporary or not. */
-                temporary: boolean;
-                /**
-                 * Format: date-time
-                 * @description The next date that this task will run on.
-                 */
-                nextRun: string | null;
-                /**
-                 * Format: date-time
-                 * @description The last date that this task was run on.
-                 */
-                lastRun: string | null;
-            }[];
+        TaskSchema: {
+            /** @description Name of this task. */
+            name: string;
+            /** @description Description of this task. */
+            description: string;
+            /**
+             * Format: uuid
+             * @description ID of this task.
+             */
+            id: string;
+            /** @description A boolean indicating whether this task is temporary or not. */
+            temporary: boolean;
+            /**
+             * Format: date-time
+             * @description The next date that this task will run on.
+             */
+            nextRun: string | null;
+            /**
+             * Format: date-time
+             * @description The last date that this task was run on.
+             */
+            lastRun: string | null;
         };
         ClientUpdateSchema: {
             /** @description A boolean indicating if the client needs updated or not. */
