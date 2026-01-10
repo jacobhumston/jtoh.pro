@@ -9,8 +9,8 @@ import { secureHeaders } from 'hono/secure-headers';
 
 import { readdirSync } from 'node:fs';
 
+import { listenForDiscordRequests } from '@discord/bot';
 import config, { version } from '@server/config';
-import { listenForDiscordRequests } from '@server/discord/bot';
 import { getBooleanArg } from '@server/managers/argv';
 import { buildFrontend, hotReloadFrontend, serveStatic } from '@server/managers/web';
 import { cleanUpLogs, log } from '@server/modules/logger';

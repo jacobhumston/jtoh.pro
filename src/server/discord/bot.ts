@@ -7,9 +7,9 @@ import type { OpenAPIHono } from '@hono/zod-openapi';
 import { InteractionResponseType, InteractionType, MessageFlags, type APIInteraction } from 'discord-api-types/v10';
 import { verifyKey } from 'discord-interactions';
 
-import { commands } from '@discord/commands';
 import { parseComponentID, registeredComponentHandlers } from '@discord/components';
 import { api } from '@discord/rest';
+import { commands } from '@discord/util';
 import { Cache } from '@server/managers/cache';
 import { log } from '@server/modules/logger';
 import apiTokens from '@server/modules/tokens';
