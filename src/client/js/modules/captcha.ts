@@ -6,6 +6,6 @@
 import 'altcha';
 
 export function addWidget() {
-    const widgetHTML = '<altcha-widget challengeurl="/api/captcha" floating></altcha-widget>';
+    //const widgetHTML = '<altcha-widget challengeurl="/api/captcha" floating></altcha-widget>';
     return document.querySelector('altcha-widget');
 }

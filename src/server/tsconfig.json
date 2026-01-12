@@ -2,8 +2,7 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "lib": ["ESNext"],
-        "types": ["@types/bun", "@types/node"],
-        "composite": true
+        "types": ["@types/bun", "@types/node"]
     },
-    "include": ["../shared/"]
+    "include": ["./**/*", "../shared/**/*"]
 }

@@ -1,9 +1,4 @@
 {
-    "references": [
-        { "path": "./src/client/tsconfig.json" },
-        { "path": "./src/server/tsconfig.json" },
-        { "path": "./src/shared/tsconfig.json" }
-    ],
     "compilerOptions": {
         "moduleResolution": "bundler",
         "moduleDetection": "force",
@@ -18,6 +13,7 @@
         "noPropertyAccessFromIndexSignature": false,
         "target": "esnext",
         "module": "esnext",
+        "skipLibCheck": true,
         "paths": {
             "@shared/*": ["./src/shared/*"],
             "@client/*": ["./src/client/js/*"],
