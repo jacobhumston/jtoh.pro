@@ -6,10 +6,12 @@
 */
 @use 'fonts.scss';
 @use 'colors.scss';
+@use 'elements/navigation.scss';
 
 body {
     margin: 0px;
     padding: 0px;
+    background-image: url('https://www.transparenttextures.com/patterns/diagmonds.png');
 }
 
 pre {

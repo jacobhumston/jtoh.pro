@@ -11,5 +11,8 @@ window.Scalar.createApiReference('#docs', {
     showDeveloperTools: 'never',
     hideClientButton: true,
     withDefaultFonts: false,
-    hideDarkModeToggle: true
+    hideDarkModeToggle: true,
+    defaultOpenAllTags: true,
+    documentDownloadType: 'direct',
+    telemetry: false
 });

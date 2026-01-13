@@ -10,8 +10,9 @@ import { secureHeaders } from 'hono/secure-headers';
 import { readdirSync } from 'node:fs';
 
 import { listenForDiscordRequests } from '@discord/bot';
-import config, { version } from '@server/config';
+import config, { serverURL, version } from '@server/config';
 import { getBooleanArg } from '@server/managers/argv';
+import { generateSiteMap } from '@server/managers/sitemap';
 import { buildFrontend, hotReloadFrontend, serveStatic } from '@server/managers/web';
 import { cleanUpLogs, log } from '@server/modules/logger';
 import rateLimitMiddleware from '@server/modules/ratelimits';
@@ -39,6 +40,7 @@ app.use(compress());
 
 // build and serve pages/assets/etc
 await buildFrontend();
+await generateSiteMap();
 serveStatic(app);
 
 // call the handler method for each route
@@ -61,12 +63,21 @@ await listenForDiscordRequests(app);
 // we also need to expose the spec information
 app.doc31('/api/spec', {
     openapi: '3.1.0',
+    servers: [{ url: serverURL.href }],
     info: {
         title: 'jtoh.pro API',
         description: 'API documentation for the jtoh.pro client.',
         version: version,
-        contact: { email: 'support@jtoh.pro', name: 'jtoh.pro Support' }
+        contact: { email: 'support@jtoh.pro', name: 'jtoh.pro Support' },
+        termsOfService: `${serverURL.hash}/legal/terms`
     }
+});
+
+// handle 404s
+app.notFound((context) => {
+    context.status(404);
+    if (context.req.path.startsWith('/api')) return context.json({ error: 'The requested path was not found.' }) as any;
+    return context.redirect('/404');
 });
 
 // last resort, errors...
@@ -77,7 +88,7 @@ app.onError((error, context) => {
 
 // hot reloading for development
 if ((await getBooleanArg('hot-build')) === true)
-    (hotReloadFrontend(), log('info', 'Hot reloading enabled for the frontend.'));
+    (hotReloadFrontend(), log('info', 'Hot reloading enabled for the frontend. Sitemaps will be unavailable.'));
 
 // export server options for bun
 export default { fetch: app.fetch, port: config.serverPort } satisfies Bun.Serve.Options<any>;

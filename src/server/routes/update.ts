@@ -13,6 +13,7 @@ const route = createRoute({
     method: 'get',
     path: '/api/update',
     description: "Update the client's browser cache, if needed.",
+    tags: ['Utility'],
     request: {
         query: z.object({
             clientVersion: z.string().openapi({ description: "The current client's version." })

@@ -38,6 +38,11 @@
     src: url('/assets/fonts/Twemoji.ttf');
 }
 
+@font-face {
+    font-family: 'MaterialSymbolsRounded';
+    src: url('/assets/fonts/MaterialSymbols.woff2') format('woff2');
+}
+
 body,
 input,
 button,
@@ -64,4 +69,12 @@ h4,
 h5,
 h6 {
     font-family: ArchivoBlack, 'Raleway Bold', Helvetica, Arial, sans-serif;
+}
+
+.icon {
+    font-family: MaterialSymbolsRounded;
+    font-variation-settings: 'FILL' 1;
+    font-size: inherit;
+    font-size: 1.2em;
+    vertical-align: text-bottom;
 }

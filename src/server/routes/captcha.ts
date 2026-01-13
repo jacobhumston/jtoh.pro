@@ -16,6 +16,7 @@ const route = createRoute({
     method: 'get',
     path: '/api/captcha',
     description: 'Get a captcha challenge.',
+    tags: ['Security'],
     responses: {
         200: {
             content: {
@@ -49,7 +50,8 @@ const testRoute = createRoute({
     method: 'get',
     path: '/api/captcha/verify',
     description:
-        'A utility endpoint to test captcha verification. Unlike other endpoints that require a captcha, this one does not error if the captcha fails.',
+        'Verify a captcha. Unlike other endpoints that require a captcha, this one does not error if the captcha fails.',
+    tags: ['Security'],
     request: {
         headers: z.object({ captcha: z.string().openapi({ description: 'The captcha solution.' }) })
     },

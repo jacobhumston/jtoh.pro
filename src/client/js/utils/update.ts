@@ -15,6 +15,10 @@ export async function checkForUpdates() {
         if (response.data.update) {
             localStorage.setItem('clientVersion', response.data.version);
             console.log('Client updated.');
+
+            // check to make sure the client updated,
+            // if so we can attempt a refresh
+            if (localStorage.getItem('clientVersion') === response.data.version) window.location.reload();
         }
     } else {
         console.error(response.error);

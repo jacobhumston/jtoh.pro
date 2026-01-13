@@ -14,6 +14,7 @@ const route = createRoute({
     method: 'get',
     path: '/api/admin/tasks',
     description: 'Get a list of the current server tasks.',
+    tags: ['Administrative'],
     responses: {
         200: {
             content: {

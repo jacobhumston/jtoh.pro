@@ -1,5 +1,7 @@
 /**
  * API client for the client.
+ *
+ * Authored by Jacob Humston
  */
 import createClient from 'openapi-fetch';
 

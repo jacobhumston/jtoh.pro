@@ -14,6 +14,7 @@ const getCardBackgroundsRoute = createRoute({
     method: 'get',
     path: '/api/cards/backgrounds',
     description: 'Get available card backgrounds.',
+    tags: ['Cards'],
     responses: {
         200: {
             content: {

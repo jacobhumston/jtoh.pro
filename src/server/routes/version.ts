@@ -14,6 +14,7 @@ const route = createRoute({
     method: 'get',
     path: '/api/version',
     description: 'Get the current version of jtoh.pro',
+    tags: ['Utility'],
     responses: {
         200: {
             content: {

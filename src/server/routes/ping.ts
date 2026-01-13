@@ -15,6 +15,7 @@ const route = createRoute({
     method: 'get',
     path: '/api/ping',
     description: 'Get the current ping of the server.',
+    tags: ['Utility'],
     responses: {
         200: {
             content: {

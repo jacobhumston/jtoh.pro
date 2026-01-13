@@ -7,12 +7,13 @@ import { convertTo } from '@jacobhumston/tc.js';
 import { createChallenge, verifySolution } from 'altcha-lib';
 import { randomBytes } from 'crypto';
 import type { Context } from 'hono';
-import { setCookie } from 'hono/cookie';
+import { getCookie, setCookie } from 'hono/cookie';
 import { createMiddleware } from 'hono/factory';
 
 import { serverURL } from '@server/config';
 import { Cache } from '@server/managers/cache';
 import { DatabaseClient } from '@server/managers/database';
+import { getSessionToken } from '@server/modules/secrets';
 
 // hmac
 const hmac = randomBytes(255).toString();
@@ -65,27 +66,29 @@ export async function verifyCaptcha(captcha: string) {
  */
 export async function verifyCaptchaFromContext(context: Context) {
     const captcha = context.req.header('captcha') ?? '';
-    if ((await isCaptchaBypassExpired(captcha)) === false) true;
+    if ((await isCaptchaBypassExpired(context)) === false) return true;
     const result = await verifyCaptcha(captcha);
     if (result === true) {
         const bypassToken = randomBytes(255).toString();
-        await captchaBypassCache.set(bypassToken, {});
-        setCookie(context, 'captcha-bypass', bypassToken, {
+        await captchaBypassCache.set(bypassToken, {}, { minutes: 30 });
+        setCookie(context, getSessionToken('captcha-bypass'), bypassToken, {
             expires: (await captchaBypassCache.expires(bypassToken)) as Date,
             domain: serverURL.hostname,
-            secure: true
+            secure: true,
+            httpOnly: true,
+            sameSite: 'strict'
         });
     }
     return result;
 }
 
 /**
- * Check if a captcha bypass token has expired or not.
- * @param bypass The bypass token.
+ * Check if a captcha bypass token has expired or not. (Or even exists.)
+ * @param context The context to check.
  * @returns A boolean indicating if the token has expired.
  */
-export async function isCaptchaBypassExpired(bypass: string) {
-    const result = await captchaBypassCache.expires(bypass);
+export async function isCaptchaBypassExpired(context: Context) {
+    const result = await captchaBypassCache.expires(getCookie(context, getSessionToken('captcha-bypass')) ?? '');
     if (result instanceof Date) return Date.now() > result.getTime();
     else return true; // bypass tokens should never have "never" as their expiration date
 }

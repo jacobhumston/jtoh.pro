@@ -7,10 +7,13 @@
 import { CryptrAsync } from 'cryptr';
 import { read } from 'read';
 
+import { randomBytes } from 'node:crypto';
+
 import { DatabaseClient } from '@server/managers/database';
 import { log } from '@server/modules/logger';
 
 const secretsDatabase = new DatabaseClient('secrets', 'sec');
+const sessionTokens: Map<string, string> = new Map();
 
 // Get the server passphrase.
 let passphrase = await read({ prompt: 'Please provide the server passphrase:', silent: true, replace: '*' });
@@ -34,3 +37,20 @@ export const encrypt = cryptr.encrypt;
 
 /** Decrypt a string. */
 export const decrypt = cryptr.decrypt;
+
+/**
+ * Get a session token by name.
+ * This will generate a new token if it doesn't already exist.
+ * @param name The name of the session token to get.
+ * @returns The session token.
+ */
+export function getSessionToken(name: string): string {
+    const token = sessionTokens.get(name);
+    if (!token) {
+        const newToken = randomBytes(16).toString('utf8');
+        sessionTokens.set(name, newToken);
+        return newToken;
+    } else {
+        return token;
+    }
+}

@@ -4,7 +4,6 @@
 <link rel="stylesheet" href="/src/client/css/main.scss" />
 
 <script src="/src/client/js/main.js"></script>
-<script src="https://analytics.lovelyjacob.com/api/script.js" data-site-id="1" data-track-errors="true" defer></script>
 
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
@@ -12,8 +11,14 @@
 <link rel="manifest" href="/app.webmanifest" />
 
 <script>
-    //document.addEventListener('DOMContentLoaded', () => {
-    const root = document.documentElement;
-    root.toggleAttribute('dark', true);
-    //});
+    // set theme
+    (() => {
+        const root = document.documentElement;
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const darkEnabled = localStorage.getItem('darkModeEnabled') === 'true';
+        const lightEnabled = localStorage.getItem('darkModeEnabled') === 'false';
+        const useDarkMode = (prefersDark || darkEnabled) && !lightEnabled;
+        root.toggleAttribute('dark', useDarkMode);
+        localStorage.setItem('colorMode', useDarkMode ? 'dark' : 'light');
+    })();
 </script>
