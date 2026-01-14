@@ -22,14 +22,14 @@ $light-text: #151515;
 $dark-text-darker: #a9a9a9;
 $light-text-darker: #a6a6a6;
 
-$dark-background: #3c3840;
+$dark-background: #2a282b;
 $light-background: #f8f8f8;
 
-$dark-background-darker: #1b1b1b;
+$dark-background-darker: #18171a;
 $light-background-darker: #dedede;
 
-$dark-background-lighter: #262626;
-$light-background-lighter: #ffffff;
+$dark-background-lighter: #47434a;
+$light-background-lighter: #d0cbd4;
 
 :root {
     --accent: #{$light-accent};
@@ -50,6 +50,6 @@ $light-background-lighter: #ffffff;
 }
 
 body {
-    background-color: var(--background);
+    background-color: var(--background-darker);
     color: var(--text);
 }

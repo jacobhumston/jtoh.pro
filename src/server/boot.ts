@@ -107,7 +107,7 @@ app.onError((error, context) => {
 });
 
 // hot reloading for development
-if ((await getBooleanArg('hot-build')) === true)
+if ((await getBooleanArg('hotBuild')) === true)
     (hotReloadFrontend(), log('info', 'Hot reloading enabled for the frontend. Sitemaps will be unavailable.'));
 
 // export server options for bun

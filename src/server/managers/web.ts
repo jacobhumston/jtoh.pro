@@ -52,7 +52,7 @@ export function serveStatic(app: OpenAPIHono) {
 
         if (!existsSync(filePath)) return await next();
         context.res.headers.set('Content-Type', mime.getType(ext) ?? 'application/octet-stream'); // application/octet-stream seems to be a good backup
-        if (!isDev) context.res.headers.set('Cache-Control', 'max-age=604800');
+        if (!isDev || path.dir.includes('assets')) context.res.headers.set('Cache-Control', 'max-age=604800');
         else context.res.headers.set('Cache-Control', 'no-store');
 
         return stream(context, async (stream) => {
@@ -330,9 +330,11 @@ export function hotReloadFrontend() {
     setInterval(async () => {
         if (rebuild === true) {
             rebuild = false;
+            log('info', 'Hot reload rebuilding...');
             await buildFrontend().catch(() => {
                 rebuild = true;
             });
+            log('success', 'Hot reload rebuild completed.');
         }
     }, 1000);
 
