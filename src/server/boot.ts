@@ -59,9 +59,8 @@ for (const route of readdirSync('src/server/routes/', { recursive: true, withFil
 // boot up the Discord bot
 await listenForDiscordRequests(app);
 
-// use Scalar middleware for api docs
-// we also need to expose the spec information
-app.doc31('/api/spec', {
+// get spec information and expose it
+const spec = app.getOpenAPI31Document({
     openapi: '3.1.0',
     servers: [{ url: serverURL.href }],
     info: {
@@ -69,8 +68,29 @@ app.doc31('/api/spec', {
         description: 'API documentation for the jtoh.pro client.',
         version: version,
         contact: { email: 'support@jtoh.pro', name: 'jtoh.pro Support' },
-        termsOfService: `${serverURL.hash}/legal/terms`
-    }
+        termsOfService: `/legal/terms`
+    },
+    tags: [
+        { name: 'Cards', description: 'Endpoints that allow you to customize cards, etc.' },
+        {
+            name: 'Security',
+            description: "Endpoints that either enhance or support the security of the website's interface."
+        },
+        {
+            name: 'Utility',
+            description:
+                'Utility endpoints that either provide useful information or have helpful features to improve the general experience.'
+        },
+        {
+            name: 'Administrative',
+            description: 'Endpoints that enable administrative actions to be performed more effectively.'
+        }
+    ].sort((a, b) => a.name.localeCompare(b.name))
+});
+
+app.get('/api/spec', (context) => {
+    // TODO: hide private spec to those who need it
+    return context.json(spec);
 });
 
 // handle 404s

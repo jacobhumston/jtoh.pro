@@ -271,6 +271,7 @@ export async function buildFrontend() {
             if (file.isFile()) {
                 // minify html
                 if (file.name.endsWith('.html')) {
+                    log('debug', `Minifying (html) ${file.parentPath}/${file.name}`);
                     const path = `${file.parentPath}/${file.name}`;
                     const content = readFileSync(path, 'utf8');
                     const minified = await minify(content, {
@@ -283,11 +284,15 @@ export async function buildFrontend() {
                     writeFileSync(path, minified);
                     // minify js
                 } else if (file.name.endsWith('.js')) {
+                    log('debug', `Minifying (js) ${file.parentPath}/${file.name}`);
                     const path = `${file.parentPath}/${file.name}`;
                     const content = readFileSync(path, 'utf8');
                     const minified = await jsMinify(content, {
                         compress: { passes: 3 },
-                        mangle: true
+                        mangle: true,
+                        format: {
+                            comments: /jtoh\.pro/
+                        }
                     });
                     writeFileSync(path, minified.code ?? '');
                 }
