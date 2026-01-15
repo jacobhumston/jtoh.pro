@@ -38,6 +38,11 @@ $light-background-lighter: #d0cbd4;
     --background: #{$light-background};
     --background-darker: #{$light-background-darker};
     --background-lighter: #{$light-background-lighter};
+
+    --red: #{$red};
+    --green: #{$green};
+    --blue: #{$blue};
+    --yellow: #{$yellow};
 }
 
 [dark] {
@@ -52,4 +57,14 @@ $light-background-lighter: #d0cbd4;
 body {
     background-color: var(--background-darker);
     color: var(--text);
+}
+
+a {
+    color: var(--blue);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--accent);
+    cursor: pointer;
 }

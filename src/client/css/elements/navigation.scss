@@ -4,69 +4,113 @@
 
     Authored by Jacob Humston
 */
-#pageNavigation {
-    display: flex;
+#navigation {
+    display: block;
     padding: 10px;
-    flex-wrap: nowrap;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    border-bottom: solid 2px color-mix(in srgb, var(--text), transparent 90%);
     max-width: fit-content;
     margin-left: auto;
     margin-right: auto;
 
-    a {
-        background-color: var(--background);
-        padding: 5px;
-        padding-bottom: 0px;
-        padding-left: 15px;
-        padding-right: 15px;
-        border-radius: 10px;
-        font-size: larger;
-        color: var(--text);
-        text-decoration: none;
-        white-space: nowrap;
-        transition: ease-in-out 0.5s;
-        transition-property: color;
+    #pageNavigation {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: center;
+        border-bottom: solid 2px color-mix(in srgb, var(--text), transparent 90%);
+        gap: 10px;
+        padding-bottom: 10px;
 
-        .navigationLine {
-            background-color: var(--background-lighter);
-            width: 60%;
-            height: 3px;
-            margin-left: auto;
-            margin-right: auto;
-            margin-top: 2px;
-            transition: ease-in-out 0.5s;
-            transition-property: width background-color;
-            border-top-left-radius: 5px;
-            border-top-right-radius: 5px;
-        }
-
-        .icon {
-            color: var(--background-lighter);
+        a {
+            background-color: var(--background);
+            padding: 5px;
+            padding-bottom: 0px;
+            padding-left: 15px;
+            padding-right: 15px;
+            border-radius: 10px;
+            font-size: larger;
+            color: var(--text);
+            text-decoration: none;
+            white-space: nowrap;
             transition: ease-in-out 0.5s;
             transition-property: color;
+
+            .navigationLine {
+                background-color: var(--background-lighter);
+                width: 60%;
+                height: 3px;
+                margin-left: auto;
+                margin-right: auto;
+                margin-top: 2px;
+                transition: ease-in-out 0.5s;
+                transition-property: width background-color;
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
+            }
+
+            .icon {
+                color: var(--background-lighter);
+                transition: ease-in-out 0.5s;
+                transition-property: color;
+            }
+        }
+
+        a:hover,
+        .currentPage {
+            color: var(--accent);
+
+            .navigationLine {
+                width: 90%;
+                background-color: var(--accent);
+            }
+
+            .icon {
+                color: var(--accent);
+            }
         }
     }
 
-    a:hover,
-    .currentPage {
-        color: var(--accent);
+    #accountNavigation {
+        padding: 0px;
+        padding-top: 5px;
+        color: var(--text-darker);
+        font-size: medium;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
 
-        .navigationLine {
-            width: 90%;
-            background-color: var(--accent);
-        }
+        #themeSwitcher {
+            border-radius: 15px;
+            border: none;
+            background-color: var(--background);
+            padding: 0px;
 
-        .icon {
-            color: var(--accent);
+            span {
+                color: var(--text-darker);
+                vertical-align: middle;
+                border-radius: 15px;
+                display: inline-block;
+                font-size: larger;
+                padding-bottom: 5px;
+                padding-top: 5px;
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+
+            span:hover {
+                background-color: var(--text-darker);
+                color: var(--background);
+                cursor: pointer;
+            }
+
+            .activeTheme {
+                background-color: var(--background-lighter);
+            }
         }
     }
 }
 
 @media screen and (max-width: 750px) {
-    #pageNavigation {
+    #navigation {
         max-width: none;
     }
 }
