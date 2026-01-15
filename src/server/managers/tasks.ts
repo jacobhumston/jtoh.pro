@@ -3,8 +3,9 @@
  *
  * Authored by Jacob Humston
  */
+import { timeToCron } from '@aquarela/time-to-cron';
 import { convertTo, type AvailableConversions } from '@jacobhumston/tc.js';
-import { CronJob, CronTime } from 'cron';
+import { CronJob } from 'cron';
 import { v4 } from 'uuid';
 
 const tasks: Array<{
@@ -31,22 +32,19 @@ export function createTask(
     task: ConstructorParameters<typeof CronJob>[1],
     temporaryCheck?: () => boolean | Promise<boolean> | undefined
 ) {
-    /** Small util function to get the next cron execution date. */
-    const getCronDate = () => new Date(Date.now() + convertTo(time, 'milliseconds'));
-    const cron = new CronJob(getCronDate(), task);
+    const cron = new CronJob(timeToCron(convertTo(time, 'seconds'), 'seconds'), task);
     const id = v4();
 
-    // Add a callback that allows the cron to continue next execution
+    // Check if the cron is temporary
     cron.addCallback(async function () {
         if (temporaryCheck) {
             if ((await temporaryCheck()) === true) {
                 const foundIndex = tasks.findIndex((task) => task.id === id);
                 tasks.splice(foundIndex, 1);
+                cron.stop();
                 return;
             }
         }
-        cron.setTime(new CronTime(getCronDate()));
-        cron.start();
     });
 
     cron.waitForCompletion = true;
