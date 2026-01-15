@@ -97,7 +97,7 @@ app.get('/api/spec', (context) => {
 app.notFound((context) => {
     context.status(404);
     if (context.req.path.startsWith('/api')) return context.json({ error: 'The requested path was not found.' }) as any;
-    return context.redirect('/404');
+    return context.redirect(`/404?from=${context.req.path}`);
 });
 
 // last resort, errors...

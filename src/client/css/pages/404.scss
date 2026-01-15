@@ -1,0 +1,25 @@
+/*
+    404 page specific styling.
+
+    Authored by Jacob Humston
+*/
+
+h1, p {
+    text-align: center;
+    padding: 10px;
+}
+
+h1 {
+    margin-top: 25px;
+    font-size: xx-large;
+    margin-bottom: 0px;
+
+    b {
+        color: var(--red);
+    }
+}
+
+p {
+    font-size: larger;
+    margin-top: 0px;
+}
