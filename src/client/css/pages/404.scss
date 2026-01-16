@@ -4,7 +4,8 @@
     Authored by Jacob Humston
 */
 
-h1, p {
+h1,
+p {
     text-align: center;
     padding: 10px;
 }
@@ -22,4 +23,9 @@ h1 {
 p {
     font-size: larger;
     margin-top: 0px;
+}
+
+#possibleOtherPages {
+    font-size: medium;
+    margin-top: 25px;
 }

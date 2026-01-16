@@ -65,7 +65,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description A utility endpoint to test captcha verification. Unlike other endpoints that require a captcha, this one does not error if the captcha fails. */
+        /** @description Verify a captcha. Unlike other endpoints that require a captcha, this one does not error if the captcha fails. */
         get: {
             parameters: {
                 query?: never;
@@ -193,6 +193,63 @@ export interface paths {
                     };
                     content: {
                         'application/json': components['schemas']['PingSchema'];
+                    };
+                };
+                /** @description Rate limit error. */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        'application/json': components['schemas']['RateLimitErrorSchema'];
+                    };
+                };
+                /** @description Internal server error. */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        'application/json': components['schemas']['ErrorSchema'];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    '/api/resolve-path': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Resolve a path, useful for helping users find pages they mistyped. */
+        get: {
+            parameters: {
+                query: {
+                    /** @description The path to resolve. */
+                    path: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Resolved paths, this may be an empty array. These results are returned in order of best match. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        'application/json': string[];
                     };
                 };
                 /** @description Rate limit error. */

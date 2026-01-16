@@ -342,3 +342,22 @@ export function hotReloadFrontend() {
         rebuild = true;
     });
 }
+
+/**
+ * Get a list of web pages from the static folder.
+ * Note that these paths are the web based location, however
+ * you can get the file path by adding static to the front of
+ * the path.
+ * @param skipAdmin If true, admin pages will be skipped.
+ * @returns The list of web pages.
+ */
+export function getStaticPagesWebPaths(skipAdmin: boolean): string[] {
+    const pages: string[] = [];
+    for (const file of readdirSync('static/', { withFileTypes: true, recursive: true })) {
+        if (file.isFile() && file.name.endsWith('.html')) {
+            if (skipAdmin && file.parentPath.includes('admin')) continue;
+            pages.push(`${file.parentPath.replace('static', '')}/${file.name.split('.')[0]}`);
+        }
+    }
+    return pages;
+}
