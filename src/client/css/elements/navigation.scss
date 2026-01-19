@@ -96,6 +96,7 @@
                 padding-right: 10px;
                 z-index: 1;
                 position: relative;
+                transition: color ease-in-out 0.5s;
             }
 
             #themeSwitcherBackground {
@@ -118,6 +119,14 @@
 
         #themeSwitcher:hover {
             cursor: pointer;
+
+            span {
+                color: var(--accent);
+            }
+
+            .currentTheme {
+                color: var(--text-darker);
+            }
         }
     }
 }

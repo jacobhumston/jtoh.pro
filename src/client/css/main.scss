@@ -19,3 +19,7 @@ pre {
         padding: 10px;
     }
 }
+
+.noTransitions * {
+    transition: none !important;
+}

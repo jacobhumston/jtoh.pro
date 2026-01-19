@@ -49,8 +49,9 @@ export function listenForThemeSwitches() {
         return console.log('Theme switcher is missing.');
 
     const themeElements = themeSwitcher.children;
-    // [0] - light icon
-    // [1] - dark icon
+    // [0] - theme switcher background
+    // [1] - light icon
+    // [2] - dark icon
 
     /**
      * Update the theme switcher's ui state.
@@ -58,6 +59,8 @@ export function listenForThemeSwitches() {
     function updateUI() {
         const isDark = darkModeEnabled();
         isDark ? themeElements[0].classList.add('dark') : themeElements[0].classList.remove('dark');
+        themeElements[1].classList[isDark ? 'remove' : 'add']('currentTheme');
+        themeElements[2].classList[isDark ? 'add' : 'remove']('currentTheme');
     }
 
     themeSwitcher.addEventListener('click', function () {

@@ -22,3 +22,13 @@
         localStorage.setItem('colorMode', useDarkMode ? 'dark' : 'light');
     })();
 </script>
+
+<script>
+    // add/remove noTransitions class
+    (() => {
+        const root = document.documentElement;
+        root.classList.add('noTransitions');
+        //setTimeout(() => root.classList.remove('noTransitions'), 1500);
+        window.addEventListener('load', () => root.classList.remove('noTransitions'));
+    })();
+</script>

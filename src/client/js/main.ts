@@ -10,9 +10,8 @@ import { listenForThemeSwitches } from '@client/modules/theme';
 import { disableConsoleLogIfNotLocalhost } from '@client/utils/logger';
 import { checkForUpdates } from '@client/utils/update';
 
-// run some utility functions
 disableConsoleLogIfNotLocalhost();
 updateCurrentNavigation();
+listenForThemeSwitches();
 checkForUpdates();
 initAnalytics();
-listenForThemeSwitches();

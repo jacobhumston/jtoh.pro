@@ -236,7 +236,7 @@ export async function buildFrontend() {
         }
 
         // replace duplicate files
-        const refrenceMap: Map<string, { new: string; layers: number }> = new Map();
+        const refrenceMap: Map<string, { new: string; newPath: string }> = new Map();
         const hashMap: Map<string, string> = new Map();
         for (const file of readdirSync('static', { recursive: true, withFileTypes: true })) {
             const filePath = `${file.parentPath}/${file.name}`;
@@ -258,10 +258,10 @@ export async function buildFrontend() {
                 if (fileHash !== file2Hash) continue;
                 rmSync(file2Path, { force: true });
 
-                // paths will always have at least 1 separator, so it is safe to subtract 2
+                // Store the new name and the path to the original file
                 refrenceMap.set(file2.name, {
                     new: nameMap.get(file.name) ?? file.name,
-                    layers: file2Path.split('/').length - 2
+                    newPath: file.parentPath
                 });
             }
 
@@ -277,10 +277,32 @@ export async function buildFrontend() {
 
             let content = readFileSync(filePath, 'utf-8');
             for (const [name, data] of refrenceMap) {
-                // update layers to be relevant to the current file
-                data.layers = data.layers - (data.layers - (filePath.split('/').length - 2));
-                if (data.layers === 0) content = content.replace(`./${name}`, `./${data.new}`);
-                else content = content.replace(`./${name}`, `${'../'.repeat(data.layers)}${data.new}`);
+                const currentDir = file.parentPath
+                    .replace('static', '')
+                    .split('/')
+                    .filter((s) => s);
+                const targetDir = data.newPath
+                    .replace('static', '')
+                    .split('/')
+                    .filter((s) => s);
+
+                let commonLength = 0;
+                for (let i = 0; i < Math.min(currentDir.length, targetDir.length); i++) {
+                    if (currentDir[i] === targetDir[i]) commonLength++;
+                    else break;
+                }
+
+                const upLevels = currentDir.length - commonLength;
+                const downPath = targetDir.slice(commonLength);
+
+                let relativePath = '';
+                if (upLevels === 0 && downPath.length === 0) {
+                    relativePath = `./${data.new}`;
+                } else {
+                    relativePath = `${'../'.repeat(upLevels)}${downPath.length > 0 ? downPath.join('/') + '/' : ''}${data.new}`;
+                }
+
+                content = content.replace(`./${name}`, relativePath);
             }
             for (const [old, value] of nameMap) {
                 content = content.replace(old, value);
@@ -301,7 +323,7 @@ export async function buildFrontend() {
                     const content = readFileSync(path, 'utf8');
                     const minified = await minify(content, {
                         minifyCSS: true,
-                        minifyJS: { compress: { passes: 3 }, mangle: true },
+                        minifyJS: { compress: { passes: 3, drop_console: true }, mangle: true },
                         removeComments: true,
                         removeAttributeQuotes: true,
                         collapseWhitespace: true

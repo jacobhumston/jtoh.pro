@@ -1,0 +1,31 @@
+/*
+    CSS styling for markdown based pages.
+
+    Authored by Jacob Humston
+*/
+
+#content {
+    max-width: 800px;
+    padding: 25px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 15px;
+
+    h1,
+    h2,
+    h3,
+    h4,
+    b,
+    strong {
+        color: var(--accent);
+    }
+
+    li::marker {
+        color: var(--text-darker);
+    }
+
+    h2 {
+        border-bottom: solid 2px var(--background);
+        padding-bottom: 5px;
+    }
+}
