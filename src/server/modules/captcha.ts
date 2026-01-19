@@ -13,7 +13,7 @@ import { createMiddleware } from 'hono/factory';
 import { serverURL } from '@server/config';
 import { Cache } from '@server/managers/cache';
 import { DatabaseClient } from '@server/managers/database';
-import { getSessionToken } from '@server/modules/secrets';
+import { generateRawToken, getSessionToken } from '@server/modules/secrets';
 
 // hmac
 const hmac = randomBytes(255).toString();
@@ -69,8 +69,8 @@ export async function verifyCaptchaFromContext(context: Context) {
     if ((await isCaptchaBypassExpired(context)) === false) return true;
     const result = await verifyCaptcha(captcha);
     if (result === true) {
-        const bypassToken = randomBytes(255).toString();
-        await captchaBypassCache.set(bypassToken, {}, { minutes: 30 });
+        const bypassToken = generateRawToken();
+        await captchaBypassCache.set(bypassToken, {}, { minutes: 10 });
         setCookie(context, getSessionToken('captcha-bypass'), bypassToken, {
             expires: (await captchaBypassCache.expires(bypassToken)) as Date,
             domain: serverURL.hostname,

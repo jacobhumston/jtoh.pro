@@ -67,6 +67,9 @@ export function serveStatic(app: OpenAPIHono) {
  * may be a bit slow, especially when minifying everything.
  */
 export async function buildFrontend() {
+    // flags
+    const minifyBuild = await getBooleanArg('minifyBuild');
+
     clearStatic(); // clean the static folder
 
     // load templates
@@ -120,8 +123,8 @@ export async function buildFrontend() {
         outdir: safelyGetPath('static'),
         root: 'src/client/pages',
         splitting: true,
-        sourcemap: (isDev && !(await getBooleanArg('minifyBuild'))) === false ? 'linked' : 'none',
-        minify: !isDev || (await getBooleanArg('minifyBuild')),
+        sourcemap: isDev && !minifyBuild ? 'linked' : 'none',
+        minify: !isDev || minifyBuild,
         footer: `\n\n// @copyright Copyright of jtoh.pro, All Rights Reserved. (c)${new Date().getFullYear()}`,
         target: 'browser',
         naming: {
@@ -193,6 +196,28 @@ export async function buildFrontend() {
         symlinkSync(safelyGetPath(`${file.parentPath}/${file.name}`), `${destinationPath}${file.name}`);
     }
 
+    // build workers
+    const workerEntrypoints: string[] = [];
+    for (const file of readdirSync('src/client/js/workers/', { recursive: true, withFileTypes: true })) {
+        if (file.isFile() && file.name.endsWith('.ts')) {
+            workerEntrypoints.push(`${file.parentPath}/${file.name}`);
+        }
+    }
+    if (workerEntrypoints.length > 0) {
+        await build({
+            entrypoints: workerEntrypoints,
+            outdir: safelyGetPath('static/js/workers'),
+            splitting: false,
+            sourcemap: isDev && !minifyBuild ? 'linked' : 'none',
+            minify: !isDev || minifyBuild,
+            footer: `\n\n// @copyright Copyright of jtoh.pro, All Rights Reserved. (c)${new Date().getFullYear()}`,
+            target: 'browser',
+            naming: {
+                entry: '[name].[ext]'
+            }
+        });
+    }
+
     // remove duplicate files and replace their references with the orginal
     // also renames files if in production mode
     // note that this segment runs under the assumption that all non-symbolic link files are text based
@@ -202,7 +227,7 @@ export async function buildFrontend() {
         const nameMap: Map<string, string> = new Map();
         for (const file of readdirSync('static', { recursive: true, withFileTypes: true })) {
             if (!file.isFile() || file.isSymbolicLink() || file.name.endsWith('.html')) continue;
-            if (isDev) nameMap.set(file.name, file.name);
+            if (isDev && !minifyBuild) nameMap.set(file.name, file.name);
             else
                 nameMap.set(
                     file.name,
@@ -265,13 +290,13 @@ export async function buildFrontend() {
     }
 
     // minify (in prod)
-    if (!isDev || (await getBooleanArg('minifyBuild')) === true) {
+    if (!isDev || minifyBuild === true) {
         log('info', 'Minifying build enabled, this may take a moment...');
         for (const file of readdirSync('static/', { recursive: true, withFileTypes: true })) {
             if (file.isFile()) {
                 // minify html
                 if (file.name.endsWith('.html')) {
-                    log('debug', `Minifying (html) ${file.parentPath}/${file.name}`);
+                    if (isDev) log('debug', `Minifying (html) ${file.parentPath}/${file.name}`);
                     const path = `${file.parentPath}/${file.name}`;
                     const content = readFileSync(path, 'utf8');
                     const minified = await minify(content, {
@@ -280,20 +305,22 @@ export async function buildFrontend() {
                         removeComments: true,
                         removeAttributeQuotes: true,
                         collapseWhitespace: true
-                    });
+                    }).catch(() => null);
+                    if (!minified) continue;
                     writeFileSync(path, minified);
                     // minify js
                 } else if (file.name.endsWith('.js')) {
-                    log('debug', `Minifying (js) ${file.parentPath}/${file.name}`);
+                    if (isDev) log('debug', `Minifying (js) ${file.parentPath}/${file.name}`);
                     const path = `${file.parentPath}/${file.name}`;
                     const content = readFileSync(path, 'utf8');
                     const minified = await jsMinify(content, {
-                        compress: { passes: 3 },
+                        compress: { passes: 3, drop_console: true },
                         mangle: true,
                         format: {
                             comments: /jtoh\.pro/
                         }
-                    });
+                    }).catch(() => null);
+                    if (!minified) continue;
                     writeFileSync(path, minified.code ?? '');
                 }
                 // not going to minify css due to it already being minified pretty well by bun

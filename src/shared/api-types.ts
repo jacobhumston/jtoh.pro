@@ -87,6 +87,69 @@ export interface paths {
                         'application/json': components['schemas']['CaptchaSuccessSchema'];
                     };
                 };
+                /** @description Forbidden error. */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        'application/json': components['schemas']['ErrorSchema'];
+                    };
+                };
+                /** @description Rate limit error. */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        'application/json': components['schemas']['RateLimitErrorSchema'];
+                    };
+                };
+                /** @description Internal server error. */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        'application/json': components['schemas']['ErrorSchema'];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    '/api/captcha/skip': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Returns a result indicating if the client is allowed to skip the captcha challenge. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Captcha skip response. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        'application/json': components['schemas']['CaptchaSkipSchema'];
+                    };
+                };
                 /** @description Rate limit error. */
                 429: {
                     headers: {
@@ -482,6 +545,10 @@ export interface components {
         };
         CaptchaSuccessSchema: {
             /** @description Whether the captcha was successful or not. */
+            success: boolean;
+        };
+        CaptchaSkipSchema: {
+            /** @description Whether the client can skip the captcha or not. */
             success: boolean;
         };
         CardBackgroundSchema: {

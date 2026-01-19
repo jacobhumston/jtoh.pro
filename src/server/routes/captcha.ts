@@ -7,9 +7,10 @@
  */
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi';
 
-import { captchaSchema, captchaSuccessSchema } from '@schemas/captcha';
+import { captchaSchema, captchaSkipSchema, captchaSuccessSchema } from '@schemas/captcha';
 import { errorSchema, rateLimitErrorSchema } from '@schemas/general';
-import { createCaptcha, verifyCaptchaFromContext } from '@server/modules/captcha';
+import { isDev } from '@server/config';
+import { createCaptcha, isCaptchaBypassExpired, verifyCaptchaFromContext } from '@server/modules/captcha';
 
 /** Route for the main endpoint. */
 const route = createRoute({
@@ -64,6 +65,48 @@ const testRoute = createRoute({
             },
             description: 'Captcha response.'
         },
+        403: {
+            content: {
+                'application/json': {
+                    schema: errorSchema
+                }
+            },
+            description: 'Forbidden error.'
+        },
+        429: {
+            content: {
+                'application/json': {
+                    schema: rateLimitErrorSchema
+                }
+            },
+            description: 'Rate limit error.'
+        },
+        500: {
+            content: {
+                'application/json': {
+                    schema: errorSchema
+                }
+            },
+            description: 'Internal server error.'
+        }
+    }
+});
+
+/** Route for the test endpoint. */
+const bypassCheckRoute = createRoute({
+    method: 'get',
+    path: '/api/captcha/skip',
+    description: 'Returns a result indicating if the client is allowed to skip the captcha challenge.',
+    tags: ['Security'],
+    responses: {
+        200: {
+            content: {
+                'application/json': {
+                    schema: captchaSkipSchema
+                }
+            },
+            description: 'Captcha skip response.'
+        },
         429: {
             content: {
                 'application/json': {
@@ -90,6 +133,11 @@ export async function handler(app: OpenAPIHono) {
     });
 
     app.openapi(testRoute, async (context) => {
+        if (!isDev) return context.json({ error: 'This endpoint is disabled.' }, 403);
         return context.json({ success: await verifyCaptchaFromContext(context) }, 200);
+    });
+
+    app.openapi(bypassCheckRoute, async (context) => {
+        return context.json({ success: (await isCaptchaBypassExpired(context)) === false }, 200);
     });
 }

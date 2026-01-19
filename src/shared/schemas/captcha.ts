@@ -38,3 +38,13 @@ export const captchaSuccessSchema = z
 
 /** `captchaSuccessSchema` type. */
 export type CaptchaSuccessSchema = z.infer<typeof captchaSuccessSchema>;
+
+/** Schema that represents a captcha skip response. */
+export const captchaSkipSchema = z
+    .object({
+        success: z.boolean().openapi({ description: 'Whether the client can skip the captcha or not.' })
+    })
+    .openapi('CaptchaSkipSchema');
+
+/** `captchaSkipSchema` type. */
+export type CaptchaSkipSchema = z.infer<typeof captchaSkipSchema>;

@@ -47,10 +47,18 @@ export const decrypt = cryptr.decrypt;
 export function getSessionToken(name: string): string {
     const token = sessionTokens.get(name);
     if (!token) {
-        const newToken = randomBytes(16).toString('utf8');
+        const newToken = generateRawToken();
         sessionTokens.set(name, newToken);
         return newToken;
     } else {
         return token;
     }
+}
+
+/**
+ * Generate a raw token.
+ * @returns The created token.
+ */
+export function generateRawToken() {
+    return randomBytes(255).toBase64();
 }
