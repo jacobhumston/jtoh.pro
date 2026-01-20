@@ -71,7 +71,7 @@ export interface paths {
                 query?: never;
                 header: {
                     /** @description The captcha solution. */
-                    captcha: string;
+                    captcha: components['schemas']['CaptchaHeaderSchema'];
                 };
                 path?: never;
                 cookie?: never;
@@ -256,6 +256,72 @@ export interface paths {
                     };
                     content: {
                         'application/json': components['schemas']['PingSchema'];
+                    };
+                };
+                /** @description Rate limit error. */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        'application/json': components['schemas']['RateLimitErrorSchema'];
+                    };
+                };
+                /** @description Internal server error. */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        'application/json': components['schemas']['ErrorSchema'];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    '/api/merch/products': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get a list of products that we currently offer. */
+        get: {
+            parameters: {
+                query?: never;
+                header: {
+                    /** @description The captcha solution. */
+                    captcha: components['schemas']['CaptchaHeaderSchema'];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description List of available products. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        'application/json': unknown;
+                    };
+                };
+                /** @description Invalid captcha error. */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        'application/json': components['schemas']['ErrorSchema'];
                     };
                 };
                 /** @description Rate limit error. */
@@ -547,6 +613,8 @@ export interface components {
             /** @description Whether the captcha was successful or not. */
             success: boolean;
         };
+        /** @description The captcha solution. */
+        CaptchaHeaderSchema: string;
         CaptchaSkipSchema: {
             /** @description Whether the client can skip the captcha or not. */
             success: boolean;

@@ -84,6 +84,10 @@ const spec = app.getOpenAPI31Document({
         {
             name: 'Administrative',
             description: 'Endpoints that enable administrative actions to be performed more effectively.'
+        },
+        {
+            name: 'Merch',
+            description: 'Merch related endpoints, such as getting a list of items.'
         }
     ].sort((a, b) => a.name.localeCompare(b.name))
 });

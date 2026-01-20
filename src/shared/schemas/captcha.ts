@@ -48,3 +48,12 @@ export const captchaSkipSchema = z
 
 /** `captchaSkipSchema` type. */
 export type CaptchaSkipSchema = z.infer<typeof captchaSkipSchema>;
+
+/** Schema that represents a captcha header. */
+export const captchaHeaderSchema = z
+    .string()
+    .openapi({ description: 'The captcha solution.' })
+    .openapi('CaptchaHeaderSchema');
+
+/** `captchaHeaderSchema` type. */
+export type CaptchaHeaderSchema = z.infer<typeof captchaHeaderSchema>;

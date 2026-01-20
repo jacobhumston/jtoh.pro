@@ -7,7 +7,7 @@
  */
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi';
 
-import { captchaSchema, captchaSkipSchema, captchaSuccessSchema } from '@schemas/captcha';
+import { captchaHeaderSchema, captchaSchema, captchaSkipSchema, captchaSuccessSchema } from '@schemas/captcha';
 import { errorSchema, rateLimitErrorSchema } from '@schemas/general';
 import { isDev } from '@server/config';
 import { createCaptcha, isCaptchaBypassExpired, verifyCaptchaFromContext } from '@server/modules/captcha';
@@ -54,7 +54,7 @@ const testRoute = createRoute({
         'Verify a captcha. Unlike other endpoints that require a captcha, this one does not error if the captcha fails.',
     tags: ['Security'],
     request: {
-        headers: z.object({ captcha: z.string().openapi({ description: 'The captcha solution.' }) })
+        headers: z.object({ captcha: captchaHeaderSchema })
     },
     responses: {
         200: {

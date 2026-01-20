@@ -42,7 +42,7 @@
         "highlight.js": "^11.11.1",
         "hono": "^4.11.4",
         "hono-rate-limiter": "^0.5.3",
-        "html-minifier-next": "^4.18.0",
+        "html-minifier-next": "^4.19.0",
         "hyperscript": "^2.0.2",
         "imperative-html": "^0.1.2",
         "jose": "panva/jose",
