@@ -5,7 +5,7 @@
  * Authored by Jacob Humston
  */
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi';
-import { search } from 'fast-fuzzy';
+import { search, sortKind } from 'fast-fuzzy';
 
 import { errorSchema, rateLimitErrorSchema } from '@schemas/general';
 import { getStaticPagesWebPaths } from '@server/managers/web';
@@ -55,6 +55,15 @@ export async function handler(app: OpenAPIHono) {
     app.openapi(route, (context) => {
         const { path } = context.req.query();
         const pages = getStaticPagesWebPaths(true).map((page) => page.replace('index', ''));
-        return context.json(search(path, pages), 200);
+        return context.json(
+            search(path, pages, {
+                ignoreCase: true,
+                sortBy: sortKind.bestMatch,
+                useSellers: true,
+                ignoreSymbols: true,
+                threshold: 0.4
+            }),
+            200
+        );
     });
 }

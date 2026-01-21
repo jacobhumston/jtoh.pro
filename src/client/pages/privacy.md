@@ -1,6 +1,6 @@
 # PRIVACY POLICY
 
-Updated August 18th, 2025
+Updated August 18th, 2025 - [View All Documents](/legal)
 
 ## 1\. Introduction
 

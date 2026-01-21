@@ -65,10 +65,11 @@ const spec = app.getOpenAPI31Document({
     servers: [{ url: serverURL.href }],
     info: {
         title: 'jtoh.pro API',
-        description: 'API documentation for the jtoh.pro client.',
+        description:
+            'API documentation for the jtoh.pro backend interface.\n> [!warning]\n> This API is in early active development, be cautious about bugs and breaking changes.',
         version: version,
         contact: { email: 'support@jtoh.pro', name: 'jtoh.pro Support' },
-        termsOfService: `/legal/terms`
+        termsOfService: `/terms`
     },
     tags: [
         { name: 'Cards', description: 'Endpoints that allow you to customize cards, etc.' },
