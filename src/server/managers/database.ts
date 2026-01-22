@@ -28,13 +28,15 @@ const databases = {
     /** Cache database. */
     cache: getDatabase('cache'),
     /** Database used for user configuration. */
-    config: getDatabase('config'),
+    users: getDatabase('users'),
     /** Database for leaderboards. */
     leaderboards: getDatabase('leaderboards'),
     /** Database for captchas. */
     captchas: getDatabase('captchas'),
     /** Database for server secrets. */
-    secrets: getDatabase('secrets')
+    secrets: getDatabase('secrets'),
+    /** Database used to store permission settings. */
+    permissions: getDatabase('permissions')
 };
 
 /** Type the represents a valid database name. */
