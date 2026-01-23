@@ -4,6 +4,9 @@
  *
  * Authored by Jacob Humston
  */
+import type { ThemeConfig } from 'chartgpu';
+import Color from 'color';
+import { Evt } from 'evt';
 
 /**
  * Returns a boolean indicating whether the client should be using
@@ -26,6 +29,7 @@ export function applyTheme(): undefined {
     const useDarkMode = darkModeEnabled();
     root.toggleAttribute('dark', useDarkMode);
     localStorage.setItem('colorMode', useDarkMode ? 'dark' : 'light');
+    themeEvents.post('updated');
 }
 
 /**
@@ -33,10 +37,8 @@ export function applyTheme(): undefined {
  * @param useDarkMode A boolean indicating whether the theme should be dark mode or light mode.
  */
 export function setTheme(useDarkMode: boolean) {
-    const root = document.documentElement;
-    root.toggleAttribute('dark', useDarkMode);
     localStorage.setItem('darkModeEnabled', useDarkMode ? 'true' : 'false');
-    localStorage.setItem('colorMode', useDarkMode ? 'dark' : 'light');
+    applyTheme();
 }
 
 /**
@@ -70,4 +72,38 @@ export function listenForThemeSwitches() {
     });
 
     updateUI();
+}
+
+/** Theme events */
+export const themeEvents = Evt.create<'updated'>();
+
+/**
+ * A simple function that uses {@linkcode darkModeEnabled} to get
+ * the current theme. Which is either `light` or `dark`.
+ * @returns The current theme.
+ */
+export function getCurrentTheme(): 'light' | 'dark' {
+    return darkModeEnabled() ? 'dark' : 'light';
+}
+
+/**
+ * Get the current chart theme.
+ * @returns The current chart theme config.
+ */
+export function getCurrentChartTheme(): ThemeConfig {
+    const style = getComputedStyle(document.documentElement);
+
+    // quick function refrence to make code easier to read
+    // "p" :skull: - best named variable of 2025
+    const p = style.getPropertyValue.bind(style);
+    return {
+        backgroundColor: p('--background-darker'),
+        textColor: p('--text'),
+        axisLineColor: p('--text-darker'),
+        axisTickColor: p('--text-darker'),
+        gridLineColor: new Color(p('--text-darker')).darken(0.5).hex(),
+        colorPalette: [p('--accent'), p('--red'), p('--green'), p('--blue'), p('--yellow')],
+        fontFamily: 'Poppins',
+        fontSize: 12
+    };
 }
