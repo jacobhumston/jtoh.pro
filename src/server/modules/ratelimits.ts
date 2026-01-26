@@ -8,6 +8,7 @@ import { createMiddleware } from 'hono/factory';
 
 import { Cache } from '@server/managers/cache';
 import { getIPFromContext } from '@server/modules/ip';
+import { getSessionToken } from '@server/modules/secrets';
 
 const cache = new Cache<{ used: number }>('rate-limits');
 
@@ -27,6 +28,7 @@ export default function rateLimitMiddleware(options: {
     customPrefix?: string;
 }) {
     return createMiddleware(async (context, next) => {
+        if (context.req.header('ratelimit-bypass') === getSessionToken('ratelimit-bypass')) return await next();
         if (options.prefixPath === undefined) options.prefixPath = true;
         const ip = getIPFromContext(context);
         const key = btoa(`${options.customPrefix ?? ''}${options.prefixPath ? context.req.path + '/' : ''}${ip}`);

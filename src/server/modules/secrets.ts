@@ -57,6 +57,7 @@ export function getSessionToken(name: string): string {
 
 /**
  * Generate a raw token.
+ * Note that this does NOT add it to the session token map.
  * @returns The created token.
  */
 export function generateRawToken() {
