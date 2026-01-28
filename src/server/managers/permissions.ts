@@ -9,6 +9,7 @@ import { createMiddleware } from 'hono/factory';
 
 import { DatabaseClient } from '@server/managers/database';
 import apiTokens from '@server/modules/tokens';
+import { permissions } from '@shared/const';
 
 // The admin ID is stored as a token, because that's practical I suppose.
 const database = new DatabaseClient<{ read: Array<PermissionTypes>; write: Array<PermissionTypes> }>(
@@ -16,17 +17,6 @@ const database = new DatabaseClient<{ read: Array<PermissionTypes>; write: Array
     'users'
 );
 const adminId = apiTokens.robloxAdminUserId; // LovelyJacob
-
-/** Permissions table. */
-export const permissions = [
-    { name: 'User Moderation', description: 'Access to user moderation features.' },
-    { name: 'Server Logs', description: 'Access to server logs.' },
-    { name: 'Private API Documentation', description: 'Access to private API documentation.' },
-    { name: 'Permissions Table', description: 'Access the permissions table.' },
-    { name: 'Merch Orders', description: 'Access to merch orders.' },
-    { name: 'Task Management', description: 'Access to server task management.' },
-    { name: 'Support Portal', description: 'Access to the support portal.' }
-] as const;
 
 /** Structure of a permission. */
 export type PermissionObject = {
