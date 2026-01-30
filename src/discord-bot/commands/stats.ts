@@ -164,26 +164,18 @@ Completed Areas: ${towerStats.completed_areas.length > 0 ? towerStats.completed_
                     if (value === null) return 'N/A';
                     return `#${formatter.format(value)}`;
                 })(await getPlaceInLeaderboard(skillPointsDB, 'etoh', user).catch(() => null));
-                const spTotal =
-                    `out of ${formatter.format(await getTotalInLeaderboard(skillPointsDB, 'etoh'))}`.replaceAll(
-                        ' ',
-                        '_'
-                    );
+                const spTotal = `out of ${formatter.format(await getTotalInLeaderboard(skillPointsDB, 'etoh'))}`;
 
                 const completedTowersRank = ((value: number | null) => {
                     if (value === null) return 'N/A';
                     return `#${formatter.format(value)}`;
                 })(await getPlaceInLeaderboard(towerCountDB, 'etoh', user).catch(() => null));
-                const completedTowerTotal =
-                    `out of ${formatter.format(await getTotalInLeaderboard(towerCountDB, 'etoh'))}`.replaceAll(
-                        ' ',
-                        '_'
-                    );
+                const completedTowerTotal = `out of ${formatter.format(await getTotalInLeaderboard(towerCountDB, 'etoh'))}`;
 
                 container.addTextDisplayComponents((text) => {
-                    let msg = `Skill Points: ${formatter.format(towerStats.skill_points)}`;
-                    msg = msg + `\n🏆 Skill Points Leaderboard: **${spRank}** ${spTotal}`;
-                    msg = msg + `\n🏆 Completed Towers Leaderboard: **${completedTowersRank}** ${completedTowerTotal}`;
+                    let msg = `Skill Points: **${formatter.format(towerStats.skill_points)}**`;
+                    msg = msg + `\nSkill Points Leaderboard: **${spRank}** ${spTotal}`;
+                    msg = msg + `\nCompleted Towers Leaderboard: **${completedTowersRank}** ${completedTowerTotal}`;
                     return text.setContent(msg);
                 });
             }
@@ -260,26 +252,18 @@ Completed Areas: ${towerStats.completed_areas.length > 0 ? towerStats.completed_
                     if (value === null) return 'N/A';
                     return `#${formatter.format(value)}`;
                 })(await getPlaceInLeaderboard(skillPointsDB, 'cscd', user).catch(() => null));
-                const spTotal =
-                    `out of ${formatter.format(await getTotalInLeaderboard(skillPointsDB, 'cscd'))}`.replaceAll(
-                        ' ',
-                        '_'
-                    );
+                const spTotal = `out of ${formatter.format(await getTotalInLeaderboard(skillPointsDB, 'cscd'))}`;
 
                 const completedTowersRank = ((value: number | null) => {
                     if (value === null) return 'N/A';
                     return `#${formatter.format(value)}`;
                 })(await getPlaceInLeaderboard(towerCountDB, 'cscd', user).catch(() => null));
-                const completedTowerTotal =
-                    `out of ${formatter.format(await getTotalInLeaderboard(towerCountDB, 'cscd'))}`.replaceAll(
-                        ' ',
-                        '_'
-                    );
+                const completedTowerTotal = `out of ${formatter.format(await getTotalInLeaderboard(towerCountDB, 'cscd'))}`;
 
                 container.addTextDisplayComponents((text) => {
-                    let msg = `Skill Points: ${formatter.format(towerStats.skill_points.legit)}`;
-                    msg = msg + `\n🏆 Skill Points Leaderboard: **${spRank}** ${spTotal}`;
-                    msg = msg + `\n🏆 Completed Towers Leaderboard: **${completedTowersRank}** ${completedTowerTotal}`;
+                    let msg = `Skill Points: **${formatter.format(towerStats.skill_points.legit)}**`;
+                    msg = msg + `\nSkill Points Leaderboard: **${spRank}** ${spTotal}`;
+                    msg = msg + `\nCompleted Towers Leaderboard: **${completedTowersRank}** ${completedTowerTotal}`;
                     return text.setContent(msg);
                 });
             }
