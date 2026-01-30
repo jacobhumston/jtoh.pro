@@ -8,6 +8,14 @@ import { addRecent } from '../util';
 import { towerstatsCache } from '../../cache';
 import type { TowerDataCSCD, TowerDataEToH } from '../../type';
 import { userIdToThumbnailFull } from '../../roblox';
+import {
+    updateSkillPoints,
+    getPlaceInLeaderboard,
+    skillPointsDB,
+    getTotalInLeaderboard,
+    updateTowerCount,
+    towerCountDB
+} from '../../db';
 
 export const command = new discord.SlashCommandBuilder()
     .setName('stats')
@@ -66,6 +74,8 @@ const emojis: Record<string, string> = {
     '14': '<:nil:1447442334785470514>'
 };
 
+const formatter = new Intl.NumberFormat('en-US');
+
 export async function execute(interaction: discord.APIChatInputApplicationCommandInteraction) {
     const form = new FormData();
 
@@ -116,6 +126,9 @@ export async function execute(interaction: discord.APIChatInputApplicationComman
                     text.setContent(`*Failed to load ${user.name}'s stats for ${fullGameName}*`)
                 );
             } else {
+                await updateSkillPoints('etoh', user, towerStats.skill_points).catch(() => undefined);
+                await updateTowerCount('etoh', user, towerStats.completed_towers).catch(() => undefined);
+
                 container.addSectionComponents((section) => {
                     section.addTextDisplayComponents((text) =>
                         text.setContent(`### ${user.name}'s stats for ${fullGameName}`)
@@ -143,6 +156,35 @@ Completed Areas: ${towerStats.completed_areas.length > 0 ? towerStats.completed_
                         string = `${string}\n* ${emoji} ${towerStats.difficulties[(index + 1).toString()]}: **${progress[0]} / ${progress[1]}** (${Math.floor((progress[0] / progress[1]) * 100)}%)`;
                     }
                     return text.setContent(string);
+                });
+
+                container.addSeparatorComponents((sep) => sep.setSpacing(discord.SeparatorSpacingSize.Small));
+
+                const spRank = ((value: number | null) => {
+                    if (value === null) return 'N/A';
+                    return `#${formatter.format(value)}`;
+                })(await getPlaceInLeaderboard(skillPointsDB, 'etoh', user).catch(() => null));
+                const spTotal =
+                    `out of ${formatter.format(await getTotalInLeaderboard(skillPointsDB, 'etoh'))}`.replaceAll(
+                        ' ',
+                        '_'
+                    );
+
+                const completedTowersRank = ((value: number | null) => {
+                    if (value === null) return 'N/A';
+                    return `#${formatter.format(value)}`;
+                })(await getPlaceInLeaderboard(towerCountDB, 'etoh', user).catch(() => null));
+                const completedTowerTotal =
+                    `out of ${formatter.format(await getTotalInLeaderboard(towerCountDB, 'etoh'))}`.replaceAll(
+                        ' ',
+                        '_'
+                    );
+
+                container.addTextDisplayComponents((text) => {
+                    let msg = `Skill Points: ${formatter.format(towerStats.skill_points)}`;
+                    msg = msg + `\n🏆 Skill Points Leaderboard: **${spRank}** ${spTotal}`;
+                    msg = msg + `\n🏆 Completed Towers Leaderboard: **${completedTowersRank}** ${completedTowerTotal}`;
+                    return text.setContent(msg);
                 });
             }
         } else if (game === 'cscd') {
@@ -179,6 +221,9 @@ Completed Areas: ${towerStats.completed_areas.length > 0 ? towerStats.completed_
                     text.setContent(`*Failed to load ${user.name}'s stats for ${fullGameName}*`)
                 );
             } else {
+                await updateSkillPoints('cscd', user, towerStats.skill_points.legit).catch(() => undefined);
+                await updateTowerCount('cscd', user, towerStats.completed_towers.legit).catch(() => undefined);
+
                 container.addSectionComponents((section) => {
                     section.addTextDisplayComponents((text) =>
                         text.setContent(`### ${user.name}'s stats for ${fullGameName}`)
@@ -207,6 +252,35 @@ Completed Areas: ${towerStats.completed_areas.length > 0 ? towerStats.completed_
                         string = `${string}\n* ${emoji} ${towerStats.difficulties[(index + 1).toString()]}: **${progress[0]} / ${progress[1]}** (${Math.floor((progress[0] / progress[1]) * 100)}%)`;
                     }
                     return text.setContent(string);
+                });
+
+                container.addSeparatorComponents((sep) => sep.setSpacing(discord.SeparatorSpacingSize.Small));
+
+                const spRank = ((value: number | null) => {
+                    if (value === null) return 'N/A';
+                    return `#${formatter.format(value)}`;
+                })(await getPlaceInLeaderboard(skillPointsDB, 'cscd', user).catch(() => null));
+                const spTotal =
+                    `out of ${formatter.format(await getTotalInLeaderboard(skillPointsDB, 'cscd'))}`.replaceAll(
+                        ' ',
+                        '_'
+                    );
+
+                const completedTowersRank = ((value: number | null) => {
+                    if (value === null) return 'N/A';
+                    return `#${formatter.format(value)}`;
+                })(await getPlaceInLeaderboard(towerCountDB, 'cscd', user).catch(() => null));
+                const completedTowerTotal =
+                    `out of ${formatter.format(await getTotalInLeaderboard(towerCountDB, 'cscd'))}`.replaceAll(
+                        ' ',
+                        '_'
+                    );
+
+                container.addTextDisplayComponents((text) => {
+                    let msg = `Skill Points: ${formatter.format(towerStats.skill_points.legit)}`;
+                    msg = msg + `\n🏆 Skill Points Leaderboard: **${spRank}** ${spTotal}`;
+                    msg = msg + `\n🏆 Completed Towers Leaderboard: **${completedTowersRank}** ${completedTowerTotal}`;
+                    return text.setContent(msg);
                 });
             }
         }
