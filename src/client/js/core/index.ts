@@ -31,6 +31,11 @@ export default async function () {
             id: '3762953501',
             path: 'cscd',
             name: "Caleb's Soul Crushing Domain"
+        },
+        {
+            id: '5488708927',
+            path: 'tea',
+            name: 'The Eternal Abyss'
         }
     ];
 

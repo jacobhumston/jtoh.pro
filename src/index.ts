@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { GlobalFonts } from '@napi-rs/canvas';
 import etohGen from './gens/etoh';
+import teaGen from './gens/tea';
 import discordInteractions, { publishDiscordCommands } from './discord-bot/discord';
 import redirects from './redirects';
 import serveStatic from './static';
@@ -229,6 +230,7 @@ serveStatic(app);
 
 etohGen(app);
 cscdGen(app);
+teaGen(app);
 previewGen(app);
 
 app.get('/', async (context) => {

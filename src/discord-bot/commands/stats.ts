@@ -267,6 +267,91 @@ Completed Areas: ${towerStats.completed_areas.length > 0 ? towerStats.completed_
                     return text.setContent(msg);
                 });
             }
+        } else if (game === 'tea') {
+            const cached = towerstatsCache.get(`${user.id}-tea`);
+            let towerStats: TowerDataEToH | undefined =
+                cached ??
+                (await fetch(`https://api.towerstats.com/api/etoh`, {
+                    method: 'POST',
+                    body: JSON.stringify({ id: user.id }),
+                    headers: {
+                        apiKey: towerStatsToken
+                    }
+                })
+                    .then((res) => {
+                        if (res.ok) return res.json();
+                        return undefined;
+                    })
+                    .catch(() => undefined));
+
+            if (towerStats !== undefined && (towerStats.error as any) !== undefined) {
+                towerStats = undefined;
+            }
+
+            if (towerStats !== undefined && cached === undefined) {
+                towerstatsCache.set(`${user.id}-tea`, towerStats);
+            }
+
+            const thumb = (await userIdToThumbnailFull(user.id).catch(() => null)) ?? '';
+
+            if (towerStats === undefined) {
+                container.addTextDisplayComponents((text) =>
+                    text.setContent(`*Failed to load ${user.name}'s stats for ${fullGameName}*`)
+                );
+            } else {
+                await updateSkillPoints('tea', user, towerStats.skill_points).catch(() => undefined);
+                await updateTowerCount('tea', user, towerStats.completed_towers).catch(() => undefined);
+
+                container.addSectionComponents((section) => {
+                    section.addTextDisplayComponents((text) =>
+                        text.setContent(`### ${user.name}'s stats for ${fullGameName}`)
+                    );
+                    section.addTextDisplayComponents((text) =>
+                        text.setContent(`Hardest Completion: ${emojis[Math.floor(towerStats.hardest_raw_difficulty).toString()] ?? ''} **${towerStats.hardest_tower ?? 'None'}**
+Total Progress: **${towerStats.completed_towers} / ${towerStats.total_towers}** (${Math.floor((towerStats.completed_towers / towerStats.total_towers) * 100)}%)
+Completed Areas: ${towerStats.completed_areas.length > 0 ? towerStats.completed_areas.map((a) => `**${a}**`).join(', ') : '**None**'}`)
+                    );
+                    return section.setThumbnailAccessory((thumbnail) => thumbnail.setURL(thumb));
+                });
+
+                container.addSeparatorComponents((sep) => sep.setSpacing(discord.SeparatorSpacingSize.Small));
+
+                container.addTextDisplayComponents((text) => {
+                    let string = `Difficulty Progress:`;
+                    const difficultyOrder = [];
+                    for (const [key, string] of Object.entries(towerStats.difficulties)) {
+                        difficultyOrder[parseInt(key) - 1] = string;
+                    }
+                    for (const [index, value] of difficultyOrder.entries()) {
+                        if (towerStats.difficulty_progress[value] === undefined) continue;
+                        const emoji = emojis[(index + 1).toString()];
+                        const progress = towerStats.difficulty_progress[value];
+                        string = `${string}\n* ${emoji} ${towerStats.difficulties[(index + 1).toString()]}: **${progress[0]} / ${progress[1]}** (${Math.floor((progress[0] / progress[1]) * 100)}%)`;
+                    }
+                    return text.setContent(string);
+                });
+
+                container.addSeparatorComponents((sep) => sep.setSpacing(discord.SeparatorSpacingSize.Small));
+
+                const spRank = ((value: number | null) => {
+                    if (value === null) return 'N/A';
+                    return `#${formatter.format(value)}`;
+                })(await getPlaceInLeaderboard(skillPointsDB, 'tea', user).catch(() => null));
+                const spTotal = `out of ${formatter.format(await getTotalInLeaderboard(skillPointsDB, 'tea'))}`;
+
+                const completedTowersRank = ((value: number | null) => {
+                    if (value === null) return 'N/A';
+                    return `#${formatter.format(value)}`;
+                })(await getPlaceInLeaderboard(towerCountDB, 'tea', user).catch(() => null));
+                const completedTowerTotal = `out of ${formatter.format(await getTotalInLeaderboard(towerCountDB, 'tea'))}`;
+
+                container.addTextDisplayComponents((text) => {
+                    let msg = `Skill Points: **${formatter.format(towerStats.skill_points)}**`;
+                    msg = msg + `\nSkill Points Leaderboard: **${spRank}** ${spTotal}`;
+                    msg = msg + `\nCompleted Towers Leaderboard: **${completedTowersRank}** ${completedTowerTotal}`;
+                    return text.setContent(msg);
+                });
+            }
         }
     } else {
         container.addTextDisplayComponents((text) => {

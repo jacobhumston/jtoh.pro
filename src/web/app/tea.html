@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+    <head data-page="The Eternal Abyss">
+        <template data-name="head"></template>
+        <template data-name="meta"></template>
+    </head>
+    <body>
+        <template data-name="header-links"></template>
+        <div id="container">
+            <h1>The Eternal Abyss</h1>
+            <span id="cardsUrlRefrence">
+                <span class="materialSymbolsRounded">link</span>
+                jtoh.pro
+            </span>
+            <h2>Try it out!</h2>
+            <p>
+                Input a Roblox username below to try it out!
+                <i>You can also input a user ID by starting the input with an exclamation mark.</i>
+            </p>
+            <div class="interactionFlex">
+                <input type="text" id="exampleInputUsername" placeholder="Roblox Username" />
+                <button type="button" id="exampleInputRefresh">
+                    <span class="materialSymbolsRounded">refresh</span>
+                    Get Image
+                </button>
+            </div>
+            <div class="interactionFlex">
+                <button type="button" id="exampleInputCopyImage">
+                    <span class="materialSymbolsRounded">file_copy</span>
+                    Copy Image
+                </button>
+                <button type="button" id="exampleInputCopyURL">
+                    <span class="materialSymbolsRounded">content_copy</span>
+                    Copy URL
+                </button>
+                <button type="button" id="exampleInputDownload">
+                    <span class="materialSymbolsRounded">download</span>
+                    Download Image
+                </button>
+            </div>
+            <div class="extraPadding"></div>
+            <img
+                id="exampleImageOutput"
+                src="/preview/loveliestjacob"
+                alt="Example Image Output"
+                width="700px"
+                height="300px"
+            />
+            <div class="adSegment">
+                <h2>Ad</h2>
+                <div>
+                    <ins
+                        class="adsbygoogle"
+                        style="display: block"
+                        data-ad-client="ca-pub-8070099883923672"
+                        data-ad-slot="9609038265"
+                        data-ad-format="auto"
+                        data-full-width-responsive="true"
+                    ></ins>
+                    <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
+            </div>
+            <div class="split"></div>
+            <h2>Available Links</h2>
+            Note that
+            <code>{USER}</code>
+            can either be a username or a Roblox user ID. The user ID must start with an exclamation mark, such as
+            <code>!12345</code>
+
+            <div class="extraPadding"></div>
+
+            <div class="copyLinkSection">
+                <button class="smallCopyButton" type="button" data-url="{{origin}}/tea/roblox">
+                    <span class="materialSymbolsRounded">content_copy</span>
+                    Copy
+                </button>
+                <a href="/tea/roblox" target="_blank">/tea/{USER}</a>
+                <span class="materialSymbolsRounded linkSectionCornerIcon">description</span>
+                <div class="copyLinkSectionDescription">
+                    <span class="materialSymbolsRounded">info</span>
+                    Get an image of a user's tower stats.
+                </div>
+            </div>
+
+            <div class="extraPadding"></div>
+            <div class="copyLinkSection">
+                <button class="smallCopyButton" type="button" data-url="{{origin}}/tea/embed/roblox">
+                    <span class="materialSymbolsRounded">content_copy</span>
+                    Copy
+                </button>
+                <a href="/tea/embed/roblox" target="_blank">/tea/embed/{USER}</a>
+                <span class="materialSymbolsRounded linkSectionCornerIcon">description</span>
+                <div class="copyLinkSectionDescription">
+                    <span class="materialSymbolsRounded">info</span>
+                    Get an image of a user's tower stats as a Discord embed.
+                    <br />
+                    The link will redirect to the user's
+                    <span class="towerstatsUrl">towerstats.com</span>
+                    profile when opened.
+                </div>
+            </div>
+
+            <h2>Short Links</h2>
+            Short links are links that redirect to "bigger" links. They are useful for sharing links in a more compact
+            way.
+
+            <div class="extraPadding"></div>
+
+            <div class="copyLinkSection">
+                <button class="smallCopyButton" type="button" data-url="{{origin}}/t/roblox">
+                    <span class="materialSymbolsRounded">content_copy</span>
+                    Copy
+                </button>
+                <a href="/t/roblox" target="_blank">/t/{USER}</a>
+                <span class="materialSymbolsRounded linkSectionCornerIcon">description</span>
+                <div class="copyLinkSectionDescription">
+                    <span class="materialSymbolsRounded">info</span>
+                    Short link for
+                    <code>/tea/{USER}</code>
+                </div>
+            </div>
+
+            <div class="extraPadding"></div>
+            <div class="copyLinkSection">
+                <button class="smallCopyButton" type="button" data-url="{{origin}}/tea/e/roblox">
+                    <span class="materialSymbolsRounded">content_copy</span>
+                    Copy
+                </button>
+                <a href="/tea/e/roblox" target="_blank">/tea/e/{USER}</a>
+                <span class="materialSymbolsRounded linkSectionCornerIcon">description</span>
+                <div class="copyLinkSectionDescription">
+                    <span class="materialSymbolsRounded">info</span>
+                    Short link for
+                    <code>/tea/embed/{USER}</code>
+                </div>
+            </div>
+
+            <br />
+            <br />
+            <div class="split"></div>
+
+            <template data-name="card-info"></template>
+            <template data-name="footer"></template>
+        </div>
+    </body>
+</html>
