@@ -230,13 +230,15 @@ export default function teaGen(app: Hono) {
                     if (text.length > 35) text = towerStats.hardest_abbreviation;
                     const raw = towerStats.hardest_raw_difficulty.toString();
                     const difficultyColor = towerStats.difficulty_colors[towerStats.difficulties[raw.split('.')[0]]];
+                    const outLineColor =
+                        towerStats.difficulty_colors_outlines[towerStats.difficulties[raw.split('.')[0]]];
                     colorText(
                         ctx,
                         `Hardest tower is ${text} (${raw})`,
                         [
                             {
                                 string: text as string,
-                                color: difficultyColor,
+                                color: outLineColor ?? difficultyColor,
                                 beforeCallback: (x, w, c) => {
                                     ctx.font = 'bold 18px Poppins';
                                     const color = Color(c);
@@ -300,12 +302,12 @@ export default function teaGen(app: Hono) {
                             .darken(0.75)
                             .hex();
                         ctx.fillRect(startX, startY, length / difficultyOrder.length, 5);
-                        ctx.fillStyle = difficultyColor;
+                        ctx.fillStyle = outLineColor ?? difficultyColor;
                         ctx.fillRect(startX, startY, width, 5);
                         ctx.textAlign = 'left';
                         ctx.font = 'bold 16px Poppins';
                         {
-                            const color = Color(difficultyColor);
+                            const color = Color(outLineColor ?? difficultyColor);
                             if (color.isDark()) {
                                 ctx.fillStyle = Color('#ffffff').hex();
                                 const textSize = ctx.measureText(`${Math.floor((completed / total) * 100)}%`);
@@ -331,7 +333,7 @@ export default function teaGen(app: Hono) {
                             ctx.miterLimit = 2;
                             ctx.strokeText(`${Math.floor((completed / total) * 100)}%`, startX, startY - 6, 98);
                         }
-                        ctx.fillStyle = difficultyColor;
+                        ctx.fillStyle = outLineColor ?? difficultyColor;
                         ctx.fillText(`${Math.floor((completed / total) * 100)}%`, startX, startY - 6);
                         ctx.fillStyle = new Color('#bdbdbd').darken(0.2).hex();
                         ctx.font = 'bold 15px Poppins';
