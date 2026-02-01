@@ -184,17 +184,6 @@ export default function teaGen(app: Hono) {
                     }
                 }
 
-                const order: string[] = [];
-                for (const [key, string] of Object.entries(towerStats.difficulties)) {
-                    order[parseInt(key)] = string;
-                }
-                towerStats.difficulties = {};
-                order
-                    .filter((e) => typeof e !== undefined)
-                    .forEach((v, i) => {
-                        towerStats.difficulties[i + 1] = v;
-                    });
-
                 //console.log(towerStats);
 
                 ctx.textAlign = 'left';
@@ -289,10 +278,11 @@ export default function teaGen(app: Hono) {
                     const startY = 245;
                     ctx.fillStyle = '#5a5a5a';
                     ctx.fillRect(20, startY, 660, 5);
-                    const difficultyOrder = [];
+                    let difficultyOrder = [];
                     for (const [key, string] of Object.entries(towerStats.difficulties)) {
                         difficultyOrder[parseInt(key) - 1] = string;
                     }
+                    difficultyOrder = difficultyOrder.filter((e) => e !== undefined);
                     let totalCompleted = 0;
                     let totalTotal = 0;
                     difficultyOrder.forEach((difficulty, index) => {
