@@ -7,8 +7,11 @@
 import { Command } from 'commander';
 import YAML from 'json-to-pretty-yaml';
 import { UAParser } from 'ua-parser-js';
+import { v4 } from 'uuid';
 
+import analytics from '@client/modules/analytics';
 import { client } from '@client/modules/api';
+import { getCurrentTheme, setTheme } from '@client/modules/theme';
 
 const program = new Command();
 
@@ -67,6 +70,42 @@ program
     .action(async () => {
         const data = UAParser(navigator.userAgent);
         print(YAML.stringify(data));
+    });
+
+program
+    .command('analytics-id')
+    .description("Get your client's analytics ID.")
+    .action(async () => {
+        const id = analytics.getUserId();
+        print(id ?? 'No analytics ID found!');
+    });
+
+program
+    .command('theme')
+    .description("Set your client\'s theme.")
+    .argument('<theme>', 'The theme to set.')
+    .action(async (theme?: string) => {
+        if (theme !== 'light' && theme !== 'dark') {
+            print(`error: "${theme}" is not a valid theme. Options are "light" ot "dark".`);
+        } else {
+            setTheme(theme !== 'light');
+            print(`success: Theme set to ${getCurrentTheme()}`);
+        }
+    });
+
+program
+    .command('uuid')
+    .description('Generate a UUID.')
+    .argument('[amount]', 'Amount of UUIDs to generate.', '1')
+    .action(async (amount?: string) => {
+        const value = parseInt(amount ?? '');
+        if (isNaN(value)) return print(`error: "${amount}" is not a not number.`);
+        if (value <= 0) return print(`error: "${amount}" must be greater then 0.`);
+        if (value >= 101) return print(`error: "${amount}" must be less then 100.`);
+        const uuids: string[] = [];
+        for (let i = 0; i < value; i++) uuids.push(v4());
+        print(`success: Successfully generated ${value} UUIDs.`);
+        print(uuids.join('\n'));
     });
 
 const terminal = document.getElementById('terminal') as HTMLDivElement;

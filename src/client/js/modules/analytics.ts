@@ -9,7 +9,7 @@ import rybbit from '@rybbit/js';
  * Init analytics.
  */
 export async function initAnalytics() {
-    await rybbit.init({ analyticsHost: 'https://analytics.lovelyjacob.com/api', siteId: '1' });
+    await rybbit.init({ analyticsHost: 'https://stats.lovelyjacob.com/api', siteId: 'f2d69176066a' });
 }
 
 /**
