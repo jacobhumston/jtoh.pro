@@ -4,6 +4,8 @@
  *
  * Authored by Jacob Humston
  */
+import 'core-js/actual';
+
 import { initAnalytics } from '@client/modules/analytics';
 import { updateCurrentNavigation } from '@client/modules/navigation';
 import { listenForThemeSwitches } from '@client/modules/theme';
