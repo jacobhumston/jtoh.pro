@@ -271,7 +271,7 @@ Completed Areas: ${towerStats.completed_areas.length > 0 ? towerStats.completed_
             const cached = towerstatsCache.get(`${user.id}-tea`);
             let towerStats: TowerDataEToH | undefined =
                 cached ??
-                (await fetch(`https://api.towerstats.com/api/etoh`, {
+                (await fetch(`https://api.towerstats.com/api/tea`, {
                     method: 'POST',
                     body: JSON.stringify({ id: user.id }),
                     headers: {
