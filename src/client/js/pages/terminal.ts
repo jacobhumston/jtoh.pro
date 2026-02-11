@@ -72,13 +72,13 @@ program
         print(YAML.stringify(data));
     });
 
-program
-    .command('analytics-id')
-    .description("Get your client's analytics ID.")
-    .action(async () => {
-        const id = analytics.getUserId();
-        print(id ?? 'No analytics ID found!');
-    });
+//program
+//    .command('analytics-id')
+//    .description("Get your client's analytics ID.")
+//    .action(async () => {
+//        const id = analytics.getUserId();
+//        print(id ?? 'No analytics ID found!');
+//    });
 
 program
     .command('theme')
