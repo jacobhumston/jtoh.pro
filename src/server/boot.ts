@@ -7,7 +7,7 @@ import { OpenAPIHono, z } from '@hono/zod-openapi';
 import { compress } from 'hono/compress';
 import { secureHeaders } from 'hono/secure-headers';
 
-import { readdirSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 
 import { listenForDiscordRequests } from '@discord/bot';
 import config, { serverURL, version } from '@server/config';
@@ -65,8 +65,7 @@ const spec = app.getOpenAPI31Document({
     servers: [{ url: serverURL.href }],
     info: {
         title: 'jtoh.pro API',
-        description:
-            'API documentation for the jtoh.pro backend interface.\n> [!warning]\n> This API is in early active development, be cautious about bugs and breaking changes.',
+        description: readFileSync('src/client/assets/api-description.md', 'utf8'),
         version: version,
         contact: { email: 'support@jtoh.pro', name: 'jtoh.pro Support' },
         termsOfService: `/terms`
