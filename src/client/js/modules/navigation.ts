@@ -6,13 +6,15 @@
  */
 
 /**
- * Update current navigation, such as buttons
+ * Handle navigation events, etc.
+ * This also update current navigation, such as buttons
  * who's appearance changes based on what page the
  * user is currently on.
  */
-export function updateCurrentNavigation() {
+export function handleNavigation() {
     const pageNavigation = document.getElementById('pageNavigation');
-    if (!pageNavigation) return console.log('Page navigation missing.');
+    const navigationToggle = document.getElementById('navigationToggle');
+    if (!pageNavigation || !navigationToggle) return console.log('Page navigation missing.');
 
     for (const element of pageNavigation.children) {
         if (element instanceof HTMLAnchorElement) {
@@ -22,4 +24,16 @@ export function updateCurrentNavigation() {
             }
         }
     }
+
+    navigationToggle.addEventListener('click', function () {
+        if (pageNavigation.classList.contains('navigationDropDownEnabled')) {
+            pageNavigation.classList.remove('navigationDropDownEnabled');
+            navigationToggle.innerHTML = '<span class="icon">menu</span> Menu';
+            navigationToggle.style.backgroundColor = '';
+        } else {
+            pageNavigation.classList.add('navigationDropDownEnabled');
+            navigationToggle.innerHTML = '<span class="icon">close</span> Close Menu';
+            navigationToggle.style.backgroundColor = 'var(--red)';
+        }
+    });
 }

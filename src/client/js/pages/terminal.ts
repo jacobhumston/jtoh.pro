@@ -9,7 +9,7 @@ import YAML from 'json-to-pretty-yaml';
 import { UAParser } from 'ua-parser-js';
 import { v4 } from 'uuid';
 
-import analytics from '@client/modules/analytics';
+//import analytics from '@client/modules/analytics';
 import { client } from '@client/modules/api';
 import { getCurrentTheme, setTheme } from '@client/modules/theme';
 
