@@ -9,7 +9,9 @@ import { z } from '@hono/zod-openapi';
 export const cardBackgroundSchema = z
     .object({
         id: z.string().openapi({ description: 'Identification string of this card background.' }),
-        isCustom: z.boolean().openapi({ description: 'If true, this card is custom and was uploaded by a user.' }),
+        isCustom: z
+            .boolean()
+            .openapi({ description: 'If true, this card background is custom and was uploaded by a user.' }),
         url: z.url().openapi({ description: 'URL to access this card background.' }),
         category: z.string().openapi({
             description:
