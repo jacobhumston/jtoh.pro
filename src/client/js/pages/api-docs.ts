@@ -14,5 +14,7 @@ window.Scalar.createApiReference('#docs', {
     hideDarkModeToggle: true,
     defaultOpenAllTags: true,
     documentDownloadType: 'direct',
-    telemetry: false
+    telemetry: false,
+    agent: { disabled: true },
+    defaultHttpClient: { targetKey: 'js', clientKey: 'fetch' }
 });
