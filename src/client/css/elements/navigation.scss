@@ -80,6 +80,17 @@
         align-items: center;
         position: relative;
 
+        #loggedInDetails {
+            img {
+                height: 3ch;
+                width: auto;
+                display: inline;
+                vertical-align: middle;
+                background-color: var(--background-lighter);
+                border-radius: 15px;
+            }
+        }
+
         #themeSwitcher {
             border-radius: 15px;
             border: none;
@@ -192,5 +203,13 @@
             flex-wrap: wrap;
             gap: 10px;
         }
+    }
+}
+
+@media screen and (max-width: 500px) {
+    #loggedInDetails {
+        order: 3;
+        flex-basis: 100%;
+        text-align: center;
     }
 }
