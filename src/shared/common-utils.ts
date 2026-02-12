@@ -27,3 +27,19 @@ export function replaceEmptyString(string: string, replacer: string) {
     if (string.length > 0) return string;
     return replacer;
 }
+
+/**
+ * A simple utility function to safely create urls.
+ * @param url The url to create.
+ * @returns The resulting url, or undefined if it was invalid.
+ */
+export function safeURL(url: string): URL | undefined {
+    let result;
+    try {
+        result = new URL(url);
+        if (result.protocol !== 'http:' && result.protocol !== 'https:') result = undefined;
+    } catch {
+        result = undefined;
+    }
+    return result;
+}

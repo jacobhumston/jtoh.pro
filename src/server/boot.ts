@@ -10,13 +10,14 @@ import { secureHeaders } from 'hono/secure-headers';
 import { readdirSync, readFileSync } from 'node:fs';
 
 import { listenForDiscordRequests } from '@discord/bot';
-import config, { serverURL, version } from '@server/config';
+import config, { serverPort, serverURL, version } from '@server/config';
 import { getBooleanArg } from '@server/managers/argv';
 import { generateSiteMap } from '@server/managers/sitemap';
 import { buildFrontend, hotReloadFrontend, serveStatic } from '@server/managers/web';
 import { cleanUpLogs, log } from '@server/modules/logger';
 import rateLimitMiddleware from '@server/modules/ratelimits';
 import '@server/modules/secrets';
+import { safeURL } from '@shared/common-utils';
 
 // create the hono application
 const app = new OpenAPIHono({
@@ -25,11 +26,29 @@ const app = new OpenAPIHono({
         if (!result.success) {
             return context.json({ error: z.prettifyError(result.error) }, 400);
         }
+    },
+    // adds support for user profile urls
+    getPath: (request) => {
+        const host = request.headers.get('host');
+        const path = safeURL(request.url)?.pathname ?? '/';
+        if (!host) return path;
+        if (host.endsWith('.etoh.pro') || host.endsWith('.roblox-obby.pro')) return `/profiles/${host.split('.')[0]}`;
+        return path;
     }
 });
 
 // log cleanup
 cleanUpLogs();
+
+// host protection
+app.use(async (context, next) => {
+    const host = context.req.header('Host');
+    if (!host) return context.json({ error: 'Missing host.' });
+    // support user profiles
+    if (host.endsWith('.etoh.pro') || host.endsWith('.roblox-obby.pro')) return await next();
+    if (host !== serverURL.host) return context.redirect(serverURL);
+    return await next();
+});
 
 // global rate limit
 app.use(rateLimitMiddleware({ pool: 120, reset: { minutes: 1 }, customPrefix: 'global' }));
@@ -115,7 +134,7 @@ if ((await getBooleanArg('hotBuild')) === true)
     (hotReloadFrontend(), log('info', 'Hot reloading enabled for the frontend. Sitemaps will be unavailable.'));
 
 // export server options for bun
-export default { fetch: app.fetch, port: config.serverPort } satisfies Bun.Serve.Options<any>;
+export default { fetch: app.fetch, port: serverPort } satisfies Bun.Serve.Options<any>;
 
 // log config for convenience
 log('info', `Server started with the following config: ${JSON.stringify(config)}`);
