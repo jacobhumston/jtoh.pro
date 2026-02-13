@@ -7,6 +7,7 @@
  */
 import { createMiddleware } from 'hono/factory';
 
+import { getAuthenticatedRobloxUser } from '@server/managers/auth';
 import { DatabaseClient } from '@server/managers/database';
 import apiTokens from '@server/modules/tokens';
 import { permissions } from '@shared/const';
@@ -73,9 +74,9 @@ export async function hasPermission(
  */
 export function createPermissionsMiddleware(permission: PermissionTypes, action: PermissionActionTypes) {
     return createMiddleware(async (context, next) => {
-        // TODO: implement proper auth once auth is ready
-        const userId = context.get('id') ?? 0;
-        if (!(await hasPermission(userId, permission, action)))
+        const user = await getAuthenticatedRobloxUser(context);
+        if (!user) return context.json({ error: `Forbidden, requires '${permission}' permission. (${action})` }, 403);
+        if (!(await hasPermission(user.id, permission, action)))
             return context.json({ error: `Forbidden, requires '${permission}' permission. (${action})` }, 403);
         return await next();
     });

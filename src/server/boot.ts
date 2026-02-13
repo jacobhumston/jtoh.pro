@@ -12,11 +12,12 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { listenForDiscordRequests } from '@discord/bot';
 import config, { serverPort, serverURL, version } from '@server/config';
 import { getBooleanArg } from '@server/managers/argv';
+import { createPermissionsMiddleware } from '@server/managers/permissions';
+import { redirectMiddleware } from '@server/managers/redirects';
 import { generateSiteMap } from '@server/managers/sitemap';
 import { buildFrontend, hotReloadFrontend, serveStatic } from '@server/managers/web';
 import { cleanUpLogs, log } from '@server/modules/logger';
 import rateLimitMiddleware from '@server/modules/ratelimits';
-import '@server/modules/secrets';
 import { safeURL } from '@shared/common-utils';
 
 // create the hono application
@@ -32,7 +33,12 @@ const app = new OpenAPIHono({
         const host = request.headers.get('host');
         const path = safeURL(request.url)?.pathname ?? '/';
         if (!host) return path;
-        if (host.endsWith('.etoh.pro') || host.endsWith('.roblox-obby.pro')) return `/profiles/${host.split('.')[0]}`;
+        if (
+            (host.endsWith('.etoh.pro') || host.endsWith('.roblox-obby.pro')) &&
+            !path.includes('assets') &&
+            !path.includes('api')
+        )
+            return `/profiles/${host.split('.')[0]}`;
         return path;
     }
 });
@@ -56,6 +62,7 @@ app.use(rateLimitMiddleware({ pool: 120, reset: { minutes: 1 }, customPrefix: 'g
 // utility middlewares
 app.use(secureHeaders());
 app.use(compress());
+app.use(redirectMiddleware);
 
 // build and serve pages/assets/etc
 await buildFrontend();
@@ -107,12 +114,15 @@ const spec = app.getOpenAPI31Document({
         {
             name: 'Merch',
             description: 'Merch related endpoints, such as getting a list of items.'
+        },
+        {
+            name: 'Authentication',
+            description: 'Authentication endpoints used to authorize users with other services.'
         }
     ].sort((a, b) => a.name.localeCompare(b.name))
 });
 
-app.get('/api/spec', (context) => {
-    // TODO: hide private spec to those who need it
+app.get('/api/spec', createPermissionsMiddleware('Private API Documentation', 'read'), (context) => {
     return context.json(spec);
 });
 

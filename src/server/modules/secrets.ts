@@ -12,11 +12,11 @@ import { randomBytes } from 'node:crypto';
 import { DatabaseClient } from '@server/managers/database';
 import { log } from '@server/modules/logger';
 
-const secretsDatabase = new DatabaseClient('secrets', 'sec');
+const secretsDatabase = new DatabaseClient<string>('secrets', 'sec');
 const sessionTokens: Map<string, string> = new Map();
 
 // Get the server passphrase.
-let passphrase = await read({ prompt: 'Please provide the server passphrase:', silent: true, replace: '*' });
+const passphrase = await read({ prompt: 'Please provide the server passphrase:', silent: true, replace: '*' });
 console.clear();
 
 // Save passphrase if not already present.
@@ -62,4 +62,20 @@ export function getSessionToken(name: string): string {
  */
 export function generateRawToken() {
     return randomBytes(255).toBase64();
+}
+
+/**
+ * Get a secrete. Will create one if it doesn't already exist.
+ * @param name The name of the secret to get.
+ * @returns The content's of the requested secret.
+ */
+export async function getSecret(name: string): Promise<string> {
+    const found = await secretsDatabase.get(name);
+    if (!found) {
+        const secret = generateRawToken();
+        await secretsDatabase.set(name, secret);
+        return secret;
+    } else {
+        return found;
+    }
 }

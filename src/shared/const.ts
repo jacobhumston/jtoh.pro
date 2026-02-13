@@ -11,7 +11,7 @@ export const permissions = [
     { name: 'Server Logs', description: 'Access to server logs.' },
     { name: 'Private API Documentation', description: 'Access to private API documentation.' },
     { name: 'Permissions Table', description: 'Access the permissions table.' },
-    { name: 'Merch Orders', description: 'Access to merch orders.' },
-    { name: 'Task Management', description: 'Access to server task management.' },
-    { name: 'Support Portal', description: 'Access to the support portal.' }
+    //{ name: 'Merch Orders', description: 'Access to merch orders.' },
+    { name: 'Task Management', description: 'Access to server task management.' }
+    //{ name: 'Support Portal', description: 'Access to the support portal.' }
 ] as const;

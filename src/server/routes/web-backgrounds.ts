@@ -6,8 +6,7 @@
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi';
 
 import { errorSchema, rateLimitErrorSchema } from '@schemas/general';
-
-import { getRandomWebBackground } from '../managers/web-backgrounds';
+import { getRandomWebBackground } from '@server/managers/web-backgrounds';
 
 /** Route for this endpoint. */
 const route = createRoute({

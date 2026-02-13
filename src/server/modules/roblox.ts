@@ -8,6 +8,8 @@ import { fetchApi, isAnyErrorResponse } from 'rozod';
 import { getUsersAvatar3d } from 'rozod/lib/endpoints/thumbnailsv1';
 import { getUsersUserid, postUsernamesUsers } from 'rozod/lib/endpoints/usersv1';
 
+import { serverURL } from '@server/config';
+
 /**
  * Get a Roblox avatar's 3d details.
  * @param userId The user id that the avatar belongs to.
@@ -79,4 +81,12 @@ export async function parseRobloxAccountInput(
               }).catch(() => null);
     }
     return null;
+}
+
+/**
+ * Get the URL of the default avatar headshot.
+ * @returns The URL of the avatar headshot.
+ */
+export function getDefaultAvatarHeadshot() {
+    return `${serverURL}assets/roblox-headshot.webp`;
 }

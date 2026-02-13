@@ -48,7 +48,7 @@ export function serveStatic(app: OpenAPIHono) {
         const name = replaceEmptyString(path.name, 'index');
         const dir = path.dir.endsWith('/') ? path.dir : `${path.dir}/`;
         const ext = replaceEmptyString(path.ext, '.html');
-        let filePath = `${staticPath}${dir}${name}${ext}`;
+        const filePath = `${staticPath}${dir}${name}${ext}`;
 
         if (!existsSync(filePath)) return await next();
         context.res.headers.set('Content-Type', mime.getType(ext) ?? 'application/octet-stream'); // application/octet-stream seems to be a good backup

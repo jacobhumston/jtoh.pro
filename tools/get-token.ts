@@ -3,6 +3,6 @@
  *
  * Authored by Jacob Humston
  */
-import tokens from '../src/server/modules/tokens';
+import tokens from '@server/modules/tokens';
 
 console.log(tokens[process.argv[2] as keyof typeof tokens]);

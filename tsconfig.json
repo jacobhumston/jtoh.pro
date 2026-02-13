@@ -23,5 +23,5 @@
             "@schemas/*": ["./src/shared/schemas/*"]
         }
     },
-    "exclude": ["static/"]
+    "exclude": ["static/", "eslint.config.js"]
 }
