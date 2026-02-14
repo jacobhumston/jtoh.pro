@@ -60,10 +60,10 @@ export async function authenticateRoblox(context: Context, data: any) {
 
     await robloxAuthDatabase.set(sessionToken, {
         id: parseInt(data.sub),
-        displayName: data.displayName,
+        displayName: data.name,
         username: data.preferred_username,
         picture: data.picture ?? getDefaultAvatarHeadshot(),
-        expires: expires.toString()
+        expires: expires.toISOString()
     });
 
     await setSignedCookie(context, 'authentication', sessionToken, authCookieSecret, {

@@ -7,9 +7,8 @@ import { createRoute, OpenAPIHono } from '@hono/zod-openapi';
 
 import { errorSchema, rateLimitErrorSchema } from '@schemas/general';
 import { serverURL } from '@server/config';
-import { authenticateRoblox, getRobloxAuthConfig } from '@server/managers/auth';
-
-//import { captchaMiddleware } from '@server/modules/captcha';
+import { authenticateRoblox, getAuthenticatedRobloxUser, getRobloxAuthConfig } from '@server/managers/auth';
+import { authInfoSchema } from '@shared/schemas/auth';
 
 /** Route Roblox auth. */
 const robloxAuthRoute = createRoute({
@@ -17,16 +16,42 @@ const robloxAuthRoute = createRoute({
     path: '/api/auth/roblox',
     description: 'Authorize with Roblox via OAuth.',
     tags: ['Authentication'],
-    //middleware: [captchaMiddleware],
-    'x-badges': [
-        {
-            name: 'CAPTCHA REQUIRED',
-            position: 'before'
-        }
-    ],
     responses: {
         302: {
             description: 'Client redirect.'
+        },
+        429: {
+            content: {
+                'application/json': {
+                    schema: rateLimitErrorSchema
+                }
+            },
+            description: 'Rate limit error.'
+        },
+        500: {
+            content: {
+                'application/json': {
+                    schema: errorSchema
+                }
+            },
+            description: 'Internal server error.'
+        }
+    }
+});
+
+const authInfoRoute = createRoute({
+    method: 'get',
+    path: '/api/auth/me',
+    description: 'Authorization info for the client.',
+    tags: ['Authentication'],
+    responses: {
+        200: {
+            content: {
+                'application/json': {
+                    schema: authInfoSchema
+                }
+            },
+            description: 'Auth info response.'
         },
         429: {
             content: {
@@ -76,5 +101,10 @@ export async function handler(app: OpenAPIHono) {
         await authenticateRoblox(context, await user.json());
 
         return context.redirect(`/`);
+    });
+
+    app.openapi(authInfoRoute, async (context) => {
+        const robloxInfo = await getAuthenticatedRobloxUser(context);
+        return context.json({ roblox: robloxInfo }, 200);
     });
 }

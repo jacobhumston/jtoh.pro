@@ -12,7 +12,6 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { listenForDiscordRequests } from '@discord/bot';
 import config, { serverPort, serverURL, version } from '@server/config';
 import { getBooleanArg } from '@server/managers/argv';
-import { createPermissionsMiddleware } from '@server/managers/permissions';
 import { redirectMiddleware } from '@server/managers/redirects';
 import { generateSiteMap } from '@server/managers/sitemap';
 import { buildFrontend, hotReloadFrontend, serveStatic } from '@server/managers/web';
@@ -122,7 +121,7 @@ const spec = app.getOpenAPI31Document({
     ].sort((a, b) => a.name.localeCompare(b.name))
 });
 
-app.get('/api/spec', createPermissionsMiddleware('Private API Documentation', 'read'), (context) => {
+app.get('/api/spec', (context) => {
     return context.json(spec);
 });
 

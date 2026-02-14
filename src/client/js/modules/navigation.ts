@@ -4,6 +4,9 @@
  *
  * Authored by Jacob Humston
  */
+import sanitizeHtml from 'sanitize-html';
+
+import { getRobloxAuthInfo } from '@client/modules/auth';
 
 /**
  * Handle navigation events, etc.
@@ -11,10 +14,11 @@
  * who's appearance changes based on what page the
  * user is currently on.
  */
-export function handleNavigation() {
+export async function handleNavigation() {
     const pageNavigation = document.getElementById('pageNavigation');
     const navigationToggle = document.getElementById('navigationToggle');
-    if (!pageNavigation || !navigationToggle) return console.log('Page navigation missing.');
+    const loggedInDetails = document.getElementById('loggedInDetails');
+    if (!pageNavigation || !navigationToggle || !loggedInDetails) return console.log('Page navigation missing.');
 
     for (const element of pageNavigation.children) {
         if (element instanceof HTMLAnchorElement) {
@@ -36,4 +40,8 @@ export function handleNavigation() {
             navigationToggle.style.backgroundColor = 'var(--red)';
         }
     });
+
+    const authUser = await getRobloxAuthInfo();
+    if (authUser)
+        loggedInDetails.innerHTML = `<img src="${sanitizeHtml(authUser.picture)}"> @${sanitizeHtml(authUser.username)} — <a href="/settings">Dashboard</a>`;
 }
