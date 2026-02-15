@@ -28,7 +28,7 @@ for (const file of readdirSync(safelyGetPath('src/client/assets/backgrounds'), {
     // A quick check to make sure there are no duplicate IDs
     const foundMatch = backgrounds.find((background) => background.id === id);
     if (foundMatch !== undefined)
-        throw new Error(`Duplicate card background ID found: ${id} (${file.parentPath}/${file.name})`);
+        throw new Error(`Duplicate web background ID found: ${id} (${file.parentPath}/${file.name})`);
 
     backgrounds.push({
         id,
