@@ -9,7 +9,7 @@
  */
 import process from 'node:process';
 
-// remove the unneeded arguments, avoid modifying the orginal array
+// remove the unneeded arguments, avoid modifying the original array
 const args = [...process.argv].splice(2);
 
 /** CLI argument map. */

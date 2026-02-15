@@ -4,8 +4,8 @@
  * Authored by Jacob Humston
  */
 import type { OpenAPIHono } from '@hono/zod-openapi';
-import { InteractionResponseType, InteractionType, MessageFlags, type APIInteraction } from 'discord-api-types/v10';
 import { verifyKey } from 'discord-interactions';
+import { InteractionResponseType, InteractionType, MessageFlags, type APIInteraction } from 'discord.js';
 
 import { parseComponentID, registeredComponentHandlers } from '@discord/components';
 import { api } from '@discord/rest';

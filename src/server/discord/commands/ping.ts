@@ -1,4 +1,9 @@
-import { ButtonStyle, ComponentType, MessageFlags } from 'discord-api-types/v10';
+/**
+ * A simple ping command that tests the components handler.
+ *
+ * Authored by Jacob Humston
+ */
+import { ButtonStyle, ComponentType, MessageFlags } from 'discord.js';
 import { type APIApplicationCommandInteraction, type RESTPostAPIApplicationCommandsJSONBody } from 'discord.js';
 
 import { createComponentID, parseComponentID, registerComponentHandler } from '@discord/components';
@@ -6,11 +11,6 @@ import { api } from '@discord/rest';
 import { getUserFromInteraction } from '@discord/util';
 import apiTokens from '@server/modules/tokens';
 
-/**
- * A simple ping command that tests the components handler.
- *
- * Authored by Jacob Humston
- */
 const command: RESTPostAPIApplicationCommandsJSONBody = {
     name: 'ping',
     description: 'Pong!'
