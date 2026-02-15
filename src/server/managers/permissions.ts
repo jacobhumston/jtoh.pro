@@ -5,6 +5,7 @@
  *
  * Authored by Jacob Humston
  */
+import type { Context } from 'hono';
 import { createMiddleware } from 'hono/factory';
 
 import { getAuthenticatedRobloxUser } from '@server/managers/auth';
@@ -63,6 +64,24 @@ export async function hasPermission(
     if (isAdmin(userId)) return true;
     const permissionsObject = (await database.get(`${userId}`)) ?? { read: [], write: [] };
     return permissionsObject[action].includes(permission);
+}
+
+/**
+ * Check if a context has a permission.
+ * This function is a wrapper for {@linkcode hasPermission}.
+ * @param context The context to check.
+ * @param permission The permission to check for.
+ * @param action The action related to this permission.
+ * @returns A boolean indicating whether this context has that permission or not.
+ */
+export async function contextHasPermission(
+    context: Context,
+    permission: PermissionTypes,
+    action: PermissionActionTypes
+): Promise<boolean> {
+    const user = await getAuthenticatedRobloxUser(context);
+    if (!user) return false;
+    return await hasPermission(user.id, permission, action);
 }
 
 /**

@@ -7,11 +7,13 @@ import { OpenAPIHono, z } from '@hono/zod-openapi';
 import { compress } from 'hono/compress';
 import { secureHeaders } from 'hono/secure-headers';
 
+import { serve } from 'bun';
 import { readdirSync, readFileSync } from 'node:fs';
 
 import { listenForDiscordRequests } from '@discord/bot';
-import config, { serverPort, serverURL, version } from '@server/config';
+import config, { isDev, serverPort, serverURL, version } from '@server/config';
 import { getBooleanArg } from '@server/managers/argv';
+import { contextHasPermission } from '@server/managers/permissions';
 import { redirectMiddleware } from '@server/managers/redirects';
 import { generateSiteMap } from '@server/managers/sitemap';
 import { buildFrontend, hotReloadFrontend, serveStatic } from '@server/managers/web';
@@ -35,7 +37,9 @@ const app = new OpenAPIHono({
         if (
             (host.endsWith('.etoh.pro') || host.endsWith('.roblox-obby.pro')) &&
             !path.includes('assets') &&
-            !path.includes('api')
+            !path.includes('api') &&
+            !path.endsWith('.js') &&
+            !path.endsWith('.css')
         )
             return `/profiles/${host.split('.')[0]}`;
         return path;
@@ -121,7 +125,9 @@ const spec = app.getOpenAPI31Document({
     ].sort((a, b) => a.name.localeCompare(b.name))
 });
 
-app.get('/api/spec', (context) => {
+app.get('/api/spec', async (context) => {
+    const hasPrivateAccess = await contextHasPermission(context, 'Private API Documentation', 'read');
+    if (!hasPrivateAccess && !isDev) return context.json({ error: 'Not found.' }, 404) as any;
     return context.json(spec);
 });
 
@@ -143,7 +149,7 @@ if ((await getBooleanArg('hotBuild')) === true)
     (hotReloadFrontend(), log('info', 'Hot reloading enabled for the frontend. Sitemaps will be unavailable.'));
 
 // export server options for bun
-export default { fetch: app.fetch, port: serverPort } satisfies Bun.Serve.Options<any>;
+serve({ fetch: app.fetch, port: serverPort });
 
 // log config for convenience
 log('info', `Server started with the following config: ${JSON.stringify(config)}`);
