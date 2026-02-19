@@ -42,7 +42,7 @@ export function setTheme(useDarkMode: boolean) {
 }
 
 /**
- * Listen for them switches.
+ * Listen for theme switches.
  * This function also handles the visual state of the theme switcher.
  */
 export function listenForThemeSwitches() {

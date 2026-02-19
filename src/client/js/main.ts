@@ -12,8 +12,8 @@ import { listenForThemeSwitches } from '@client/modules/theme';
 import { disableConsoleLogIfNotLocalhost } from '@client/utils/logger';
 import { checkForUpdates } from '@client/utils/update';
 
+initAnalytics();
 disableConsoleLogIfNotLocalhost();
 handleNavigation();
 listenForThemeSwitches();
 checkForUpdates();
-initAnalytics();
