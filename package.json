@@ -104,7 +104,7 @@
         "zod": "^4.3.6"
     },
     "patchedDependencies": {
-        "@alwatr/hash-string@5.2.27": "patches/@alwatr%2Fhash-string@5.2.27.patch"
+        "@alwatr/hash-string@5.2.28": "patches/@alwatr%2Fhash-string@5.2.28.patch"
     },
     "scripts": {
         "format": "bunx prettier --cache --write .",

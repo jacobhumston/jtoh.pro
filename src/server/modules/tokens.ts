@@ -60,6 +60,7 @@ const discordFeedbackWebhook = tokens.discordFeedbackWebhook as string;
 const emailAddress = tokens.emailAddress as string;
 const emailPassword = tokens.emailPassword as string;
 const printfulToken = tokens.printfulToken as string;
+const rybbitApiKey = tokens.rybbitApiKey as string;
 
 const apiTokens = {
     discordInteractionsPublicKey,
@@ -91,7 +92,8 @@ const apiTokens = {
     discordFeedbackWebhook,
     emailAddress,
     emailPassword,
-    printfulToken
+    printfulToken,
+    rybbitApiKey
 };
 
 /** API tokens. */
