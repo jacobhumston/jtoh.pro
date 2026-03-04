@@ -7,6 +7,7 @@ import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi';
 
 import { taskSchema, type TaskSchema } from '@schemas/admin';
 import { errorSchema, rateLimitErrorSchema } from '@schemas/general';
+import { createPermissionsMiddleware } from '@server/managers/permissions';
 import { getTasks } from '@server/managers/tasks';
 
 /** Route for this endpoint. */
@@ -15,6 +16,7 @@ const route = createRoute({
     path: '/api/admin/tasks',
     description: 'Get a list of the current server tasks.',
     tags: ['Administrative'],
+    middleware: [createPermissionsMiddleware('Task Management', 'read')],
     responses: {
         200: {
             content: {

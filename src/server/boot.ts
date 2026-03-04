@@ -9,6 +9,7 @@ import { secureHeaders } from 'hono/secure-headers';
 
 import { serve } from 'bun';
 import { readdirSync, readFileSync } from 'node:fs';
+import process from 'node:process';
 
 import { listenForDiscordRequests } from '@discord/bot';
 import config, { isDev, serverPort, serverURL, version } from '@server/config';
@@ -151,7 +152,13 @@ if ((await getBooleanArg('hotBuild')) === true) {
 }
 
 // export server options for bun
-serve({ fetch: app.fetch, port: serverPort });
+try {
+    serve({ fetch: app.fetch, port: serverPort });
+} catch (error) {
+    log('error', error);
+    log('info', 'Unable to start server, maybe run "bun run port-access"?');
+    process.exit();
+}
 
 // log config for convenience
 log('info', `Server started with the following config: ${JSON.stringify(config)}`);
