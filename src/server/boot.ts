@@ -79,7 +79,7 @@ for (const route of readdirSync('src/server/routes/', { recursive: true, withFil
 )) {
     if (!route.isFile()) continue;
     // no error handling for missing handlers as we want that issue to crash the application
-    const file: { handler: (app: OpenAPIHono) => Promise<any> | any } = await import(
+    const file: { handler: (app: OpenAPIHono) => Promise<void> | void } = await import(
         `${route.parentPath.replace('src/server/', './')}/${route.name}`
     );
     file.handler(app);
@@ -127,14 +127,14 @@ const spec = app.getOpenAPI31Document({
 
 app.get('/api/spec', async (context) => {
     const hasPrivateAccess = await contextHasPermission(context, 'Private API Documentation', 'read');
-    if (!hasPrivateAccess && !isDev) return context.json({ error: 'Not found.' }, 404) as any;
+    if (!hasPrivateAccess && !isDev) return context.json({ error: 'Not found.' }, 404);
     return context.json(spec);
 });
 
 // handle 404s
 app.notFound((context) => {
     context.status(404);
-    if (context.req.path.startsWith('/api')) return context.json({ error: 'The requested path was not found.' }) as any;
+    if (context.req.path.startsWith('/api')) return context.json({ error: 'The requested path was not found.' });
     return context.redirect(`/404?from=${context.req.path}`);
 });
 
@@ -145,8 +145,10 @@ app.onError((error, context) => {
 });
 
 // hot reloading for development
-if ((await getBooleanArg('hotBuild')) === true)
-    (hotReloadFrontend(), log('info', 'Hot reloading enabled for the frontend. Sitemaps will be unavailable.'));
+if ((await getBooleanArg('hotBuild')) === true) {
+    hotReloadFrontend();
+    log('info', 'Hot reloading enabled for the frontend. Sitemaps will be unavailable.');
+}
 
 // export server options for bun
 serve({ fetch: app.fetch, port: serverPort });

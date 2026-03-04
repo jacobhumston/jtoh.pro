@@ -70,6 +70,7 @@ export async function listenForDiscordRequests(app: OpenAPIHono) {
             }
             return context.json({ type: InteractionResponseType.DeferredChannelMessageWithSource });
         } else if (json.type === InteractionType.ApplicationCommandAutocomplete) {
+            return context.json({ type: InteractionResponseType.DeferredMessageUpdate });
         } else if (json.type === InteractionType.MessageComponent) {
             const id = json.data.custom_id;
             const parsed = parseComponentID(id);
@@ -88,6 +89,7 @@ export async function listenForDiscordRequests(app: OpenAPIHono) {
             }
             return context.json({ type: InteractionResponseType.DeferredMessageUpdate });
         } else if (json.type === InteractionType.ModalSubmit) {
+            return context.json({ type: InteractionResponseType.DeferredMessageUpdate });
         }
 
         context.status(200);

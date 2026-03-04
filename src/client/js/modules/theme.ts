@@ -60,7 +60,8 @@ export function listenForThemeSwitches() {
      */
     function updateUI() {
         const isDark = darkModeEnabled();
-        isDark ? themeElements[0].classList.add('dark') : themeElements[0].classList.remove('dark');
+        if (isDark) themeElements[0].classList.add('dark');
+        else themeElements[0].classList.remove('dark');
         themeElements[1].classList[isDark ? 'remove' : 'add']('currentTheme');
         themeElements[2].classList[isDark ? 'add' : 'remove']('currentTheme');
     }

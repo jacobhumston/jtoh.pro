@@ -33,7 +33,7 @@ export async function getCLIArgument<T extends keyof CLIArgumentTypeMap, O exten
     name: string,
     type: T,
     optional: O,
-    validator?: (value: CLIArgumentTypeMap[T]) => any | Promise<any>
+    validator?: (value: CLIArgumentTypeMap[T]) => void | Promise<void>
 ): Promise<O extends true ? CLIArgumentTypeMap[T] | null : CLIArgumentTypeMap[T]> {
     const argIndex = args.findIndex((arg) => arg === `--${name}`);
     const argValue = argIndex === -1 ? null : (args[argIndex + 1] ?? null);
@@ -41,12 +41,12 @@ export async function getCLIArgument<T extends keyof CLIArgumentTypeMap, O exten
         if (optional === false) {
             throw new Error(`${name} expected a value but was not provided.`);
         } else {
-            // @ts-expect-error
+            // @ts-expect-error Fixes a type error.
             return null;
         }
     }
 
-    let result: any;
+    let result: any; // eslint-disable-line
 
     // parse strings
     if (type === 'string') {

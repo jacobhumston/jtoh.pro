@@ -5,7 +5,7 @@
  * Authored by Jacob Humston
  */
 import { createHash, type BinaryToTextEncoding } from 'node:crypto';
-import { existsSync, mkdirSync, createReadStream } from 'node:fs';
+import { createReadStream, existsSync, mkdirSync } from 'node:fs';
 import { cwd } from 'node:process';
 
 /**

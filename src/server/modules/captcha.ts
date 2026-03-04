@@ -5,10 +5,11 @@
  */
 import { convertTo } from '@jacobhumston/tc.js';
 import { createChallenge, verifySolution } from 'altcha-lib';
-import { randomBytes } from 'crypto';
 import type { Context } from 'hono';
 import { getCookie, setCookie } from 'hono/cookie';
 import { createMiddleware } from 'hono/factory';
+
+import { randomBytes } from 'node:crypto';
 
 import { serverURL } from '@server/config';
 import { Cache } from '@server/managers/cache';
@@ -20,8 +21,8 @@ const hmac = randomBytes(255).toString();
 
 // we need to store already verified captchas
 // note that the type is an empty object, as we only need the keys existence
-const database = new DatabaseClient<{}>('captchas', 'verified');
-const captchaBypassCache = new Cache<{}>('captcha-bypasses');
+const database = new DatabaseClient<object>('captchas', 'verified');
+const captchaBypassCache = new Cache<object>('captcha-bypasses');
 
 // clear old captchas
 for (const captcha of Object.keys(await database.all())) {
@@ -97,8 +98,8 @@ export async function isCaptchaBypassExpired(context: Context) {
 export const captchaMiddleware = createMiddleware(async (context, next) => {
     const result = await verifyCaptchaFromContext(context);
     if (result === false) {
-        if (!context.req.header('captcha')) return context.json({ error: 'Missing captcha.' }, 422) as any;
-        else return context.json({ error: 'Invalid captcha.' }, 429) as any;
+        if (!context.req.header('captcha')) return context.json({ error: 'Missing captcha.' }, 422);
+        else return context.json({ error: 'Invalid captcha.' }, 429);
     }
     return await next();
 });

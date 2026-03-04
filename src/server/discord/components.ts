@@ -12,7 +12,7 @@ import { createTask } from '@server/managers/tasks';
 /** Registered component handlers. */
 export const registeredComponentHandlers: Map<
     string,
-    { created: Date; finite: boolean; callback: (data: APIMessageComponentInteraction) => Promise<any> }
+    { created: Date; finite: boolean; callback: (data: APIMessageComponentInteraction) => Promise<void> }
 > = new Map();
 
 /**
@@ -23,7 +23,7 @@ export const registeredComponentHandlers: Map<
  */
 export function registerComponentHandler(
     id: string,
-    callback: (data: APIMessageComponentInteraction) => Promise<any>,
+    callback: (data: APIMessageComponentInteraction) => Promise<void>,
     finite?: boolean
 ) {
     registeredComponentHandlers.set(parseComponentID(id).id, {

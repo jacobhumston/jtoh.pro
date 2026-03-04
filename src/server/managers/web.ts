@@ -17,7 +17,7 @@ import { minify as jsMinify } from 'terser';
 import { v4 as uuid } from 'uuid';
 
 import { build } from 'bun';
-import { existsSync, rmSync, readdirSync, symlinkSync, readFileSync, writeFileSync, renameSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, renameSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { parse } from 'node:path';
 
 import { isDev } from '@server/config';
@@ -220,7 +220,7 @@ export async function buildFrontend() {
         });
     }
 
-    // remove duplicate files and replace their references with the orginal
+    // remove duplicate files and replace their references with the original
     // also renames files if in production mode
     // note that this segment runs under the assumption that all non-symbolic link files are text based
     // and that it's iterating top to bottom
@@ -297,7 +297,7 @@ export async function buildFrontend() {
                 const upLevels = currentDir.length - commonLength;
                 const downPath = targetDir.slice(commonLength);
 
-                let relativePath = '';
+                let relativePath;
                 if (upLevels === 0 && downPath.length === 0) {
                     relativePath = `./${data.new}`;
                 } else {

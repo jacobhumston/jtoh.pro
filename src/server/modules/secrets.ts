@@ -26,7 +26,7 @@ if (!(await secretsDatabase.get<string>('passphrase'))) {
 }
 
 // Check passphrase.
-if ((await Bun.password.verify(passphrase, (await secretsDatabase.get<string>('passphrase')) ?? '')) == false)
+if ((await Bun.password.verify(passphrase, (await secretsDatabase.get<string>('passphrase')) ?? '')) === false)
     throw new Error('Passphrase was invalid!');
 
 // Create a cryptr instance.

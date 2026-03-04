@@ -6,7 +6,7 @@
  */
 import { toDate } from '@jacobhumston/tc.js';
 import type { Context } from 'hono';
-import { setSignedCookie, getSignedCookie } from 'hono/cookie';
+import { getSignedCookie, setSignedCookie } from 'hono/cookie';
 import * as client from 'openid-client';
 
 import { serverURL } from '@server/config';
@@ -53,7 +53,10 @@ export function getRobloxAuthConfig() {
  * @param context The context for the request.
  * @param data The data provided from `v1/userinfo`.
  */
-export async function authenticateRoblox(context: Context, data: any) {
+export async function authenticateRoblox(
+    context: Context,
+    data: { sub: string; name: string; preferred_username: string; picture: string }
+) {
     const sessionToken = generateRawToken();
     const authCookieSecret = await getSecret('authCookieSecrete');
     const expires = toDate('future', { weeks: 2 });

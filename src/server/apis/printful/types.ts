@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Types for the printful API client, generated in 'tools/update-api-types.ts'.
  *

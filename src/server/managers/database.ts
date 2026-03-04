@@ -57,7 +57,7 @@ async function createTable(db: SQL, name: string) {
 }
 
 /** Class to interact with a database. */
-export class DatabaseClient<Q = any> {
+export class DatabaseClient<Q = unknown> {
     /** This database client's database. */
     #database: SQL;
     /** The namespace (table name) for this client. */
@@ -324,21 +324,33 @@ export class OrderedDatabaseClient {
         // If we don't have enough entries, just return what we have in range
         if (startRank === null) {
             return allData
-                .filter((row: any) => row.row_num >= start)
-                .map((row: any) => ({ key: row.key, value: row.value, tiebreaker: row.tiebreaker || 0 }));
+                .filter((row: { row_num: number }) => row.row_num >= start)
+                .map((row: { key: string; value: string; tiebreaker?: number }) => ({
+                    key: row.key,
+                    value: row.value,
+                    tiebreaker: row.tiebreaker || 0
+                }));
         }
 
         if (endRank === null) {
             return allData
-                .filter((row: any) => row.dense_rank >= startRank)
-                .map((row: any) => ({ key: row.key, value: row.value, tiebreaker: row.tiebreaker || 0 }));
+                .filter((row: { dense_rank: number }) => row.dense_rank >= startRank)
+                .map((row: { key: string; value: string; tiebreaker?: number }) => ({
+                    key: row.key,
+                    value: row.value,
+                    tiebreaker: row.tiebreaker || 0
+                }));
         }
 
         // Return all entries whose dense rank falls within our range
         // This includes all ties at both boundaries
         return allData
-            .filter((row: any) => row.dense_rank >= startRank && row.dense_rank <= endRank)
-            .map((row: any) => ({ key: row.key, value: row.value, tiebreaker: row.tiebreaker || 0 }));
+            .filter((row: { dense_rank: number }) => row.dense_rank >= startRank && row.dense_rank <= endRank)
+            .map((row: { key: string; value: string; tiebreaker?: number }) => ({
+                key: row.key,
+                value: row.value,
+                tiebreaker: row.tiebreaker || 0
+            }));
     }
 
     /**

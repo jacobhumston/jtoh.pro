@@ -29,7 +29,8 @@ try {
     const v2 = await openapiTS(readFileSync('src/server/apis/printful/v2.json'));
     writeFileSync(
         'src/server/apis/printful/types.ts',
-        header('printful API client') +
+        '/* eslint-disable */\n' +
+            header('printful API client') +
             `export namespace v1 { ${astToString(v1)} } export namespace v2 { ${astToString(v2)} }`
     );
 } catch (e) {

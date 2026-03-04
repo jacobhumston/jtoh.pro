@@ -16,7 +16,7 @@ const caches: Record<string, Cache> = {};
 export type CacheType<T> = { data: T; expires?: number };
 
 /** Class to interact with the cache database. */
-export class Cache<Q = any> extends DatabaseClient<Q> {
+export class Cache<Q = unknown> extends DatabaseClient<Q> {
     /**
      * Create a new cache.
      * @param namespace The namespace for this cache.
@@ -70,7 +70,7 @@ export class Cache<Q = any> extends DatabaseClient<Q> {
      */
     async set<T = Q>(key: string, value: T, expires?: AvailableConversions, keepOldExpired?: boolean): Promise<void> {
         let previousExpired = null;
-        if (keepOldExpired == true) {
+        if (keepOldExpired === true) {
             const expires = await this.expires(key);
             if (expires instanceof Date && Date.now() < expires.getTime()) {
                 previousExpired = expires.getTime();
@@ -153,7 +153,7 @@ createTask(`Cache Sweeper`, 'Sweeps caches every 5 minutes.', { minutes: 5 }, as
  * @param expires Expiration time for this cache.
  * @returns A wrapper around the provided method that enables caching.
  */
-export function cacheMethod<F extends (...args: any[]) => any>(
+export function cacheMethod<F extends (...args: unknown[]) => unknown>(
     namespace: string,
     method: F,
     expires?: AvailableConversions
@@ -165,6 +165,6 @@ export function cacheMethod<F extends (...args: any[]) => any>(
         if (cached !== null) return cached;
         const result = await method(...args);
         if (result !== null && result !== undefined) await cache.set(key, result, expires);
-        return result;
+        return result as Awaited<ReturnType<F>>;
     };
 }

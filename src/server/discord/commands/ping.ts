@@ -3,8 +3,13 @@
  *
  * Authored by Jacob Humston
  */
-import { ButtonStyle, ComponentType, MessageFlags } from 'discord.js';
-import { type APIApplicationCommandInteraction, type RESTPostAPIApplicationCommandsJSONBody } from 'discord.js';
+import {
+    ButtonStyle,
+    ComponentType,
+    MessageFlags,
+    type APIApplicationCommandInteraction,
+    type RESTPostAPIApplicationCommandsJSONBody
+} from 'discord.js';
 
 import { createComponentID, parseComponentID, registerComponentHandler } from '@discord/components';
 import { api } from '@discord/rest';

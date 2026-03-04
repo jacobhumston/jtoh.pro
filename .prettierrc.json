@@ -6,12 +6,15 @@
     "printWidth": 120,
     "useTabs": false,
     "endOfLine": "auto",
-    "plugins": ["@trivago/prettier-plugin-sort-imports"],
+    "plugins": ["@ianvs/prettier-plugin-sort-imports"],
     "importOrder": [
         "<THIRD_PARTY_MODULES>",
-        "^bun$|bun:.+|node:.+",
+        "",
+        "^(node:|bun:|bun)",
+        "<BUILTIN_MODULES>",
+        "",
         "^@(server|client|shared|discord|schemas)/",
+        "",
         "^[./]"
-    ],
-    "importOrderSeparation": true
+    ]
 }

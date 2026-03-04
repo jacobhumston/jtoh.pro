@@ -17,13 +17,14 @@ export async function getAuth(): Promise<AuthInfoSchema | null> {
     const savedAuth = storage.getItem('auth');
     if (savedAuth && savedAuth.roblox) {
         // call anyways to make sure the auth state is update to date
-        new Promise(async () => {
+        async function check() {
             const response = await client.GET('/api/auth/me');
             if (!deepEqual(response.data, savedAuth)) {
                 storage.removeItem('auth');
                 window.location.reload();
             }
-        });
+        }
+        check();
         return savedAuth;
     } else {
         const response = await client.GET('/api/auth/me');

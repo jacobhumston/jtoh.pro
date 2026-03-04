@@ -39,7 +39,7 @@ export type LogType = 'info' | 'warn' | 'error' | 'success' | 'debug' | 'critica
 /**
  * Log something.
  */
-export function log(type: LogType, message: any) {
+export function log(type: LogType, message: unknown) {
     console.log(`[${type.toUpperCase()}]:`, message);
     logFile.write(
         `${type.toUpperCase()}${' '.repeat('critical'.length - type.length)} |${' '.repeat(4)}${Bun.inspect(message).replaceAll('\n', `\n${' '.repeat('critical'.length)} |${' '.repeat(4)}`)}\n`,
@@ -52,7 +52,7 @@ export function log(type: LogType, message: any) {
  */
 function closeLogFile(): Promise<void> {
     return new Promise((resolve, reject) => {
-        logFile.end((error: any) => {
+        logFile.end((error: unknown) => {
             if (error) {
                 reject(error);
             } else {
@@ -66,7 +66,7 @@ function closeLogFile(): Promise<void> {
  * Handle process shutdown.
  * @param error Passed event/error.
  */
-async function handleShutdown(error: any) {
+async function handleShutdown(error: unknown) {
     if (error) log('critical', error);
 
     try {

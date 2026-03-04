@@ -49,8 +49,12 @@ export async function getAvatar3d(userId: number) {
  * @returns The url.
  */
 export function getRobloxCDNUrlFromHash(hash: string) {
-    for (var i = 31, t = 0; t < 38; t++) i ^= hash[t].charCodeAt(0);
-    return `https://t${(i % 8).toString()}.rbxcdn.com/${hash}`;
+    let g = 0;
+    for (let i = 31, t = 0; t < 38; t++) {
+        i ^= hash[t].charCodeAt(0);
+        g = i;
+    }
+    return `https://t${(g % 8).toString()}.rbxcdn.com/${hash}`;
 }
 
 /**
@@ -77,7 +81,7 @@ export async function parseRobloxAccountInput(
         return result === null
             ? null
             : await fetchApi(getUsersUserid, {
-                  userId: typeof result === 'object' ? (result as any).data[0].id : result
+                  userId: typeof result === 'object' ? (result as { data: Array<{ id: number }> }).data[0].id : result
               }).catch(() => null);
     }
     return null;

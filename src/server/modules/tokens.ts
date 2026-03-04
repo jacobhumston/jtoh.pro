@@ -25,9 +25,7 @@ const secrets = await client.secrets().listSecrets({
 
 if (!secrets) throw new Error('Failed to load secrets from Infisical');
 
-const tokens: any = secrets.secrets
-    .map((s) => ({ [s.secretKey]: s.secretValue }))
-    .reduce((a, b) => ({ ...a, ...b }), {});
+const tokens = secrets.secrets.map((s) => ({ [s.secretKey]: s.secretValue })).reduce((a, b) => ({ ...a, ...b }), {});
 
 // TODO: Remove unused tokens after v3 releases.
 const discordInteractionsPublicKey = tokens.discordInteractionsPublicKey as string;

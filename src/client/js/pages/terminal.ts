@@ -4,12 +4,12 @@
  *
  * Authored by Jacob Humston
  */
+//import analytics from '@client/modules/analytics';
 import { Command } from 'commander';
 import YAML from 'json-to-pretty-yaml';
 import { UAParser } from 'ua-parser-js';
 import { v4 } from 'uuid';
 
-//import analytics from '@client/modules/analytics';
 import { client } from '@client/modules/api';
 import { getCurrentTheme, setTheme } from '@client/modules/theme';
 
@@ -82,7 +82,7 @@ program
 
 program
     .command('theme')
-    .description("Set your client\'s theme.")
+    .description("Set your client's theme.")
     .argument('<theme>', 'The theme to set.')
     .action(async (theme?: string) => {
         if (theme !== 'light' && theme !== 'dark') {
