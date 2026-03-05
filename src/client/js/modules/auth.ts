@@ -5,6 +5,7 @@
  */
 import deepEqual from 'deep-equal';
 
+import rybbit, { analyticsWrap } from '@client/modules/analytics';
 import { client } from '@client/modules/api';
 import storage from '@client/modules/storage';
 import type { AuthInfoSchema } from '@shared/schemas/auth';
@@ -16,19 +17,34 @@ import type { AuthInfoSchema } from '@shared/schemas/auth';
 export async function getAuth(): Promise<AuthInfoSchema | null> {
     const savedAuth = storage.getItem('auth');
     if (savedAuth && savedAuth.roblox) {
-        // call anyways to make sure the auth state is update to date
+        /**
+         * Check auth to make sure the client is still logged in.
+         */
         async function check() {
             const response = await client.GET('/api/auth/me');
             if (!deepEqual(response.data, savedAuth)) {
                 storage.removeItem('auth');
+                analyticsWrap(() => {
+                    rybbit.clearUserId();
+                });
                 window.location.reload();
             }
         }
         check();
+        analyticsWrap(() => {
+            if (savedAuth.roblox) rybbit.identify(savedAuth.roblox.username, { robloxId: savedAuth.roblox.id });
+        });
         return savedAuth;
     } else {
         const response = await client.GET('/api/auth/me');
-        if (response.data) storage.setItem('auth', response.data);
+        if (response.data) {
+            storage.setItem('auth', response.data);
+            analyticsWrap(() => {
+                if (response.data.roblox) {
+                    rybbit.identify(response.data.roblox.username, { robloxId: response.data.roblox.id });
+                }
+            });
+        }
         return response.data ?? null;
     }
 }
