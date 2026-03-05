@@ -3,12 +3,10 @@
  *
  * Authored by Jacob Humston
  */
-import { Rybbit } from '@rybbit/node';
+import rybbit from 'rybbit.ts';
 
 import apiTokens from './tokens';
 
-export const analytics = new Rybbit({
-    analyticsHost: 'https://stats.lovelyjacob.com',
-    siteId: 'f2d69176066a',
-    apiKey: apiTokens.rybbitApiKey
-});
+/** Rybbit analytics. */
+export const analytics = new rybbit('https://stats.lovelyjacob.com', 1, apiTokens.rybbitApiKey);
+
