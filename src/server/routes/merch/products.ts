@@ -6,10 +6,10 @@
  */
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi';
 
+import { captchaHeaderSchema } from '@schemas/captcha';
 import { errorSchema, rateLimitErrorSchema } from '@schemas/general';
 //import { client } from '@server/apis/printful/api';
 import { captchaMiddleware } from '@server/modules/captcha';
-import { captchaHeaderSchema } from '@shared/schemas/captcha';
 
 /** Route for this endpoint. */
 const route = createRoute({

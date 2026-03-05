@@ -311,6 +311,10 @@ export async function buildFrontend() {
             }
             writeFileSync(filePath, content, 'utf8');
         }
+
+        nameMap.clear();
+        hashMap.clear();
+        refrenceMap.clear();
     }
 
     // minify (in prod)
@@ -377,20 +381,18 @@ export async function buildFrontend() {
  * Development function that rebuilds the frontend on file changes in `src/client/`.
  */
 export function hotReloadFrontend() {
-    let rebuild = false;
-    setInterval(async () => {
+    let rebuild = true;
+    chokidar.watch('src/client/').on('all', async () => {
         if (rebuild === true) {
             rebuild = false;
             log('info', 'Hot reload rebuilding...');
-            await buildFrontend().catch(() => {
+            await buildFrontend().catch((error) => {
+                console.error(error);
                 rebuild = true;
             });
             log('success', 'Hot reload rebuild completed.');
+            rebuild = true;
         }
-    }, 1000);
-
-    chokidar.watch('src/client/').on('all', () => {
-        rebuild = true;
     });
 }
 

@@ -7,8 +7,9 @@ import deepEqual from 'deep-equal';
 
 import rybbit, { analyticsWrap } from '@client/modules/analytics';
 import { client } from '@client/modules/api';
+import { createPopupNotification } from '@client/modules/notifications';
 import storage from '@client/modules/storage';
-import type { AuthInfoSchema } from '@shared/schemas/auth';
+import type { AuthInfoSchema } from '@schemas/auth';
 
 /**
  * Get the current auth state of the client.
@@ -27,7 +28,9 @@ export async function getAuth(): Promise<AuthInfoSchema | null> {
                 analyticsWrap(() => {
                     rybbit.clearUserId();
                 });
-                window.location.reload();
+                createPopupNotification('Your session has expired, please login again.', () =>
+                    document.location.reload()
+                );
             }
         }
         check();

@@ -1,0 +1,75 @@
+/*
+    Notifications styling.
+
+    Authored by Jacob Humston
+*/
+
+.notificationBanner {
+    padding: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin: 0px;
+    text-align: center;
+    display: block;
+    font-size: large;
+    color: #000000;
+}
+
+.notificationPopup {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100vh;
+    align-items: center;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    justify-content: center;
+    z-index: 5;
+    display: flex;
+
+    .box {
+        display: block;
+        padding: 15px;
+        padding-left: 15px;
+        padding-right: 15px;
+        border-radius: 15px;
+        width: fit-content;
+        max-width: 400px;
+        background-color: var(--background);
+        font-size: large;
+        text-align: right;
+        border: solid 1px var(--background-lighter);
+
+        .info {
+            padding: 0px;
+            margin: 0px;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .close {
+            background-color: var(--accent);
+            padding: 5px;
+            padding-left: 10px;
+            padding-right: 10px;
+            border: none;
+            border-radius: 10px;
+            font-size: large;
+        }
+
+        .close:hover {
+            background-color: var(--text-darker);
+            cursor: pointer;
+        }
+    }
+}
+
+@media screen and (max-width: 560px) {
+    .notificationPopup {
+        .box {
+            max-width: none;
+            border-radius: 0px;
+        }
+    }
+}

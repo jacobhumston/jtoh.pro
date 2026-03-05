@@ -5,10 +5,10 @@
  */
 import { createRoute, OpenAPIHono } from '@hono/zod-openapi';
 
+import { authInfoSchema } from '@schemas/auth';
 import { errorSchema, rateLimitErrorSchema } from '@schemas/general';
 import { serverURL } from '@server/config';
 import { authenticateRoblox, getAuthenticatedRobloxUser, getRobloxAuthConfig } from '@server/managers/auth';
-import { authInfoSchema } from '@shared/schemas/auth';
 
 /** Route Roblox auth. */
 const robloxAuthRoute = createRoute({
@@ -98,7 +98,7 @@ export async function handler(app: OpenAPIHono) {
 
         if (!user) return context.redirect(robloxAuthUrl.href);
 
-        await authenticateRoblox(context, await user.json());
+        await authenticateRoblox(context, (await user.json()) as Parameters<typeof authenticateRoblox>[1]);
 
         return context.redirect(`/`);
     });

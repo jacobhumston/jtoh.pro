@@ -5,7 +5,7 @@
  */
 import { createLocalStorage } from '@stork-tools/zod-local-storage';
 
-import { authInfoSchema } from '@shared/schemas/auth';
+import { authInfoSchema } from '@schemas/auth';
 
 const storageSchemas = {
     auth: authInfoSchema
