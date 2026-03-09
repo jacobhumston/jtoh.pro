@@ -35,7 +35,12 @@ export async function getAuth(): Promise<AuthInfoSchema | null> {
         }
         check();
         analyticsWrap(() => {
-            if (savedAuth.roblox) rybbit.identify(savedAuth.roblox.username, { robloxId: savedAuth.roblox.id });
+            if (savedAuth.roblox) {
+                const identity = rybbit.getUserId();
+                if (identity !== savedAuth.roblox.username) {
+                    rybbit.identify(savedAuth.roblox.username, { robloxId: savedAuth.roblox.id });
+                }
+            }
         });
         return savedAuth;
     } else {
@@ -44,7 +49,10 @@ export async function getAuth(): Promise<AuthInfoSchema | null> {
             storage.setItem('auth', response.data);
             analyticsWrap(() => {
                 if (response.data.roblox) {
-                    rybbit.identify(response.data.roblox.username, { robloxId: response.data.roblox.id });
+                    const identity = rybbit.getUserId();
+                    if (identity !== response.data.roblox.username) {
+                        rybbit.identify(response.data.roblox.username, { robloxId: response.data.roblox.id });
+                    }
                 }
             });
         }
