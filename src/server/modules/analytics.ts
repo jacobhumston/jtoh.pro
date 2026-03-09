@@ -8,4 +8,8 @@ import rybbit from 'rybbit.ts';
 import apiTokens from './tokens';
 
 /** Rybbit analytics. */
-export const analytics = new rybbit('https://stats.lovelyjacob.com', 1, apiTokens.rybbitApiKey);
+export const analytics = new rybbit({
+    domain: 'https://stats.lovelyjacob.com',
+    siteId: 1,
+    apiKey: apiTokens.rybbitApiKey
+});

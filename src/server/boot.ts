@@ -14,10 +14,13 @@ import process from 'node:process';
 import { listenForDiscordRequests } from '@discord/bot';
 import config, { isDev, serverPort, serverURL, version } from '@server/config';
 import { getBooleanArg } from '@server/managers/argv';
+import { getAuthenticatedRobloxUser } from '@server/managers/auth';
 import { contextHasPermission } from '@server/managers/permissions';
 import { redirectMiddleware } from '@server/managers/redirects';
 import { generateSiteMap } from '@server/managers/sitemap';
 import { buildFrontend, hotReloadFrontend, serveStatic } from '@server/managers/web';
+import { analytics } from '@server/modules/analytics';
+import { getIPFromContext } from '@server/modules/ip';
 import { cleanUpLogs, log } from '@server/modules/logger';
 import rateLimitMiddleware from '@server/modules/ratelimits';
 import { safeURL } from '@shared/common-utils';
@@ -67,6 +70,26 @@ app.use(rateLimitMiddleware({ pool: 120, reset: { minutes: 1 }, customPrefix: 'g
 app.use(secureHeaders());
 app.use(compress());
 app.use(redirectMiddleware);
+
+// analytics
+app.use((context, next) => {
+    (async () => {
+        const user = await getAuthenticatedRobloxUser(context);
+        await analytics.track({
+            type: 'custom_event',
+            ip_address: getIPFromContext(context),
+            event_name: 'request',
+            properties: {
+                host: context.req.header('Host'),
+                method: context.req.method,
+                path: context.req.path
+            },
+            user_agent: context.req.header('User-Agent'),
+            user_id: user ? user.username : undefined
+        });
+    })().catch(() => null);
+    return next();
+});
 
 // build and serve pages/assets/etc
 await buildFrontend();
