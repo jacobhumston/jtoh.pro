@@ -6,7 +6,7 @@
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi';
 
 import { errorSchema, rateLimitErrorSchema } from '@schemas/general';
-import { getRandomWebBackground } from '@server/managers/web-backgrounds';
+import { getRandomWebBackground, getWebBackgrounds } from '@server/managers/web-backgrounds';
 
 /** Route for this endpoint. */
 const route = createRoute({
@@ -53,9 +53,55 @@ const route = createRoute({
     }
 });
 
+const route2 = createRoute({
+    method: 'get',
+    path: '/api/backgrounds',
+    description: 'Get a list of web backgrounds.',
+    tags: ['Utility'],
+    responses: {
+        200: {
+            content: {
+                'application/json': {
+                    schema: z
+                        .array(
+                            z.object({
+                                category: z.string().openapi({ description: 'Category of this web background.' }),
+                                url: z.url().openapi({ description: 'URL of this web background.' }),
+                                id: z.string().openapi({ description: 'ID of this web background.' })
+                            })
+                        )
+                        .openapi({ description: 'Web backgrounds result.' })
+                }
+            },
+            description: 'A random web background result.'
+        },
+        429: {
+            content: {
+                'application/json': {
+                    schema: rateLimitErrorSchema
+                }
+            },
+            description: 'Rate limit error.'
+        },
+        500: {
+            content: {
+                'application/json': {
+                    schema: errorSchema
+                }
+            },
+            description: 'Internal server error.'
+        }
+    }
+});
+
 /** Handle for this endpoint. */
 export async function handler(app: OpenAPIHono) {
     app.openapi(route, (context) => {
         return context.json({ url: getRandomWebBackground(context.req.query('category'))?.url ?? null }, 200);
+    });
+
+    app.openapi(route2, (context) => {
+        const backgrounds = getWebBackgrounds();
+        return context.json(backgrounds, 200);
     });
 }

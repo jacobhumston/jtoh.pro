@@ -48,3 +48,10 @@ export function getRandomWebBackground(category?: string): (typeof backgrounds)[
     if (choices.length === 0) return null;
     return random.choice(choices) ?? null;
 }
+
+/**
+ * Returns a list of web backgrounds.
+ */
+export function getWebBackgrounds() {
+    return backgrounds;
+}
