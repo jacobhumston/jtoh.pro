@@ -12,6 +12,7 @@
 body {
     margin: 0px;
     padding: 0px;
+    position: relative;
 }
 
 pre {
@@ -23,4 +24,16 @@ pre {
 
 .noTransitions * {
     transition: none !important;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0; /* Shorthand for top, right, bottom, left: 0 */
+    background-image: url('https://preview.lovelyjacob.com/api/backgrounds/random/url');
+    background-size: cover; /* Optional: adjust as needed */
+    background-position: center; /* Optional: adjust as needed */
+    opacity: 0.05; /* The transparency control */
+    z-index: -1; /* Puts the image behind the content */
+    height: 100vh;
 }

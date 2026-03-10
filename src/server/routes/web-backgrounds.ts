@@ -94,6 +94,47 @@ const route2 = createRoute({
     }
 });
 
+const route3 = createRoute({
+    method: 'get',
+    path: '/api/backgrounds/random/url',
+    description: 'Get a random web background url as a redirect.',
+    tags: ['Utility'],
+    request: {
+        query: z.object({
+            category: z.string().optional().openapi({ description: 'The category to get the web background from.' })
+        })
+    },
+    responses: {
+        307: {
+            description: 'Redirect to a random web background.'
+        },
+        400: {
+            content: {
+                'application/json': {
+                    schema: errorSchema
+                }
+            },
+            description: 'Unable to redirect, likely due to the category being invalid.'
+        },
+        429: {
+            content: {
+                'application/json': {
+                    schema: rateLimitErrorSchema
+                }
+            },
+            description: 'Rate limit error.'
+        },
+        500: {
+            content: {
+                'application/json': {
+                    schema: errorSchema
+                }
+            },
+            description: 'Internal server error.'
+        }
+    }
+});
+
 /** Handle for this endpoint. */
 export async function handler(app: OpenAPIHono) {
     app.openapi(route, (context) => {
@@ -103,5 +144,12 @@ export async function handler(app: OpenAPIHono) {
     app.openapi(route2, (context) => {
         const backgrounds = getWebBackgrounds();
         return context.json(backgrounds, 200);
+    });
+
+    app.openapi(route3, (context) => {
+        const background = getRandomWebBackground(context.req.query('category'));
+        if (!background)
+            return context.json({ error: 'Unable to get a random background. Is that category valid?' }, 400);
+        return context.redirect(background.url, 307);
     });
 }
