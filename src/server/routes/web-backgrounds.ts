@@ -11,7 +11,7 @@ import { getRandomWebBackground, getWebBackgrounds } from '@server/managers/web-
 /** Route for this endpoint. */
 const route = createRoute({
     method: 'get',
-    path: '/api/random/background',
+    path: '/api/backgrounds/random',
     description: 'Get a random web background.',
     tags: ['Utility'],
     request: {

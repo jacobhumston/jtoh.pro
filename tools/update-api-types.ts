@@ -15,8 +15,9 @@ const header = (name: string) => `/**
 
 // api client
 try {
-    // port 80 should be good for dev
-    const api = await openapiTS(new URL('http://localhost:80/api/spec'));
+    // port 80 should be good for dev (allow custom url as well)
+    if (!process.argv[2]) console.warn('Using default url "localhost:80".');
+    const api = await openapiTS(new URL(process.argv[2] ?? 'http://localhost:80/api/spec'));
     writeFileSync('src/shared/api-types.ts', header('API client') + astToString(api));
 } catch (e) {
     console.log(e);
@@ -24,7 +25,6 @@ try {
 
 // printful api
 try {
-    // port 80 should be good for dev
     const v1 = await openapiTS(readFileSync('src/server/apis/printful/v1.json'));
     const v2 = await openapiTS(readFileSync('src/server/apis/printful/v2.json'));
     writeFileSync(
