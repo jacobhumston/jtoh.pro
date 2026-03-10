@@ -6,6 +6,8 @@
  */
 import 'core-js/actual';
 
+import { listen } from 'quicklink';
+
 import { initAnalytics } from '@client/modules/analytics';
 import { handleNavigation } from '@client/modules/navigation';
 import { listenForThemeSwitches } from '@client/modules/theme';
@@ -17,3 +19,4 @@ disableConsoleLogIfNotLocalhost();
 handleNavigation();
 listenForThemeSwitches();
 checkForUpdates();
+listen();

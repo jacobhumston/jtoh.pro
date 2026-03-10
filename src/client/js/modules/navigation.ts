@@ -8,6 +8,8 @@ import sanitizeHtml from 'sanitize-html';
 
 import { getRobloxAuthInfo } from '@client/modules/auth';
 
+import storage from './storage';
+
 /**
  * Handle navigation events, etc.
  * This also update current navigation, such as buttons
@@ -42,6 +44,23 @@ export async function handleNavigation() {
     });
 
     const authUser = await getRobloxAuthInfo();
-    if (authUser)
-        loggedInDetails.innerHTML = `<img src="${sanitizeHtml(authUser.picture)}"> @${sanitizeHtml(authUser.username)} — <a href="/settings">Dashboard</a>`;
+    if (authUser) {
+        let profilePicture = storage.getItem('profilePicture');
+        if (profilePicture === null) {
+            const response = await fetch(authUser.picture).catch(() => null);
+            if (response) {
+                const blob = await response.blob();
+                const reader = new FileReader();
+                profilePicture = await new Promise((resolve) => {
+                    reader.addEventListener('load', () => {
+                        resolve(reader.result as string);
+                    });
+                    reader.addEventListener('error', () => resolve(null));
+                    reader.readAsDataURL(blob);
+                });
+                if (profilePicture) storage.setItem('profilePicture', profilePicture);
+            }
+        }
+        loggedInDetails.innerHTML = `<img src="${profilePicture ?? '/assets/roblox-headshot.webp'}"> @${sanitizeHtml(authUser.username)} — <a href="/settings">Dashboard</a>`;
+    }
 }
