@@ -106,6 +106,10 @@ const route3 = createRoute({
     },
     responses: {
         307: {
+            headers: z.object({
+                Location: z.string(),
+                'Cache-Control': z.literal('no-store, no-cache, must-revalidate')
+            }),
             description: 'Redirect to a random web background.'
         },
         400: {
@@ -150,6 +154,7 @@ export async function handler(app: OpenAPIHono) {
         const background = getRandomWebBackground(context.req.query('category'));
         if (!background)
             return context.json({ error: 'Unable to get a random background. Is that category valid?' }, 400);
-        return context.redirect(background.url, 307);
+        context.header('Cache-Control', 'no-store, no-cache, must-revalidate');
+        return context.redirect(background.url + '?nocache', 307);
     });
 }

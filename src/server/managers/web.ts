@@ -52,10 +52,12 @@ export function serveStatic(app: OpenAPIHono) {
 
         if (!existsSync(filePath)) return await next();
         context.res.headers.set('Content-Type', mime.getType(ext) ?? 'application/octet-stream'); // application/octet-stream seems to be a good backup
-        //if (!isDev || path.dir.includes('assets')) context.res.headers.set('Cache-Control', 'max-age=604800');
-        //else context.res.headers.set('Cache-Control', 'no-store');
 
-        context.res.headers.set('Cache-Control', 'max-age=604800');
+        if (new URL(context.req.url).searchParams.get('nocache') !== null) {
+            context.res.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+        } else {
+            context.res.headers.set('Cache-Control', 'max-age=604800');
+        }
 
         return stream(context, async (stream) => {
             const file = Bun.file(filePath);
@@ -145,7 +147,8 @@ export async function buildFrontend() {
             '*.mp3',
             '*.webmanifest',
             '*.ttf',
-            '*.woff2'
+            '*.woff2',
+            '/api/*'
         ],
         plugins: [
             {

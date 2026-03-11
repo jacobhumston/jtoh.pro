@@ -16,5 +16,6 @@ window.Scalar.createApiReference('#docs', {
     documentDownloadType: 'direct',
     telemetry: false,
     agent: { disabled: true },
-    defaultHttpClient: { targetKey: 'js', clientKey: 'fetch' }
+    defaultHttpClient: { targetKey: 'js', clientKey: 'fetch' },
+    mcp: { disabled: true }
 });

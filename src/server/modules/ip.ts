@@ -16,6 +16,6 @@ import { log } from '@server/modules/logger';
 export function getIPFromContext(context: Context): string {
     const connectionInfo = getConnInfo(context);
     if (!connectionInfo.remote.address && !context.req.header('CF-Connecting-IP'))
-        log('critical', `IP missing? ${JSON.stringify(context)}`);
+        log('critical', `IP missing? ${JSON.stringify(connectionInfo)}`);
     return context.req.header('CF-Connecting-IP') ?? connectionInfo.remote.address ?? 'NOIP';
 }

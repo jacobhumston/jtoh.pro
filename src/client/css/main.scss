@@ -30,7 +30,7 @@ body::before {
     content: '';
     position: fixed;
     inset: 0; /* Shorthand for top, right, bottom, left: 0 */
-    background-image: url('https://preview.lovelyjacob.com/api/backgrounds/random/url');
+    background-image: url('/api/backgrounds/random/url');
     background-size: cover; /* Optional: adjust as needed */
     background-position: center; /* Optional: adjust as needed */
     opacity: 0.05; /* The transparency control */

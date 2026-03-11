@@ -837,6 +837,8 @@ export interface paths {
                 /** @description Redirect to a random web background. */
                 307: {
                     headers: {
+                        Location: string;
+                        'Cache-Control': 'no-store, no-cache, must-revalidate';
                         [name: string]: unknown;
                     };
                     content?: never;
