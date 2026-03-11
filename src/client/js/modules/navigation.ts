@@ -7,8 +7,7 @@
 import sanitizeHtml from 'sanitize-html';
 
 import { getRobloxAuthInfo } from '@client/modules/auth';
-
-import storage from './storage';
+import storage from '@client/modules/storage';
 
 /**
  * Handle navigation events, etc.

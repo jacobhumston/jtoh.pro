@@ -5,7 +5,7 @@
  */
 import rybbit from 'rybbit.ts';
 
-import apiTokens from './tokens';
+import apiTokens from '@server/modules/tokens';
 
 /** Rybbit analytics. */
 export const analytics = new rybbit({

@@ -23,7 +23,7 @@ import { parse } from 'node:path';
 import { isDev } from '@server/config';
 import { getBooleanArg } from '@server/managers/argv';
 import { createPath, getFileHash, safelyGetPath } from '@server/managers/files';
-import { log } from '@server/modules/logger';
+import { log, logError } from '@server/modules/logger';
 import { replaceEmptyString } from '@shared/common-utils';
 
 /** Path used to store static assets. */
@@ -390,7 +390,7 @@ export function hotReloadFrontend() {
             rebuild = false;
             log('info', 'Hot reload rebuilding...');
             await buildFrontend().catch((error) => {
-                console.error(error);
+                logError(error);
                 rebuild = true;
             });
             log('success', 'Hot reload rebuild completed.');

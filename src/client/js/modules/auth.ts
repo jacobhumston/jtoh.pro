@@ -25,10 +25,11 @@ export async function getAuth(): Promise<AuthInfoSchema | null> {
             const response = await client.GET('/api/auth/me');
             if (!deepEqual(response.data, savedAuth)) {
                 storage.removeItem('auth');
+                storage.removeItem('profilePicture');
                 analyticsWrap(() => {
                     rybbit.clearUserId();
                 });
-                createPopupNotification('Your session has expired, please login again.', () =>
+                createPopupNotification('Your session has expired, please login again.', undefined, () =>
                     document.location.reload()
                 );
             }

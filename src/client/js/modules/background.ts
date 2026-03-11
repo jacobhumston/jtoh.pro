@@ -1,0 +1,21 @@
+/**
+ * This module manages the background of the website.
+ *
+ * Authored by Jacob Humston
+ */
+
+import { client } from '@client/modules/api';
+
+/**
+ * Set the background of the page to a random image.
+ */
+export async function setRandomBackground() {
+    const response = await client.GET('/api/backgrounds/random');
+    if (response.data && response.data.url) {
+        document.documentElement.style.setProperty('--background-image', `url("${response.data.url}")`);
+    }
+}
+
+window.addEventListener('load', () => {
+    document.documentElement.style.setProperty('--background-image-opacity', '0.05');
+});

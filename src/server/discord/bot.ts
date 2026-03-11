@@ -9,7 +9,9 @@ import { InteractionResponseType, InteractionType, MessageFlags, type APIInterac
 
 import { parseComponentID, registeredComponentHandlers } from '@discord/components';
 import { api } from '@discord/rest';
+import { createTopggTask } from '@discord/topgg';
 import { commands } from '@discord/util';
+import { isDev } from '@server/config';
 import { Cache } from '@server/managers/cache';
 import { log } from '@server/modules/logger';
 import apiTokens from '@server/modules/tokens';
@@ -95,4 +97,6 @@ export async function listenForDiscordRequests(app: OpenAPIHono) {
         context.status(200);
         return context.text('OK');
     });
+
+    if (isDev === false) createTopggTask();
 }

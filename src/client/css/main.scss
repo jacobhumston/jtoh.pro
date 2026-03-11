@@ -9,6 +9,10 @@
 @use 'elements/navigation.scss';
 @use 'elements/notifications.scss';
 
+:root {
+    --background-image-opacity: 0;
+}
+
 body {
     margin: 0px;
     padding: 0px;
@@ -29,11 +33,13 @@ pre {
 body::before {
     content: '';
     position: fixed;
-    inset: 0; /* Shorthand for top, right, bottom, left: 0 */
-    background-image: url('/api/backgrounds/random/url');
-    background-size: cover; /* Optional: adjust as needed */
-    background-position: center; /* Optional: adjust as needed */
-    opacity: 0.05; /* The transparency control */
-    z-index: -1; /* Puts the image behind the content */
+    inset: 0;
+    background-image: var(--background-image);
+    background-size: cover;
+    background-position: center;
+    opacity: var(--background-image-opacity);
+    z-index: -1;
     height: 100vh;
+    transition-property: opacity;
+    transition-duration: 0.5s;
 }

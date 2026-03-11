@@ -8,6 +8,8 @@ import type { ThemeConfig } from 'chartgpu';
 import Color from 'color';
 import { Evt } from 'evt';
 
+import { createPopupNotification } from '@client/modules/notifications';
+
 /**
  * Returns a boolean indicating whether the client should be using
  * dark mode or not.
@@ -30,6 +32,13 @@ export function applyTheme(): undefined {
     root.toggleAttribute('dark', useDarkMode);
     localStorage.setItem('colorMode', useDarkMode ? 'dark' : 'light');
     themeEvents.post('updated');
+
+    if (!useDarkMode) {
+        createPopupNotification(
+            '<b>Note:</b> Light theme is currently a WIP and is being actively worked on.<br>If you have any feedback, please join our Discord server and let us know!<br><br>Thank you.',
+            'light-theme-warning'
+        );
+    }
 }
 
 /**

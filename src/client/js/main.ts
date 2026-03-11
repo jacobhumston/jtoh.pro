@@ -9,6 +9,7 @@ import 'core-js/actual';
 import { listen } from 'quicklink';
 
 import { initAnalytics } from '@client/modules/analytics';
+import { setRandomBackground } from '@client/modules/background';
 import { handleNavigation } from '@client/modules/navigation';
 import { listenForThemeSwitches } from '@client/modules/theme';
 import { disableConsoleLogIfNotLocalhost } from '@client/utils/logger';
@@ -19,4 +20,7 @@ disableConsoleLogIfNotLocalhost();
 handleNavigation();
 listenForThemeSwitches();
 checkForUpdates();
-listen();
+setRandomBackground();
+
+// disable prerender for now, due it being a bit buggy sometimes
+listen({ prerender: false });

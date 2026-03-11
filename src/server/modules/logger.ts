@@ -38,6 +38,8 @@ export type LogType = 'info' | 'warn' | 'error' | 'success' | 'debug' | 'critica
 
 /**
  * Log something.
+ * @param type The type of log.
+ * @param message The message to log.
  */
 export function log(type: LogType, message: unknown) {
     console.log(`[${type.toUpperCase()}]:`, message);
@@ -45,6 +47,14 @@ export function log(type: LogType, message: unknown) {
         `${type.toUpperCase()}${' '.repeat('critical'.length - type.length)} |${' '.repeat(4)}${Bun.inspect(message).replaceAll('\n', `\n${' '.repeat('critical'.length)} |${' '.repeat(4)}`)}\n`,
         'utf8'
     );
+}
+
+/**
+ * Log an error.
+ * @param error The error to log.
+ */
+export function logError(error: unknown) {
+    log('error', error);
 }
 
 /**

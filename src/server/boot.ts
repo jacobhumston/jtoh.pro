@@ -21,7 +21,7 @@ import { generateSiteMap } from '@server/managers/sitemap';
 import { buildFrontend, hotReloadFrontend, serveStatic } from '@server/managers/web';
 import { analytics } from '@server/modules/analytics';
 import { getIPFromContext } from '@server/modules/ip';
-import { cleanUpLogs, log } from '@server/modules/logger';
+import { cleanUpLogs, log, logError } from '@server/modules/logger';
 import rateLimitMiddleware from '@server/modules/ratelimits';
 import { safeURL } from '@shared/common-utils';
 
@@ -75,19 +75,21 @@ app.use(redirectMiddleware);
 app.use((context, next) => {
     (async () => {
         const user = await getAuthenticatedRobloxUser(context);
-        await analytics.track({
-            type: 'custom_event',
-            ip_address: getIPFromContext(context),
-            event_name: 'request',
-            properties: {
-                host: context.req.header('Host'),
-                method: context.req.method,
-                path: context.req.path
-            },
-            user_agent: context.req.header('User-Agent'),
-            user_id: user ? user.username : undefined
-        });
-    })().catch(() => null);
+        await analytics
+            .track({
+                type: 'custom_event',
+                ip_address: getIPFromContext(context),
+                event_name: 'request',
+                properties: {
+                    host: context.req.header('Host'),
+                    method: context.req.method,
+                    path: context.req.path
+                },
+                user_agent: context.req.header('User-Agent'),
+                user_id: user ? user.username : undefined
+            })
+            .catch(logError);
+    })();
     return next();
 });
 
@@ -163,8 +165,24 @@ app.notFound((context) => {
 });
 
 // last resort, errors...
-app.onError((error, context) => {
+app.onError(async (error, context) => {
     log('error', error);
+    const user = await getAuthenticatedRobloxUser(context);
+    await analytics
+        .track({
+            type: 'custom_event',
+            ip_address: getIPFromContext(context),
+            event_name: 'server-error',
+            properties: {
+                host: context.req.header('Host'),
+                method: context.req.method,
+                path: context.req.path,
+                error: Bun.inspect(error)
+            },
+            user_agent: context.req.header('User-Agent'),
+            user_id: user ? user.username : undefined
+        })
+        .catch(logError);
     return context.json({ error: 'Internal server error.' }, 500);
 });
 

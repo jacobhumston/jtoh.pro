@@ -160,7 +160,7 @@
     }
 }
 
-@media screen and (max-width: 750px) {
+@media screen and (max-width: 520px) {
     #navigation {
         max-width: none;
 
@@ -203,9 +203,7 @@
             gap: 10px;
         }
     }
-}
 
-@media screen and (max-width: 500px) {
     #loggedInDetails {
         order: 3;
         flex-basis: 100%;
