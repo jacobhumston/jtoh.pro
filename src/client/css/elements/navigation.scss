@@ -21,6 +21,10 @@
         gap: 10px;
         padding-bottom: 10px;
 
+        #settingsMenuButton {
+            display: none;
+        }
+
         a {
             background-color: var(--background);
             padding: 5px;
@@ -183,6 +187,10 @@
             padding-bottom: 0px;
             border: none;
 
+            #settingsMenuButton {
+                display: inline;
+            }
+
             a {
                 font-size: x-large;
                 border: 1px solid var(--background-lighter);
@@ -208,5 +216,19 @@
         order: 3;
         flex-basis: 100%;
         text-align: center;
+        background-color: var(--background);
+        border-radius: 15px;
+        max-width: fit-content;
+        padding-right: 10px;
+        padding-left: 10px;
+
+        img {
+            margin-left: -10px;
+        }
+
+        .emDash,
+        .dashBoardLink {
+            display: none;
+        }
     }
 }

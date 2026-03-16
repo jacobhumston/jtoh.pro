@@ -12,10 +12,11 @@ import { client } from '@client/modules/api';
 export async function setRandomBackground() {
     const response = await client.GET('/api/backgrounds/random');
     if (response.data && response.data.url) {
-        document.documentElement.style.setProperty('--background-image', `url("${response.data.url}")`);
+        const img = new Image();
+        img.addEventListener('load', () => {
+            document.documentElement.style.setProperty('--background-image', `url("${img.src}")`);
+            document.documentElement.style.setProperty('--background-image-opacity', '0.05');
+        });
+        img.src = response.data.url;
     }
 }
-
-window.addEventListener('load', () => {
-    document.documentElement.style.setProperty('--background-image-opacity', '0.05');
-});

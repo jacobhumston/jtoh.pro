@@ -37,7 +37,7 @@ export async function handleNavigation() {
             navigationToggle.style.backgroundColor = '';
         } else {
             pageNavigation.classList.add('navigationDropDownEnabled');
-            navigationToggle.innerHTML = '<span class="icon">close</span> Close Menu';
+            navigationToggle.innerHTML = '<span class="icon">close</span> Close';
             navigationToggle.style.backgroundColor = 'var(--red)';
         }
     });
@@ -60,6 +60,6 @@ export async function handleNavigation() {
                 if (profilePicture) storage.setItem('profilePicture', profilePicture);
             }
         }
-        loggedInDetails.innerHTML = `<img src="${profilePicture ?? '/assets/roblox-headshot.webp'}"> @${sanitizeHtml(authUser.username)} — <a href="/settings">Dashboard</a>`;
+        loggedInDetails.innerHTML = `<img src="${profilePicture ?? '/assets/roblox-headshot.webp'}"> @${sanitizeHtml(authUser.username)}<span class="emDash"> — </span><a href="/settings" class="dashBoardLink">Dashboard</a>`;
     }
 }
