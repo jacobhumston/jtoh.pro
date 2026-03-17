@@ -307,7 +307,61 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        'application/json': components['schemas']['CardBackgroundSchema'][];
+                        'application/json': components['schemas']['CardBackgroundsSchema'];
+                    };
+                };
+                /** @description Rate limit error. */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        'application/json': components['schemas']['RateLimitErrorSchema'];
+                    };
+                };
+                /** @description Internal server error. */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        'application/json': components['schemas']['ErrorSchema'];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    '/api/code-icons': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get details for code icons. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Code icon details result. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        'application/json': components['schemas']['IconDetailsSchema'];
                     };
                 };
                 /** @description Rate limit error. */
@@ -484,7 +538,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        'application/json': string[];
+                        'application/json': components['schemas']['ResolvedPathsSchema'];
                     };
                 };
                 /** @description Rate limit error. */
@@ -716,10 +770,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        'application/json': {
-                            /** @description URL of the random background. Can be null if the category was invalid. */
-                            url: string | null;
-                        };
+                        'application/json': components['schemas']['RandomWebBackgroundsSchema'];
                     };
                 };
                 /** @description Rate limit error. */
@@ -773,17 +824,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        'application/json': {
-                            /** @description Category of this web background. */
-                            category: string;
-                            /**
-                             * Format: uri
-                             * @description URL of this web background.
-                             */
-                            url: string;
-                            /** @description ID of this web background. */
-                            id: string;
-                        }[];
+                        'application/json': components['schemas']['WebBackgroundsSchema'];
                     };
                 };
                 /** @description Rate limit error. */
@@ -936,6 +977,7 @@ export interface components {
             /** @description Whether the client can skip the captcha or not. */
             success: boolean;
         };
+        CardBackgroundsSchema: components['schemas']['CardBackgroundSchema'][];
         CardBackgroundSchema: {
             /** @description Identification string of this card background. */
             id: string;
@@ -949,12 +991,25 @@ export interface components {
             /** @description Category that this card background belongs to. This will always be "User Uploaded" when "isCustom" is true. */
             category: string;
         };
-        PingSchema: {
-            /** @description Ping (in ms) to cloudflare. */
-            cloudflare: number;
-            /** @description Ping (in ms) to google. */
-            google: number;
+        IconDetailsSchema: {
+            /** @description Files name mappings. */
+            files: {
+                [key: string]: string;
+            };
+            /** @description Folder name mappings. */
+            folders: {
+                [key: string]: string;
+            };
         };
+        PingSchema: {
+            /** @description Ping (in ms) to Cloudflare. */
+            cloudflare: number;
+            /** @description Ping (in ms) to Google. */
+            google: number;
+            /** @description Ping (in ms) to Discord. */
+            discord: number;
+        };
+        ResolvedPathsSchema: string[];
         TaskSchema: {
             /** @description Name of this task. */
             name: string;
@@ -988,6 +1043,21 @@ export interface components {
             /** @description The current version. */
             version: string;
         };
+        RandomWebBackgroundsSchema: {
+            /** @description URL of the random background. Can be null if the category was invalid. */
+            url: string | null;
+        };
+        WebBackgroundsSchema: {
+            /** @description Category of this web background. */
+            category: string;
+            /**
+             * Format: uri
+             * @description URL of this web background.
+             */
+            url: string;
+            /** @description ID of this web background. */
+            id: string;
+        }[];
     };
     responses: never;
     parameters: never;
