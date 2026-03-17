@@ -201,6 +201,20 @@ export async function buildFrontend() {
         symlinkSync(safelyGetPath(`${file.parentPath}/${file.name}`), `${destinationPath}${file.name}`);
     }
 
+    // material code asset links
+    for (const file of readdirSync('node_modules/material-icon-theme/icons/', {
+        recursive: true,
+        withFileTypes: true
+    })) {
+        if (!file.isFile()) continue;
+        let path = file.parentPath.replace('node_modules/material-icon-theme/icons/', '');
+        if (path === 'node_modules/material-icon-theme/icons') path = '';
+        else path = `${path}/`;
+        const destinationPath = `static/assets/code-icons/${path}`;
+        createPath(destinationPath);
+        symlinkSync(safelyGetPath(`${file.parentPath}/${file.name}`), `${destinationPath}${file.name}`);
+    }
+
     // build workers
     const workerEntrypoints: string[] = [];
     for (const file of readdirSync('src/client/js/workers/', { recursive: true, withFileTypes: true })) {

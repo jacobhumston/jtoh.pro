@@ -19,7 +19,7 @@ const getCardBackgroundsRoute = createRoute({
         200: {
             content: {
                 'application/json': {
-                    schema: z.array(cardBackgroundSchema)
+                    schema: z.array(cardBackgroundSchema).openapi('CardBackgroundsSchema')
                 }
             },
             description: 'List of card backgrounds.'

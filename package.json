@@ -72,6 +72,7 @@
         "lru-cache": "^11.2.7",
         "markdown-it": "^14.1.1",
         "match-sorter": "^8.2.0",
+        "material-icon-theme": "^5.32.0",
         "mime": "^4.1.0",
         "noblox.js": "^6.2.0",
         "node-emoji": "^2.2.0",

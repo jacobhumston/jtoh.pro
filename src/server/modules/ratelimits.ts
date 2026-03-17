@@ -22,7 +22,7 @@ export default function rateLimitMiddleware(options: {
     pool: number;
     /** The amount of time it takes for the pool to reset. */
     reset: AvailableConversions;
-    /** Should the rate limit be path path based? Default is `true`. */
+    /** Should the rate limit be path based? Default is `true`. */
     prefixPath?: boolean;
     /** Add a custom prefix for this rate limit. */
     customPrefix?: string;

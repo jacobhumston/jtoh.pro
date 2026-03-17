@@ -8,8 +8,9 @@ import { z } from '@hono/zod-openapi';
 /** Schema that represents a ping response. */
 export const pingSchema = z
     .object({
-        cloudflare: z.number().openapi({ description: 'Ping (in ms) to cloudflare.' }),
-        google: z.number().openapi({ description: 'Ping (in ms) to google.' })
+        cloudflare: z.number().openapi({ description: 'Ping (in ms) to Cloudflare.' }),
+        google: z.number().openapi({ description: 'Ping (in ms) to Google.' }),
+        discord: z.number().openapi({ description: 'Ping (in ms) to Discord.' })
     })
     .openapi('PingSchema');
 

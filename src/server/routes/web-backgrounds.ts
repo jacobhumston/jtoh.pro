@@ -29,7 +29,7 @@ const route = createRoute({
                                 description: 'URL of the random background. Can be null if the category was invalid.'
                             })
                         })
-                        .openapi({ description: 'Random web background result.' })
+                        .openapi('RandomWebBackgroundsSchema')
                 }
             },
             description: 'A random web background result.'
@@ -70,7 +70,7 @@ const route2 = createRoute({
                                 id: z.string().openapi({ description: 'ID of this web background.' })
                             })
                         )
-                        .openapi({ description: 'Web backgrounds result.' })
+                        .openapi('WebBackgroundsSchema')
                 }
             },
             description: 'A random web background result.'

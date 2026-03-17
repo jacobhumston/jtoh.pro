@@ -25,7 +25,7 @@ const route = createRoute({
         200: {
             content: {
                 'application/json': {
-                    schema: z.string().array()
+                    schema: z.string().array().openapi('ResolvedPathsSchema')
                 }
             },
             description:
