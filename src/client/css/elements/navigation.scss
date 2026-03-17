@@ -12,6 +12,16 @@
     margin-right: auto;
     position: relative;
 
+    #logo {
+        display: block;
+        position: absolute;
+        float: left;
+        width: 50px;
+        height: 50px;
+        left: -55px;
+        top: 25px;
+    }
+
     #pageNavigation {
         display: flex;
         flex-wrap: nowrap;
@@ -161,6 +171,14 @@
     #navigationToggle:hover {
         background-color: var(--background-lighter);
         cursor: pointer;
+    }
+}
+
+@media screen and (max-width: 650px) {
+    #navigation {
+        #logo {
+            display: none;
+        }
     }
 }
 

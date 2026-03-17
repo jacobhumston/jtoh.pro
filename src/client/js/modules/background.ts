@@ -5,6 +5,7 @@
  */
 
 import { client } from '@client/modules/api';
+import storage from '@client/modules/storage';
 
 /**
  * Set the background of the page to a random image.
@@ -16,6 +17,7 @@ export async function setRandomBackground() {
         img.addEventListener('load', () => {
             document.documentElement.style.setProperty('--background-image', `url("${img.src}")`);
             document.documentElement.style.setProperty('--background-image-opacity', '0.05');
+            storage.setItem('prevWebBackground', img.src);
         });
         img.src = response.data.url;
     }

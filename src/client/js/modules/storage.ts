@@ -11,7 +11,8 @@ import { authInfoSchema } from '@schemas/auth';
 const storageSchemas = {
     auth: authInfoSchema,
     profilePicture: z.string(),
-    viewedNotifications: z.array(z.string())
+    viewedNotifications: z.array(z.string()),
+    prevWebBackground: z.string()
 };
 
 /** Local storage. */

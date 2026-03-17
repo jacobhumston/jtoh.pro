@@ -40,6 +40,6 @@ body::before {
     opacity: var(--background-image-opacity);
     z-index: -1;
     height: 100vh;
-    transition-property: opacity;
+    transition-property: opacity, background-image;
     transition-duration: 0.5s;
 }
