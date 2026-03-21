@@ -111,6 +111,11 @@ export async function execute(interaction: discord.APIChatInputApplicationComman
                     })
                     .catch(() => undefined));
 
+            let privateInv = false;
+            if (towerStats !== undefined && towerStats.error === 'private') {
+                privateInv = true;
+            }
+
             if (towerStats !== undefined && (towerStats.error as any) !== undefined) {
                 towerStats = undefined;
             }
@@ -122,9 +127,16 @@ export async function execute(interaction: discord.APIChatInputApplicationComman
             const thumb = (await userIdToThumbnailFull(user.id).catch(() => null)) ?? '';
 
             if (towerStats === undefined) {
-                container.addTextDisplayComponents((text) =>
-                    text.setContent(`*Failed to load ${user.name}'s stats for ${fullGameName}*`)
-                );
+                container.addTextDisplayComponents((text) => {
+                    if (privateInv) {
+                        text.setContent(
+                            `*Failed to load ${user.name}'s stats for ${fullGameName} due to their inventory being private. Learn more: https://jtoh.pro/private*`
+                        );
+                    } else {
+                        text.setContent(`*Failed to load ${user.name}'s stats for ${fullGameName}*`);
+                    }
+                    return text;
+                });
             } else {
                 await updateSkillPoints('etoh', user, towerStats.skill_points).catch(() => undefined);
                 await updateTowerCount('etoh', user, towerStats.completed_towers).catch(() => undefined);
@@ -198,6 +210,11 @@ Completed Areas: ${towerStats.completed_areas.length > 0 ? towerStats.completed_
                     })
                     .catch(() => undefined));
 
+            let privateInv = false;
+            if (towerStats !== undefined && towerStats.error === 'private') {
+                privateInv = true;
+            }
+
             if (towerStats !== undefined && (towerStats.error as any) !== undefined) {
                 towerStats = undefined;
             }
@@ -209,9 +226,16 @@ Completed Areas: ${towerStats.completed_areas.length > 0 ? towerStats.completed_
             const thumb = (await userIdToThumbnailFull(user.id).catch(() => null)) ?? '';
 
             if (towerStats === undefined) {
-                container.addTextDisplayComponents((text) =>
-                    text.setContent(`*Failed to load ${user.name}'s stats for ${fullGameName}*`)
-                );
+                container.addTextDisplayComponents((text) => {
+                    if (privateInv) {
+                        text.setContent(
+                            `*Failed to load ${user.name}'s stats for ${fullGameName} due to their inventory being private. Learn more: https://jtoh.pro/private*`
+                        );
+                    } else {
+                        text.setContent(`*Failed to load ${user.name}'s stats for ${fullGameName}*`);
+                    }
+                    return text;
+                });
             } else {
                 await updateSkillPoints('cscd', user, towerStats.skill_points.legit).catch(() => undefined);
                 await updateTowerCount('cscd', user, towerStats.completed_towers.legit).catch(() => undefined);
@@ -284,6 +308,11 @@ Completed Areas: ${towerStats.completed_areas.length > 0 ? towerStats.completed_
                     })
                     .catch(() => undefined));
 
+            let privateInv = false;
+            if (towerStats !== undefined && towerStats.error === 'private') {
+                privateInv = true;
+            }
+
             if (towerStats !== undefined && (towerStats.error as any) !== undefined) {
                 towerStats = undefined;
             }
@@ -295,9 +324,16 @@ Completed Areas: ${towerStats.completed_areas.length > 0 ? towerStats.completed_
             const thumb = (await userIdToThumbnailFull(user.id).catch(() => null)) ?? '';
 
             if (towerStats === undefined) {
-                container.addTextDisplayComponents((text) =>
-                    text.setContent(`*Failed to load ${user.name}'s stats for ${fullGameName}*`)
-                );
+                container.addTextDisplayComponents((text) => {
+                    if (privateInv) {
+                        text.setContent(
+                            `*Failed to load ${user.name}'s stats for ${fullGameName} due to their inventory being private. Learn more: https://jtoh.pro/private*`
+                        );
+                    } else {
+                        text.setContent(`*Failed to load ${user.name}'s stats for ${fullGameName}*`);
+                    }
+                    return text;
+                });
             } else {
                 await updateSkillPoints('tea', user, towerStats.skill_points).catch(() => undefined);
                 await updateTowerCount('tea', user, towerStats.completed_towers).catch(() => undefined);

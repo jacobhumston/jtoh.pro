@@ -137,6 +137,11 @@ export default function teaGen(app: Hono) {
                     })
                     .catch(() => undefined));
 
+            let privateInv = false;
+            if (towerStats !== undefined && towerStats.error === 'private') {
+                privateInv = true;
+            }
+
             if (towerStats !== undefined && (towerStats.error as any) !== undefined) {
                 towerStats = undefined;
             }
@@ -517,8 +522,16 @@ export default function teaGen(app: Hono) {
 
                 ctx.textAlign = 'center';
                 ctx.fillStyle = '#ff7e7e';
-                ctx.font = '30px Poppins';
-                ctx.fillText("Failed to load the user's stats.", canvas.width / 2, canvas.height / 2);
+                ctx.font = '20px Poppins';
+                if (privateInv) {
+                    ctx.fillText(
+                        "This user's inventory is private! Learn more: jtoh.pro/private",
+                        canvas.width / 2,
+                        canvas.height / 2
+                    );
+                } else {
+                    ctx.fillText("Failed to load the user's stats.", canvas.width / 2, canvas.height / 2);
+                }
 
                 ctx.fillStyle = 'white';
                 ctx.font = '25px Poppins';
