@@ -4,14 +4,16 @@
  *
  * Authored by Jacob Humston
  */
-//import analytics from '@client/modules/analytics';
 import { Command } from 'commander';
 import YAML from 'json-to-pretty-yaml';
+import prettyMilliseconds from 'pretty-ms';
 import { UAParser } from 'ua-parser-js';
 import { v4 } from 'uuid';
 
 import { client } from '@client/modules/api';
 import { getCurrentTheme, setTheme } from '@client/modules/theme';
+
+import { solveCaptcha } from '../modules/captcha';
 
 const program = new Command();
 
@@ -60,7 +62,9 @@ program
         if (response.error) {
             print(`error: ${response.error.error}`);
         } else if (response.data) {
-            print(`Cloudflare: ${response.data.cloudflare}\nGoogle: ${response.data.google}`);
+            print(
+                `Cloudflare: ${response.data.cloudflare}\nGoogle: ${response.data.google}\nDiscord: ${response.data.discord}`
+            );
         }
     });
 
@@ -106,6 +110,25 @@ program
         for (let i = 0; i < value; i++) uuids.push(v4());
         print(`success: Successfully generated ${value} UUIDs.`);
         print(uuids.join('\n'));
+    });
+
+program
+    .command('captcha-test')
+    .description('Test how fast your client can handle a captcha.')
+    .action(async () => {
+        print(`info: Workers: ${navigator.hardwareConcurrency ?? 8}`);
+        print(`info: Running captcha...`);
+        const time = Date.now();
+        await solveCaptcha();
+        print(`success: Completed in ${prettyMilliseconds(Date.now() - time)}`);
+    });
+
+program
+    .command('clear-storage')
+    .description('Clear your local storage.')
+    .action(async () => {
+        localStorage.clear();
+        print('success: Local storage has been cleared!');
     });
 
 const terminal = document.getElementById('terminal') as HTMLDivElement;
