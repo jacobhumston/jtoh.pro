@@ -40,8 +40,8 @@ const app = new OpenAPIHono({
         if (!host) return path;
         if (
             (host.endsWith('.etoh.pro') || host.endsWith('.roblox-obby.pro')) &&
-            !path.includes('assets') &&
-            !path.includes('api') &&
+            !path.startsWith('/node_modulesassets') &&
+            !path.startsWith('/api') &&
             !path.endsWith('.js') &&
             !path.endsWith('.css')
         )
@@ -73,6 +73,7 @@ app.use(redirectMiddleware);
 
 // analytics
 app.use((context, next) => {
+    if (isDev) return next();
     (async () => {
         const user = await getAuthenticatedRobloxUser(context);
         await analytics
@@ -167,6 +168,8 @@ app.notFound((context) => {
 // last resort, errors...
 app.onError(async (error, context) => {
     log('error', error);
+    if (isDev) return context.json({ error: 'Internal server error.' }, 500);
+
     const user = await getAuthenticatedRobloxUser(context);
     await analytics
         .track({
