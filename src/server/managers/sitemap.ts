@@ -22,6 +22,7 @@ export async function generateSiteMap() {
     for (const file of readdirSync('static/', { withFileTypes: true, recursive: true })) {
         if (file.isFile()) {
             if (file.name.endsWith('.html')) {
+                if (file.parentPath.includes('admin')) continue;
                 items.push({
                     url: file.parentPath.replace('static', '') + '/' + file.name.split('.')[0],
                     changefreq: EnumChangefreq.DAILY

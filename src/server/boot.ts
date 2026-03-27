@@ -40,8 +40,8 @@ const app = new OpenAPIHono({
         if (!host) return path;
         if (
             (host.endsWith('.etoh.pro') || host.endsWith('.roblox-obby.pro')) &&
-            !path.startsWith('/node_modulesassets') &&
-            !path.startsWith('/api') &&
+            !path.startsWith('/assets/') &&
+            !path.startsWith('/api/') &&
             !path.endsWith('.js') &&
             !path.endsWith('.css')
         )

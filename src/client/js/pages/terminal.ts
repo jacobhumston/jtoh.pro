@@ -131,6 +131,47 @@ program
         print('success: Local storage has been cleared!');
     });
 
+program
+    .command('url')
+    .description('Get all properties of a url.')
+    .argument('[url]', 'Url to get the properties of.', document.location.href)
+    .action(async (url?: string) => {
+        const {
+            hash,
+            host,
+            hostname,
+            href,
+            origin,
+            password,
+            pathname,
+            port,
+            protocol,
+            search,
+            searchParams,
+            username
+        } = new URL(url ?? document.location.href);
+        print(
+            JSON.stringify(
+                {
+                    hash,
+                    host,
+                    hostname,
+                    href,
+                    origin,
+                    password,
+                    pathname,
+                    port,
+                    protocol,
+                    search,
+                    searchParams: Object.fromEntries(searchParams.entries()),
+                    username
+                },
+                null,
+                4
+            )
+        );
+    });
+
 const terminal = document.getElementById('terminal') as HTMLDivElement;
 const input = document.getElementById('input') as HTMLInputElement;
 const info = document.getElementById('info') as HTMLDivElement;
@@ -145,6 +186,7 @@ function print(str: string) {
     element.innerText = str;
     if (element.innerText.toLowerCase().includes('error')) element.style.color = 'var(--red)';
     if (element.innerText.toLowerCase().includes('success')) element.style.color = 'var(--green)';
+    if (element.innerText.toLowerCase().startsWith('$ ')) element.style.color = 'var(--yellow)';
     terminal?.insertBefore(element, input);
     element.scrollIntoView();
 }
@@ -157,6 +199,7 @@ const ogPlaceholder = input.placeholder;
 input.addEventListener('keyup', async (event) => {
     if (event.key === 'Enter') {
         const v = input.value.split(' ');
+        print(`$ ${v.join(' ')}`);
         input.value = '';
         input.disabled = true;
         input.placeholder = 'Command is executing... please wait.';

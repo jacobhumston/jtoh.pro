@@ -59,6 +59,7 @@ const emailAddress = tokens.emailAddress as string;
 const emailPassword = tokens.emailPassword as string;
 const printfulToken = tokens.printfulToken as string;
 const rybbitApiKey = tokens.rybbitApiKey as string;
+const noctalyAPIKey = tokens.noctalyAPIKey as string;
 
 const apiTokens = {
     discordInteractionsPublicKey,
@@ -91,7 +92,8 @@ const apiTokens = {
     emailAddress,
     emailPassword,
     printfulToken,
-    rybbitApiKey
+    rybbitApiKey,
+    noctalyAPIKey
 };
 
 /** API tokens. */
