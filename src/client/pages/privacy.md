@@ -18,7 +18,7 @@ We collect limited categories of information necessary to provide and improve th
 - **(b)** Usage Data. We collect technical information about how you interact with the Services, including your device type, browser type, operating system, IP address, time of access, and the pages or features you use.
 - **(c)** Cookies and Similar Technologies. We use a functional cookie (“auth-login” cookie) to keep you signed in, as well as analytics cookies (Cloudflare Analytics and Google Analytics). Once activated, we may also use advertising cookies via Google AdSense.
 - **(d)** User Content. If you submit usernames, avatars, feedback, or other material in connection with the Services, we may collect and display that information as part of Stat Cards, leaderboards, or related outputs.
-- **(e)** Statistical Data. We may collect and process data received from TowerStats.com in order to generate Stat Cards and leaderboards.
+- **(e)** Statistical Data. We may collect and process data received from <span class="towerStats">TowerStats.com</span> in order to generate Stat Cards and leaderboards.
 
 ## 4\. How We Collect Information
 
@@ -26,7 +26,7 @@ We collect information in the following ways:
 
 - **(a)** Directly from You. When you log in, interact with our Discord bot, or submit content to the Services.
 - **(b)** Automatically. Through cookies, session tracking, analytics tools, and logging systems that capture usage patterns.
-- **(c)** From Third-Party Services. Through integrations with Roblox, Discord, Cloudflare, Google Analytics, Google AdSense (once active), and TowerStats.com. Each third party may also collect information in accordance with its own privacy practices.
+- **(c)** From Third-Party Services. Through integrations with Roblox, Discord, Cloudflare, Google Analytics, Google AdSense (once active), and <span class="towerStats">TowerStats.com</span>. Each third party may also collect information in accordance with its own privacy practices.
 
 ## 5\. How We Use Information
 
@@ -71,7 +71,7 @@ We do not sell or rent personal information. We may share information with trust
 - **(b)** Google Analytics. For measuring traffic and usage patterns.
 - **(c)** Google AdSense. For personalized advertising, once activated on the Website.
 - **(d)** Roblox and Discord. For authentication and operation of the Discord bot.
-- **(e)** TowerStats.com. For generating statistical data used in Stat Cards and leaderboards.
+- **(e)** <span class="towerStats">TowerStats.com</span>. For generating statistical data used in Stat Cards and leaderboards.
 
 We may also disclose information:
 
@@ -99,7 +99,7 @@ When you interact with our Discord bot, we may process limited data related to y
 
 ## 14\. Statistical Data Relationship
 
-We use statistical data provided by TowerStats.com to generate Stat Cards and leaderboards. While we maintain a private technical relationship with TowerStats.com to enable data compatibility, we are separate and independent entities. We do not control the privacy practices or operations of TowerStats.com. You should review the privacy policy of TowerStats.com to understand how your data may be handled by that platform. We disclaim responsibility for TowerStats.com's collection, storage, or use of information.
+We use statistical data provided by <span class="towerStats">TowerStats.com</span> to generate Stat Cards and leaderboards. While we maintain a private technical relationship with <span class="towerStats">TowerStats.com</span> to enable data compatibility, we are separate and independent entities. We do not control the privacy practices or operations of <span class="towerStats">TowerStats.com</span>. You should review the privacy policy of <span class="towerStats">TowerStats.com</span> to understand how your data may be handled by that platform. We disclaim responsibility for <span class="towerStats">TowerStats.com</span>'s collection, storage, or use of information.
 
 ## 15\. Data Security
 

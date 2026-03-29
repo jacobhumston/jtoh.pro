@@ -23,8 +23,10 @@ export async function generateSiteMap() {
         if (file.isFile()) {
             if (file.name.endsWith('.html')) {
                 if (file.parentPath.includes('admin')) continue;
+                let fileName = file.name.split('.')[0];
+                if (fileName === 'index') fileName = '';
                 items.push({
-                    url: file.parentPath.replace('static', '') + '/' + file.name.split('.')[0],
+                    url: file.parentPath.replace('static', '') + '/' + fileName,
                     changefreq: EnumChangefreq.DAILY
                 });
             }

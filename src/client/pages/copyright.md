@@ -11,7 +11,7 @@ All content, features, and functionality available on **jtoh.pro**, including bu
 The Services display statistics, data, and references relating to the game “Eternal Towers of Hell” and other Roblox-related content.
 
 - No Affiliation. **jtoh.pro** is not affiliated with, endorsed by, or officially connected to Roblox Corporation, the creators of “Eternal Towers of Hell,” or any related developers.
-- TowerStats.com. We work privately with TowerStats.com to enable compatibility, but we remain independent entities. TowerStats.com is solely responsible for its own operations and content.
+- <span class="towerStats">TowerStats.com</span>. We work privately with <span class="towerStats">TowerStats.com</span> to enable compatibility, but we remain independent entities. <span class="towerStats">TowerStats.com</span> is solely responsible for its own operations and content.
 - Third-Party Marks. All product names, company names, and trademarks appearing in the Services are the property of their respective owners. Their inclusion is descriptive and nominative only, and does not imply endorsement or sponsorship.
 
 ## 3\. User-Generated Content

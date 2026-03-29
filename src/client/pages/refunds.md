@@ -10,7 +10,7 @@ The Services offered by **jtoh.pro** consist of digital outputs and online inter
 
 - **(a)** Immediate Delivery. Digital outputs such as Stat Cards, leaderboards, embeds, and Discord bot interactions are generated and delivered immediately upon request. Once delivered, these services cannot be canceled or refunded.
 - **(b)** Non-Refundable Services. Because digital content is produced on-demand and cannot be “returned,” we do not provide refunds, credits, or exchanges for completed transactions.
-- **(c)** Service Interruptions. We are not responsible for outages, downtime, or inaccuracies caused by third-party services, including Roblox, Discord, Cloudflare, or TowerStats.com . Such interruptions do not constitute grounds for a refund.
+- **(c)** Service Interruptions. We are not responsible for outages, downtime, or inaccuracies caused by third-party services, including Roblox, Discord, Cloudflare, or <span class="towerStats">TowerStats.com</span>. Such interruptions do not constitute grounds for a refund.
 
 ## 3\. Future Premium Features and Donations
 

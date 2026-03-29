@@ -18,7 +18,7 @@ export async function solveCaptcha() {
     if (!captcha.data) throw new Error('Failed to get captcha challenge.');
 
     const solution = await solveChallengeWorkers(
-        () => new Worker(new URL('/js/workers/captcha.js', import.meta.url), { type: 'module' }),
+        () => new Worker(new URL('/assets/workers/captcha.js', import.meta.url), { type: 'module' }),
         navigator.hardwareConcurrency ?? 8,
         captcha.data.challenge,
         captcha.data.salt,

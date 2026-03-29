@@ -4,29 +4,76 @@
     Authored by Jacob Humston
 */
 
-#content {
-    max-width: 800px;
+#markdownContainer {
     padding: 25px;
     margin-left: auto;
     margin-right: auto;
     margin-top: 15px;
-    width: fit-content;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
 
-    h1,
-    h2,
-    h3,
-    h4,
-    b,
-    strong {
-        color: var(--accent);
+    #content {
+        max-width: 800px;
+        padding: 10px;
+
+        h1 {
+            margin-top: 0px;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        b,
+        strong {
+            color: var(--accent);
+        }
+
+        li::marker {
+            color: var(--text-darker);
+        }
+
+        h2 {
+            border-bottom: solid 2px var(--background);
+            padding-bottom: 5px;
+        }
+
+        .towerStats {
+            color: var(--yellow);
+        }
     }
 
-    li::marker {
-        color: var(--text-darker);
-    }
+    #textNavigation {
+        min-width: 400px;
+        padding: 10px;
+        position: sticky;
+        top: 15px;
+        align-self: flex-start;
 
-    h2 {
-        border-bottom: solid 2px var(--background);
-        padding-bottom: 5px;
+        a {
+            display: block;
+            color: var(--text-darker);
+            transition-property: color;
+            transition-duration: 0.35s;
+            transition-timing-function: ease-in-out;
+        }
+
+        a:hover {
+            color: var(--accent);
+        }
+
+        .selectedAnchor {
+            border-left: 2px solid var(--accent);
+            padding-left: 5px;
+            margin-left: -7px;
+            color: var(--accent);
+        }
+    }
+}
+
+@media screen and (max-width: 1100px) {
+    #textNavigation {
+        display: none;
     }
 }

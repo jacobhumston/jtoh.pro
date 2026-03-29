@@ -14,15 +14,14 @@ import mime from 'mime';
 import * as prettier from 'prettier';
 import * as sass from 'sass';
 import { minify as jsMinify } from 'terser';
-import { v4 as uuid } from 'uuid';
 
 import { build } from 'bun';
-import { existsSync, readdirSync, readFileSync, renameSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { parse } from 'node:path';
 
 import { isDev } from '@server/config';
 import { getBooleanArg } from '@server/managers/argv';
-import { createPath, getFileHash, safelyGetPath } from '@server/managers/files';
+import { createPath, safelyGetPath } from '@server/managers/files';
 import { log, logError } from '@server/modules/logger';
 import { replaceEmptyString } from '@shared/common-utils';
 
@@ -100,7 +99,12 @@ export async function buildFrontend() {
 
             // build (or symlink)
             if (file.name.endsWith('.html') || file.name.endsWith('.md')) {
-                buildEntrypoints.push(`${file.parentPath}/${file.name}`);
+                // for some reason this fixes a bun build issue
+                if (file.name.endsWith('blank.html')) {
+                    buildEntrypoints.unshift(`${file.parentPath}/${file.name}`);
+                } else {
+                    buildEntrypoints.push(`${file.parentPath}/${file.name}`);
+                }
             } else {
                 symlinkSync(safelyGetPath(`${file.parentPath}/${file.name}`), `${destinationPath}${file.name}`);
             }
@@ -120,7 +124,7 @@ export async function buildFrontend() {
     }
 
     // bun build
-    const markdown = MarkdownIt();
+    const markdown = MarkdownIt({ html: true });
     const markdownTemplate = readFileSync('src/client/templates/markdown.html', 'utf8');
     await build({
         entrypoints: buildEntrypoints,
@@ -132,8 +136,8 @@ export async function buildFrontend() {
         footer: `\n\n// @copyright Copyright of jtoh.pro, All Rights Reserved. (c)${new Date().getFullYear()}`,
         target: 'browser',
         naming: {
-            asset: '[dir]/[name].[hash].[ext]',
-            chunk: '[dir]/[name].[hash].[ext]',
+            asset: '/assets/[name].[hash].[ext]',
+            chunk: '/assets/[hash].[ext]',
             entry: '[dir]/[name].[ext]'
         },
         external: [
@@ -225,7 +229,7 @@ export async function buildFrontend() {
     if (workerEntrypoints.length > 0) {
         await build({
             entrypoints: workerEntrypoints,
-            outdir: safelyGetPath('static/js/workers'),
+            outdir: safelyGetPath('static/assets/workers/'),
             splitting: false,
             sourcemap: isDev && !minifyBuild ? 'inline' : 'none',
             minify: !isDev || minifyBuild,
@@ -235,103 +239,6 @@ export async function buildFrontend() {
                 entry: '[name].[ext]'
             }
         });
-    }
-
-    // remove duplicate files and replace their references with the original
-    // also renames files if in production mode
-    // note that this segment runs under the assumption that all non-symbolic link files are text based
-    // and that it's iterating top to bottom
-    {
-        // create name map
-        const nameMap: Map<string, string> = new Map();
-        for (const file of readdirSync('static', { recursive: true, withFileTypes: true })) {
-            if (!file.isFile() || file.isSymbolicLink() || file.name.endsWith('.html')) continue;
-            if (isDev && !minifyBuild) nameMap.set(file.name, file.name);
-            else
-                nameMap.set(
-                    file.name,
-                    `${uuid().split('-')[0]}.${file.name.split('.').findLast((v) => typeof v === 'string')}`
-                );
-        }
-
-        // replace duplicate files
-        const refrenceMap: Map<string, { new: string; newPath: string }> = new Map();
-        const hashMap: Map<string, string> = new Map();
-        for (const file of readdirSync('static', { recursive: true, withFileTypes: true })) {
-            const filePath = `${file.parentPath}/${file.name}`;
-            if (!file.isFile() || file.isSymbolicLink() || file.name.endsWith('.html')) continue;
-            if (!existsSync(filePath)) continue;
-
-            const fileHash = hashMap.get(filePath) ?? (await getFileHash(filePath));
-            hashMap.set(filePath, fileHash);
-
-            // run through other files
-            for (const file2 of readdirSync('static', { recursive: true, withFileTypes: true })) {
-                const file2Path = `${file2.parentPath}/${file2.name}`;
-                if (!file2.isFile() || file2.isSymbolicLink() || file2.name.endsWith('.html') || filePath === file2Path)
-                    continue;
-
-                const file2Hash = hashMap.get(file2Path) ?? (await getFileHash(file2Path));
-                hashMap.set(file2Path, file2Hash);
-
-                if (fileHash !== file2Hash) continue;
-                rmSync(file2Path, { force: true });
-
-                // Store the new name and the path to the original file
-                refrenceMap.set(file2.name, {
-                    new: nameMap.get(file.name) ?? file.name,
-                    newPath: file.parentPath
-                });
-            }
-
-            // rename file
-            renameSync(filePath, filePath.replace(file.name, nameMap.get(file.name) ?? file.name));
-        }
-
-        // update references and file names
-        // this will load the entire file into memory at once :(
-        for (const file of readdirSync('static', { recursive: true, withFileTypes: true })) {
-            if (!file.isFile() || file.isSymbolicLink()) continue;
-            const filePath = `${file.parentPath}/${file.name}`;
-
-            let content = readFileSync(filePath, 'utf-8');
-            for (const [name, data] of refrenceMap) {
-                const currentDir = file.parentPath
-                    .replace('static', '')
-                    .split('/')
-                    .filter((s) => s);
-                const targetDir = data.newPath
-                    .replace('static', '')
-                    .split('/')
-                    .filter((s) => s);
-
-                let commonLength = 0;
-                for (let i = 0; i < Math.min(currentDir.length, targetDir.length); i++) {
-                    if (currentDir[i] === targetDir[i]) commonLength++;
-                    else break;
-                }
-
-                const upLevels = currentDir.length - commonLength;
-                const downPath = targetDir.slice(commonLength);
-
-                let relativePath;
-                if (upLevels === 0 && downPath.length === 0) {
-                    relativePath = `./${data.new}`;
-                } else {
-                    relativePath = `${'../'.repeat(upLevels)}${downPath.length > 0 ? downPath.join('/') + '/' : ''}${data.new}`;
-                }
-
-                content = content.replace(`./${name}`, relativePath);
-            }
-            for (const [old, value] of nameMap) {
-                content = content.replace(old, value);
-            }
-            writeFileSync(filePath, content, 'utf8');
-        }
-
-        nameMap.clear();
-        hashMap.clear();
-        refrenceMap.clear();
     }
 
     // minify (in prod)
