@@ -4,7 +4,7 @@
  * Authored by Jacob Humston
  */
 import * as emoji from 'node-emoji';
-import { fetchApi, isAnyErrorResponse } from 'rozod';
+import { fetchApi } from 'rozod';
 import { getUsersAvatar3d } from 'rozod/lib/endpoints/thumbnailsv1';
 import { getUsersUserid, postUsernamesUsers } from 'rozod/lib/endpoints/usersv1';
 
@@ -16,8 +16,8 @@ import { serverURL } from '@server/config';
  * @returns Avatar 3d details.
  */
 export async function getAvatar3d(userId: number) {
-    const result = await fetchApi(getUsersAvatar3d, { userId });
-    if (isAnyErrorResponse(result)) return;
+    const result = await fetchApi(getUsersAvatar3d, { userId }, { throwOnError: true }).catch(() => null);
+    if (result === null) return;
     if (result.imageUrl === null) return null;
 
     const avatar = (await fetch(result.imageUrl)
@@ -62,11 +62,11 @@ export function getRobloxCDNUrlFromHash(hash: string) {
  * @param input The input to parse.
  * @returns The parsed result, or null if an error occurred.
  */
-export async function parseRobloxAccountInput(
-    input: string | number
-): Promise<ReturnType<typeof fetchApi<typeof getUsersUserid>> | null> {
+export async function parseRobloxAccountInput(input: string | number) {
     // parse numbers
-    if (typeof input === 'number') return await fetchApi(getUsersUserid, { userId: input }).catch(() => null);
+    if (typeof input === 'number')
+        return await fetchApi(getUsersUserid, { userId: input }, { throwOnError: true }).catch(() => null);
+
     // parse strings
     if (typeof input === 'string') {
         const parsedString = emoji.strip(input, { preserveSpaces: false }).replaceAll(' ', '');
@@ -75,15 +75,23 @@ export async function parseRobloxAccountInput(
             ? // parse user id strings (starts with "!")
               parseInt(parsedString.split('!')[1])
             : // parse usernames
-              await fetchApi(postUsernamesUsers, { body: { usernames: [input], excludeBannedUsers: false } }).catch(
-                  () => null
-              );
-        return result === null
-            ? null
-            : await fetchApi(getUsersUserid, {
-                  userId: typeof result === 'object' ? (result as { data: Array<{ id: number }> }).data[0].id : result
-              }).catch(() => null);
+              await fetchApi(
+                  postUsernamesUsers,
+                  { body: { usernames: [input], excludeBannedUsers: false } },
+                  { throwOnError: true }
+              ).catch(() => null);
+
+        if (result === null) return null;
+
+        return await fetchApi(
+            getUsersUserid,
+            {
+                userId: typeof result === 'object' ? (result as { data: Array<{ id: number }> }).data[0].id : result
+            },
+            { throwOnError: true }
+        ).catch(() => null);
     }
+
     return null;
 }
 

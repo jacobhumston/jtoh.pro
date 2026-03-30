@@ -11,9 +11,8 @@ import { UAParser } from 'ua-parser-js';
 import { v4 } from 'uuid';
 
 import { client } from '@client/modules/api';
+import { solveCaptcha } from '@client/modules/captcha';
 import { getCurrentTheme, setTheme } from '@client/modules/theme';
-
-import { solveCaptcha } from '../modules/captcha';
 
 const program = new Command();
 

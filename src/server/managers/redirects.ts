@@ -13,7 +13,8 @@ export const redirects = new Map<string, string>([
 
     // these are unserious ones
     ['/.env', 'https://giphy.com/gifs/what-the-heck-hell-nah-did-i-saw-yPgAHZKLiTiKUbjIKU'],
-    ['/lovelyjacob', 'https://lovelyjacob.com']
+    ['/lovelyjacob', 'https://lovelyjacob.com'],
+    ['/wp-login.php', 'https://giphy.com/gifs/mic-television-rick-and-morty-summer-tv-4fWetbs5jmtOg']
 ]);
 
 /** Redirect middleware to handle url redirects. */

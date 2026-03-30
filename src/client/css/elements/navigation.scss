@@ -185,6 +185,7 @@
 @media screen and (max-width: 520px) {
     #navigation {
         max-width: none;
+        z-index: 4;
 
         #navigationToggle {
             display: inline-block;

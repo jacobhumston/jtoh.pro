@@ -16,7 +16,11 @@ export async function setRandomBackground() {
         const img = new Image();
         img.addEventListener('load', () => {
             document.documentElement.style.setProperty('--background-image', `url("${img.src}")`);
-            document.documentElement.style.setProperty('--background-image-opacity', '0.05');
+            if (document.location.pathname === '/credits') {
+                document.documentElement.style.setProperty('--background-image-opacity', '.6');
+            } else {
+                document.documentElement.style.setProperty('--background-image-opacity', '0.05');
+            }
             storage.setItem('prevWebBackground', img.src);
         });
         img.src = response.data.url;
