@@ -3,6 +3,9 @@
  *
  * Authored by Jacob Humston
  */
+
+import { createElement } from '@client/utils/elements';
+
 const brandLogos = {
     discord: 'discord.png',
     facebook: 'facebook.jpeg',
@@ -80,20 +83,6 @@ const credits: Array<{
                 brand: 'github',
                 display: 'TheHaloDeveloper',
                 url: 'https://github.com/TheHaloDeveloper'
-            }
-        ]
-    },
-    {
-        name: 'SirSamiboi',
-        username: 'TheRealSamiBoi',
-        role: 'Skill Points Creator',
-        bio: 'SirSamiboi created the original concept behind Skill Points. It can be found on <a href="https://github.com/SirSamiboi/etoh-pp" target="_blank">GitHub</a>.',
-        type: 'contributor',
-        socials: [
-            {
-                brand: 'roblox',
-                display: 'TheRealSamiBoi',
-                url: 'https://www.roblox.com/users/381696232/profile'
             }
         ]
     },
@@ -212,6 +201,39 @@ const credits: Array<{
                 url: 'https://www.roblox.com/users/224561275/profile'
             }
         ]
+    },
+    {
+        name: 'Kayden',
+        username: 'possbum',
+        role: 'Artist',
+        bio: null,
+        type: 'contributor',
+        socials: [
+            {
+                brand: 'roblox',
+                display: 'possbum',
+                url: 'https://www.roblox.com/users/196402543/profile'
+            },
+            {
+                brand: 'x',
+                display: 'possbum',
+                url: 'https://x.com/possbum'
+            }
+        ]
+    },
+    {
+        name: 'SirSamiboi',
+        username: 'TheRealSamiBoi',
+        role: 'Skill Points Creator',
+        bio: 'SirSamiboi created the original concept behind Skill Points. It can be found on <a href="https://github.com/SirSamiboi/etoh-pp" target="_blank">GitHub</a>.',
+        type: 'contributor',
+        socials: [
+            {
+                brand: 'roblox',
+                display: 'TheRealSamiBoi',
+                url: 'https://www.roblox.com/users/381696232/profile'
+            }
+        ]
     }
 ];
 
@@ -219,70 +241,48 @@ window.addEventListener('DOMContentLoaded', async function () {
     const container = document.getElementById('credits');
     if (!container) return console.error('Credits container is missing!');
 
-    const staffContainer = document.getElementById('staff') as HTMLElement;
-    const contributorsContainer = document.getElementById('contributors') as HTMLElement;
+    const creditSection = document.getElementById('creditSection') as HTMLElement;
 
     for (const credit of credits) {
-        const memberContainer = document.createElement('div');
-        memberContainer.classList.add('member');
+        const memberContainer = createElement('div', { className: 'member' }, [
+            createElement('img', {
+                className: 'avatar',
+                src: `/assets/credits/${credit.username}.webp`,
+                alt: `${credit.name} (@${credit.username})`
+            }),
+            createElement('div', { className: 'details' }, [
+                createElement('p', { className: 'role', innerText: credit.role }),
+                createElement('p', { className: 'name', innerText: credit.name }),
+                createElement('p', { className: 'username', innerText: `@${credit.username}` }),
+                createElement('p', {
+                    className: 'bio',
+                    innerHTML: credit.bio ?? '',
+                    styles: { display: !credit.bio ? 'none' : undefined }
+                })
+            ]),
+            createElement(
+                'div',
+                { className: 'socials' },
+                credit.socials
+                    .toSorted((a, b) => b.display.localeCompare(a.display))
+                    .map((social) =>
+                        createElement('div', { className: 'social' }, [
+                            createElement('img', {
+                                className: 'logo',
+                                src: `/assets/brands/${brandLogos[social.brand]}`,
+                                alt: `${social.brand} logo`
+                            }),
+                            createElement('a', {
+                                className: 'display',
+                                innerText: social.display,
+                                target: '_blank',
+                                href: social.url ?? undefined
+                            })
+                        ])
+                    )
+            )
+        ]);
 
-        const avatar = document.createElement('img');
-        avatar.classList.add('avatar');
-        avatar.src = `/assets/credits/${credit.username}.webp`;
-        avatar.alt = `${credit.name} (@${credit.username})`;
-
-        const details = document.createElement('div');
-        details.classList.add('details');
-
-        const role = document.createElement('p');
-        role.classList.add('role');
-        role.innerText = credit.role;
-
-        const name = document.createElement('p');
-        name.classList.add('name');
-        name.innerText = credit.name;
-
-        const username = document.createElement('p');
-        username.classList.add('username');
-        username.innerText = `@${credit.username}`;
-
-        const bio = document.createElement('p');
-        bio.classList.add('bio');
-        bio.innerHTML = credit.bio ?? '';
-        if (!credit.bio) bio.style.display = 'none';
-
-        details.append(role, name, username, bio);
-
-        const socials = document.createElement('div');
-        socials.classList.add('socials');
-
-        credit.socials = credit.socials.toSorted((a, b) => b.display.localeCompare(a.display));
-
-        for (const social of credit.socials) {
-            const contact = document.createElement('div');
-            contact.classList.add('social');
-
-            const brand = document.createElement('img');
-            brand.classList.add('logo');
-            brand.src = `/assets/brands/${brandLogos[social.brand]}`;
-            brand.alt = `${social.brand} Logo`;
-
-            const location = document.createElement('a');
-            location.classList.add('display');
-            location.innerText = social.display;
-            location.target = '_blank';
-            if (social.url) location.href = social.url;
-
-            contact.append(brand, location);
-            socials.insertAdjacentElement('beforeend', contact);
-        }
-
-        memberContainer.append(avatar, details, socials);
-
-        if (credit.type === 'staff') {
-            staffContainer.insertAdjacentElement('beforeend', memberContainer);
-        } else {
-            contributorsContainer.insertAdjacentElement('beforeend', memberContainer);
-        }
+        creditSection.insertAdjacentElement('beforeend', memberContainer);
     }
 });

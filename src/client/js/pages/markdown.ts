@@ -16,6 +16,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
     if (!textNavigation) return console.warn('textNavigation is missing!');
 
+    if (allHeaders.length <= 1) {
+        textNavigation.style.display = 'none';
+        return;
+    }
+
     const headerSelects: Array<HTMLAnchorElement> = [];
     for (const header of allHeaders) {
         header.id = slugify(header.innerHTML, { lower: true, strict: true });

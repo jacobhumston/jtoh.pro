@@ -1,0 +1,30 @@
+/*
+    Background image directory styling.
+
+    Authored by Jacob Humston
+*/
+#info {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+
+    h1 {
+        color: var(--accent);
+    }
+
+    #downloadZip {
+        background-color: var(--accent);
+        color: var(--background);
+        padding: 5px;
+        padding-left: 10px;
+        padding-right: 10px;
+        border: none;
+        border-radius: 5px;
+        font-size: larger;
+    }
+
+    #downloadZip:hover {
+        background: var(--text);
+        cursor: pointer;
+    }
+}
