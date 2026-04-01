@@ -190,19 +190,19 @@ export default function etohGen(app: Hono) {
                 ctx.font = 'bold 25px Poppins, Twemoji';
                 if (data.id === 2614622891) {
                     ctx.fillStyle = '#ff9f8e';
-                    ctx.fillText(`💖 ${data.displayName}`, -130, 0);
+                    ctx.fillText(`💖 ${data.displayName}`, -ctx.measureText(data.displayName).width, 0);
                 } else if (data.id === 257770975) {
                     ctx.fillStyle = '#6eadff';
-                    ctx.fillText(`🤓 ${data.displayName}`, -130, 0);
+                    ctx.fillText(`🤓 ${data.displayName}`, -ctx.measureText(data.displayName).width, 0);
                 } else if (towerStats.donated_amount > 0) {
                     ctx.fillStyle = '#fff88f';
-                    ctx.fillText(`⭐ ${data.displayName}`, -130, 0);
+                    ctx.fillText(`⭐ ${data.displayName}`, -ctx.measureText(data.displayName).width, 0);
                 } else {
-                    ctx.fillText(`${data.displayName}`, -130, 0);
+                    ctx.fillText(`${data.displayName}`, -ctx.measureText(data.displayName).width, 0);
                     if (data.verified === true)
                         ctx.drawImage(
                             images.robloxVerifiedLogo,
-                            -130 + ctx.measureText(data.displayName).width + 8,
+                            -ctx.measureText(data.displayName).width - 8,
                             20,
                             25,
                             25
@@ -212,7 +212,7 @@ export default function etohGen(app: Hono) {
                 ctx.fillStyle = '#bdbdbd';
                 ctx.font = '20px Poppins';
                 ctx.translate(130, 70);
-                ctx.fillText(`@${data?.name}`, -130, 0);
+                ctx.fillText(`@${data?.name}`, -ctx.measureText(data.name).width, 0);
                 ctx.restore();
 
                 ctx.save();
