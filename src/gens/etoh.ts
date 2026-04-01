@@ -181,6 +181,9 @@ export default function etohGen(app: Hono) {
                 context.res.headers.set('X-Card-Success', 'true');
                 context.res.headers.set('X-Card-User-Id', data.id.toString());
 
+                ctx.save();
+                ctx.rotate(-Math.PI/2);
+
                 ctx.textAlign = 'left';
                 ctx.fillStyle = 'white';
                 ctx.font = 'bold 25px Poppins, Twemoji';
@@ -208,6 +211,7 @@ export default function etohGen(app: Hono) {
                 ctx.fillStyle = '#bdbdbd';
                 ctx.font = '20px Poppins';
                 ctx.fillText(`@${data?.name}`, 130, 70);
+                ctx.restore();
 
                 ctx.save();
                 ctx.font = '18px Poppins';
