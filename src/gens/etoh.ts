@@ -30,9 +30,6 @@ export default function etohGen(app: Hono) {
         const canvas = createCanvas(700, 300);
         const ctx = canvas.getContext('2d');
         ctx.fillStyle = '#2e2e2e';
-        ctx.translate(700/2, 300/2);
-        ctx.rotate(Math.PI);
-        ctx.translate(-700 / 2, -300 / 2)
 
         drawRoundedRect(ctx, 0, 0, 700, 300, 30);
 
@@ -184,28 +181,24 @@ export default function etohGen(app: Hono) {
                 context.res.headers.set('X-Card-Success', 'true');
                 context.res.headers.set('X-Card-User-Id', data.id.toString());
 
-                ctx.save();
-                ctx.translate(130, 40);
-                ctx.rotate(Math.PI);
-
                 ctx.textAlign = 'left';
                 ctx.fillStyle = 'white';
                 ctx.font = 'bold 25px Poppins, Twemoji';
                 if (data.id === 2614622891) {
                     ctx.fillStyle = '#ff9f8e';
-                    ctx.fillText(`💖 ${data.displayName}`, -ctx.measureText(data.displayName).width, 0);
+                    ctx.fillText(`💖 ${data.displayName}`, 130, 40);
                 } else if (data.id === 257770975) {
                     ctx.fillStyle = '#6eadff';
-                    ctx.fillText(`🤓 ${data.displayName}`, -ctx.measureText(data.displayName).width, 0);
+                    ctx.fillText(`🤓 ${data.displayName}`, 130, 40);
                 } else if (towerStats.donated_amount > 0) {
                     ctx.fillStyle = '#fff88f';
-                    ctx.fillText(`⭐ ${data.displayName}`, -ctx.measureText(data.displayName).width, 0);
+                    ctx.fillText(`⭐ ${data.displayName}`, 130, 40);
                 } else {
-                    ctx.fillText(`${data.displayName}`, -ctx.measureText(data.displayName).width, 0);
+                    ctx.fillText(`${data.displayName}`, 130, 40);
                     if (data.verified === true)
                         ctx.drawImage(
                             images.robloxVerifiedLogo,
-                            -ctx.measureText(data.displayName).width - 8,
+                            130 + ctx.measureText(data.displayName).width + 8,
                             20,
                             25,
                             25
@@ -214,9 +207,7 @@ export default function etohGen(app: Hono) {
 
                 ctx.fillStyle = '#bdbdbd';
                 ctx.font = '20px Poppins';
-                ctx.translate(130, 70);
-                ctx.fillText(`@${data?.name}`, -ctx.measureText(data.name).width, 0);
-                ctx.restore();
+                ctx.fillText(`@${data?.name}`, 130, 70);
 
                 ctx.save();
                 ctx.font = '18px Poppins';
