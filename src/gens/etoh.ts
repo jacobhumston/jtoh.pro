@@ -183,7 +183,7 @@ export default function etohGen(app: Hono) {
 
                 ctx.save();
                 ctx.translate(130, 40);
-                ctx.rotate(-Math.PI/2);
+                ctx.rotate(Math.PI);
 
                 ctx.textAlign = 'left';
                 ctx.fillStyle = 'white';
