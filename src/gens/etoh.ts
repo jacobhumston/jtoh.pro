@@ -32,6 +32,7 @@ export default function etohGen(app: Hono) {
         ctx.fillStyle = '#2e2e2e';
         ctx.translate(700/2, 300/2);
         ctx.rotate(Math.PI);
+        ctx.translate(700, 300);
 
         drawRoundedRect(ctx, 0, 0, 700, 300, 30);
 
