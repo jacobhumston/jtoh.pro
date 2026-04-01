@@ -94,9 +94,13 @@ app.use((context, next) => {
     return next();
 });
 
-// build and serve pages/assets/etc
-await buildFrontend();
-await generateSiteMap();
+// build
+if ((await getBooleanArg('skipBuild')) === false) {
+    await buildFrontend();
+    await generateSiteMap();
+}
+
+// serve pages/assets/etc
 serveStatic(app);
 
 // call the handler method for each route

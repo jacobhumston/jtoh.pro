@@ -132,7 +132,8 @@
         "update-api-types": "bun run tools/update-api-types.ts",
         "tunnel": "./tools/tunnel",
         "lint": "bun x eslint",
-        "android-build": "bun x bubblewrap build --universalApk"
+        "android-build": "bun x bubblewrap build --universalApk",
+        "build": "bun run src/server/build.ts"
     },
     "trustedDependencies": [
         "@parcel/watcher",
