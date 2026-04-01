@@ -15,7 +15,7 @@ await new Promise((resolve) => domReady(() => resolve(0)));
 const cardBackgrounds = await client.GET('/api/cards/backgrounds');
 const webBackgrounds = await client.GET('/api/backgrounds');
 
-const container = document.getElementById('container') as HTMLDivElement;
+//const container = document.getElementById('container') as HTMLDivElement;
 const downloadZipButton = document.getElementById('downloadZip') as HTMLButtonElement;
 
 if (!cardBackgrounds.data || !webBackgrounds.data) {
