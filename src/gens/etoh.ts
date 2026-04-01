@@ -30,6 +30,7 @@ export default function etohGen(app: Hono) {
         const canvas = createCanvas(700, 300);
         const ctx = canvas.getContext('2d');
         ctx.fillStyle = '#2e2e2e';
+        ctx.rotate(Math.PI);
 
         drawRoundedRect(ctx, 0, 0, 700, 300, 30);
 
