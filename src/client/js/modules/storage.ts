@@ -12,7 +12,8 @@ const storageSchemas = {
     auth: authInfoSchema,
     profilePicture: z.string(),
     viewedNotifications: z.array(z.string()),
-    prevWebBackground: z.string()
+    prevWebBackground: z.string(),
+    arrowGameBestScore: z.number()
 };
 
 /** Local storage. */

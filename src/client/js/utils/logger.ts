@@ -9,5 +9,5 @@
  */
 export function disableConsoleLogIfNotLocalhost() {
     const host = window.location.hostname;
-    if (host !== 'localhost') globalThis.console.log = () => {};
+    if (host !== 'localhost' && host !== 'preview.lovelyjacob.com') globalThis.console.log = () => {};
 }
