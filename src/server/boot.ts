@@ -13,8 +13,8 @@ import process from 'node:process';
 
 import { listenForDiscordRequests } from '@discord/bot';
 import config, { isDev, serverPort, serverURL, version } from '@server/config';
-import { getBooleanArg } from '@server/managers/argv';
 import { getAuthenticatedRobloxUser } from '@server/managers/auth';
+import { hotBuild, skipBuild } from '@server/managers/flags';
 import { contextHasPermission } from '@server/managers/permissions';
 import { redirectMiddleware } from '@server/managers/redirects';
 import { generateSiteMap } from '@server/managers/sitemap';
@@ -95,7 +95,7 @@ app.use((context, next) => {
 });
 
 // build
-if ((await getBooleanArg('skipBuild')) === false) {
+if (skipBuild) {
     await buildFrontend();
     await generateSiteMap();
 }
@@ -194,7 +194,7 @@ app.onError(async (error, context) => {
 });
 
 // hot reloading for development
-if ((await getBooleanArg('hotBuild')) === true) {
+if (hotBuild) {
     hotReloadFrontend();
     log('info', 'Hot reloading enabled for the frontend. Sitemaps will be unavailable.');
 }

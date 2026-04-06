@@ -20,8 +20,8 @@ import { existsSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSy
 import { parse } from 'node:path';
 
 import { isDev } from '@server/config';
-import { getBooleanArg } from '@server/managers/argv';
 import { createPath, safelyGetPath } from '@server/managers/files';
+import { minifyBuild, prettyBuild } from '@server/managers/flags';
 import { log, logError } from '@server/modules/logger';
 import { replaceEmptyString } from '@shared/common-utils';
 
@@ -70,9 +70,6 @@ export function serveStatic(app: OpenAPIHono) {
  * may be a bit slow, especially when minifying everything.
  */
 export async function buildFrontend() {
-    // flags
-    const minifyBuild = await getBooleanArg('minifyBuild');
-
     clearStatic(); // clean the static folder
 
     // load templates
@@ -283,7 +280,7 @@ export async function buildFrontend() {
     // optionally format code at the end
     // requires '--prettyBuild true' to be passed
     // not recommended outside of testing
-    if ((await getBooleanArg('prettyBuild')) === true) {
+    if (prettyBuild) {
         log('info', 'Pretty build enabled, this may take a moment...');
         const config = JSON.parse(readFileSync('.prettierrc.json', 'utf8'));
         for (const file of readdirSync('static', { recursive: true, withFileTypes: true })) {
