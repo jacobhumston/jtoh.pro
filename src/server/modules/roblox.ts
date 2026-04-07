@@ -4,8 +4,8 @@
  * Authored by Jacob Humston
  */
 import * as emoji from 'node-emoji';
-import { fetchApi } from 'rozod';
-import { getUsersAvatar3d } from 'rozod/lib/endpoints/thumbnailsv1';
+import { fetchApi, fetchApiSplit } from 'rozod';
+import { getAssets, getUsersAvatar3d } from 'rozod/lib/endpoints/thumbnailsv1';
 import { getUsersUserid, postUsernamesUsers } from 'rozod/lib/endpoints/usersv1';
 
 import { serverURL } from '@server/config';
@@ -101,4 +101,26 @@ export async function parseRobloxAccountInput(input: string | number) {
  */
 export function getDefaultAvatarHeadshot() {
     return `${serverURL}assets/roblox-headshot.webp`;
+}
+
+/**
+ * Get asset thumbnail urls.
+ * @param assetIds The asset IDs to get the thumbnails of.
+ * @returns Thumbnail urls.
+ */
+export async function getAssetThumbnails(assetIds: Array<number>): Promise<Record<number, string | null>> {
+    const result: Record<number, string | null> = {};
+    await fetchApiSplit(
+        getAssets,
+        { format: 'Webp', size: '512x512', assetIds: assetIds },
+        { assetIds: 100 },
+        (value) => {
+            for (const img of value.data) {
+                result[img.targetId] = img.imageUrl ?? null;
+            }
+            return value;
+        },
+        { retries: 10, retryDelay: 2500 }
+    );
+    return result;
 }

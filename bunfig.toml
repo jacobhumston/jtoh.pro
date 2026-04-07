@@ -2,4 +2,4 @@
 minimumReleaseAge = 259200
 
 # Bypass for my own packages.
-minimumReleaseAgeExcludes = ["flags.ts", "rybbit.ts", "@jacobhumston/tc.js"]
+minimumReleaseAgeExcludes = ["flags.ts", "rybbit.ts", "@jacobhumston/tc.js", "rozod"]

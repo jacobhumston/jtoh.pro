@@ -14,7 +14,7 @@ import { randomBytes } from 'node:crypto';
 import { serverURL } from '@server/config';
 import { Cache } from '@server/managers/cache';
 import { DatabaseClient } from '@server/managers/database';
-import { generateRawToken, getSessionToken } from '@server/modules/secrets';
+import { generateRawToken } from '@server/modules/secrets';
 
 // hmac
 const hmac = randomBytes(255).toString();
@@ -72,7 +72,7 @@ export async function verifyCaptchaFromContext(context: Context) {
     if (result === true) {
         const bypassToken = generateRawToken();
         await captchaBypassCache.set(bypassToken, {}, { minutes: 10 });
-        setCookie(context, getSessionToken('captcha-bypass'), bypassToken, {
+        setCookie(context, 'captcha-safe', bypassToken, {
             expires: (await captchaBypassCache.expires(bypassToken)) as Date,
             domain: serverURL.hostname,
             secure: true,
@@ -89,9 +89,8 @@ export async function verifyCaptchaFromContext(context: Context) {
  * @returns A boolean indicating if the token has expired.
  */
 export async function isCaptchaBypassExpired(context: Context) {
-    const result = await captchaBypassCache.expires(getCookie(context, getSessionToken('captcha-bypass')) ?? '');
-    if (result instanceof Date) return Date.now() > result.getTime();
-    else return true; // bypass tokens should never have "never" as their expiration date
+    const result = await captchaBypassCache.exists(getCookie(context, 'captcha-safe') ?? '');
+    return !result;
 }
 
 /** Captcha middleware, which can be used on routes that need extra security. */

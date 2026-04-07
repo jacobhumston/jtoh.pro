@@ -95,7 +95,7 @@ app.use((context, next) => {
 });
 
 // build
-if (skipBuild) {
+if (!skipBuild) {
     await buildFrontend();
     await generateSiteMap();
 }
@@ -201,7 +201,7 @@ if (hotBuild) {
 
 // export server options for bun
 try {
-    serve({ fetch: app.fetch, port: serverPort });
+    serve({ fetch: app.fetch, port: serverPort, idleTimeout: 255 });
 } catch (error) {
     log('error', error);
     log('info', 'Unable to start server, maybe run "bun run port-access"?');
