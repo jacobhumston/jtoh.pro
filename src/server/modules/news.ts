@@ -12,5 +12,3 @@ const news = new GhostAPI({
 });
 
 export default news;
-
-console.log(await news.posts.browse())
