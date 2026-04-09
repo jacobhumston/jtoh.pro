@@ -1,0 +1,27 @@
+/*
+    API page modifications.
+    
+    Authored by Jacob Humston
+*/
+
+@use 'fonts.scss';
+@use 'colors.scss';
+
+/*
+a[href='https://www.scalar.com'] {
+    display: none;
+}
+
+.border-t {
+    border-top: none !important;
+}
+*/
+
+h1,
+h2 {
+    color: var(--accent);
+}
+
+h3 {
+    font-family: 'JetBrainsMono';
+}

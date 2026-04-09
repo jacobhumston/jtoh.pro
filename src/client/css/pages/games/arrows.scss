@@ -1,0 +1,36 @@
+/*
+    Arrows game styling.
+
+    Authored by Jacob Humston
+*/
+
+#arrows {
+    display: block;
+    gap: 10px;
+    text-align: center;
+    align-content: center;
+    position: relative;
+    height: 100vh;
+
+    #score {
+        display: block;
+        font-size: 50px;
+        line-height: 60%;
+
+        #best {
+            font-size: 30px;
+            color: var(--text-darker);
+        }
+    }
+
+    span {
+        font-size: 100px;
+        color: var(--accent);
+        margin: 10px;
+        display: inline-block;
+        position: relative;
+    }
+    ::view-transition-group {
+        animation-duration: 0.5s;
+    }
+}

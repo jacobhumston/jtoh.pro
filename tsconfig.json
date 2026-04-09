@@ -1,29 +1,27 @@
 {
     "compilerOptions": {
-        // Enable latest features
-        "lib": ["ESNext", "DOM", "DOM.Iterable", "DOM.AsyncIterable"],
-        "target": "ESNext",
-        "module": "ESNext",
-        "moduleDetection": "force",
-        "jsx": "react-jsx",
-        "allowJs": true,
-
-        // Bundler mode
         "moduleResolution": "bundler",
-        "allowImportingTsExtensions": true,
+        "moduleDetection": "force",
+        "allowImportingTsExtensions": false,
         "verbatimModuleSyntax": true,
-        "noEmit": true,
-
-        // Best practices
+        "noEmit": false,
         "strict": true,
-        "skipLibCheck": true,
         "noFallthroughCasesInSwitch": true,
-
-        // Some stricter flags (disabled by default)
+        "allowJs": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        "noPropertyAccessFromIndexSignature": false
+        "noPropertyAccessFromIndexSignature": false,
+        "target": "esnext",
+        "module": "esnext",
+        "skipLibCheck": true,
+        "paths": {
+            "@shared/*": ["./src/shared/*"],
+            "@client/*": ["./src/client/js/*"],
+            "@server/*": ["./src/server/*"],
+            "@node_modules/*": ["./node_modules/*"],
+            "@discord/*": ["./src/server/discord/*"],
+            "@schemas/*": ["./src/shared/schemas/*"]
+        }
     },
-    "references": [{ "path": "./tsconfig.server.json" }, { "path": "./tsconfig.client.json" }],
-    "files": []
+    "exclude": ["static/", "eslint.config.js"]
 }

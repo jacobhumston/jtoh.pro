@@ -1,0 +1,80 @@
+/*
+    Loads CSS fonts and applies them.
+
+    Authored by Jacob Humston
+*/
+@font-face {
+    font-family: 'ArchivoBlack';
+    src: url('/assets/fonts/Archivo-Black.ttf');
+}
+
+@font-face {
+    font-family: 'EduNSWActCursive';
+    src: url('/assets/fonts/Edu-NSW-ACT-Cursive.ttf');
+}
+
+@font-face {
+    font-family: 'FuzzyBubbles';
+    src: url('/assets/fonts/Fuzzy-Bubbles.ttf');
+}
+
+@font-face {
+    font-family: 'JetBrainsMono';
+    src: url('/assets/fonts/JetBrains-Mono.ttf');
+}
+
+@font-face {
+    font-family: 'NotoSerif';
+    src: url('/assets/fonts/Noto-Serif.ttf');
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('/assets/fonts/Poppins.ttf');
+}
+
+@font-face {
+    font-family: 'Twemoji';
+    src: url('/assets/fonts/Twemoji.ttf');
+}
+
+@font-face {
+    font-family: 'MaterialSymbolsRounded';
+    src: url('/assets/fonts/MaterialSymbols.woff2') format('woff2');
+}
+
+body,
+input,
+button,
+textarea {
+    font-family: Poppins, Arial, Twemoji;
+    font-size: medium;
+}
+
+code {
+    font-family:
+        JetbrainsMono, 'SF Mono', 'Segoe UI Mono', 'Roboto Mono', 'Ubuntu Mono', 'Droid Sans Mono', 'Monaco',
+        'Consolas', 'Lucida Console', monospace;
+    font-size: medium;
+}
+
+.cursiveFont {
+    font-family: EduNSWActCursive, 'Brush Script MT', 'Lucida Handwriting', cursive;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: ArchivoBlack, 'Raleway Bold', Helvetica, Arial, sans-serif;
+}
+
+.icon {
+    font-family: MaterialSymbolsRounded;
+    font-variation-settings: 'FILL' 1;
+    font-size: inherit;
+    font-size: 1.2em;
+    vertical-align: text-bottom;
+}

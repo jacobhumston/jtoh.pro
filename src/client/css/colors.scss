@@ -1,0 +1,81 @@
+/*
+    Colors used throughout the css codebase.
+    Colors are based on https://docs.google.com/spreadsheets/d/18p80wMUDNdXCYC8k5o0lHfyEm1_AzPPRFMAhcjNLrj0/edit?usp=sharing
+
+    Authored by Jacob Humston
+*/
+@use 'other/code-theme.scss';
+
+/* Special Colors */
+$red: #ff5959;
+$green: #41d256;
+$blue: #66b5ff;
+$yellow: #ffe945;
+
+/* Themed colors. */
+$dark-accent: #9a71f8;
+$light-accent: #c8afff;
+
+$dark-text: #ffffff;
+$light-text: #151515;
+
+$dark-text-darker: #a9a9a9;
+$light-text-darker: #a6a6a6;
+
+$dark-background: #2a282b;
+$light-background: #f8f8f8;
+
+$dark-background-darker: #18171a;
+$light-background-darker: #dedede;
+
+$dark-background-lighter: #47434a;
+$light-background-lighter: #d0cbd4;
+
+:root {
+    --accent: #{$light-accent};
+    --text: #{$light-text};
+    --text-darker: #{$light-text-darker};
+    --background: #{$light-background};
+    --background-darker: #{$light-background-darker};
+    --background-lighter: #{$light-background-lighter};
+
+    --red: #{$red};
+    --green: #{$green};
+    --blue: #{$blue};
+    --yellow: #{$yellow};
+}
+
+[dark] {
+    --accent: #{$dark-accent};
+    --text: #{$dark-text};
+    --text-darker: #{$dark-text-darker};
+    --background: #{$dark-background};
+    --background-darker: #{$dark-background-darker};
+    --background-lighter: #{$dark-background-lighter};
+}
+
+body {
+    background-color: var(--background-darker);
+    color: var(--text);
+}
+
+a {
+    color: var(--blue);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--accent);
+    cursor: pointer;
+}
+
+body,
+button,
+a,
+p,
+input,
+textarea,
+select {
+    // transition for theme switching
+    transition: background-color ease-in-out 0.5s;
+}

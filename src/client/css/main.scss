@@ -1,0 +1,45 @@
+/*
+    Main CSS file used on every page.
+    Consider this the entry point, such as "js/main.ts".
+
+    Authored by Jacob Humston
+*/
+@use 'fonts.scss';
+@use 'colors.scss';
+@use 'elements/navigation.scss';
+@use 'elements/notifications.scss';
+
+:root {
+    --background-image-opacity: 0;
+}
+
+body {
+    margin: 0px;
+    padding: 0px;
+    position: relative;
+}
+
+pre {
+    code {
+        display: block;
+        padding: 10px;
+    }
+}
+
+.noTransitions * {
+    transition: none !important;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: var(--background-image);
+    background-size: cover;
+    background-position: center;
+    opacity: var(--background-image-opacity);
+    z-index: -1;
+    height: 100vh;
+    transition-property: opacity, background-image;
+    transition-duration: 0.5s;
+}

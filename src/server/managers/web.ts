@@ -1,0 +1,337 @@
+/**
+ * This script is responsible for compiling
+ * and serving assets, such as web pages.
+ *
+ * Authored by Jacob Humston
+ */
+import type { OpenAPIHono } from '@hono/zod-openapi';
+import chokidar from 'chokidar';
+import Handlebars from 'handlebars';
+import { stream } from 'hono/streaming';
+import { minify } from 'html-minifier-next';
+import MarkdownIt from 'markdown-it';
+import mime from 'mime';
+import * as prettier from 'prettier';
+import * as sass from 'sass';
+import { minify as jsMinify } from 'terser';
+
+import { build } from 'bun';
+import { existsSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { parse } from 'node:path';
+
+import { isDev } from '@server/config';
+import { createPath, safelyGetPath } from '@server/managers/files';
+import { minifyBuild, prettyBuild } from '@server/managers/flags';
+import { log, logError } from '@server/modules/logger';
+import { replaceEmptyString } from '@shared/common-utils';
+
+/** Path used to store static assets. */
+export const staticPath = safelyGetPath('static');
+
+/**
+ * Clear the static directory.
+ */
+export function clearStatic() {
+    rmSync(staticPath, { recursive: true, force: true });
+    createPath('static'); // we still need the path afterwards
+}
+
+/**
+ * Serve static files from the static directory.
+ * @param app The server application.
+ */
+export function serveStatic(app: OpenAPIHono) {
+    app.get('/*', async (context, next) => {
+        const reqPath = context.req.path.endsWith('/') ? `${context.req.path}/index.html` : context.req.path;
+        const path = parse(reqPath);
+        const name = replaceEmptyString(path.name, 'index');
+        const dir = path.dir.endsWith('/') ? path.dir : `${path.dir}/`;
+        const ext = replaceEmptyString(path.ext, '.html');
+        const filePath = `${staticPath}${dir}${name}${ext}`;
+
+        if (!existsSync(filePath)) return await next();
+        context.res.headers.set('Content-Type', mime.getType(ext) ?? 'application/octet-stream'); // application/octet-stream seems to be a good backup
+
+        if (new URL(context.req.url).searchParams.get('nocache') !== null) {
+            context.res.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+        } else {
+            context.res.headers.set('Cache-Control', 'max-age=604800');
+        }
+
+        return stream(context, async (stream) => {
+            const file = Bun.file(filePath);
+            await stream.pipe(file.stream());
+        });
+    });
+}
+
+/**
+ * This function compiles the entire frontend! So it
+ * may be a bit slow, especially when minifying everything.
+ */
+export async function buildFrontend() {
+    clearStatic(); // clean the static folder
+
+    // load templates
+    const templates: { [key: string]: string } = {};
+    for (const file of readdirSync('src/client/templates', { recursive: true, withFileTypes: true })) {
+        if (file.isFile()) {
+            const content = readFileSync(`${file.parentPath}/${file.name}`, 'utf8');
+            templates[file.name.split('.')[0]] = content;
+        }
+    }
+
+    // entrypoints
+    const buildEntrypoints: string[] = [];
+
+    // add entry points
+    // this will also handle symlinks in case we need to add files to the same directory as a page
+    for (const file of readdirSync('src/client/pages/', { recursive: true, withFileTypes: true })) {
+        if (file.isFile()) {
+            let path = file.parentPath.replace('src/client/pages/', '');
+            if (path === 'src/client/pages') path = '';
+            else path = `${path}/`;
+            const destinationPath = `static/${path}`;
+            createPath(destinationPath);
+
+            // build (or symlink)
+            if (file.name.endsWith('.html') || file.name.endsWith('.md')) {
+                // for some reason this fixes a bun build issue
+                if (file.name.endsWith('blank.html')) {
+                    buildEntrypoints.unshift(`${file.parentPath}/${file.name}`);
+                } else {
+                    buildEntrypoints.push(`${file.parentPath}/${file.name}`);
+                }
+            } else {
+                symlinkSync(safelyGetPath(`${file.parentPath}/${file.name}`), `${destinationPath}${file.name}`);
+            }
+        }
+    }
+
+    // create symlinks for root files
+    for (const file of readdirSync('src/client/root/', { recursive: true, withFileTypes: true })) {
+        if (file.isFile()) {
+            let path = file.parentPath.replace('src/client/root/', '');
+            if (path === 'src/client/root') path = '';
+            else path = `${path}/`;
+            const destinationPath = `static/${path}`;
+            createPath(destinationPath);
+            symlinkSync(safelyGetPath(`${file.parentPath}/${file.name}`), `${destinationPath}${file.name}`);
+        }
+    }
+
+    // bun build
+    const markdown = MarkdownIt({ html: true });
+    const markdownTemplate = readFileSync('src/client/templates/markdown.html', 'utf8');
+    await build({
+        entrypoints: buildEntrypoints,
+        outdir: safelyGetPath('static'),
+        root: 'src/client/pages',
+        splitting: true,
+        sourcemap: isDev && !minifyBuild ? 'inline' : 'none',
+        minify: !isDev || minifyBuild,
+        footer: `\n\n// @copyright Copyright of jtoh.pro, All Rights Reserved. (c)${new Date().getFullYear()}`,
+        target: 'browser',
+        naming: {
+            asset: '/assets/[name].[hash].[ext]',
+            chunk: '/assets/[hash].[ext]',
+            entry: '[dir]/[name].[ext]'
+        },
+        external: [
+            '*.png',
+            '*.jpg',
+            '*.jpeg',
+            '*.gif',
+            '*.svg',
+            '*.webp',
+            '*.mp4',
+            '*.mp3',
+            '*.webmanifest',
+            '*.ttf',
+            '*.woff2',
+            '/api/*'
+        ],
+        plugins: [
+            {
+                // markdown files
+                name: 'Markdown Compiler',
+                setup: function (build: Bun.PluginBuilder): void | Promise<void> {
+                    build.onLoad({ filter: /\.md$/i }, (args) => {
+                        const fileContent = readFileSync(args.path, 'utf8');
+                        return {
+                            contents: Handlebars.compile(
+                                markdownTemplate.replace('CONTENT', markdown.render(fileContent))
+                            )(templates),
+                            loader: 'html'
+                        };
+                    });
+                }
+            },
+            {
+                // handlebars plugin
+                name: 'Template Compiler',
+                setup: function (build: Bun.PluginBuilder): void | Promise<void> {
+                    build.onLoad({ filter: /\.html$/i }, (args) => {
+                        const fileContent = readFileSync(args.path, 'utf8');
+                        const template = Handlebars.compile(fileContent);
+                        return { contents: template(templates) };
+                    });
+                }
+            },
+            {
+                // sass plugin
+                name: 'Sass Compiler',
+                setup: function (build: Bun.PluginBuilder): void | Promise<void> {
+                    build.onLoad({ filter: /\.scss$/i }, (args) => {
+                        const compiled = sass.compile(args.path);
+                        return { contents: compiled.css, loader: 'css' };
+                    });
+                }
+            }
+        ]
+    });
+
+    // create asset symlinks
+    for (const file of readdirSync('src/client/assets/', { recursive: true, withFileTypes: true })) {
+        if (!file.isFile()) continue;
+        let path = file.parentPath.replace('src/client/assets/', '');
+        if (path === 'src/client/assets') path = '';
+        else path = `${path}/`;
+        const destinationPath = `static/assets/${path}`;
+        createPath(destinationPath);
+        symlinkSync(safelyGetPath(`${file.parentPath}/${file.name}`), `${destinationPath}${file.name}`);
+    }
+
+    // material code asset links
+    for (const file of readdirSync('node_modules/material-icon-theme/icons/', {
+        recursive: true,
+        withFileTypes: true
+    })) {
+        if (!file.isFile()) continue;
+        let path = file.parentPath.replace('node_modules/material-icon-theme/icons/', '');
+        if (path === 'node_modules/material-icon-theme/icons') path = '';
+        else path = `${path}/`;
+        const destinationPath = `static/assets/code-icons/${path}`;
+        createPath(destinationPath);
+        symlinkSync(safelyGetPath(`${file.parentPath}/${file.name}`), `${destinationPath}${file.name}`);
+    }
+
+    // build workers
+    const workerEntrypoints: string[] = [];
+    for (const file of readdirSync('src/client/js/workers/', { recursive: true, withFileTypes: true })) {
+        if (file.isFile() && file.name.endsWith('.ts')) {
+            workerEntrypoints.push(`${file.parentPath}/${file.name}`);
+        }
+    }
+    if (workerEntrypoints.length > 0) {
+        await build({
+            entrypoints: workerEntrypoints,
+            outdir: safelyGetPath('static/assets/workers/'),
+            splitting: false,
+            sourcemap: isDev && !minifyBuild ? 'inline' : 'none',
+            minify: !isDev || minifyBuild,
+            footer: `\n\n// @copyright Copyright of jtoh.pro, All Rights Reserved. (c)${new Date().getFullYear()}`,
+            target: 'browser',
+            naming: {
+                entry: '[name].[ext]'
+            }
+        });
+    }
+
+    // minify (in prod)
+    if (!isDev || minifyBuild === true) {
+        log('info', 'Minifying build enabled, this may take a moment...');
+        for (const file of readdirSync('static/', { recursive: true, withFileTypes: true })) {
+            if (file.isFile()) {
+                // minify html
+                if (file.name.endsWith('.html')) {
+                    if (isDev) log('debug', `Minifying (html) ${file.parentPath}/${file.name}`);
+                    const path = `${file.parentPath}/${file.name}`;
+                    const content = readFileSync(path, 'utf8');
+                    const minified = await minify(content, {
+                        minifyCSS: true,
+                        minifyJS: { compress: { passes: 3, drop_console: true }, mangle: true },
+                        removeComments: true,
+                        removeAttributeQuotes: true,
+                        collapseWhitespace: true
+                    }).catch(() => null);
+                    if (!minified) continue;
+                    writeFileSync(path, minified);
+                    // minify js
+                } else if (file.name.endsWith('.js')) {
+                    if (isDev) log('debug', `Minifying (js) ${file.parentPath}/${file.name}`);
+                    const path = `${file.parentPath}/${file.name}`;
+                    const content = readFileSync(path, 'utf8');
+                    const minified = await jsMinify(content, {
+                        compress: { passes: 3, drop_console: true },
+                        mangle: true,
+                        format: {
+                            comments: /jtoh\.pro/
+                        }
+                    }).catch(() => null);
+                    if (!minified) continue;
+                    writeFileSync(path, minified.code ?? '');
+                }
+                // not going to minify css due to it already being minified pretty well by bun
+            }
+        }
+    }
+
+    // optionally format code at the end
+    // requires '--prettyBuild true' to be passed
+    // not recommended outside of testing
+    if (prettyBuild) {
+        log('info', 'Pretty build enabled, this may take a moment...');
+        const config = JSON.parse(readFileSync('.prettierrc.json', 'utf8'));
+        for (const file of readdirSync('static', { recursive: true, withFileTypes: true })) {
+            if (!file.isFile() || file.isSymbolicLink()) continue;
+            const filePath = `${file.parentPath}/${file.name}`;
+            if (!file.name.endsWith('.js') && !file.name.endsWith('.css') && !file.name.endsWith('.html')) continue;
+            let content: string | null = readFileSync(filePath, 'utf-8');
+            content = await prettier.format(content, Object.assign(config, { filepath: filePath })).catch(() => null);
+            if (content === null) {
+                log('error', `Failed to format ${filePath}`);
+                continue;
+            }
+            writeFileSync(filePath, content, 'utf8');
+        }
+    }
+}
+
+/**
+ * Development function that rebuilds the frontend on file changes in `src/client/`.
+ */
+export function hotReloadFrontend() {
+    let rebuild = true;
+    chokidar.watch('src/client/').on('all', async () => {
+        if (rebuild === true) {
+            rebuild = false;
+            log('info', 'Hot reload rebuilding...');
+            await buildFrontend().catch((error) => {
+                logError(error);
+                rebuild = true;
+            });
+            log('success', 'Hot reload rebuild completed.');
+            rebuild = true;
+        }
+    });
+}
+
+/**
+ * Get a list of web pages from the static folder.
+ * Note that these paths are the web based location, however
+ * you can get the file path by adding static to the front of
+ * the path.
+ * @param skipAdmin If true, admin pages will be skipped.
+ * @returns The list of web pages.
+ */
+export function getStaticPagesWebPaths(skipAdmin: boolean): string[] {
+    const pages: string[] = [];
+    for (const file of readdirSync('static/', { withFileTypes: true, recursive: true })) {
+        if (file.isFile() && file.name.endsWith('.html')) {
+            if (skipAdmin && file.parentPath.includes('admin')) continue;
+            pages.push(`${file.parentPath.replace('static', '')}/${file.name.split('.')[0]}`);
+        }
+    }
+    return pages;
+}

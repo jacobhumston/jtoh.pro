@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Start a cloudflare tunnel.
+#
+# Authored by Jacob Humston
+
+cloudflared tunnel run --token "$(bun run tools/get-token.ts cloudflareDevTunnel)"

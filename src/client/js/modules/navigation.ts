@@ -1,0 +1,65 @@
+/**
+ * This module handles navigation aspects, such as
+ * user display, page access, etc.
+ *
+ * Authored by Jacob Humston
+ */
+import sanitizeHtml from 'sanitize-html';
+
+import { getRobloxAuthInfo } from '@client/modules/auth';
+import storage from '@client/modules/storage';
+
+/**
+ * Handle navigation events, etc.
+ * This also update current navigation, such as buttons
+ * who's appearance changes based on what page the
+ * user is currently on.
+ */
+export async function handleNavigation() {
+    const pageNavigation = document.getElementById('pageNavigation');
+    const navigationToggle = document.getElementById('navigationToggle');
+    const loggedInDetails = document.getElementById('loggedInDetails');
+    if (!pageNavigation || !navigationToggle || !loggedInDetails) return console.log('Page navigation missing.');
+
+    for (const element of pageNavigation.children) {
+        if (element instanceof HTMLAnchorElement) {
+            const url = new URL(element.href);
+            if (url.pathname === window.location.pathname) {
+                element.classList.add('currentPage');
+            }
+        }
+    }
+
+    navigationToggle.addEventListener('click', function () {
+        if (pageNavigation.classList.contains('navigationDropDownEnabled')) {
+            pageNavigation.classList.remove('navigationDropDownEnabled');
+            navigationToggle.innerHTML = '<span class="icon">menu</span> Menu';
+            navigationToggle.style.backgroundColor = '';
+        } else {
+            pageNavigation.classList.add('navigationDropDownEnabled');
+            navigationToggle.innerHTML = '<span class="icon">close</span> Close';
+            navigationToggle.style.backgroundColor = 'var(--red)';
+        }
+    });
+
+    const authUser = await getRobloxAuthInfo();
+    if (authUser) {
+        let profilePicture = storage.getItem('profilePicture');
+        if (profilePicture === null) {
+            const response = await fetch(authUser.picture).catch(() => null);
+            if (response) {
+                const blob = await response.blob();
+                const reader = new FileReader();
+                profilePicture = await new Promise((resolve) => {
+                    reader.addEventListener('load', () => {
+                        resolve(reader.result as string);
+                    });
+                    reader.addEventListener('error', () => resolve(null));
+                    reader.readAsDataURL(blob);
+                });
+                if (profilePicture) storage.setItem('profilePicture', profilePicture);
+            }
+        }
+        loggedInDetails.innerHTML = `<img src="${profilePicture ?? '/assets/roblox-headshot.webp'}"> @${sanitizeHtml(authUser.username)}<span class="emDash"> — </span><a href="/settings" class="dashBoardLink">Dashboard</a>`;
+    }
+}

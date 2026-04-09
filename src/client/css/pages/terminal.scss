@@ -1,0 +1,53 @@
+/*
+    Super secrete terminal styling.
+
+    Authored by Jacob Humston
+*/
+
+#info {
+    padding: 10px;
+    color: var(--accent);
+    font-family: 'JetBrainsMono', 'Twemoji';
+    padding: 10px;
+    display: block;
+}
+
+#terminal {
+    font-family: 'JetBrainsMono', 'Twemoji';
+    padding: 10px;
+    display: block;
+
+    pre {
+        padding: 0px;
+        margin: 0px;
+        font-size: medium;
+        font-weight: normal;
+        line-height: normal;
+        color: var(--text);
+        white-space: pre-wrap;
+        font-family: 'JetBrainsMono', 'Twemoji';
+        border-bottom: solid 2px var(--background);
+        padding: 5px;
+    }
+
+    #input {
+        background-color: transparent;
+        font-family: 'JetBrainsMono', 'Twemoji';
+        display: block;
+        color: var(--text);
+        border: none;
+        padding: 0px;
+        font-size: larger;
+        font-weight: normal;
+        line-height: normal;
+        font-size: inherit !important;
+        margin-top: 10px;
+        color: var(--yellow);
+        padding: 5px;
+        width: 100%;
+    }
+
+    #input:focus {
+        outline: none;
+    }
+}

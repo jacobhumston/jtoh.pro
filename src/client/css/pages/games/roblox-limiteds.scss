@@ -1,0 +1,55 @@
+/*
+    Roblox limiteds game styling.
+
+    Authored by Jacob Humston
+*/
+
+#container {
+    text-align: left;
+    margin-top: 50px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+
+    .limited {
+        display: block;
+        width: 100%;
+        background-color: var(--background);
+        margin-bottom: 10px;
+        border-left: 5px var(--red) solid;
+
+        .image {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+            vertical-align: middle;
+            margin-left: 10px;
+        }
+
+        .name,
+        .rap {
+            display: inline-block;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+
+        .rap {
+            color: var(--green);
+            float: right;
+            margin-right: 10px;
+        }
+    }
+
+    .owned {
+        border-left: 5px var(--green) solid !important;
+    }
+}
+
+.info {
+    text-align: center;
+}
