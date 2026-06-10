@@ -1,5 +1,12 @@
 # jtoh.pro
 
+**Note:** Please see the following branches!
+- Current Version: https://github.com/jacobhumston/jtoh.pro/tree/v2-lts
+- Unfinished Rewrite: https://github.com/jacobhumston/jtoh.pro/tree/testing-rework
+
+This repo will no longer be updated, however I've decided to make it open source as a ty to everyone who's used it.
+I will note that the codebase is pretty rough and I will provide little to no support on self hosting.
+
 Created by Jacob Humston
 
 ## Links
