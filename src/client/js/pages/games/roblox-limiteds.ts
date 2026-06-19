@@ -3,12 +3,17 @@
  *
  * Authored by Jacob Humston
  */
+
 import { domReady } from '@jsfns/web';
 
 import { client } from '@client/modules/api';
 import { getRobloxAuthInfo } from '@client/modules/auth';
 import { getCaptchaToken } from '@client/modules/captcha';
-import { createElement, getIconHTML } from '@client/utils/elements';
+import { createElement, downloadBlob, getIconHTML } from '@client/utils/elements';
+
+declare global {
+    var downloadCSV: () => void;
+}
 
 await new Promise((resolve) => domReady(() => resolve(0)));
 const container = document.getElementById('container') as HTMLDivElement;
@@ -63,6 +68,20 @@ if (!(await getRobloxAuthInfo())) {
                     )
                 );
             }
+
+            globalThis.downloadCSV = () => {
+                let str = 'Owned?,Name,RAP,Value,Link';
+                str =
+                    str +
+                    '\n' +
+                    sortedLimiteds
+                        .map(
+                            (l) =>
+                                `${ownedItems.includes(l.id) ? 'Yes' : 'No'},"${l.name}","${formatter.format(l.rap)}","${formatter.format(l.value ?? 0)}","${`https://www.rolimons.com/item/${l.id}`}"`
+                        )
+                        .join('\n');
+                downloadBlob('roblox-limiteds.csv', new Blob([str]));
+            };
         }
     }
 }
